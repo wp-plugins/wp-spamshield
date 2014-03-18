@@ -23,12 +23,12 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 
 = Key Features =
 1. Virtually eliminates automated comment spam from bots. It works like a firewall to ensure that your commenters are in fact, human.
-2. A counter on your dashboard to keep track of all the spam it’s blocking. The numbers will show how effective this plugin is.
+2. A counter on your dashboard to keep track of all the spam it's blocking. The numbers will show how effective this plugin is.
 3. **No CAPTCHA's, challenge questions or other inconvenience to site visitors** - it works silently in the background.
 4. Includes drop-in spam-free contact form, with easy shortcode implementation. Easy to use - no configuration necessary. (But you can configure if you like.)
 5. A more advanced fork of WP-SpamFree, by the original developer. Works as a truly plug and play replacement and will import your old data from WP-SpamFree automatically upon installation and activation, and features you were using on your site previously such as contact forms and spam stats will continue to work without any changes to pages, posts, or theme.
 6. No false positives due to the method of spam blocking, which leads to fewer frustrated readers, and less work for you. (If a comment gets blocked, a legit user has a chance to try again.)
-7. You won’t have to waste valuable time sifting through a spam queue anymore, because there won't be much there, if anything.
+7. You won't have to waste valuable time sifting through a spam queue anymore, because there won't be much there, if anything.
 8. Powerful trackback and pingback spam protection.
 9. Easy to install - truly plug and play. Just upload and activate. (Installation Status on the plugin admin page to let you know if plugin is installed correctly.)
 10. The beauty of this plugin is the methods of blocking spam. It takes a different approach than most and stops spam at the door.
@@ -79,7 +79,11 @@ WP-SpamShield was created specifically to stop automated comment spam (which acc
 = Displaying Stats on Your Blog =
 Want to show off your spam stats on your blog and tell others about WP-SpamShield? Simply add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-9 corresponding to one of the background styles you'd like to use. (See plugin admin page for more info.)
 
-To add smaller counter to your site, add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-5 that corresponds to one of the following. (See plugin admin page for more info.)
+To add it to any page or post, add the following shortcode to the page or post where you'd like the stats displayed (using the HTML editing tab, NOT the Visual editor): `[spamshieldcounter style=1]` where '1' is the style. Replace the '1' with a number from 1-9 that corresponds to one of the images below that matches the style you'd like to use. To simply display text stats on your site (no graphic), replace the '1' with '0'.
+
+To add smaller counter to your site, add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-5 that corresponds to the style you'd like to use. (See plugin admin page for more info.)
+
+To add it to any page or post, add the following shortcode to the page or post where you'd like the stats displayed (using the HTML editing tab, NOT the Visual editor): `[spamshieldcountersm style=1]` where '1' is the style. Replace the '1' with a number from 1-5 that corresponds to the style you'd like to use.
 
 Or, you can simply use the widget. It displays stats in the style of small counter #1. Now you can show spam stats on your blog without knowing any code.
 
@@ -133,7 +137,7 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
-Version 1.0.0.0, released 03/10/14 – Over 20 improvements from its predecessor WP-SpamFree...including:
+Version 1.0.0.0, released 03/10/14 - Over 20 improvements from its predecessor WP-SpamFree...including:
 
 * Over 10x faster! Tested and verified with benchmarking software.
 * Reduced the number of database queries.
@@ -167,7 +171,7 @@ If you're having trouble getting things to work after installing the plugin, her
 
 5. If you are receiving the error message: "Sorry, there was an error. Please enable JavaScript and Cookies in your browser and try again." then you need to make sure JavaScript and cookies are enabled in your browser. (JavaScript is different from Java. Java is not required.) These are enabled by default in web browsers. The status display will let you know if these are turned on or off (as best the page can detect - occasionally the detection does not work.) If this message comes up consistently even after JavaScript and cookies are enabled, then there most likely is an installation problem, plugin conflict, or JavaScript conflict. Read on for possible solutions.
 
-6. If you have multiple domains that resolve to the same server, or are parked on the same hosting account, make sure the domain set in the WordPress configuration options matches the domain where you are accessing the blog from. In other words, if you have people going to your blog using www.yourdomain.com/ and the WordPress configuration has: www.yourdomain2.com/ you will have a problem (not just with this plugin, but with a lot of things.)
+6. If you have multiple domains that resolve to the same server, or are parked on the same hosting account, make sure the domain set in the WordPress configuration options matches the domain where you are accessing the blog from. In other words, if you have people going to your blog using hxxp://www.yourdomain.com/ and the WordPress configuration has: hxxp://www.yourdomain2.com/ you will have a problem (not just with this plugin, but with a lot of things.)
 
 7. Check your WordPress Version. If you are using a release earlier than 2.3, you may want to upgrade for a whole slew of reasons, including features and security.
 
@@ -175,7 +179,7 @@ If you're having trouble getting things to work after installing the plugin, her
 
 9. Make sure that you are not using other front-end anti-spam plugins (CAPTCHA's, challenge questions, etc) since there's no longer a need for them, and these could likely conflict. Also if you were previously using WP-SpamFree, be sure to disable this as well. (Back-end anti-spam plugins like Akismet are fine, although unnecessary.)
 
-10. Visit http://www.yourblog.com/wp-content/plugins/wp-spamshield/js/jscripts.php (where yourblog.com is your blog url) and check two things. **First, see if the file comes up normally or if it comes up blank or with errors.** That would indicate a problem. Submit a support request (see last troubleshooting step) and copy and past any error messages on the page into your message. **Second, check for a 403 Forbidden error.** That means there is a problem with your file permissions. If the files in the wp-spamshield folder don't have standard permissions (at least 644 or higher) they won't work. This usually only happens by manual modification, but strange things do happen. The **AskApache Password Protect Plugin** is known to cause this error. Users have reported that using its feature to protect the /wp-content/ directory creates an .htaccess file in that directory that creates improper permissions and conflicts with WP-SpamShield (and most likely other plugins as well). You'll need to disable this feature, or disable the AskApache Password Protect Plugin and delete any .htaccess files it has created in your /wp-content/ directory before using WP-SpamShield.
+10. Visit hxxp://www.yourblog.com/wp-content/plugins/wp-spamshield/js/jscripts.php (where yourblog.com is your blog url) and check two things. **First, see if the file comes up normally or if it comes up blank or with errors.** That would indicate a problem. Submit a support request (see last troubleshooting step) and copy and past any error messages on the page into your message. **Second, check for a 403 Forbidden error.** That means there is a problem with your file permissions. If the files in the wp-spamshield folder don't have standard permissions (at least 644 or higher) they won't work. This usually only happens by manual modification, but strange things do happen. The **AskApache Password Protect Plugin** is known to cause this error. Users have reported that using its feature to protect the /wp-content/ directory creates an .htaccess file in that directory that creates improper permissions and conflicts with WP-SpamShield (and most likely other plugins as well). You'll need to disable this feature, or disable the AskApache Password Protect Plugin and delete any .htaccess files it has created in your /wp-content/ directory before using WP-SpamShield.
 
 11. Check for conflicts with other JavaScripts installed on your site. This usually occurs with with JavaScripts unrelated to WordPress or plugins. However some themes contain JavaScripts that aren't compatible. (And some don't have the call to the `wp_head()` function which is also a problem. Read on to see how to test/fix this issue.) If in doubt, try switching themes. If that fixes it, then you know the theme was at fault. If you discover a conflicting theme, please let us know.
 
