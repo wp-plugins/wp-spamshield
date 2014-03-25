@@ -58,6 +58,9 @@ Even so, it's important to know that the particular JS and cookies solution used
 = WordPress Blogging Without Spam =
 How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by giving it a good rating!
 
+= More Info / Documentation =
+For more info and full documentation, visit the [WP-SpamShield](http://www.redsandmarketing.com/plugins/wp-spamshield/) homepage.
+
 == Installation ==
 
 = Installation Instructions =
