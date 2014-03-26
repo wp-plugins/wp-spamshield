@@ -195,7 +195,7 @@ If you're having trouble getting things to work after installing the plugin, her
 15. If have checked all of these, and still can't quite get it working, please submit a support request at the [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 = Updates / Documentation =
-For updates and documentation, visit the [homepage of the WP-SpamShield Comment Spam Plugin for WordPress](http://www.redsandmarketing.com/plugins/wp-spamshield/).
+For updates and documentation, visit the [WP-SpamShield homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/).
 
 = WordPress Security Note =
 As with any WordPress plugin, for security reasons, you should only download plugins from the author's site and from official WordPress repositories. When other sites host a plugin that is developed by someone else, they may inject code into that could compromise the security of your blog. We cannot endorse a version of this that you may have downloaded from another site. If you have downloaded the "WP-SpamShield" plugin from another site, please download the current release from the from the [official WP-SpamShield page on WordPress.org](http://wordpress.org/extend/plugins/wp-spamshield/).
