@@ -33,7 +33,7 @@ License: GPLv2
 My use of the end curly braces "}" is a little funky in that I indent them, I know. IMO it's easier to debug. Just know that it's on purpose even though it's not standard. One of my programming quirks, and just how I roll. :)
 */
 
-define( 'WPSS_VERSION', '1.0.0.1' );
+define( 'WPSS_VERSION', '1.0.0.2' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
 	define( 'WPSS_SITE_URL', untrailingslashit( site_url() ) ); // http://example.com
