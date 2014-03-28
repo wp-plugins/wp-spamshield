@@ -1,7 +1,7 @@
 === WP-SpamShield Anti-Spam ===
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
-Tags: spam, antispam, anti-spam, comments, comment, wp-spamshield, plugin, security, javascript, contact, form, wpmu
+Tags: spam, anti-spam, comments, comment, wp-spamshield, plugin, security, javascript, contact, form, contact form, multisite
 Requires at least: 3.0
 Tested up to: 3.9
 Stable tag: trunk
@@ -33,11 +33,11 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 9. Easy to install - truly plug and play. Just upload and activate. (Installation Status on the plugin admin page to let you know if plugin is installed correctly.)
 10. The beauty of this plugin is the methods of blocking spam. It takes a different approach than most and stops spam at the door.
 11. Extremely low overhead and won't slow down your blog (very light database access), unlike some other anti-spam plugins.
-12. Display your blocked spam stats on your blog.
-13. Helps keep your database slimmer and more efficient by keeping the spam out of it altogether.
-14. Works in WordPress MU as well.
-15. Widgets and shortcodes for graphic counters to display spam stats, multiple sizes and options.
-16. Enhanced Comment Blacklist option. Instead of just sending comments to moderation as with WordPress's default Comment Blacklist functionality, with this turned on, anything that matchs a string in the blacklist will be **completely blocked**. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.
+12. Compatible with popular cache plugins, including WP Super Cache and others. Not all anti-spam plugins can say that.
+13. Display your blocked spam stats on your blog. Widgets and shortcodes for graphic counters to display spam stats, multiple sizes and options.
+14. Helps keep your database slimmer and more efficient by keeping the spam out of it altogether.
+15. Works in WordPress Multisite as well.
+16. Enhanced Comment Blacklist option. Instead of just sending comments to moderation as with WordPress's default Comment Blacklist functionality, with this turned on, anything that matches a string in the blacklist will be **completely blocked**. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.
 17. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked comments and contact form submissions for 7 days, then turns off automatically. If you want to see what's been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
 18. No cost, no hidden fees. **Free** for **both Commercial and Personal** use.
 
@@ -139,6 +139,10 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+Version 1.0.1.0, released 03/27/14
+
+* Improved compatibility with popular caching plugins.
 
 Version 1.0.0.0, released 03/10/14 - Over 20 improvements from its predecessor WP-SpamFree...including:
 

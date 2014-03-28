@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.0.0.2
+Version: 1.0.1.0
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -33,8 +33,9 @@ License: GPLv2
 My use of the end curly braces "}" is a little funky in that I indent them, I know. IMO it's easier to debug. Just know that it's on purpose even though it's not standard. One of my programming quirks, and just how I roll. :)
 */
 
-define( 'WPSS_VERSION', '1.0.0.2' );
+define( 'WPSS_VERSION', '1.0.1.0' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
+define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
 	define( 'WPSS_SITE_URL', untrailingslashit( site_url() ) ); // http://example.com
 	}
@@ -97,6 +98,23 @@ if ( ! defined( 'WPSS_SERVER_ADDR' ) ) {
 	}
 if ( ! defined( 'WPSS_SERVER_NAME' ) ) {
 	define( 'WPSS_SERVER_NAME', $_SERVER['SERVER_NAME'] ); // example.com
+	}
+// INCLUDE POPULAR CACHE PLUGINS HERE
+$popular_cache_plugins_default = array (
+	'w3-total-cache',
+	'wp-super-cache',
+	'db-cache-reloaded',
+	'db-cache-reloaded-fix',
+	'hyper-cache',
+	'hyper-cache-extended',
+	'wp-fast-cache',
+	'wp-fastest-cache',
+	'quick-cache',
+	'lite-cache',
+	);
+if ( ! defined( 'WPSS_POPULAR_CACHE_PLUGINS' ) ) {
+	// popular cache plugins - convert from array to constant
+	define( 'WPSS_POPULAR_CACHE_PLUGINS', serialize( $popular_cache_plugins_default ) );
 	}
 // SET THE DEFAULT CONSTANT VALUES HERE:
 $spamshield_default = array (
@@ -290,6 +308,70 @@ function spamshield_date_diff($start, $end) {
 		}
 	$extra_days = round($extra_days);
 	return round($diff / 86400)+$extra_days;
+	}
+
+function spamshield_check_cache_status() {
+	// TEST FOR CACHING
+	$wpss_active_plugins = get_option( 'active_plugins' );
+	$wpss_active_plugins_ser = serialize( $wpss_active_plugins );
+	if ( ! defined( 'WP_CACHE' ) || ( ( defined( 'WP_CACHE' ) && constant( 'WP_CACHE' ) == false ) ) ) {
+		$wpss_caching_status = 'INACTIVE';
+		}
+	elseif ( defined( 'WP_CACHE' ) && constant( 'WP_CACHE' ) == true ) {
+		$wpss_caching_status = 'ACTIVE';
+		}
+	if ( ! defined( 'ENABLE_CACHE' ) || ( ( defined( 'ENABLE_CACHE' ) && constant( 'ENABLE_CACHE' ) == false ) ) ) {
+		$wpss_caching_enabled_status = 'INACTIVE';
+		}
+	elseif ( defined( 'ENABLE_CACHE' ) && constant( 'ENABLE_CACHE' ) == true ) {
+		$wpss_caching_enabled_status = 'ACTIVE';
+		}
+	// Check if any popular cache plugins are active
+	$popular_cache_plugins = unserialize(WPSS_POPULAR_CACHE_PLUGINS);
+	$popular_cache_plugins_array_count = count($popular_cache_plugins);
+	$wpss_active_plugins_array_count = count($wpss_active_plugins);
+	$popular_cache_plugins_active = array();
+	$popular_cache_plugins_temp = 0;
+	$i = 0;
+	while ($i < $popular_cache_plugins_array_count) {
+		//$ii = 0;
+		//while ($ii < $wpss_active_plugins_array_count) {
+		//	if ( eregi( $popular_cache_plugins[$i], $wpss_active_plugins[$ii] ) ) {
+		//		$popular_cache_plugins_temp = 1;
+		//		$popular_cache_plugins_active[] = $popular_cache_plugins[$i];
+		//		}
+		//	$ii++;
+		//	}
+		if ( eregi( $popular_cache_plugins[$i], $wpss_active_plugins_ser ) ) {
+			$popular_cache_plugins_temp = 1;
+			$popular_cache_plugins_active[] = $popular_cache_plugins[$i];
+			}
+		$i++;
+		}
+	if ( $popular_cache_plugins_temp == 1 ) {
+		$wpss_caching_plugin_status = 'ACTIVE';
+		}
+	else {
+		$wpss_caching_plugin_status = 'INACTIVE';
+		}
+	if ( $wpss_caching_status == 'ACTIVE' || $wpss_caching_enabled_status == 'ACTIVE' || $wpss_caching_plugin_status == 'ACTIVE' ) {
+		// This is the overall test if caching is active.
+		$wpss_cache_check_status = 'ACTIVE';
+		}
+	else {
+		$wpss_cache_check_status = 'INACTIVE';
+		}
+	$wpss_caching_plugins_active = serialize( $popular_cache_plugins_active );
+	$wpss_all_plugins_active = serialize( $wpss_active_plugins );
+	$wpss_cache_check = array(
+		'cache_check_status'		=> $wpss_cache_check_status,
+		'caching_status'			=> $wpss_caching_status,
+		'caching_enabled_status'	=> $wpss_caching_enabled_status,
+		'caching_plugin_status'		=> $wpss_caching_plugin_status,
+		'caching_plugins_active'	=> $wpss_caching_plugins_active,
+		'all_plugins_active'		=> $wpss_all_plugins_active,
+		);
+	return $wpss_cache_check;
 	}
 
 function spamshield_count() {
@@ -864,13 +946,9 @@ function spamshield_log_data($wpss_log_comment_data_array,$wpss_log_comment_data
 	}
 
 function spamshield_content_addendum($content) {
-
 	if ( !is_feed() && !is_page() && !is_home() ) {	
-
 		$spamshield_options = get_option('spamshield_options');
-	
 		if ( ($_COOKIE[$spamshield_options['cookie_validation_name']] != $spamshield_options['cookie_validation_key'] && $spamshield_options['use_alt_cookie_method'] ) || $spamshield_options['use_alt_cookie_method_only'] ) {
-		
 			if ( !eregi( 'opera', $_SERVER['HTTP_USER_AGENT'] ) ) { 
 				$wpss_img_p_disp = ' style="clear:both;display:none;"';
 				$wpss_img_disp = 'display:none;';
@@ -879,11 +957,7 @@ function spamshield_content_addendum($content) {
 				$wpss_img_p_disp = ' style="clear:both;"';
 				$wpss_img_disp = '';
 				}	
-			
-			//Was in IMG, but since this is immediately before that code is executed, placed here - may be problem with caching though
-			//If there ends up being caching issues, check here
 			update_option( 'ak_count_pre', get_option('akismet_spam_count') );
-
 			$content .=  '<span'.$wpss_img_p_disp.'><img src="'.WPSS_PLUGIN_IMG_URL.'/img.php" width="0" height="0" alt="" style="border-style:none;width:0px;height:0px;'.$wpss_img_disp.'" /></span>';
 			}	
 		}
@@ -926,7 +1000,6 @@ function spamshield_comment_form() {
 		}
 	// If need to add anything else to comment area, start here
 	
-	//May have issues with caching - if have issues, check here
 	echo '<input type="hidden" name="'.$FormValidationFieldJS.'" value="'.$FormValidationKeyJS .'" />'."\n";
 	}
 
@@ -955,7 +1028,7 @@ function spamshield_contact_form($content,$shortcode_check) {
 		$spamshield_options				= get_option('spamshield_options');
 		$CookieValidationName  			= $spamshield_options['cookie_validation_name'];
 		$CookieValidationKey 			= $spamshield_options['cookie_validation_key'];
-		$WPCommentValidationJS 			= $_COOKIE[$CookieValidationName];
+		$WPContactValidationJS 			= $_COOKIE[$CookieValidationName];
 		$FormIncludeWebsite				= $spamshield_options['form_include_website'];
 		$FormRequireWebsite				= $spamshield_options['form_require_website'];
 		$FormIncludePhone				= $spamshield_options['form_include_phone'];
@@ -987,21 +1060,18 @@ function spamshield_contact_form($content,$shortcode_check) {
 		if ( $FormMessageWidth < 40 ) {
 			$FormMessageWidth = 40;
 			}
-			
 		if ( $FormMessageHeight < 5 ) {
 			$FormMessageHeight = 5;
 			}
 		else if ( !$FormMessageHeight ) {
 			$FormMessageHeight = 10;
 			}
-			
 		if ( $FormMessageMinLength < 15 ) {
 			$FormMessageMinLength = 15;
 			}
 		else if ( !$FormMessageMinLength ) {
 			$FormMessageMinLength = 25;
 			}
-
 		if ( $_GET['form'] == 'response' ) {
 		
 			// PROCESSING CONTACT FORM - BEGIN
@@ -1084,7 +1154,7 @@ function spamshield_contact_form($content,$shortcode_check) {
 			$ReverseDNS = sanitize_text_field($ReverseDNS);
 			$wpss_contact_message_lc = strtolower( $wpss_contact_message );
 			
-			if ( $WPCommentValidationJS != $CookieValidationKey ) { // Check for Cookie
+			if ( $WPContactValidationJS != $CookieValidationKey ) { // Check for Cookie
 				$JSCookieFail=1;
 				$spamshield_error_code .= ' CONTACTFORM-COOKIEFAIL';
 				}
@@ -1460,9 +1530,6 @@ function spamshield_contact_form($content,$shortcode_check) {
 					$wpss_img_p_disp = ' style="clear:both;"';
 					$wpss_img_disp = ''; 
 					}	
-
-				//Was in IMG, but since this is immediately before that code is executed, placed here - may be problem with caching though
-				//If caching issues, check here
 				update_option( 'ak_count_pre', get_option('akismet_spam_count') );
 
 				$spamshield_contact_form_content .=  '<span'.$wpss_img_p_disp.'><img src="'.WPSS_PLUGIN_IMG_URL.'/img.php" width="0" height="0" alt="" style="border-style:none;width:0px;height:0px;'.$wpss_img_disp.'" /></span>';
@@ -1660,7 +1727,7 @@ function spamshield_check_comment_type($commentdata) {
 				$FormValidationFieldJS 		= $spamshield_options['form_validation_field_js'];
 				$FormValidationKeyJS 		= $spamshield_options['form_validation_key_js'];
 				$WPCommentValidationJS 		= $_COOKIE[$CookieValidationName];
-				if( $_COOKIE[$spamshield_options['cookie_validation_name']] != $spamshield_options['cookie_validation_key'] ) {
+				if( $_COOKIE[$CookieValidationName] != $CookieValidationKey ) {
 					$spamshield_error_code = 'COOKIE';
 					spamshield_log_data( $commentdata, $spamshield_error_code );
 					}
@@ -1694,10 +1761,13 @@ function spamshield_allowed_post($approved) {
 	$WPCommentValidationJS 		= $_COOKIE[$CookieValidationName];
 	$WPFormValidationPost 		= $_POST[$FormValidationFieldJS]; //Comments Post Verification
 	// if( $WPCommentValidationJS == $CookieValidationKey ) { // Comment allowed
-	// if( $_COOKIE[$spamshield_options['cookie_validation_name']] == $spamshield_options['cookie_validation_key'] ) { // Comment allowed
-	// May have issues with caching - if caching issues check here
-	if( $_COOKIE[$spamshield_options['cookie_validation_name']] == $spamshield_options['cookie_validation_key'] && $_POST[$spamshield_options['form_validation_field_js']] == $spamshield_options['form_validation_key_js'] ) { // Comment allowed
-
+	$wpss_cache_check 			= spamshield_check_cache_status();
+	$wpss_cache_check_status	= $wpss_cache_check['cache_check_status'];
+	if ( $_POST[$FormValidationFieldJS] == $FormValidationKeyJS || $wpss_cache_check_status == 'ACTIVE' ) {
+		$FormValidationFieldJSTest = 'PASS';
+		}
+	//if( $_COOKIE[$CookieValidationName] == $CookieValidationKey && $_POST[$FormValidationFieldJS] == $FormValidationKeyJS ) { // Comment allowed
+	if( $_COOKIE[$CookieValidationName] == $CookieValidationKey && $FormValidationFieldJSTest == 'PASS' ) { // Comment allowed
 		// Clear Key Values and Update
 		$GetCurrentTime = time();
 		$ResetIntervalHours = 24; // Reset interval in hours
@@ -1874,7 +1944,7 @@ function spamshield_content_filter($commentdata) {
 	$spamshield_options = get_option('spamshield_options');
 	
 	// CONTENT FILTERING - BEGIN
-	$CurrentWordPressVersionMaxCheck = '4.0';
+	//$CurrentWordPressVersionMaxCheck = '4.0'; //Changed to WPSS_MAX_WP_VERSION in 1.0.1.0
 	
 	$commentdata_comment_author						= $commentdata['comment_author'];
 	$commentdata_comment_author_lc					= strtolower($commentdata_comment_author);
@@ -5262,14 +5332,18 @@ function spamshield_content_filter($commentdata) {
 		// Check History of WordPress User-Agents and Keep up to Date
 		if ( eregi( 'Incutio XML-RPC -- WordPress/', $commentdata_user_agent_lc ) ) {
 			$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc );
-			if ( $commentdata_user_agent_lc_explode[1] > $CurrentWordPressVersionMaxCheck && $commentdata_user_agent_lc_explode[1] !='MU' ) {
+			// Changed to version_compare in 1.0.1.0
+			//if ( $commentdata_user_agent_lc_explode[1] > WPSS_MAX_WP_VERSION && $commentdata_user_agent_lc_explode[1] !='MU' ) {
+			if ( version_compare( $commentdata_user_agent_lc_explode[1], WPSS_MAX_WP_VERSION, '>' ) && $commentdata_user_agent_lc_explode[1] !='MU' ) {
 				if ( !$content_filter_status ) { $content_filter_status = '1'; }
 				$spamshield_error_code .= ' T1001';
 				}
 			}
 		if ( eregi( 'The Incutio XML-RPC PHP Library -- WordPress/', $commentdata_user_agent_lc ) ) {
 			$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc );
-			if ( $commentdata_user_agent_lc_explode[1] > $CurrentWordPressVersionMaxCheck && $commentdata_user_agent_lc_explode[1] !='MU' ) {
+			// Changed to version_compare in 1.0.1.0
+			//if ( $commentdata_user_agent_lc_explode[1] > WPSS_MAX_WP_VERSION && $commentdata_user_agent_lc_explode[1] !='MU' ) {
+			if ( version_compare( $commentdata_user_agent_lc_explode[1], WPSS_MAX_WP_VERSION, '>' ) && $commentdata_user_agent_lc_explode[1] !='MU' ) {
 				if ( !$content_filter_status ) { $content_filter_status = '1'; }
 				$spamshield_error_code .= ' T1002';
 				}
