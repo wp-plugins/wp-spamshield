@@ -1,5 +1,18 @@
 <?php
-// 1.0.0.0
+// 1.0.1.1
+
+// Security Sanitization - BEGIN
+$id='';
+if ( $_GET || preg_match ( "/\?/", $_SERVER['REQUEST_URI'] ) ) {
+	header('HTTP/1.1 403 Forbidden');
+	die('ERROR: This file will not function with a query string. Remove the query string from the URL and try again.');
+	}
+if ( $_POST || $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+	header('HTTP/1.1 405 Method Not Allowed');
+	die('ERROR: This file does not accept POST requests.');
+	}
+// Security Sanitization - END
+
 function wpss_microtime_js() {
 	$mtime = microtime();
 	$mtime = explode(' ',$mtime); 

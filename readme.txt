@@ -1,7 +1,7 @@
 === WP-SpamShield Anti-Spam ===
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
-Tags: spam, anti-spam, comments, comment, wp-spamshield, plugin, security, javascript, contact, form, contact form, multisite
+Tags: anti-spam, comment, comments, contact, contact form, form, javascript, multisite, plugin, security, spam, wp-spamshield
 Requires at least: 3.0
 Tested up to: 3.9
 Stable tag: trunk
@@ -140,7 +140,13 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
-Version 1.0.1.0, released 03/27/14
+Version 1.0.1.1, released 04/03/14
+
+* Improved spam algorithm.
+* Improved security.
+* Code improvements and minor bug fixes.
+
+Version 1.0.1.0, released 03/26/14
 
 * Improved compatibility with popular caching plugins.
 

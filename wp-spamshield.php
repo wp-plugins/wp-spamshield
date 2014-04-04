@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.0.1.0
+Version: 1.0.1.1
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -33,7 +33,7 @@ License: GPLv2
 My use of the end curly braces "}" is a little funky in that I indent them, I know. IMO it's easier to debug. Just know that it's on purpose even though it's not standard. One of my programming quirks, and just how I roll. :)
 */
 
-define( 'WPSS_VERSION', '1.0.1.0' );
+define( 'WPSS_VERSION', '1.0.1.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -126,7 +126,7 @@ $spamshield_default = array (
 	'wp_super_cache' 						=> 0,
 	'block_all_trackbacks' 					=> 0,
 	'block_all_pingbacks' 					=> 0,
-	'use_alt_cookie_method'					=> 1,
+	'use_alt_cookie_method'					=> 0,
 	'use_alt_cookie_method_only'			=> 0,
 	'use_captcha_backup' 					=> 0,
 	'use_trackback_verification'		 	=> 0,
@@ -1181,6 +1181,10 @@ function spamshield_contact_form($content,$shortcode_check) {
 			$contact_form_spam_9_limit = 0;
 			$contact_form_spam_10_count = substr_count( $wpss_contact_message_lc, 'outsource some seo business');
 			$contact_form_spam_10_limit = 0;
+			$contact_form_spam_11_count = substr_count( $wpss_contact_message_lc, 'hit4hit.org');
+			$contact_form_spam_11_limit = 1;
+			$contact_form_spam_12_count = substr_count( $wpss_contact_message_lc, 'traffic exchange');
+			$contact_form_spam_12_limit = 1;
 			
 			$wpss_contact_subject_lc = strtolower( $wpss_contact_subject );
 			$contact_form_spam_subj_1_count = substr_count( $wpss_contact_subject_lc, 'link request');
@@ -1209,8 +1213,10 @@ function spamshield_contact_form($content,$shortcode_check) {
 			$contact_form_spam_website_2_limit = 0;
 			$contact_form_spam_website_3_count = substr_count( $wpss_contact_website_lc, 'semmiami.');
 			$contact_form_spam_website_3_limit = 0;
+			$contact_form_spam_website_4_count = substr_count( $wpss_contact_website_lc, 'hit4hit.org');
+			$contact_form_spam_website_4_limit = 0;
 			
-			$contact_form_spam_term_total = $contact_form_spam_1_count + $contact_form_spam_2_count + $contact_form_spam_3_count + $contact_form_spam_4_count + $contact_form_spam_7_count + $contact_form_spam_10_count + $contact_form_spam_subj_1_count + $contact_form_spam_subj_2_count + $contact_form_spam_subj_3_count + $contact_form_spam_subj_4_count + $contact_form_spam_subj_5_count;
+			$contact_form_spam_term_total = $contact_form_spam_1_count + $contact_form_spam_2_count + $contact_form_spam_3_count + $contact_form_spam_4_count + $contact_form_spam_7_count + $contact_form_spam_10_count + $contact_form_spam_11_count + $contact_form_spam_12_count + $contact_form_spam_subj_1_count + $contact_form_spam_subj_2_count + $contact_form_spam_subj_3_count + $contact_form_spam_subj_4_count + $contact_form_spam_subj_5_count;
 			$contact_form_spam_term_total_limit = 15;
 			
 			if ( eregi( "\.in$", $ReverseDNS ) || eregi( "^1.22.2(19|20|23).", $ip ) ) {
@@ -1221,7 +1227,7 @@ function spamshield_contact_form($content,$shortcode_check) {
 				$spamshield_error_code .= ' CONTACTFORM-MESSAGESPAM1';
 				$contact_response_status_message_addendum .= '&bull; Message appears to be spam. Please note that link requests, link exchange requests, and SEO outsourcing requests will be automatically deleted, and are not an acceptable use of this contact form.<br />&nbsp;<br />';
 				}
-			else if ( $contact_form_spam_subj_1_count > $contact_form_spam_subj_1_limit || $contact_form_spam_subj_2_count > $contact_form_spam_subj_2_limit || $contact_form_spam_subj_3_count > $contact_form_spam_subj_3_limit || $contact_form_spam_subj_4_count > $contact_form_spam_subj_4_limit || $contact_form_spam_subj_5_count > $contact_form_spam_subj_5_limit || $contact_form_spam_8_count > $contact_form_spam_8_limit || $contact_form_spam_9_count > $contact_form_spam_9_limit || $contact_form_spam_email_1_count > $contact_form_spam_email_1_limit || $contact_form_spam_email_2_count > $contact_form_spam_email_2_limit || $contact_form_spam_email_3_count > $contact_form_spam_email_3_limit || $contact_form_spam_website_1_count > $contact_form_spam_website_1_limit || $contact_form_spam_website_2_count > $contact_form_spam_website_2_limit || $contact_form_spam_website_3_count > $contact_form_spam_website_3_limit ) {
+			else if ( $contact_form_spam_subj_1_count > $contact_form_spam_subj_1_limit || $contact_form_spam_subj_2_count > $contact_form_spam_subj_2_limit || $contact_form_spam_subj_3_count > $contact_form_spam_subj_3_limit || $contact_form_spam_subj_4_count > $contact_form_spam_subj_4_limit || $contact_form_spam_subj_5_count > $contact_form_spam_subj_5_limit || $contact_form_spam_8_count > $contact_form_spam_8_limit || $contact_form_spam_9_count > $contact_form_spam_9_limit || $contact_form_spam_11_count > $contact_form_spam_11_limit || $contact_form_spam_12_count > $contact_form_spam_12_limit || $contact_form_spam_email_1_count > $contact_form_spam_email_1_limit || $contact_form_spam_email_2_count > $contact_form_spam_email_2_limit || $contact_form_spam_email_3_count > $contact_form_spam_email_3_limit || $contact_form_spam_website_1_count > $contact_form_spam_website_1_limit || $contact_form_spam_website_2_count > $contact_form_spam_website_2_limit || $contact_form_spam_website_3_count > $contact_form_spam_website_3_limit || $contact_form_spam_website_4_count > $contact_form_spam_website_4_limit ) {
 				$MessageSpam=1;
 				$spamshield_error_code .= ' CONTACTFORM-MESSAGESPAM2';
 				$contact_response_status_message_addendum .= '&bull; Message appears to be spam. Please note that link requests, link exchange requests, and SEO outsourcing requests will be automatically deleted, and are not an acceptable use of this contact form.<br />&nbsp;<br />';
@@ -4333,7 +4339,7 @@ function spamshield_content_filter($commentdata) {
 	$filter_20060C_count = substr_count($commentdata_comment_content_lc, $filter_20060_domain_http) + substr_count($commentdata_comment_content_lc, $filter_20060_domain_dot);
 	$filter_20060_limit = 1;
 	$filter_20060_trackback_limit = 1;
-	// Filter 20061: Number of occurrences of 'ranksindia.net' in comment_author_url / comment_content
+	// Filter 20061: Number of occurrences of 'ranksdigitalmedia.com' in comment_author_url / comment_content
 	$filter_20061_domain = 'ranksdigitalmedia.com'; // SEO OUTSOURCE SPAMMERS
 	$filter_20061_domain_http = 'http://'.$filter_20061_domain;
 	$filter_20061_domain_dot = '.'.$filter_20061_domain;
@@ -4341,7 +4347,7 @@ function spamshield_content_filter($commentdata) {
 	$filter_20061C_count = substr_count($commentdata_comment_content_lc, $filter_20061_domain_http) + substr_count($commentdata_comment_content_lc, $filter_20061_domain_dot);
 	$filter_20061_limit = 1;
 	$filter_20061_trackback_limit = 1;
-	// Filter 20062: Number of occurrences of 'ranksindia.net' in comment_author_url / comment_content
+	// Filter 20062: Number of occurrences of 'semmiami.com' in comment_author_url / comment_content
 	$filter_20062_domain = 'semmiami.com'; // SEO OUTSOURCE SPAMMERS
 	$filter_20062_domain_http = 'http://'.$filter_20062_domain;
 	$filter_20062_domain_dot = '.'.$filter_20062_domain;
@@ -4349,7 +4355,7 @@ function spamshield_content_filter($commentdata) {
 	$filter_20062C_count = substr_count($commentdata_comment_content_lc, $filter_20062_domain_http) + substr_count($commentdata_comment_content_lc, $filter_20062_domain_dot);
 	$filter_20062_limit = 1;
 	$filter_20062_trackback_limit = 1;
-	// Filter 20063: Number of occurrences of 'ranksindia.net' in comment_author_url / comment_content
+	// Filter 20063: Number of occurrences of 'tpbunblocked.com' in comment_author_url / comment_content
 	$filter_20063_domain = 'tpbunblocked.com'; // SPAMMERS
 	$filter_20063_domain_http = 'http://'.$filter_20063_domain;
 	$filter_20063_domain_dot = '.'.$filter_20063_domain;
@@ -4357,6 +4363,14 @@ function spamshield_content_filter($commentdata) {
 	$filter_20063C_count = substr_count($commentdata_comment_content_lc, $filter_20063_domain_http) + substr_count($commentdata_comment_content_lc, $filter_20063_domain_dot);
 	$filter_20063_limit = 1;
 	$filter_20063_trackback_limit = 1;
+	// Filter 20064: Number of occurrences of 'hit4hit.org' in comment_author_url / comment_content
+	$filter_20064_domain = 'hit4hit.org'; // SPAMMERS
+	$filter_20064_domain_http = 'http://'.$filter_20064_domain;
+	$filter_20064_domain_dot = '.'.$filter_20064_domain;
+	$filter_20064_count = substr_count($commentdata_comment_author_url_lc, $filter_20064_domain_http) + substr_count($commentdata_comment_author_url_lc, $filter_20064_domain_dot);
+	$filter_20064C_count = substr_count($commentdata_comment_content_lc, $filter_20064_domain_http) + substr_count($commentdata_comment_content_lc, $filter_20064_domain_dot);
+	$filter_20064_limit = 1;
+	$filter_20064_trackback_limit = 1;
 
 
 
@@ -4368,12 +4382,12 @@ function spamshield_content_filter($commentdata) {
 	
 	$WPCommentsPostURL = $commentdata_blog_lc.'/wp-comments-post.php';
 
-	$Domains = array('.aero','.arpa','.asia','.biz','.cat','.com','.coop','.edu','.gov','.info','.int','.jobs','.mil','.mobi','.museum','.name','.net','.org','.pro','.tel','.travel','.ac','.ad','.ae','.af','.ai','.al','.am','.an','.ao','.aq','.ar','.as','.at','.au','.aw','.ax','.az','.ba','.bb','.bd','.be','.bf','.bg','.bh','.bi','.bj','.bl','.bm','.bn','.bo','.br','.bs','.bt','.bv','.bw','.by','.bz','.ca','.cc','.cf','.cg','.ch','.ci','.ck','.cl','.cm','.cn','.co','.cr','.cu','.cv','.cx','.cy','.cz','.de','.dj','.dk','.dm','.do','.dz','.ec','.ee','.eg','.eh','.er','.es','.et','.eu','.fi','.fj','.fk','.fm','.fo','.fr','.ga','.gb','.gd','.ge','.gf','.gg','.gh','.gi','.gl','.gm','.gn','.gp','.gq','.gr','.gs','.gt','.gu','.gw','.gy','.hk','.hm','.hn','.hr','.ht','.hu','.id','.ie','.il','.im','.in','.io','.iq','.ir','.is','.it','.je','.jm','.jo','.jp','.ke','.kg','.kh','.ki','.km','.km','.kp','.kr','.kw','.ky','.kz','.la','.lb','.lc','.li','.lk','.lr','.ls','.lt','.lu','.lv','.ly','.ma','.mc','.mc','.md','.me','.mf','.mg','.mh','.mk','.ml','.mm','.mn','.mo','.mq','.mr','.ms','.mt','.mu','.mv','.mw','.mx','.my','.mz','.na','.nc','.ne','.nf','.ng','.ni','.nl','.no','.np','.nr','.nu','.nz','.om','.pa','.pe','.pf','.pg','.ph','.pk','.pl','.pm','.pn','.pr','.ps','.pt','.pw','.py','.qa','.re','.ro','.rs','.ru','.rw','.sa','.sb','.sc','.sd','.se','.sg','.sh','.si','.sj','.sk','.sl','.sm','.sn','.so','.sr','.st','.su','.sv','.sy','.sz','.tc','.td','.tf','.tg','.th','.tj','.tk','.tl','.tm','.tn','.to','.tp','.tr','.tt','.tv','.tw','.tz','.ua','.ug','.uk','.um','.us','.uy','.uz','.va','.vc','.ve','.vg','.vi','.vn','.vu','.wf','.ws','.ye','.yt','.yu','.za','.zm','.zw');
+	$Domains = array('.ac','.academy','.actor','.ad','.ae','.aero','.af','.ag','.agency','.ai','.al','.am','.an','.ao','.aq','.ar','.archi','.arpa','.as','.asia','.at','.au','.aw','.ax','.axa','.az','.ba','.bar','.bargains','.bb','.bd','.be','.berlin','.best','.bf','.bg','.bh','.bi','.bid','.bike','.biz','.bj','.bl','.black','.blue','.bm','.bn','.bo','.boutique','.bq','.br','.bs','.bt','.build','.builders','.buzz','.bv','.bw','.by','.bz','.ca','.cab','.camera','.camp','.cards','.careers','.cat','.catering','.cc','.cd','.center','.ceo','.cf','.cg','.ch','.cheap','.christmas','.ci','.ck','.cl','.cleaning','.clothing','.club','.cm','.cn','.co','.codes','.coffee','.cologne','.com','.community','.company','.computer','.construction','.contractors','.cooking','.cool','.coop','.country','.cr','.cruises','.cu','.cv','.cw','.cx','.cy','.cz','.dance','.dating','.de','.democrat','.diamonds','.directory','.dj','.dk','.dm','.do','.domains','.dz','.ec','.edu','.education','.ee','.eg','.eh','.email','.enterprises','.equipment','.er','.es','.estate','.et','.eu','.events','.expert','.exposed','.farm','.fi','.fish','.fishing','.fj','.fk','.flights','.florist','.fm','.fo','.foundation','.fr','.futbol','.ga','.gallery','.gb','.gd','.ge','.gf','.gg','.gh','.gi','.gift','.gl','.glass','.gm','.gn','.gov','.gp','.gq','.gr','.graphics','.gs','.gt','.gu','.guitars','.guru','.gw','.gy','.haus','.hk','.hm','.hn','.holdings','.holiday','.horse','.house','.hr','.ht','.hu','.id','.ie','.il','.im','.immobilien','.in','.industries','.info','.institute','.int','.international','.io','.iq','.ir','.is','.it','.je','.jetzt','.jm','.jo','.jobs','.jp','.kaufen','.ke','.kg','.kh','.ki','.kim','.kitchen','.kiwi','.km','.kn','.koeln','.kp','.kr','.kred','.kw','.ky','.kz','.la','.land','.lb','.lc','.li','.lighting','.limo','.link','.lk','.london','.lr','.ls','.lt','.lu','.luxury','.lv','.ly','.ma','.management','.mango','.marketing','.mc','.md','.me','.meet','.menu','.mf','.mg','.mh','.miami','.mil','.mk','.ml','.mm','.mn','.mo','.mobi','.moda','.moe','.monash','.mp','.mq','.mr','.ms','.mt','.mu','.museum','.mv','.mw','.mx','.my','.mz','.na','.nagoya','.name','.nc','.ne','.net','.neustar','.nf','.ng','.ni','.ninja','.nl','.no','.np','.nr','.nu','.nyc','.nz','.okinawa','.om','.onl','.org','.pa','.partners','.parts','.pe','.pf','.pg','.ph','.photo','.photography','.photos','.pics','.pink','.pk','.pl','.plumbing','.pm','.pn','.post','.pr','.pro','.productions','.properties','.ps','.pt','.pub','.pw','.py','.qa','.qpon','.re','.recipes','.red','.ren','.rentals','.repair','.report','.rest','.reviews','.rich','.ro','.rodeo','.rs','.ru','.ruhr','.rw','.ryukyu','.sa','.saarland','.sb','.sc','.sd','.se','.sexy','.sg','.sh','.shiksha','.shoes','.si','.singles','.sj','.sk','.sl','.sm','.sn','.so','.social','.sohu','.solar','.solutions','.sr','.ss','.st','.su','.supplies','.supply','.support','.sv','.sx','.sy','.systems','.sz','.tattoo','.tc','.td','.technology','.tel','.tf','.tg','.th','.tienda','.tips','.tj','.tk','.tl','.tm','.tn','.to','.today','.tokyo','.tools','.tp','.tr','.trade','.training','.travel','.tt','.tv','.tw','.tz','.ua','.ug','.uk','.um','.uno','.us','.uy','.uz','.va','.vacations','.vc','.ve','.vegas','.ventures','.vg','.vi','.viajes','.villas','.vision','.vn','.vodka','.vote','.voting','.voto','.voyage','.vu','.wang','.watch','.webcam','.wed','.wf','.wien','.wiki','.works','.ws','.xxx','.xyz','.ye','.yokohama','.yt','.za','.zm','.zone','.zw');
 	// from http://www.iana.org/domains/root/db/
 	$ConversionSeparator = '-';
 	$ConversionSeparators = array('-','_');
 	$FilterElementsPrefix = array('http://www.','http://','https://www.','https://');
-	$FilterElementsPage = array('.php','.asp','.aspx','.cfm','.jsp','.html','.htm','.shtml');
+	$FilterElementsPage = array('.php','.asp','.aspx','.mspx','.cfm','.jsp','.shtml','.html','.htm','.pl','.py');
 	$FilterElementsNum = array('1','2','3','4','5','6','7','8','9','0');
 	$FilterElementsSlash = array('////','///','//');
 	$TempPhrase1 = str_replace($FilterElementsPrefix,'',$commentdata_comment_author_url_lc);
@@ -6073,6 +6087,14 @@ function spamshield_content_filter($commentdata) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 20063C';
 		}
+	if ( $filter_20064_count >= $filter_20064_limit ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 20064A';
+		}
+	if ( $filter_20064C_count >= $filter_20064_limit ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 20064C';
+		}
 
 
 	// Comment Author Tests
@@ -7203,6 +7225,19 @@ if (!class_exists('wpSpamShield')) {
 				else {
 					$CommentLoggingStartDate = 0;
 					}
+				// Validate Request Values
+				$valid_req_spamshield_options = $_REQUEST;
+				if ( $_REQUEST['block_all_trackbacks'] 			== 'on' )	{ $valid_req_spamshield_options['block_all_trackbacks'] 		= 1; }
+				if ( $_REQUEST['block_all_pingbacks'] 			== 'on' ) 	{ $valid_req_spamshield_options['block_all_pingbacks'] 			= 1; }
+				if ( $_REQUEST['use_alt_cookie_method']			== 'on' ) 	{ $valid_req_spamshield_options['use_alt_cookie_method'] 		= 1; }
+				if ( $_REQUEST['use_alt_cookie_method_only'] 	== 'on' ) 	{ $valid_req_spamshield_options['use_alt_cookie_method_only'] 	= 1; }
+				if ( $_REQUEST['comment_logging'] 				== 'on' ) 	{ $valid_req_spamshield_options['comment_logging'] 				= 1; }
+				if ( $_REQUEST['comment_logging_all'] 			== 'on' ) 	{ $valid_req_spamshield_options['comment_logging_all'] 			= 1; }
+				if ( $_REQUEST['enhanced_comment_blacklist'] 	== 'on' ) 	{ $valid_req_spamshield_options['enhanced_comment_blacklist'] 	= 1; }
+				if ( $_REQUEST['allow_proxy_users'] 			== 'on' ) 	{ $valid_req_spamshield_options['allow_proxy_users'] 			= 1; }
+				if ( $_REQUEST['hide_extra_data'] 				== 'on' ) 	{ $valid_req_spamshield_options['hide_extra_data'] 				= 1; }
+				if ( $_REQUEST['promote_plugin_link'] 			== 'on' ) 	{ $valid_req_spamshield_options['promote_plugin_link'] 			= 1; }
+				// Update Values
 				$spamshield_options_update = array (
 						'cookie_validation_name' 				=> $spamshield_options['cookie_validation_name'],
 						'cookie_validation_key' 				=> $spamshield_options['cookie_validation_key'],
@@ -7215,18 +7250,18 @@ if (!class_exists('wpSpamShield')) {
 						'last_key_update'						=> $spamshield_options['last_key_update'],
 						'wp_cache' 								=> $spamshield_options['wp_cache'],
 						'wp_super_cache' 						=> $spamshield_options['wp_super_cache'],
-						'block_all_trackbacks' 					=> $_REQUEST['block_all_trackbacks'],
-						'block_all_pingbacks' 					=> $_REQUEST['block_all_pingbacks'],
-						'use_alt_cookie_method' 				=> $_REQUEST['use_alt_cookie_method'],
-						'use_alt_cookie_method_only' 			=> $_REQUEST['use_alt_cookie_method_only'],
+						'block_all_trackbacks' 					=> $valid_req_spamshield_options['block_all_trackbacks'],
+						'block_all_pingbacks' 					=> $valid_req_spamshield_options['block_all_pingbacks'],
+						'use_alt_cookie_method' 				=> $valid_req_spamshield_options['use_alt_cookie_method'],
+						'use_alt_cookie_method_only' 			=> $valid_req_spamshield_options['use_alt_cookie_method_only'],
 						'use_captcha_backup' 					=> $spamshield_options['use_captcha_backup'],
 						'use_trackback_verification' 			=> $spamshield_options['use_trackback_verification'],
-						'comment_logging'						=> $_REQUEST['comment_logging'],
+						'comment_logging'						=> $valid_req_spamshield_options['comment_logging'],
 						'comment_logging_start_date'			=> $CommentLoggingStartDate,
-						'comment_logging_all'					=> $_REQUEST['comment_logging_all'],
-						'enhanced_comment_blacklist'			=> $_REQUEST['enhanced_comment_blacklist'],
-						'allow_proxy_users'						=> $_REQUEST['allow_proxy_users'],
-						'hide_extra_data'						=> $_REQUEST['hide_extra_data'],
+						'comment_logging_all'					=> $valid_req_spamshield_options['comment_logging_all'],
+						'enhanced_comment_blacklist'			=> $valid_req_spamshield_options['enhanced_comment_blacklist'],
+						'allow_proxy_users'						=> $valid_req_spamshield_options['allow_proxy_users'],
+						'hide_extra_data'						=> $valid_req_spamshield_options['hide_extra_data'],
 						'form_include_website' 					=> $spamshield_options['form_include_website'],
 						'form_require_website' 					=> $spamshield_options['form_require_website'],
 						'form_include_phone' 					=> $spamshield_options['form_include_phone'],
@@ -7252,7 +7287,7 @@ if (!class_exists('wpSpamShield')) {
 						'form_message_recipient' 				=> $spamshield_options['form_message_recipient'],
 						'form_response_thank_you_message' 		=> $spamshield_options['form_response_thank_you_message'],
 						'form_include_user_meta' 				=> $spamshield_options['form_include_user_meta'],
-						'promote_plugin_link' 					=> $_REQUEST['promote_plugin_link'],
+						'promote_plugin_link' 					=> $valid_req_spamshield_options['promote_plugin_link'],
 						'install_date'							=> $InstallDate,
 						);
 				update_option('spamshield_options', $spamshield_options_update);
@@ -7261,6 +7296,9 @@ if (!class_exists('wpSpamShield')) {
 				update_option('blacklist_keys', $blacklist_keys_update);
 				}
 			if ( $_REQUEST['submitted_wpss_contact_options'] && current_user_can('manage_options') && check_admin_referer('wpss_contact_options_nonce') ) {
+				// Validate Request Values
+				$valid_req_spamshield_options = $_REQUEST;
+				if ( $_REQUEST['form_include_user_meta'] 		== 'on' ) 	{ $valid_req_spamshield_options['form_include_user_meta'] 		= 1; }
 				$spamshield_options_update = array (
 						'cookie_validation_name' 				=> $spamshield_options['cookie_validation_name'],
 						'cookie_validation_key' 				=> $spamshield_options['cookie_validation_key'],
@@ -7309,7 +7347,7 @@ if (!class_exists('wpSpamShield')) {
 						'form_message_min_length' 				=> trim(stripslashes($_REQUEST['form_message_min_length'])),
 						'form_message_recipient' 				=> trim(stripslashes($_REQUEST['form_message_recipient'])),
 						'form_response_thank_you_message' 		=> trim(stripslashes($_REQUEST['form_response_thank_you_message'])),
-						'form_include_user_meta' 				=> $_REQUEST['form_include_user_meta'],
+						'form_include_user_meta' 				=> $valid_req_spamshield_options['form_include_user_meta'],
 						'promote_plugin_link' 					=> $spamshield_options['promote_plugin_link'],
 						'install_date'							=> $InstallDate,
 						);
@@ -7377,14 +7415,6 @@ if (!class_exists('wpSpamShield')) {
 						<strong>M2 - Use two methods to set cookies.</strong><br />This adds a secondary non-JavaScript method to set cookies in addition to the standard JS method.<br />&nbsp;
 					</label>
 					</li>
-					<?php if ( $_REQUEST['showHiddenOptions']=='on' ) { // Still Testing ?>
-					<li>
-					<label for="use_alt_cookie_method_only">
-						<input type="checkbox" id="use_alt_cookie_method_only" name="use_alt_cookie_method_only" <?php echo ($spamshield_options['use_alt_cookie_method_only']==true?"checked=\"checked\"":"") ?> />
-						<strong style="color:red;">Use non-JavaScript method to set cookies. **STILL IN TESTING**</strong><br />This will ONLY use the non-JavaScript method to set cookies, INSTEAD of the standard JS method.<br />&nbsp;
-					</label>
-					</li>
-					<?php } ?>
 										
 					<li>
 					<label for="comment_logging">
@@ -7474,7 +7504,7 @@ if (!class_exists('wpSpamShield')) {
 					<li>
 					<label for="allow_proxy_users">
 						<input type="checkbox" id="allow_proxy_users" name="allow_proxy_users" <?php echo ($spamshield_options['allow_proxy_users']==true?"checked=\"checked\"":"") ?> />
-						<strong>Allow users behind proxy servers to comment?</strong><br />Most users should leave this unchecked. Many human spammers hide behind proxies.<br/>&nbsp;</label>					
+						<strong>Allow users behind proxy servers to comment?</strong><br />Many human spammers hide behind proxies, so you can uncheck this option for extra protection. (For highest user compatibility, leave it checked.)<br/>&nbsp;</label>
 					</li>
 					<li>
 					<label for="hide_extra_data">
@@ -7790,7 +7820,7 @@ if (!class_exists('wpSpamShield')) {
 
 			<p><a name="wpss_configuration_disable_pingbacks"><strong>Disable pingbacks.</strong></a><br />Use if pingback spam is excessive. The disadvantage is a reduction of communication between blogs. When blogs ping each other, it's like saying "Hi, I just wrote about you" and disabling these pingbacks eliminates that ability. It is recomended that you don't use this option unless you are experiencing an extreme spam attack.</p>
 
-			<p><a name="wpss_configuration_allow_proxy_users"><strong>Allow users behind proxy servers to comment?</strong></a><br />Most users should leave this unchecked. Many human spammers hide behind proxies. Leaving this unckecked adds an extra layer of spam protection. In the rare even that a non-spam commenter gets blocked by this, they will be notified what the situation is, and instructed to contact you to ask you to modify this setting.</p>
+			<p><a name="wpss_configuration_allow_proxy_users"><strong>Allow users behind proxy servers to comment?</strong></a><br />Many human spammers hide behind proxies. Leaving this unckecked adds an extra layer of spam protection. In the rare event that a non-spam commenter gets blocked by this, they will be notified what the situation is, and instructed to contact you to ask you to modify this setting. (For highest user compatibility, you can leave it checked.)</p>
 			
 			<p><a name="wpss_configuration_hide_extra_data"><strong>Hide extra technical data in comment notifications.</strong></a><br />The plugin now addes some extra technical data to the comment moderation and notification emails, including the referrer that brought the user to the page where they commented, the referrer that brought them to the WordPress comments processing page (helps with fighting spam), User-Agent, Remote Host, Reverse DNS, Proxy Info, Browser Language, and more. This data is helpful if you ever need to <a href="http://www.redsandmarketing.com/plugins/wp-spamshield/support/" target="_blank">submit a spam sample</a>. If you dislike seeing the extra info, you can use this option to prevent the info from being displayed in the emails. If you don't mind seeing it, please leave it this unchecked, because if you ever need to submit a spam sample, it helps us track spam patterns.</p>
 			
