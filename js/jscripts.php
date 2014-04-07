@@ -1,5 +1,5 @@
 <?php
-// 1.0.1.1
+// Version 1.1.0.0
 
 // Security Sanitization - BEGIN
 $id='';
@@ -45,7 +45,8 @@ function wpss_create_random_key_js() {
     return $keyCode;
 	}
 
-$wpss_js_start_time = wpss_microtime_js();
+// Uncomment to use:
+//$wpss_js_start_time = wpss_microtime_js();
 
 $wpss_session_test = session_id();
 if(empty($wpss_session_test)) {
@@ -75,9 +76,10 @@ else {
 		$wpss_spiders_array_js = array( 'googlebot', 'google.com', 'googleproducer', 'feedfetcher-google', 'google wireless transcoder', 'google favicon', 'mediapartners-google', 'adsbot-google', 'yahoo', 'slurp', 'msnbot', 'bingbot', 'gtmetrix', 'wordpress', 'twitterfeed', 'feedburner', 'ia_archiver', 'spider', 'crawler', 'search', 'bot', 'offline', 'download', 'validator', 'link', 'user-agent:', 'curl', 'httpclient', 'jakarta', 'java/', 'larbin', 'libwww', 'lwp-trivial', 'mechanize', 'nutch', 'parser', 'php/', 'python-urllib ', 'wget', 'snoopy', 'binget', 'lftp/', '!susie', 'arachmo', 'automate', 'cerberian', 'charlotte', 'cocoal.icio.us', 'copier', 'cosmos', 'covario', 'csscheck', 'cynthia', 'emailsiphon', 'extractor', 'ezooms', 'feedly', 'getright', 'heritrix', 'holmes', 'htdig', 'htmlparser', 'httrack', 'igdespyder', 'internetseer', 'itunes', 'l.webis', 'mabontland', 'magpie', 'metauri', 'mogimogi', 'morning paper', 'mvaclient', 'newsgator', 'nymesis', 'oegp', 'peach', 'pompos', 'pxyscand', 'qseero', 'reaper', 'sbider', 'scoutjet', 'scrubby', 'semanticdiscovery', 'snagger', 'silk', 'snappy', 'sqworm', 'stackrambler', 'stripper', 'sucker', 'teoma', 'truwogps', 'updated', 'vyu2', 'webcapture', 'webcopier', 'webzip', 'windows-media-player', 'yeti' );
 		$wpss_spiders_array_js_count = count($wpss_spiders_array_js);
 		// the User Agent
+		$user_agent_lc = strtolower($_SERVER['HTTP_USER_AGENT']);
 		$i = 0;
 		while ($i < $wpss_spiders_array_js_count) {
-			if (eregi($wpss_spiders_array_js[$i], $_SERVER['HTTP_USER_AGENT'])) {
+			if ( strpos( $user_agent_lc, $wpss_spiders_array_js[$i] ) !== false ) {
 				$spider_status_check_js = 1;
 				break;
 				}
@@ -125,8 +127,9 @@ function GetCookie(e){var t=document.cookie.indexOf(e+'=');var n=t+e.length+1;if
 function commentValidation(){SetCookie('".$CookieValidationName."','".$CookieValidationKey."','','/');SetCookie('SJECT14','CKON14','','/');}
 commentValidation();
 ";
-$wpss_js_end_time = wpss_microtime_js();
-$wpss_js_total_time = substr(($wpss_js_end_time - $wpss_js_start_time),0,8). " seconds";
-// echo "// Benchmark: ".$wpss_js_total_time."\n";
+// Uncomment to use:
+//$wpss_js_end_time = wpss_microtime_js();
+//$wpss_js_total_time = substr(($wpss_js_end_time - $wpss_js_start_time),0,8). " seconds";
+//echo "// Benchmark: ".$wpss_js_total_time."\n";
 
 ?>
