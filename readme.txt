@@ -140,22 +140,22 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
-Version 1.1.0.0, released 04/07/14
+Version 1.1.0.0, *released 04/07/14*
 
 * Replaced all instances of eregi() function, which is deprecated in PHP 5.3. (Meaning it still works, but is being phased out and will be eliminated in a future version.) The plugin was already fully compatible with PHP 5.2 and below, and this update ensures full compatibility with PHP 5.3+.
 * Improved spam algorithm.
 
-Version 1.0.1.1, released 04/03/14
+Version 1.0.1.1, *released 04/03/14*
 
 * Improved spam algorithm.
 * Improved security.
 * Code improvements and minor bug fixes.
 
-Version 1.0.1.0, released 03/26/14
+Version 1.0.1.0, *released 03/26/14*
 
 * Improved compatibility with popular caching plugins.
 
-Version 1.0.0.0, released 03/10/14 - Over 20 improvements from its predecessor WP-SpamFree...including:
+Version 1.0.0.0, *released 03/10/14* - Over 20 improvements from its predecessor WP-SpamFree...including:
 
 * Over 10x faster! Tested and verified with benchmarking software.
 * Reduced the number of database queries.
