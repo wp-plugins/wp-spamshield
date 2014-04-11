@@ -29,7 +29,7 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 5. A more advanced fork of WP-SpamFree, by the original developer. Works as a truly plug and play replacement and will import your old data from WP-SpamFree automatically upon installation and activation, and features you were using on your site previously such as contact forms and spam stats will continue to work without any changes to pages, posts, or theme.
 6. No false positives due to the method of spam blocking, which leads to fewer frustrated readers, and less work for you. (If a comment gets blocked, a legit user has a chance to try again.)
 7. You won't have to waste valuable time sifting through a spam queue anymore, because there won't be much there, if anything.
-8. Powerful trackback and pingback spam protection.
+8. Powerful trackback and pingback spam protection and validation.
 9. Easy to install - truly plug and play. Just upload and activate. (Installation Status on the plugin admin page to let you know if plugin is installed correctly.)
 10. The beauty of this plugin is the methods of blocking spam. It takes a different approach than most and stops spam at the door.
 11. Extremely low overhead and won't slow down your blog (very light database access), unlike some other anti-spam plugins.
@@ -140,20 +140,27 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.1.0, *released 04/11/14*
+
+* Added better trackback spam protection. This version adds a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is spam, *without fail*. This will eliminate more than 99.99% of trackback spam. Trackback spammers don't send spam out from the same server where their clients' websites reside.
+* Added new filters to the spam algorithm.
+* Made improvements to the overall compatibility with caching plugins.
+* Fixed a bug where the plugin was incorrectly detecting proxies.
+
 Version 1.1.0.0, *released 04/07/14*
 
 * Replaced all instances of eregi() function, which is deprecated in PHP 5.3. (Meaning it still works, but is being phased out and will be eliminated in a future version.) The plugin was already fully compatible with PHP 5.2 and below, and this update ensures full compatibility with PHP 5.3+.
-* Improved spam algorithm.
+* Added new filters to the spam algorithm.
 
 Version 1.0.1.1, *released 04/03/14*
 
-* Improved spam algorithm.
-* Improved security.
+* Added new filters to the spam algorithm.
+* Added additional security checks.
 * Code improvements and minor bug fixes.
 
 Version 1.0.1.0, *released 03/26/14*
 
-* Improved compatibility with popular caching plugins.
+* Improved compatibility with popular caching plugins. This version adds detection to see if caching is active or not, and if specific cache plugins are active, and makes adjustments accordingly.
 
 Version 1.0.0.0, *released 03/10/14* - Over 20 improvements from its predecessor WP-SpamFree...including:
 
