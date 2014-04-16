@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.1.1.0
+Version: 1.1.2.0
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -33,7 +33,13 @@ License: GPLv2
 My use of the end curly braces "}" is a little funky in that I indent them, I know. IMO it's easier to debug. Just know that it's on purpose even though it's not standard. One of my programming quirks, and just how I roll. :)
 */
 
-define( 'WPSS_VERSION', '1.1.1.0' );
+// Make sure plugin remains secure if called directly
+if ( !function_exists( 'add_action' ) ) {
+	header('HTTP/1.1 403 Forbidden');
+	die('ERROR: This plugin requires WordPress and will not function if called directly.');
+	}
+
+define( 'WPSS_VERSION', '1.1.1.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -323,6 +329,19 @@ function spamshield_get_domain($url) {
 	$parsed = parse_url($url);
 	$hostname = $parsed['host'];
 	return $hostname;
+	}
+
+function spamshield_count_words($string) {
+	$string = trim($string);
+	$char_count = mb_strlen($string);
+	if ( !$string || $string == '' || $char_count == 0 ) {
+		$number_of_words = 0;
+		}
+	else { 
+		$exploded_string = explode (' ',$string);
+		$number_of_words = count($exploded_string);		
+		}
+	return $number_of_words;
 	}
 
 function spamshield_check_cache_status() {
@@ -803,7 +822,7 @@ function spamshield_log_data($wpss_log_comment_data_array,$wpss_log_comment_data
 		$submitter_ip_address_short_l = trim( substr( $submitter_ip_address, 0, 6) );
 		$submitter_ip_address_short_r = trim( substr( $submitter_ip_address, -6, 2) );
 		$submitter_ip_address_obfuscated = $submitter_ip_address_short_l.'****'.$submitter_ip_address_short_r.'.***';
-
+		
 		// IP / PROXY INFO - BEGIN
 		$ip = $submitter_ip_address;
 		$ipBlock=explode('.',$ip);
@@ -834,6 +853,7 @@ function spamshield_log_data($wpss_log_comment_data_array,$wpss_log_comment_data
 		// Detect Use of Proxy
 		//if ($ipProxyVIA||$MaskedIP) {
 		if ( ( $ipProxyVIA && $ipProxyVIA !='' ) || ( $MaskedIP && $MaskedIP !='' ) ) {
+			if ( !$MaskedIP || $MaskedIP == '' ) { $MaskedIP='[No Data]'; }
 			$ipProxy='PROXY DETECTED';
 			$ipProxyShort='PROXY';
 			$ipProxyData=$ip.' | MASKED IP: '.$MaskedIP;
@@ -849,27 +869,29 @@ function spamshield_log_data($wpss_log_comment_data_array,$wpss_log_comment_data
 		else {
 			$ipProxy='No Proxy';
 			$ipProxyShort=$ipProxy;
-			$ipProxyData=$ip;
+			$ipProxyData='[None]';
 			$ProxyStatus='FALSE';
 			}
-		if ( !$MaskedIP || $MaskedIP == '' ) { $MaskedIP='[no data]'; }
 		// IP / PROXY INFO - END
 		
 		if ( $wpss_log_comment_type == 'comment' ) {
+			// Comment Post Info
 			$comment_author_email = $wpss_log_comment_data_array['comment_author_email'];
 			$comment_author_email_short_l = trim( substr( $comment_author_email, 0, 4) );
 			$comment_author_email_short_r = trim( substr( $comment_author_email, -5, 5) );
 			$comment_author_email_obfuscated = $comment_author_email_short_l.'***@***'.$comment_author_email_short_r;
-			if ( !$comment_author_email ) { $comment_author_email_obfuscated = '[none]'; }
+			if ( !$comment_author_email ) { $comment_author_email_obfuscated = '[None]'; }
 			
 			$wpss_log_comment_data .= $wpss_log_datum."\n";
-			$wpss_log_comment_data .= "comment_post_ID: ".$wpss_log_comment_data_array['comment_post_ID']."\n";
-			$wpss_log_comment_data .= "comment_author: ".$wpss_log_comment_data_array['comment_author']."\n";
+			$wpss_log_comment_data .= "Comment Post ID: ".$wpss_log_comment_data_array['comment_post_ID']."\n";
+			$wpss_log_comment_data .= "Comment Post Title: ".$wpss_log_comment_data_array['comment_post_title']."\n";
+			$wpss_log_comment_data .= "Comment Post URL: ".$wpss_log_comment_data_array['comment_post_url']."\n";
+			$wpss_log_comment_data .= "Comment Author: ".$wpss_log_comment_data_array['comment_author']."\n";
 			//$wpss_log_comment_data .= "comment_author_email: ".$comment_author_email_obfuscated." [Obfuscated for Privacy]\n";
-			$wpss_log_comment_data .= "comment_author_email: ".$comment_author_email."\n";
-			$wpss_log_comment_data .= "comment_author_url: ".$wpss_log_comment_data_array['comment_author_url']."\n";
-			$wpss_log_comment_data .= "comment_content: "."\n".$wpss_log_comment_data_array['comment_content']."\n";
-			$wpss_log_comment_data .= "comment_type: ";
+			$wpss_log_comment_data .= "Comment Author Email: ".$comment_author_email."\n";
+			$wpss_log_comment_data .= "Comment Author URL: ".$wpss_log_comment_data_array['comment_author_url']."\n";
+			$wpss_log_comment_data .= "Comment Content: "."\n".$wpss_log_comment_data_array['comment_content']."\n";
+			$wpss_log_comment_data .= "Comment Type: ";
 			if ( $wpss_log_comment_data_array['comment_type'] ) {
 				$wpss_log_comment_data .= $wpss_log_comment_data_array['comment_type'];
 				}
@@ -906,7 +928,7 @@ function spamshield_log_data($wpss_log_comment_data_array,$wpss_log_comment_data
 		if ( $ipProxyVIA ) {
 			$wpss_log_comment_data .= "HTTP_VIA: ".$ipProxyVIA."\n";
 			}
-		if ( $MaskedIP && ( $MaskedIP != '[no data]' ) ) {
+		if ( $MaskedIP && ( $MaskedIP != '[No Data]' ) ) {
 			$wpss_log_comment_data .= "HTTP_X_FORWARDED_FOR: ".$MaskedIP."\n";
 			}
 		$wpss_log_comment_data .= "HTTP_ACCEPT_LANGUAGE: ".$wpss_http_accept_language."\n";
@@ -917,7 +939,7 @@ function spamshield_log_data($wpss_log_comment_data_array,$wpss_log_comment_data
 			$wpss_log_comment_data .= $wpss_http_referer;
 			}
 		else {
-			$wpss_log_comment_data .= '[none]';
+			$wpss_log_comment_data .= '[None]';
 			}
 		$wpss_log_comment_data .= "\n";
 		$wpss_log_comment_data .= "JavaScript Page Referrer: ";
@@ -925,7 +947,7 @@ function spamshield_log_data($wpss_log_comment_data_array,$wpss_log_comment_data
 			$wpss_log_comment_data .= $wpss_javascript_page_referrer;
 			}
 		else {
-			$wpss_log_comment_data .= '[none]';
+			$wpss_log_comment_data .= '[None]';
 			}
 		$wpss_log_comment_data .= "\n";
 		
@@ -936,21 +958,24 @@ function spamshield_log_data($wpss_log_comment_data_array,$wpss_log_comment_data
 			$wpss_log_comment_data .= $wpss_php_page_referrer;
 			}
 		else {
-			$wpss_log_comment_data .= '[none]';
+			$wpss_log_comment_data .= '[None]';
 			}
 		$wpss_log_comment_data .= "\n";
 		*/
 		
+
 		$wpss_log_comment_data .= "JSONST: ";
 		if ( $wpss_jsonst ) {
 			$wpss_log_comment_data .= $wpss_jsonst;
 			}
 		else {
-			$wpss_log_comment_data .= '[none]';
+			$wpss_log_comment_data .= '[None]';
 			}
 		$wpss_log_comment_data .= "\n";
-		if ( !$wpss_log_comment_data_errors ) { $wpss_log_comment_data_errors = '[none]'; }
-		$wpss_log_comment_data .= "Failed Test Code(s): ".$wpss_log_comment_data_errors."\n";
+		$wpss_log_comment_data_errors_count = spamshield_count_words($wpss_log_comment_data_errors);
+		if ( !$wpss_log_comment_data_errors ) { $wpss_log_comment_data_errors = '[None]'; }
+		$wpss_log_comment_data .= "Failed Tests: ".$wpss_log_comment_data_errors_count."\n";
+		$wpss_log_comment_data .= "Failed Test Codes: ".$wpss_log_comment_data_errors."\n";
 		$wpss_log_comment_data .= ":: ".$wpss_log_comment_type_display." END ::"."\n\n";
 		
 		@$wpss_log_fp = fopen( $wpss_log_file,'a+' );
@@ -1111,7 +1136,7 @@ function spamshield_contact_form($content,$shortcode_check) {
 				$wpss_javascript_page_referrer = esc_url_raw( $ref2xJS );
 				}
 			else {
-				$wpss_javascript_page_referrer = '[none]';
+				$wpss_javascript_page_referrer = '[None]';
 				}
 			
 			/*
@@ -1122,7 +1147,7 @@ function spamshield_contact_form($content,$shortcode_check) {
 				$wpss_php_page_referrer = esc_url_raw( $ref2xPH );
 				}
 			else {
-				$wpss_php_page_referrer = '[none]';
+				$wpss_php_page_referrer = '[None]';
 				}
 			*/
 		
@@ -1130,7 +1155,7 @@ function spamshield_contact_form($content,$shortcode_check) {
 				$wpss_jsonst = $_POST['JSONST'];
 				}
 			else {
-				$wpss_jsonst = '[none]';
+				$wpss_jsonst = '[None]';
 				}
 			
 			$commentdata['javascript_page_referrer']	= $wpss_javascript_page_referrer;
@@ -1266,7 +1291,7 @@ function spamshield_contact_form($content,$shortcode_check) {
 				$post_ref2xjs_lc = strtolower($_POST['ref2xJS']);
 				if ( $_POST['ref2xJS'] && strpos( $post_ref2xjs_lc, 'ref2xjs' ) !== false ) {
 					$MessageSpam=1;
-					$spamshield_error_code .= ' CF-REF-2-1003';
+					$spamshield_error_code .= ' CF-REF-2-1023';
 					}
 				if ( $MessageSpam == 1 ) {
 					$contact_response_status_message_addendum .= '&bull; Message appears to be spam. Please note that link requests, link exchange requests, and SEO outsourcing requests will be automatically deleted, and are not an acceptable use of this contact form.<br />&nbsp;<br />';
@@ -1629,7 +1654,7 @@ function spamshield_contact_form($content,$shortcode_check) {
 				$contact_form_blacklist_status = '2';
 				}
 			$user_agent_lc = strtolower(trim($_SERVER['HTTP_USER_AGENT']));
-			$user_agent_lc_word_count = count( explode( " ", $user_agent_lc ) );
+			$user_agent_lc_word_count = spamshield_count_words($user_agent_lc);
 			if ( !$user_agent_lc ) {
 				$contact_form_blacklist_status = '2';
 				$spamshield_error_code .= ' CF-UA1001';
@@ -1709,7 +1734,7 @@ function spamshield_check_comment_type($commentdata) {
 		$wpss_javascript_page_referrer = esc_url_raw( $ref2xJS );
 		}
 	else {
-		$wpss_javascript_page_referrer = '[none]';
+		$wpss_javascript_page_referrer = '[None]';
 		}
 	
 	/*
@@ -1720,7 +1745,7 @@ function spamshield_check_comment_type($commentdata) {
 		$wpss_php_page_referrer = esc_url_raw( $ref2xPH );
 		}
 	else {
-		$wpss_php_page_referrer = '[none]';
+		$wpss_php_page_referrer = '[None]';
 		}
 	*/
 
@@ -1728,12 +1753,18 @@ function spamshield_check_comment_type($commentdata) {
 		$wpss_jsonst = $_POST['JSONST'];
 		}
 	else {
-		$wpss_jsonst = '[none]';
+		$wpss_jsonst = '[None]';
 		}
 	
 	$commentdata['javascript_page_referrer']	= $wpss_javascript_page_referrer;
 	//$commentdata['php_page_referrer']			= $wpss_php_page_referrer;
 	$commentdata['jsonst']						= $wpss_jsonst;
+	
+	if ( $commentdata['comment_type'] != 'trackback' && $commentdata['comment_type'] != 'pingback' ) {
+		$commentdata['comment_post_title']		= get_the_title($commentdata['comment_post_ID']);
+		$commentdata['comment_post_url']		= get_permalink($commentdata['comment_post_ID']);
+		}
+	
 	// Add New Tests for Logging - END
 	
 	if ( !is_admin() && !current_user_can('moderate_comments') && !current_user_can('edit_post') ) {
@@ -1957,7 +1988,7 @@ function spamshield_content_short($commentdata) {
 	// COMMENT LENGTH CHECK - BEGIN
 	$commentdata_comment_content					= $commentdata['comment_content'];
 	$commentdata_comment_content_lc					= strtolower($commentdata_comment_content);
-	$commentdata_comment_content_lc_stripped		= stripslashes($commentdata_comment_content_lc);
+	$commentdata_comment_content_lc_deslashed		= stripslashes($commentdata_comment_content_lc);
 	
 	$commentdata_comment_content_length 			= strlen($commentdata_comment_content_lc);
 	$commentdata_comment_content_min_length 		= 15;
@@ -1994,8 +2025,15 @@ function spamshield_content_filter($commentdata) {
 	
 	// CONTENT FILTERING - BEGIN
 	
+	$commentdata_comment_post_id					= $commentdata['comment_post_ID'];
+	$commentdata_comment_post_title					= $commentdata['comment_post_title'];
+	$commentdata_comment_post_title_lc				= strtolower($commentdata_comment_post_title);
+	$commentdata_comment_post_url					= $commentdata['comment_post_url'];
+	$commentdata_comment_post_url_lc				= strtolower($commentdata_comment_post_url);
+	
 	$commentdata_comment_author						= $commentdata['comment_author'];
 	$commentdata_comment_author_lc					= strtolower($commentdata_comment_author);
+	$commentdata_comment_author_lc_words 			= spamshield_count_words($commentdata_comment_author_lc);
 	$commentdata_comment_author_lc_space 			= ' '.$commentdata_comment_author_lc.' ';
 	$commentdata_comment_author_email				= $commentdata['comment_author_email'];
 	$commentdata_comment_author_email_lc			= strtolower($commentdata_comment_author_email);
@@ -2004,11 +2042,18 @@ function spamshield_content_filter($commentdata) {
 	
 	$commentdata_comment_content					= $commentdata['comment_content'];
 	$commentdata_comment_content_lc					= strtolower($commentdata_comment_content);
+	$commentdata_comment_content_lc_deslashed		= stripslashes($commentdata_comment_content_lc);
 	
 	$replace_apostrophes							= array('\’','\`','&acute;','&grave;','&#39;','&#96;','&#101;','&#145;','&#146;','&#158;','&#180;','&#207;','&#208;','&#8216;','&#8217;');
 	$commentdata_comment_content_lc_norm_apost 		= str_replace($replace_apostrophes,"\'",$commentdata_comment_content_lc);
 	
 	$commentdata_comment_type						= $commentdata['comment_type'];
+	
+	/*
+	if ( $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+		$commentdata_comment_type = 'comment';
+		}
+	*/
 	
 	// Altered to Accommodate WP 2.5+
 	$commentdata_user_agent					= $_SERVER['HTTP_USER_AGENT'];
@@ -2062,6 +2107,7 @@ function spamshield_content_filter($commentdata) {
 	// Detect Use of Proxy
 	//if ( ( $_SERVER['HTTP_VIA'] && $_SERVER['HTTP_VIA'] !='' ) || ( $_SERVER['HTTP_X_FORWARDED_FOR'] && $_SERVER['HTTP_X_FORWARDED_FOR'] !='' ) ) {
 	if ( ( $ipProxyVIA && $ipProxyVIA !='' ) || ( $MaskedIP && $MaskedIP !='' ) ) {
+		if ( !$MaskedIP || $MaskedIP == '' ) { $MaskedIP='[No Data]'; }
 		$ipProxy='PROXY DETECTED';
 		$ipProxyShort='PROXY';
 		$ipProxyData=$commentdata_remote_addr.' | MASKED IP: '.$MaskedIP;
@@ -2080,7 +2126,6 @@ function spamshield_content_filter($commentdata) {
 		$ipProxyData=$commentdata_remote_addr;
 		$ProxyStatus='FALSE';
 		}
-	if ( !$MaskedIP || $MaskedIP == '' ) { $MaskedIP='[no data]'; }
 	// IP / PROXY INFO - END
 
 	// Simple Filters
@@ -3275,6 +3320,7 @@ function spamshield_content_filter($commentdata) {
 	// Filter 352: Number of occurrences of 'webmaster' in comment_author
 	$filter_352_term = 'webmaster';
 	$filter_352_count = substr_count($commentdata_comment_content_lc, $filter_352_term);
+
 	$filter_352_limit = 25;
 	$filter_352_trackback_limit = 25;
 	$filter_352_author_count = substr_count($commentdata_comment_author_lc, $filter_352_term);
@@ -3874,7 +3920,7 @@ function spamshield_content_filter($commentdata) {
 		}
 
 	// Author Test: if $commentdata_comment_author_lc contains more than 7 words, NO GO
-	if ( str_word_count( $commentdata_comment_author_lc ) > 7 && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
+	if ( $commentdata_comment_author_lc_words > 7 && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 300003AUTH-MAX';
 		}
@@ -4060,15 +4106,40 @@ function spamshield_content_filter($commentdata) {
 	$filter_10006_limit = 1;
 	$filter_10006_trackback_limit = 1;
 	
-	// 10500 - Complex Test for terms in Comment Author URL - $commentdata_comment_author_url_lc
+	// 10500 - Complex Test for terms in Comment Author/URL - $commentdata_comment_author_lc/$CommentAuthorURLDomain
 	// Added V 1.1.1.0 - 04/14
-	// Check to see if IP Trackback client IP matches IP of Server where link is supposedly coming from
 	$CommentAuthorURLDomain = spamshield_get_domain($commentdata_comment_author_url_lc);
-	if ( preg_match( "@(.*)?(payday|student)(.*)?loan(.*)?@i", $CommentAuthorURLDomain ) ) {
+	// PayDay Loan Spammers
+	if ( preg_match( "@(payday|student|title)([a-z0-9-]*)loan@i", $CommentAuthorURLDomain ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
-		$spamshield_error_code .= ' 10501A';
+		$spamshield_error_code .= ' 10501AU';
 		}
-	
+	// PayDay Loan Spammers Group
+	if ( preg_match( "@^(ww[w0-9]\.)?(burnleytaskforce.org.uk|ccls5280.org|chrislonergan.co.uk|getwicked.co.uk|kickstartmediagroup.co.uk|mpaydayloansa1.info|neednotgreed.org.uk|royalspicehastings.co.uk|snakepaydayloans.co.uk|solarsheild.co.uk|transitionwestcliff.org.uk|blyweertbeaufort.co.uk|disctoprint.co.uk|fish-instant-payday-loans.co.uk|heritagenorth.co.uk|standardsdownload.co.uk|21joannapaydayloanscompany.joannaloans.co.uk)$@i", $CommentAuthorURLDomain ) ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10502AU-PDL';
+		}
+	// Debt Colidation Spammers
+	if ( preg_match( "@^debt(\s*)consolidat(ion|or)((\s*)loan)?([a-z0-9\s]*)$@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10511A-DC';
+		}
+	// SEO Spammers
+	if ( preg_match( "@(\s*)(([a-z]*)\s)?(search(\s+)(engine(\s+))?(optimi[sz]ation|marketing|rank(ing)?)|seo|sem)$@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10601A-SEO';
+		}
+	// Website Design/Hosting Spammers
+	if ( preg_match( "@(\s*)(([a-z]*)\s)?web(\s*)(site)?(\s+)(host(ing)?|design|development)$@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10701A-WEB';
+		}
+	// Online Gambling Spammers
+	if ( preg_match( "@(online|internet|web)([a-z0-9-]*)(gambling|casino|poker)@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10801A-OLG';
+		}
+
 	// Filter 20001: Number of occurrences of 'groups.google.com' in comment_author_url
 	$filter_20001_count = substr_count($commentdata_comment_author_url_lc, 'groups.google.com');
 	$filter_20001C_count = substr_count($commentdata_comment_content_lc, 'groups.google.com');
@@ -4547,7 +4618,7 @@ function spamshield_content_filter($commentdata) {
 	$filter_20067_limit = 1;
 	$filter_20067_trackback_limit = 1;
 	// Filter 20068: Number of occurrences of 'snakepaydayloans.co.uk' in comment_author_url / comment_content
-	$filter_20068_domain = 'snakepaydayloans.co.uk'; // SPAMMERS
+	$filter_20068_domain = 'snakepaydayloans.co.uk'; // PAYDAY LOAN SPAMMERS
 	$filter_20068_domain_http = 'http://'.$filter_20068_domain;
 	$filter_20068_domain_dot = '.'.$filter_20068_domain;
 	$filter_20068_count = substr_count($commentdata_comment_author_url_lc, $filter_20068_domain_http) + substr_count($commentdata_comment_author_url_lc, $filter_20068_domain_dot);
@@ -4555,17 +4626,42 @@ function spamshield_content_filter($commentdata) {
 	$filter_20068_limit = 1;
 	$filter_20068_trackback_limit = 1;
 	// Filter 20069: Number of occurrences of 'chrislonergan.co.uk' in comment_author_url / comment_content
-	$filter_20069_domain = 'chrislonergan.co.uk'; // SPAMMERS
+	$filter_20069_domain = 'chrislonergan.co.uk'; // PAYDAY LOAN SPAMMERS
 	$filter_20069_domain_http = 'http://'.$filter_20069_domain;
 	$filter_20069_domain_dot = '.'.$filter_20069_domain;
 	$filter_20069_count = substr_count($commentdata_comment_author_url_lc, $filter_20069_domain_http) + substr_count($commentdata_comment_author_url_lc, $filter_20069_domain_dot);
 	$filter_20069C_count = substr_count($commentdata_comment_content_lc, $filter_20069_domain_http) + substr_count($commentdata_comment_content_lc, $filter_20069_domain_dot);
 	$filter_20069_limit = 1;
 	$filter_20069_trackback_limit = 1;
+	// Filter 20070: Number of occurrences of 'getwicked.co.uk' in comment_author_url / comment_content
+	$filter_20070_domain = 'getwicked.co.uk'; // PAYDAY LOAN SPAMMERS
+	$filter_20070_domain_http = 'http://'.$filter_20070_domain;
+	$filter_20070_domain_dot = '.'.$filter_20070_domain;
+	$filter_20070_count = substr_count($commentdata_comment_author_url_lc, $filter_20070_domain_http) + substr_count($commentdata_comment_author_url_lc, $filter_20070_domain_dot);
+	$filter_20070C_count = substr_count($commentdata_comment_content_lc, $filter_20070_domain_http) + substr_count($commentdata_comment_content_lc, $filter_20070_domain_dot);
+	$filter_20070_limit = 1;
+	$filter_20070_trackback_limit = 1;
+	// Filter 20071: Number of occurrences of 'kickstartmediagroup.co.uk' in comment_author_url / comment_content
+	$filter_20071_domain = 'kickstartmediagroup.co.uk'; // PAYDAY LOAN SPAMMERS
+	$filter_20071_domain_http = 'http://'.$filter_20071_domain;
+	$filter_20071_domain_dot = '.'.$filter_20071_domain;
+	$filter_20071_count = substr_count($commentdata_comment_author_url_lc, $filter_20071_domain_http) + substr_count($commentdata_comment_author_url_lc, $filter_20071_domain_dot);
+	$filter_20071C_count = substr_count($commentdata_comment_content_lc, $filter_20071_domain_http) + substr_count($commentdata_comment_content_lc, $filter_20071_domain_dot);
+	$filter_20071_limit = 1;
+	$filter_20071_trackback_limit = 1;
+	// Filter 20072: Number of occurrences of 'transitionwestcliff.org.uk' in comment_author_url / comment_content
+	$filter_20072_domain = 'transitionwestcliff.org.uk'; // PAYDAY LOAN SPAMMERS
+	$filter_20072_domain_http = 'http://'.$filter_20072_domain;
+	$filter_20072_domain_dot = '.'.$filter_20072_domain;
+	$filter_20072_count = substr_count($commentdata_comment_author_url_lc, $filter_20072_domain_http) + substr_count($commentdata_comment_author_url_lc, $filter_20072_domain_dot);
+	$filter_20072C_count = substr_count($commentdata_comment_content_lc, $filter_20072_domain_http) + substr_count($commentdata_comment_content_lc, $filter_20072_domain_dot);
+	$filter_20072_limit = 1;
+	$filter_20072_trackback_limit = 1;
 
 
 
 	$commentdata_comment_author_lc_spam_strong = '<strong>'.$commentdata_comment_author_lc.'</strong>'; // Trackbacks
+
 	$commentdata_comment_author_lc_spam_strong_dot1 = '...</strong>'; // Trackbacks
 	$commentdata_comment_author_lc_spam_strong_dot2 = '...</b>'; // Trackbacks
 	$commentdata_comment_author_lc_spam_strong_dot3 = '<strong>...'; // Trackbacks
@@ -5184,7 +5280,7 @@ function spamshield_content_filter($commentdata) {
 		}
 	*/
 	
-	// Regular Expression Tests
+	// Regular Expression Tests - Comment Content
 	
 	if ( preg_match( "@\<a\ href\=\"http\:\/\/([a-z0-9\.\-]+)\.com/\"\>([a-z0-9\.\-]+)\<\/a\>\,\ \[url\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/url\]\,\ \[link\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/link\]\,\ http\:\/\/([a-z0-9\.\-]+)\.com\/@i", $commentdata_comment_content_lc ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
@@ -5202,7 +5298,51 @@ function spamshield_content_filter($commentdata) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' RE10003';
 		}
+
+	// Regular Expression Tests - 2nd Gen - Comment Content - BEGIN
 	
+	// Have to strip slashes to run any tests on Comment Content - DONE in LINE 2007
+	// $commentdata_comment_content_lc_deslashed = stripslashes($commentdata_comment_content_lc);
+	
+	// PayDay Loan Spammers and the like...
+	if ( preg_match( "@<(\s*)a(\s+)href(\s*)=(\s*)(['\"])?(\s*)https?://([a-z0-9-\.]+)\.([a-z0-9-_\./]+)(\s*)(['\"])?(\s*)>([a-z0-9\s]*)(payday|student|title)(\s*)loan([a-z0-9\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10501C-PDL';
+		}
+	// PayDay Loan Spammers Group
+	if ( preg_match( "@<(\s*)a(\s+)href(\s*)=(\s*)(['\"])?(\s*)https?://(ww[w0-9]\.)?(burnleytaskforce.org.uk|ccls5280.org|chrislonergan.co.uk|getwicked.co.uk|kickstartmediagroup.co.uk|mpaydayloansa1.info|neednotgreed.org.uk|royalspicehastings.co.uk|snakepaydayloans.co.uk|solarsheild.co.uk|transitionwestcliff.org.uk|blyweertbeaufort.co.uk|disctoprint.co.uk|fish-instant-payday-loans.co.uk|heritagenorth.co.uk|standardsdownload.co.uk|21joannapaydayloanscompany.joannaloans.co.uk)/?([\s'\"\.a-z0-9]*)(['\"])?>([a-z0-9\s]*)(payday|student|title)([a-z0-9\s]*)loan([a-z0-9\s]*)?<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10502C-PDL';
+		}
+	// Online Gambling Spammers
+	if ( preg_match( "@<(\s*)a(\s+)href(\s*)=(\s*)(['\"])?(\s*)https?://([a-z0-9-\.]+)\.([a-z0-9-_\./]+)(\s*)(['\"])?(\s*)>(\s*)debt(\s*)consolidat(ion|or)((\s*)loan)?([a-z0-9\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10511C-DC';
+		}
+	// SEO Spammers
+	if ( preg_match( "@<(\s*)a(\s+)href(\s*)=(\s*)(['\"])?(\s*)https?://([a-z0-9-\.]+)\.([a-z0-9-_\./]+)(\s*)(['\"])?(\s*)>(\s*)(([a-z]*)\s)?(search(\s+)(engine(\s+))?(optimi[sz]ation|marketing|rank(ing)?)|seo|sem)(\s*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10601C-SEO';
+		}
+	// Website Design/Hosting Spammers
+	if ( preg_match( "@<(\s*)a(\s+)href(\s*)=(\s*)(['\"])?(\s*)https?://([a-z0-9-\.]+)\.([a-z0-9-_\./]+)(\s*)(['\"])?(\s*)>(\s*)web(\s*)(site)?(\s+)(host(ing)?|design|development)(\s*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10701C-WEB';
+		}
+	// Online Gambling Spammers
+	if ( preg_match( "@<(\s*)a(\s+)href(\s*)=(\s*)(['\"])?(\s*)https?://([a-z0-9-\.]+)\.([a-z0-9-_\./]+)(\s*)(['\"])?(\s*)>([a-z0-9\s]*)(online|internet|web)([a-z0-9-]*)(gambling|casino|poker)([a-z0-9\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10801C-OLG';
+		}
+	// Miscellaneous Patterns that Keep Repeating
+	if ( preg_match( "@^([0-9]{6})\s([0-9]{6})(.*)\s([0-9]{6})$@i", $commentdata_comment_content_lc_deslashed ) ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10901C';
+		}
+
+	// Regular Expression Tests - 2nd Gen - Comment Content - END
+
+
 	// Test Comment Author 
 	// Words in Comment Author Repeated in Content - With Keyword Density
 	$RepeatedTermsFilters = array('.','-',':');
@@ -5235,6 +5375,11 @@ function spamshield_content_filter($commentdata) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 9100';
 			}
+		// REGEX VERSION - TESTING
+		if ( preg_match( "@<(\s*)a(\s+)href(\s*)=(['\"])?$commentdata_comment_author_url_lc(['\"])?>$commentdata_comment_author_lc<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) {
+			if ( !$content_filter_status ) { $content_filter_status = '1'; }
+			$spamshield_error_code .= ' 9100.T1';
+			}
 		}
 	// Emails
 	if ( $commentdata_comment_author_email_lc == 'aaron@yahoo.com' || $commentdata_comment_author_email_lc == 'asdf@yahoo.com' || $commentdata_comment_author_email_lc == 'a@a.com' || $commentdata_comment_author_email_lc == 'bill@berlin.com' || $commentdata_comment_author_email_lc == 'capricanrulz@hotmail.com' || $commentdata_comment_author_email_lc == 'dominic@mail.com' || $commentdata_comment_author_email_lc == 'fuck@you.com' || $commentdata_comment_author_email_lc == 'heel@mail.com' || $commentdata_comment_author_email_lc == 'jane@mail.com' || $commentdata_comment_author_email_lc == 'neo@hotmail.com' || $commentdata_comment_author_email_lc == 'nick76@mailbox.com' || $commentdata_comment_author_email_lc == '12345@yahoo.com' || 	$commentdata_comment_author_email_lc == 'poster78@gmail.com' || $commentdata_comment_author_email_lc == 'ycp_m23@hotmail.com' || $commentdata_comment_author_email_lc == 'grey_dave@yahoo.com' || $commentdata_comment_author_email_lc == 'grren_dave55@hotmail.com' || $commentdata_comment_author_email_lc == 'dave_morales@hotmail.com' || $commentdata_comment_author_email_lc == 'tbs_guy@hotmail.com' || $commentdata_comment_author_email_lc == 'test@test.com' || strpos( $commentdata_comment_author_email_lc, '.seo@gmail.com' ) !== false || strpos( $commentdata_comment_author_email_lc, '@keywordspy.com' ) !== false || strpos( $commentdata_comment_author_email_lc, '@ranksindia.net' ) !== false || strpos( $commentdata_comment_author_email_lc, '@ranksdigitalmedia.com' ) !== false || strpos( $commentdata_comment_author_email_lc, '@semmiami.com' ) !== false || strpos( $commentdata_comment_author_email_lc, '@hit4hit.org' ) !== false || strpos( $commentdata_comment_author_email_lc, '@fuckyou.com' ) !== false || strpos( $commentdata_comment_author_email_lc, 'fuckyou@' ) !== false || strpos( $commentdata_comment_author_email_lc, 'spammer@' ) !== false || strpos( $commentdata_comment_author_email_lc, 'spambot@' ) !== false || strpos( $commentdata_comment_author_email_lc, 'spam@' ) !== false || strpos( $commentdata_comment_author_email_lc, 'anonymous@' ) !== false || strpos( $commentdata_comment_author_email_lc, 'root@' ) !== false ) {
@@ -5245,10 +5390,10 @@ function spamshield_content_filter($commentdata) {
 	if ( strpos( $WPCommentsPostURL, $commentdata_php_self_lc ) !== false && $commentdata_referrer_lc == $WPCommentsPostURL ) {
 		// Often spammers send the referrer as the URL for the wp-comments-post.php page. Nimrods.
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
-		$spamshield_error_code .= ' REF-1-1000';
+		$spamshield_error_code .= ' REF-1-1011';
 		}
 
-	// TEST REFERRERS 2 - TO THE PAGE BEING COMMENTED ON
+	// TEST REFERRERS 2 - SPAMMERS SEARCHING FOR PAGES TO COMMENT ON
 	if( $_POST[ 'ref2xJS' ] && ( $_POST[ 'ref2xJS' ] != '' ) ) {
 		$ref2xJS = addslashes( urldecode( $_POST[ 'ref2xJS' ] ) );
 		$ref2xJS = str_replace( '%3A', ':', $ref2xJS );
@@ -5258,11 +5403,11 @@ function spamshield_content_filter($commentdata) {
 		if ( preg_match( "@\.google\.co(m|\.[a-z]{2})@i", $ref2xJS ) && strpos( $ref2xJS_lc, 'leave a comment' ) !== false ) {
 			// make test more robust for other versions of google & search query
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
-			$spamshield_error_code .= ' REF-2-1001';
+			$spamshield_error_code .= ' REF-2-1021';
 			}
 		// add Keyword Script Here
 		}
-	
+
 	/*
 	// Removed for caching
 	if( $_POST[ 'ref2xPH' ] && ( $_POST[ 'ref2xPH' ] != '' ) ) {
@@ -5272,7 +5417,7 @@ function spamshield_content_filter($commentdata) {
 		if ( preg_match( "@\.google\.co(m|\.[a-z]{2})@i", $ref2xPH ) && strpos( $ref2xPH_lc, 'leave a comment' ) !== false ) {
 			// make test more robust for other versions of google & search query
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
-			$spamshield_error_code .= ' REF-2-1002';
+			$spamshield_error_code .= ' REF-2-1022';
 			}
 		// add Keyword Script Here
 		}
@@ -5282,9 +5427,17 @@ function spamshield_content_filter($commentdata) {
 	$post_ref2xjs_lc = strtolower($_POST['ref2xJS']);
 	if ( $_POST['ref2xJS'] && strpos( $post_ref2xjs_lc, 'ref2xjs' ) !== false ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
-		$spamshield_error_code .= ' REF-2-1003';
+		$spamshield_error_code .= ' REF-2-1023';
 		}
-		
+
+	// TEST REFERRERS 3 - TO THE PAGE BEING COMMENTED ON
+	if ( $commentdata_referrer_lc && $commentdata_referrer_lc != $commentdata_comment_post_url_lc && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
+		// If referrer exists, make sure referrer matches page being commented on
+		// *** Comment out next line while in testing, so as not to trigger filter until live
+		//if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' TEST-REF-3-1031';
+		}
+	
 	// JavaScript Off NoScript Test - JSONST - will only be sent by Scraping Spambots
 	if ( $_POST['JSONST'] == 'NS1' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
@@ -5299,7 +5452,7 @@ function spamshield_content_filter($commentdata) {
 		$content_filter_status = '1'; // Was 2, changed to 1 - V1.0.0.0
 		$spamshield_error_code .= ' UA1001';
 		}
-	$commentdata_user_agent_lc_word_count = count( explode( " ", $commentdata_user_agent_lc ) );
+	$commentdata_user_agent_lc_word_count = spamshield_count_words($commentdata_user_agent_lc);
 	if ( $commentdata_user_agent_lc && $commentdata_user_agent_lc_word_count < 3 ) {
 		if ( $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' || ( strpos( $commentdata_user_agent_lc, 'movabletype' ) === false && ( $commentdata_comment_type == 'trackback' || $commentdata_comment_type == 'pingback' ) ) ) {
 			// Another test for altered UA's.
@@ -5513,10 +5666,31 @@ function spamshield_content_filter($commentdata) {
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVD1035-'.$ReverseDNS;
 			}
-		if ( $ReverseDNS=='host.colocrossing.com' ) {
+		if ( preg_match( "@^([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})\.rackcentre.redstation.net.uk$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVD1036-'.$ReverseDNS;
 			}
+		if ( preg_match( "@^$commentdata_remote_addr\.static\.quadranet\.com$@i", $ReverseDNS ) ) {
+		//if ( preg_match( "@^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.static\.quadranet\.com$@i", $ReverseDNS ) ) {
+			// First part of server matches $commentdata_remote_addr
+			$content_filter_status = '2';
+			$spamshield_error_code .= ' REVD1038-'.$ReverseDNS;
+			}
+
+		// The 8's Pattern
+		// The 8's - from relakks.com - Anonymous surfing, powered by bots
+		if ( preg_match( "@^anon-([0-9]+)-([0-9]+)\.relakks\.com$@i", $ReverseDNS ) && preg_match( "@^([a-z]{8})$@i", $commentdata_comment_author_lc ) && preg_match( "/^([a-z]{8})@([a-z]{8})\.com$/i", $commentdata_comment_author_email_lc ) ) {
+			//anon-###-##.relakks.com spammer pattern
+			$content_filter_status = '2';
+			$spamshield_error_code .= ' REVDA-1050';
+			}
+		// The 8's - coming from from rackcentre.redstation.net.uk
+		/*
+		if ( preg_match( "@^([0-9]+)-([0-9]+)-([0-9]+)-([0-9]+)\.rackcentre.redstation.net.uk$@i", $ReverseDNS ) && preg_match( "@^([a-z]{8})$@i", $commentdata_comment_author_lc ) && preg_match( "/^([a-z]{8})@([a-z]{8})\.com$/i", $commentdata_comment_author_email_lc ) ) {
+			$content_filter_status = '2';
+			$spamshield_error_code .= ' REVDA-1051';
+			}
+		*/
 
 		}
 	// Reverse DNS Server Tests - END
@@ -5654,6 +5828,7 @@ function spamshield_content_filter($commentdata) {
 		while ( $i <= $KeywordURLPhrasesCount ) {
 			if ( $KeywordURLPhrases[$i] == $commentdata_comment_author_lc ) {
 				if ( !$content_filter_status ) { $content_filter_status = '1'; }
+
 				$spamshield_error_code .= ' T3001';
 				}
 			if ( $KeywordURLPhrases[$i] == $commentdata_comment_content_lc ) {
@@ -5732,6 +5907,7 @@ function spamshield_content_filter($commentdata) {
 		}
 	if ( preg_match( "/^hey i know this is off topic but i was wondering if/i", $commentdata_comment_content_lc ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+
 		$spamshield_error_code .= ' 5003';
 		}
 	if ( preg_match( "/^this is kind of off topic but/i", $commentdata_comment_content_lc ) ) {
@@ -6380,6 +6556,30 @@ function spamshield_content_filter($commentdata) {
 	if ( $filter_20069C_count >= $filter_20069_limit ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 20069C';
+		}
+	if ( $filter_20070_count >= $filter_20070_limit ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 20070A';
+		}
+	if ( $filter_20070C_count >= $filter_20070_limit ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 20070C';
+		}
+	if ( $filter_20071_count >= $filter_20071_limit ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 20071A';
+		}
+	if ( $filter_20071C_count >= $filter_20071_limit ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 20071C';
+		}
+	if ( $filter_20072_count >= $filter_20072_limit ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 20072A';
+		}
+	if ( $filter_20072C_count >= $filter_20072_limit ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 20072C';
 		}
 
 
@@ -7236,6 +7436,7 @@ function spamshield_modify_notification( $text, $comment_id ) {
 	// Detect Use of Proxy
 	//if ($_SERVER['HTTP_VIA']||$_SERVER['HTTP_X_FORWARDED_FOR']) {
 	if ( ( $ipProxyVIA && $ipProxyVIA !='' ) || ( $MaskedIP && $MaskedIP !='' ) ) {
+		if ( !$MaskedIP || $MaskedIP == '' ) { $MaskedIP='[No Data]'; }
 		$ipProxy='PROXY DETECTED';
 		$ipProxyShort='PROXY';
 		$ipProxyData=$ip.' | MASKED IP: '.$MaskedIP;
@@ -7251,20 +7452,23 @@ function spamshield_modify_notification( $text, $comment_id ) {
 	else {
 		$ipProxy='No Proxy';
 		$ipProxyShort=$ipProxy;
-		$ipProxyData=$ip;
+		$ipProxyData='[None]';
 		$ProxyStatus='FALSE';
 		}
-	if ( !$MaskedIP || $MaskedIP == '' ) { $MaskedIP='[no data]'; }
 	// IP / PROXY INFO - END
 	$text .= "\r\nBlacklist the IP Address: ".WPSS_ADMIN_URL.'/options-general.php?page=wp-spamshield/wp-spamshield.php&wpss_action=blacklist_ip&comment_ip='.$ip;
 	
 	$text .= "\r\n";
 
 	if ( !$spamshield_options['hide_extra_data'] ) {
+		
+		$CommentType = ucwords(get_comment_type());
 
 		$text .= "\r\n------------------------------------------------------";
 		$text .= "\r\n:: Additional Technical Data Added by WP-SpamShield ::";
 		$text .= "\r\n------------------------------------------------------";
+		$text .= "\r\n";
+		$text .= "\r\nComment Type: ".$CommentType.' ("Comment", "Pingback", or "Trackback")';
 		$text .= "\r\n";
 
 		// DEBUG ONLY - BEGIN
@@ -7301,7 +7505,7 @@ function spamshield_modify_notification( $text, $comment_id ) {
 				$text .= "\r\nPage Referrer Check: $ref2xJS\r\n";
 				}
 			}
-		
+
 		$text .= "\r\nComment Processor Referrer: ".$_SERVER['HTTP_REFERER'];
 		$text .= "\r\n";
 		$text .= "\r\nUser-Agent: ".$_SERVER['HTTP_USER_AGENT'];
