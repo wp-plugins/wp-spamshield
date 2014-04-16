@@ -140,7 +140,7 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
-Version 1.1.2.0, *released 04/15/14*
+Version 1.1.2.1, *released 04/15/14*
 
 * Added new filters to the spam algorithm.
 * Added additional security checks.

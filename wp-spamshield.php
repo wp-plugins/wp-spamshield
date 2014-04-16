@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.1.2.0
+Version: 1.1.2.1
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -39,7 +39,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.1.1.1' );
+define( 'WPSS_VERSION', '1.1.2.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -5666,9 +5666,14 @@ function spamshield_content_filter($commentdata) {
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVD1035-'.$ReverseDNS;
 			}
-		if ( preg_match( "@^([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})\.rackcentre.redstation.net.uk$@i", $ReverseDNS ) ) {
+		if ( $ReverseDNS=='host.colocrossing.com' ) {
+			// HEAVY SPAMMER - DOES NOT RESPECT COMPLAINTS OR TAKE ABUSE SERIOUSLY
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVD1036-'.$ReverseDNS;
+			}
+		if ( preg_match( "@^([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})\.rackcentre.redstation.net.uk$@i", $ReverseDNS ) ) {
+			$content_filter_status = '2';
+			$spamshield_error_code .= ' REVD1037-'.$ReverseDNS;
 			}
 		if ( preg_match( "@^$commentdata_remote_addr\.static\.quadranet\.com$@i", $ReverseDNS ) ) {
 		//if ( preg_match( "@^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.static\.quadranet\.com$@i", $ReverseDNS ) ) {
