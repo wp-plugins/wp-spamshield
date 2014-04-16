@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.1.2.1
+Version: 1.1.2.2
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -39,7 +39,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.1.2.1' );
+define( 'WPSS_VERSION', '1.1.2.2' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -1755,15 +1755,12 @@ function spamshield_check_comment_type($commentdata) {
 	else {
 		$wpss_jsonst = '[None]';
 		}
-	
+
+	$commentdata['comment_post_title']			= get_the_title($commentdata['comment_post_ID']);
+	$commentdata['comment_post_url']			= get_permalink($commentdata['comment_post_ID']);
 	$commentdata['javascript_page_referrer']	= $wpss_javascript_page_referrer;
 	//$commentdata['php_page_referrer']			= $wpss_php_page_referrer;
 	$commentdata['jsonst']						= $wpss_jsonst;
-	
-	if ( $commentdata['comment_type'] != 'trackback' && $commentdata['comment_type'] != 'pingback' ) {
-		$commentdata['comment_post_title']		= get_the_title($commentdata['comment_post_ID']);
-		$commentdata['comment_post_url']		= get_permalink($commentdata['comment_post_ID']);
-		}
 	
 	// Add New Tests for Logging - END
 	
@@ -5570,77 +5567,77 @@ function spamshield_content_filter($commentdata) {
 		if ( $commentdata_remote_host_lc ) {
 			if ( strpos( $commentdata_remote_host_lc, 'keywordspy.com' ) !== false ) {
 				$content_filter_status = '2';
-				$spamshield_error_code .= ' RH1003-'.$commentdata_remote_host_lc;
+				$spamshield_error_code .= ' RH1003';
 				}
 			if ( preg_match( "@clients\.your\-server\.de$@i", $commentdata_remote_host_lc ) ) {
 				$content_filter_status = '2';
-				$spamshield_error_code .= ' RH1004-'.$commentdata_remote_host_lc;
+				$spamshield_error_code .= ' RH1004';
 				}
 			if ( preg_match( "@^rover\-host\.com$@i", $commentdata_remote_host_lc ) ) {
 				$content_filter_status = '2';
-				$spamshield_error_code .= ' RH1005-'.$commentdata_remote_host_lc;
+				$spamshield_error_code .= ' RH1005';
 				}
 			if ( preg_match( "@^host\.lotosus\.com$@i", $commentdata_remote_host_lc ) ) {
 				$content_filter_status = '2';
-				$spamshield_error_code .= ' RH1006-'.$commentdata_remote_host_lc;
+				$spamshield_error_code .= ' RH1006';
 				}
 			if ( preg_match( "@^rdns\.softwiseonline\.com$@i", $commentdata_remote_host_lc ) ) {
 				$content_filter_status = '2';
-				$spamshield_error_code .= ' RH1007-'.$commentdata_remote_host_lc;
+				$spamshield_error_code .= ' RH1007';
 				}
 			if ( preg_match( "@s([a-z0-9]+)\.websitehome\.co\.uk$@i", $commentdata_remote_host_lc ) ) {
 				$content_filter_status = '2';
-				$spamshield_error_code .= ' RH1008-'.$commentdata_remote_host_lc;
+				$spamshield_error_code .= ' RH1008';
 				}
 			if ( preg_match( "@\.opentransfer\.com$@i", $commentdata_remote_host_lc ) ) {
 				$content_filter_status = '2';
-				$spamshield_error_code .= ' RH1009-'.$commentdata_remote_host_lc;
+				$spamshield_error_code .= ' RH1009';
 				}
 			if ( preg_match( "@arkada\.rovno\.ua$@i", $commentdata_remote_host_lc ) ) {
 				$content_filter_status = '2';
-				$spamshield_error_code .= ' RH1010-'.$commentdata_remote_host_lc;
+				$spamshield_error_code .= ' RH1010';
 				}
 			}
 	
 		/*	
 		if ( preg_match( "@^host\.@i", $commentdata_remote_host_lc ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' RH1009-'.$commentdata_remote_host_lc;
+			$spamshield_error_code .= ' RH1009';
 			}
 		*/
 	
 		// Test Reverse DNS Hosts - Do all with Reverse DNS moving forward
 		if ( strpos( $ReverseDNS_LC, 'keywordspy.com' ) !== false ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1023-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1023';
 			}
 		if ( preg_match( "@clients\.your\-server\.de$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1024-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1024';
 			}
 		if ( preg_match( "@^rover\-host\.com$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1025-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1025';
 			}
 		if ( preg_match( "@^host\.lotosus\.com$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1026-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1026';
 			}
 		if ( preg_match( "@^rdns\.softwiseonline\.com$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1027-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1027';
 			}
 		if ( preg_match( "@^s([a-z0-9]+)\.websitehome\.co\.uk$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1028-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1028';
 			}
 		if ( preg_match( "@\.opentransfer\.com$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1029-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1029';
 			}
 		if ( preg_match( "@arkada\.rovno\.ua$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1030-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1030';
 			}
 	
 		// Servers that dish out a **LOT** of spam
@@ -5652,34 +5649,34 @@ function spamshield_content_filter($commentdata) {
 			}
 		if ( preg_match( "@^([0-9]+)-([0-9]+)-([0-9]+)-([0-9]+)\.ip\.idealhosting\.net\.tr$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1032-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1032';
 			}
 		if ( preg_match( "@^ns([0-9]+)\.webmasters\.com$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1033-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1033';
 			}
 		if ( preg_match( "@^server([0-9]+)\.shadowbrokers\.com$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1034-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1034';
 			}
 		if ( $ReverseDNS=='hosted-by.ipxcore.com' ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1035-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1035';
 			}
 		if ( $ReverseDNS=='host.colocrossing.com' ) {
 			// HEAVY SPAMMER - DOES NOT RESPECT COMPLAINTS OR TAKE ABUSE SERIOUSLY
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1036-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1036';
 			}
 		if ( preg_match( "@^([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})\.rackcentre.redstation.net.uk$@i", $ReverseDNS ) ) {
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1037-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1037';
 			}
 		if ( preg_match( "@^$commentdata_remote_addr\.static\.quadranet\.com$@i", $ReverseDNS ) ) {
 		//if ( preg_match( "@^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.static\.quadranet\.com$@i", $ReverseDNS ) ) {
 			// First part of server matches $commentdata_remote_addr
 			$content_filter_status = '2';
-			$spamshield_error_code .= ' REVD1038-'.$ReverseDNS;
+			$spamshield_error_code .= ' REVD1038';
 			}
 
 		// The 8's Pattern

@@ -140,6 +140,10 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.2.2, *released 04/16/14*
+
+* Fixed a minor bug in the blocked comment logging.
+
 Version 1.1.2.1, *released 04/15/14*
 
 * Added new filters to the spam algorithm.
