@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.1.3.0
+Version: 1.1.3.1
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -35,11 +35,13 @@ My use of the end curly braces "}" is a little funky in that I indent them, I kn
 
 // Make sure plugin remains secure if called directly
 if ( !function_exists( 'add_action' ) ) {
-	header('HTTP/1.1 403 Forbidden');
+	if ( !headers_sent() ) {
+		header('HTTP/1.1 403 Forbidden');
+		}
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.1.3.0' );
+define( 'WPSS_VERSION', '1.1.3.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -459,7 +461,7 @@ function spamshield_counter($counter_option) {
 					$spamshield_counter_title_text = 'WP-SpamShield - WordPress Spam Protection';
 					}
 				else {
-					$spamshield_counter_title_text = 'WP-SpamShield - WordPress Anti-Spam Protection';
+					$spamshield_counter_title_text = 'WP-SpamShield - WordPress Anti-Spam';
 					}
 				echo '<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
 				echo '<span style="color:#000000;font-size:9px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.' SPAM KILLED</span><br />'; 
@@ -532,7 +534,7 @@ function spamshield_counter_short($attr) {
 			$spamshield_counter_title_text = 'WP-SpamShield - WordPress Spam Protection';
 			}
 		else {
-			$spamshield_counter_title_text = 'WP-SpamShield - WordPress Anti-Spam Protection';
+			$spamshield_counter_title_text = 'WP-SpamShield - WordPress Anti-Spam';
 			}
 		$wpss_shortcode_content .= '	<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
 		$wpss_shortcode_content .= '	<span style="color:#000000;font-size:9px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.' SPAM KILLED</span><br />'."\n"; 
@@ -719,14 +721,14 @@ function spamshield_log_reset() {
 	@fclose( $wpss_htaccess_fp );
 	}
 
-function spamshield_log_data($wpss_log_comment_data_array,$wpss_log_comment_data_errors,$wpss_log_comment_type,$wpss_log_contact_form_data) {
+function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_data_errors, $wpss_log_comment_type = 'comment', $wpss_log_contact_form_data = NULL ) {
 
 	$wpss_log_filename = 'temp-comments-log.txt';
 	$wpss_log_empty_filename = 'temp-comments-log.init.txt';
 	$wpss_log_file = WPSS_PLUGIN_DATA_PATH.'/'.$wpss_log_filename;
 	$wpss_log_max_filesize = 2*1048576; // 2 MB
 	
-	if (!$wpss_log_comment_type) {
+	if ( !$wpss_log_comment_type || $wpss_log_comment_type === NULL ) {
 		$wpss_log_comment_type = 'comment';
 		}
 	$wpss_log_comment_type_display 	= strtoupper($wpss_log_comment_type);
@@ -1014,12 +1016,12 @@ function spamshield_comment_form() {
 	
 	if ( $PromotePluginLink ) {
 		$server_ip_first_char = substr(WPSS_SERVER_ADDR, 0, 1);
-		$server_ip_fourth_char = substr(WPSS_SERVER_ADDR, 3, 1);
+		$server_ip_fifth_char = substr(WPSS_SERVER_ADDR, 4, 1);
 		if ( $server_ip_first_char == '6' ) {
-			echo '<p style="font-size:9px;clear:both;"><a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" title="WP-SpamShield WordPress Anti-Spam Plugin" >Spam Protection</a> by WP-SpamShield</p>'."\n";
+			echo '<p style="font-size:9px;clear:both;"><a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" title="WP-SpamShield WordPress Anti-Spam Plugin" >Spam Blocking</a> by WP-SpamShield</p>'."\n";
 			}
-		else if ( $server_ip_first_char == '7' ) {
-			echo '<p style="font-size:9px;clear:both;"><a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" title="WP-SpamShield WordPress Anti-Spam Plugin" >Anti-Spam Protection</a> by WP-SpamShield</p>'."\n";
+		else if ( $server_ip_first_char == '7' || $server_ip_first_char == '2' ) {
+			echo '<p style="font-size:9px;clear:both;"><a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" title="WP-SpamShield WordPress Anti-Spam Plugin" >Anti-Spam</a> by WP-SpamShield</p>'."\n";
 			}
 		else if ( $server_ip_first_char == '8' ) {
 			echo '<p style="font-size:9px;clear:both;"><a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" title="WP-SpamShield WordPress Anti-Spam Plugin" >Comment Spam Protection</a> by WP-SpamShield</p>'."\n";
@@ -1027,8 +1029,11 @@ function spamshield_comment_form() {
 		else if ( $server_ip_first_char == '9' ) {
 			echo '<p style="font-size:9px;clear:both;">Spam Protection by <a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" title="WP-SpamShield WordPress Anti-Spam Plugin" >WP-SpamShield Plugin</a></p>'."\n";
 			}
-		else if ( $server_ip_fourth_char == '5' ) {
+		else if ( $server_ip_fifth_char == '5' ) {
 			echo '<p style="font-size:9px;clear:both;"><a href="http://wordpress.org/extend/plugins/wp-spamshield/" title="WP-SpamShield WordPress Anti-Spam Plugin" >Anti-Spam Protection</a> by WP-SpamShield</p>'."\n";
+			}
+		else if ( $server_ip_fifth_char == '4' ) {
+			echo '<p style="font-size:9px;clear:both;"><a href="http://wordpress.org/extend/plugins/wp-spamshield/" title="WP-SpamShield WordPress Anti-Spam Plugin" >Spam Defense</a> by WP-SpamShield</p>'."\n";
 			}
 		else {
 			echo '<p style="font-size:9px;clear:both;">Spam Protection by <a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" title="WP-SpamShield WordPress Anti-Spam Plugin" >WP-SpamShield</a></p>'."\n";
@@ -1043,7 +1048,7 @@ function spamshield_comment_form() {
 	echo '<input type="hidden" name="'.$FormValidationFieldJS.'" value="'.$FormValidationKeyJS .'" />'."\n";
 	}
 
-function spamshield_contact_shortcode($attr) {
+function spamshield_contact_shortcode( $attr = NULL ) {
 	/* Implementation: [spamshieldcontact] */
 	$shortcode_check = 'shortcode';
 	$content_new_shortcode = spamshield_contact_form($content,$shortcode_check);
@@ -1051,7 +1056,7 @@ function spamshield_contact_shortcode($attr) {
 	return $content_new_shortcode;
 	}
 	
-function spamshield_contact_form($content,$shortcode_check) {
+function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 	
 	$spamshield_contact_repl_text = array( '<!--spamshield-contact-->', '<!--spamfree-contact-->' );
 
@@ -1716,7 +1721,6 @@ function spamshield_contact_form($content,$shortcode_check) {
 				$content_filter_status = '2';
 				$spamshield_error_code .= ' CF-REVD1036';
 				}
-	
 	
 			$user_agent_lc = strtolower(trim($_SERVER['HTTP_USER_AGENT']));
 			$user_agent_lc_word_count = spamshield_count_words($user_agent_lc);
@@ -3810,7 +3814,7 @@ function spamshield_content_filter($commentdata) {
 		}
 	// Miscellaneous Spammers
 	// Correlates to filters 300-423 AUTH
-	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\=]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)((oakley|gucci|prescription)(\s+)sunglasses|(designer|christian(\s+)dior|hermes|michael(\s+)kors)?(\s+)handbags?|injury(\s+)lawyer|car(\s+)rental|rent(\s+)a(\s+)car|forex(\s+)trading|(pc|computer|laptop|laptopuri)(\s+)(repair|reparatii)|(repair|reparatii)(\s+)(pc|computer|laptop|laptopuri)|(\s+)(coupon|discount)s?|(coupon|promo|voucher|shipping)(\s+)codes?|proxy(\s+)surf|)([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\=]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)((oakley|gucci|prescription)(\s+)sunglasses|(designer|christian(\s+)dior|hermes|michael(\s+)kors)?(\s+)handbags?|injury(\s+)lawyer|car(\s+)rental|rent(\s+)a(\s+)car|forex(\s+)trading|(pc|computer|laptop|laptopuri)(\s+)(repair|reparatii)|(repair|reparatii)(\s+)(pc|computer|laptop|laptopuri)|(\s+)(coupon|discount)s?|(coupon|promo|voucher|shipping)(\s+)codes?|proxy(\s+)surf)([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 12501C-MSC';
 		}
@@ -3908,9 +3912,8 @@ $commentdata_comment_content_lc_deslashed ) ) {
 	// TEST REFERRERS 3 - TO THE PAGE BEING COMMENTED ON
 	if ( $commentdata_referrer_lc && $commentdata_referrer_lc != $commentdata_comment_post_url_lc && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
 		// If referrer exists, make sure referrer matches page being commented on
-		// *** Comment out next line while in testing, so as not to trigger filter until live
-		//if ( !$content_filter_status ) { $content_filter_status = '1'; }
-		$spamshield_error_code .= ' TEST-REF-3-1031';
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' REF-3-1031';
 		}
 	
 	// JavaScript Off NoScript Test - JSONST - will only be sent by Scraping Spambots
@@ -4750,7 +4753,7 @@ if (!class_exists('wpSpamShield')) {
 
 		function wpss_start_session(){
 			$wpss_session_test = session_id();
-			if(empty($wpss_session_test)) {
+			if( empty($wpss_session_test) && !headers_sent() ) {
 				session_start();
 				global $wpss_session_id;
 				$wpss_session_id = session_id();
@@ -5467,7 +5470,7 @@ if (!class_exists('wpSpamShield')) {
 			
 			<p>This extra data will be extremely valuable in helping us improve the spam protection capabilites of the plugin.</p>
 			
-			<p><a name="wpss_configuration_enhanced_comment_blacklist"><strong>Enhanced Comment Blacklist</strong></a><br />Enhances WordPress's Comment Blacklist - instead of just sending comments to moderation, they will be completely blocked if this is enabled. (Useful if you receive repetitive human spam or harassing comments from a particular commenter.) Also adds <strong>one-click blacklisting</strong> - a link will now appear in the comment notification emails that you can click to blacklist a commenter's IP. This link appears whether or not the feature is enabled. If you click the link and this feature is diabled, it will add the commenter's IP to the blacklist but blacklisting will operate according to WordPress's default functionality.</p>
+			<p><a name="wpss_configuration_enhanced_comment_blacklist"><strong>Enhanced Comment Blacklist</strong></a><br />Enhances WordPress's Comment Blacklist - instead of just sending comments to moderation, they will be completely blocked if this is enabled. (Useful if you receive repetitive human spam or harassing comments from a particular commenter.) Also adds <strong>one-click blacklisting</strong> - a link will now appear in the comment notification emails that you can click to blacklist a commenter's IP. This link appears whether or not the feature is enabled. If you click the link and this feature is disabled, it will add the commenter's IP to the blacklist but blacklisting will operate according to WordPress's default functionality.</p>
 			
 			<p>The WP-SpamShield blacklist shares the WordPress Comment Blacklist data, but the difference is that now when a comment contains any of these words in its content, name, URL, e-mail, or IP, it will be completely blocked, not just marked as spam. One word or IP per line...add each new blacklist item on a new line. If you're not sure how to use it, start by just adding an IP address, or click on the link in one of the notification emails. It is not case-sensitive and will match included words, so "press" on your blacklist will block "WordPress" in a comment.</p>			
 
@@ -5575,12 +5578,6 @@ if (!class_exists('wpSpamShield')) {
 
 		function wp_head_intercept(){
 			if (!is_admin()) {
-				$wpss_session_test = session_id();
-				if(empty($wpss_session_test)) {
-					session_start();
-					global $wpss_session_id;
-					$wpss_session_id = session_id();
-					}
 				if (empty($session_wpss_bot_status) || empty($session_wpss_plugin_url) || empty($session_wpSpamShieldVer) || empty($session_spamshield_options) || empty($session_CookieValidationName) || empty($session_CookieValidationKey) ) {
 					global $session_wpss_bot_status,$session_wpss_plugin_url,$session_wpSpamShieldVer,$session_spamshield_options,$session_CookieValidationName,$session_CookieValidationKey;
 					}

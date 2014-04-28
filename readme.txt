@@ -140,6 +140,11 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.3.1, *released 04/28/14*
+
+* Fixed a bug in one of the spam filters.
+* Fixed 2 bugs that caused error messages on certain configurations.
+
 Version 1.1.3.0, *released 04/25/14*
 
 * Added new filters and improved current filters in the algorithmic spam protection layer.

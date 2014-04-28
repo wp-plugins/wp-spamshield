@@ -1,5 +1,5 @@
 <?php
-// Updated in Version 1.1.0.0
+// Updated in Version 1.1.3.1
 
 // Security Sanitization - BEGIN
 $id='';
@@ -39,7 +39,7 @@ function wpss_create_random_key_img() {
 	}
 
 $wpss_session_test = session_id();
-if(empty($wpss_session_test)) {
+if( empty($wpss_session_test) && !headers_sent() ) {
 	session_start();
 	global $wpss_session_id;
 	$wpss_session_id = session_id();
