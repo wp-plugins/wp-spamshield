@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.1.3.1
+Version: 1.1.3.2
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -41,7 +41,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.1.3.1' );
+define( 'WPSS_VERSION', '1.1.3.2' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -861,7 +861,7 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			$ipProxyData=$ip.' | MASKED IP: '.$MaskedIP;
 			$ProxyStatus='TRUE';
 			//Google Chrome Compression Check
-			if ( strpos( $ipProxyVIA_LC, 'chrome compression proxy' ) !== false && preg_match( "@^google-proxy-(.*).google.com$@i", $ReverseDNS ) ) {
+			if ( strpos( $ipProxyVIA_LC, 'chrome compression proxy' ) !== false && preg_match( "@^google-proxy-(.*)\.google\.com$@i", $ReverseDNS ) ) {
 				$ipProxyChromeCompression='TRUE';
 				}
 			else {
@@ -974,7 +974,12 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			$wpss_log_comment_data .= '[None]';
 			}
 		$wpss_log_comment_data .= "\n";
-		$wpss_log_comment_data_errors_count = spamshield_count_words($wpss_log_comment_data_errors);
+		if ( $wpss_log_comment_data_errors == 'No Error' ) {
+			$wpss_log_comment_data_errors_count = 0;
+			}
+		else {
+			$wpss_log_comment_data_errors_count = spamshield_count_words($wpss_log_comment_data_errors);
+			}
 		if ( !$wpss_log_comment_data_errors ) { $wpss_log_comment_data_errors = '[None]'; }
 		$wpss_log_comment_data .= "Failed Tests: ".$wpss_log_comment_data_errors_count."\n";
 		$wpss_log_comment_data .= "Failed Test Codes: ".$wpss_log_comment_data_errors."\n";
@@ -1197,13 +1202,19 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			
 			// TEST TO PREVENT CONTACT FORM SPAM - BEGIN
 			
-			$ip = $_SERVER['REMOTE_ADDR'];
-			$ReverseDNS = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-			$ReverseDNSIP = gethostbyname($ReverseDNS);
-			$ReverseDNS = sanitize_text_field($ReverseDNS);
-			$ReverseDNS_LC = strtolower($ReverseDNS);
-			$ReverseDNS_LC_Rev = strrev($ReverseDNS_LC);
-			$wpss_contact_message_lc = strtolower( $wpss_contact_message );
+			$ip 						= $_SERVER['REMOTE_ADDR'];
+			$ip_regex 					= preg_quote($ip);
+			$ip_lc						= strtolower($ip);
+			$ip_lc_regex 				= preg_quote($ip_lc);
+			$ReverseDNS 				= gethostbyaddr($_SERVER['REMOTE_ADDR']);
+			$ReverseDNSIP 				= gethostbyname($ReverseDNS);
+			$ReverseDNSIP_regex 		= preg_quote($ReverseDNSIP);
+			$ReverseDNS 				= sanitize_text_field($ReverseDNS);
+			$ReverseDNS_LC 				= strtolower($ReverseDNS);
+			$ReverseDNS_LC_regex 		= preg_quote($ReverseDNS_LC);
+			$ReverseDNS_LC_Rev 			= strrev($ReverseDNS_LC);
+			$ReverseDNS_LC_Rev_regex 	= preg_quote($ReverseDNS_LC_Rev);
+			$wpss_contact_message_lc 	= strtolower( $wpss_contact_message );
 			
 			if ( $WPContactValidationJS != $CookieValidationKey ) { // Check for Cookie
 				$JSCookieFail=1;
@@ -1328,7 +1339,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				$contact_response_status_message_addendum .= '&bull; Please enter a valid phone number.<br />&nbsp;<br />';
 				}
 				
-			$MessageLength = strlen( $wpss_contact_message );
+			$MessageLength = mb_strlen( $wpss_contact_message );
 			if ( $MessageLength < $FormMessageMinLength ) {
 				$MessageShort=1;
 				$spamshield_error_code .= ' CONTACTFORM-MESSAGESHORT';
@@ -1697,11 +1708,11 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			
 			// HOSTS NOT ISP, so all hits are from machines
 			// VERIFIED SPAMMERS + HACKERS - VERY BAD REPUTATIONS
-			if ( preg_match( "@^host?([0-9]+)\.server([0-9]+)\.vpn(999|2buy)\.com$@i", $ReverseDNS_LC ) ) {
+			if ( preg_match( "@^(host?|v)([0-9]+)\.server([0-9]+)\.vpn(999|2buy)\.com$@i", $ReverseDNS_LC ) ) {
 				$content_filter_status = '2';
 				$spamshield_error_code .= ' CF-REVD1031';
 				}
-			if ( preg_match( "@^(ip-)?([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})\.(rackcentre\.redstation\.net\.uk|static\.hostnoc\.net|ip\.idealhosting\.net\.tr|triolan\.net|chunkhost\.com)$@i", $ReverseDNS_LC ) ) {
+			if ( preg_match( "@^(ip-)?([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})\.(rackcentre\.redstation\.net\.uk|static\.hostnoc\.net|ip\.idealhosting\.net\.tr|triolan\.net|chunkhost\.com|unknown\.steephost\.(net|com))$@i", $ReverseDNS_LC ) ) {
 				$content_filter_status = '2';
 				$spamshield_error_code .= ' CF-REVD1032';
 				}
@@ -1717,7 +1728,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				$content_filter_status = '2';
 				$spamshield_error_code .= ' CF-REVD1035';
 				}
-			if ( preg_match( "@^$commentdata_remote_addr\.static\.quadranet\.com$@i", $ReverseDNS_LC ) ) {
+			if ( preg_match( "@^$ip_lc_regex\.static\.quadranet\.com$@i", $ReverseDNS_LC ) ) {
 				$content_filter_status = '2';
 				$spamshield_error_code .= ' CF-REVD1036';
 				}
@@ -1726,11 +1737,11 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			$user_agent_lc_word_count = spamshield_count_words($user_agent_lc);
 			if ( !$user_agent_lc ) {
 				$contact_form_blacklist_status = '2';
-				$spamshield_error_code .= ' CF-UA1001';
+				$spamshield_error_code .= ' CF-UA1001-0';
 				}
 			if ( $user_agent_lc && $user_agent_lc_word_count < 3 ) {
 				$contact_form_blacklist_status = '2';
-				$spamshield_error_code .= ' CF-UA1001.1-'.$user_agent_lc;
+				$spamshield_error_code .= ' CF-UA1001-1';
 				}
 			if ( strpos( $user_agent_lc, 'libwww' ) !== false || preg_match( "/^(nutch|larbin|jakarta|java|mechanize|phpcrawl)/i", $user_agent_lc ) ) {
 				$contact_form_blacklist_status = '2';
@@ -1871,14 +1882,32 @@ function spamshield_check_comment_type($commentdata) {
 				$FormValidationFieldJS 		= $spamshield_options['form_validation_field_js'];
 				$FormValidationKeyJS 		= $spamshield_options['form_validation_key_js'];
 				$WPCommentValidationJS 		= $_COOKIE[$CookieValidationName];
-				if( $_COOKIE[$CookieValidationName] != $CookieValidationKey ) {
-					$spamshield_error_code = 'COOKIE';
-					spamshield_log_data( $commentdata, $spamshield_error_code );
+				$WPFormValidationPost 		= $_POST[$FormValidationFieldJS]; //Comments Post Verification
+				$wpss_cache_check 			= spamshield_check_cache_status();
+				$wpss_cache_check_status	= $wpss_cache_check['cache_check_status'];
+				if ( $WPFormValidationPost == $FormValidationKeyJS || $wpss_cache_check_status == 'ACTIVE' ) {
+					$FormValidationFieldJSTest = 'PASS';
 					}
-				else if ( $spamshield_options['comment_logging_all'] ) {
+				if ( $commentdata['comment_type'] != 'trackback' && $commentdata['comment_type'] != 'pingback' && $WPCommentValidationJS != $CookieValidationKey ) {
+					$spamshield_error_code .= ' COOKIE';
+					}
+				if ( $commentdata['comment_type'] != 'trackback' && $commentdata['comment_type'] != 'pingback' && $FormValidationFieldJSTest != 'PASS' ) {
+					$spamshield_error_code .= ' FVFJS';
+					}
+				if ( $BlockAllTrackbacks && $commentdata['comment_type'] == 'trackback' ) {
+					$spamshield_error_code .= ' BLOCKING-TRACKBACKS ';
+					}
+				if ( $BlockAllPingbacks && $commentdata['comment_type'] == 'pingback' ) {
+					$spamshield_error_code .= ' BLOCKING-PINGBACKS';
+					}
+				if ( !$spamshield_error_code ) {
 					$spamshield_error_code = 'No Error';
+					}
+				if ( $spamshield_options['comment_logging_all'] ) {
+					$spamshield_error_code = ltrim($spamshield_error_code);
 					spamshield_log_data( $commentdata, $spamshield_error_code );
 					}
+				
 				}
 			// LOG DATA - END
 			}
@@ -1907,7 +1936,7 @@ function spamshield_allowed_post($approved) {
 	// if( $WPCommentValidationJS == $CookieValidationKey ) { // Comment allowed
 	$wpss_cache_check 			= spamshield_check_cache_status();
 	$wpss_cache_check_status	= $wpss_cache_check['cache_check_status'];
-	if ( $_POST[$FormValidationFieldJS] == $FormValidationKeyJS || $wpss_cache_check_status == 'ACTIVE' ) {
+	if ( $WPFormValidationPost == $FormValidationKeyJS || $wpss_cache_check_status == 'ACTIVE' ) {
 		$FormValidationFieldJSTest = 'PASS';
 		}
 	//if( $_COOKIE[$CookieValidationName] == $CookieValidationKey && $_POST[$FormValidationFieldJS] == $FormValidationKeyJS ) { // Comment allowed
@@ -2054,7 +2083,7 @@ function spamshield_content_short($commentdata) {
 	$commentdata_comment_content_lc					= strtolower($commentdata_comment_content);
 	$commentdata_comment_content_lc_deslashed		= stripslashes($commentdata_comment_content_lc);
 	
-	$commentdata_comment_content_length 			= strlen($commentdata_comment_content_lc);
+	$commentdata_comment_content_length 			= mb_strlen($commentdata_comment_content_lc_deslashed);
 	$commentdata_comment_content_min_length 		= 15;
 	
 	$commentdata_comment_type						= $commentdata['comment_type'];
@@ -2086,30 +2115,42 @@ function spamshield_content_filter($commentdata) {
 	// FYI, Certain loops are unrolled because of a weird compatibility issue with certain servers. Works fine on most, but for some unforeseen reason, a few have issues. When I get more time to test, will try to figure it out. for now these have to stay unrolled. Won't require any more server resources, just more lines of code. Overall, still a tiny program for a server to run.
 
 	$spamshield_options = get_option('spamshield_options');
+	$CookieValidationName  		= $spamshield_options['cookie_validation_name'];
+	$CookieValidationKey 		= $spamshield_options['cookie_validation_key'];
+
 	
 	// CONTENT FILTERING - BEGIN
 	
 	$commentdata_comment_post_id					= $commentdata['comment_post_ID'];
 	$commentdata_comment_post_title					= $commentdata['comment_post_title'];
 	$commentdata_comment_post_title_lc				= strtolower($commentdata_comment_post_title);
+	$commentdata_comment_post_title_lc_regex 		= preg_quote($commentdata_comment_post_title_lc);
 	$commentdata_comment_post_url					= $commentdata['comment_post_url'];
 	$commentdata_comment_post_url_lc				= strtolower($commentdata_comment_post_url);
+	$commentdata_comment_post_url_lc_regex 			= preg_quote($commentdata_comment_post_url_lc);
 	
 	$commentdata_comment_author						= $commentdata['comment_author'];
 	$commentdata_comment_author_lc					= strtolower($commentdata_comment_author);
+	$commentdata_comment_author_lc_regex 			= preg_quote($commentdata_comment_author_lc);
 	$commentdata_comment_author_lc_words 			= spamshield_count_words($commentdata_comment_author_lc);
 	$commentdata_comment_author_lc_space 			= ' '.$commentdata_comment_author_lc.' ';
+	$commentdata_comment_author_lc_deslashed		= stripslashes($commentdata_comment_author_lc);
+	$commentdata_comment_author_lc_deslashed_regex 	= preg_quote($commentdata_comment_author_lc_deslashed);
+	$commentdata_comment_author_lc_deslashed_words 	= spamshield_count_words($commentdata_comment_author_lc_deslashed);
+	$commentdata_comment_author_lc_deslashed_space 	= ' '.$commentdata_comment_author_lc_deslashed.' ';
 	$commentdata_comment_author_email				= $commentdata['comment_author_email'];
 	$commentdata_comment_author_email_lc			= strtolower($commentdata_comment_author_email);
+	$commentdata_comment_author_email_lc_regex 		= preg_quote($commentdata_comment_author_email_lc);
 	$commentdata_comment_author_url					= $commentdata['comment_author_url'];
 	$commentdata_comment_author_url_lc				= strtolower($commentdata_comment_author_url);
+	$commentdata_comment_author_url_lc_regex 		= preg_quote($commentdata_comment_author_url_lc);
 	
 	$commentdata_comment_content					= $commentdata['comment_content'];
 	$commentdata_comment_content_lc					= strtolower($commentdata_comment_content);
 	$commentdata_comment_content_lc_deslashed		= stripslashes($commentdata_comment_content_lc);
 	
-	$replace_apostrophes							= array('\’','\`','&acute;','&grave;','&#39;','&#96;','&#101;','&#145;','&#146;','&#158;','&#180;','&#207;','&#208;','&#8216;','&#8217;');
-	$commentdata_comment_content_lc_norm_apost 		= str_replace($replace_apostrophes,"\'",$commentdata_comment_content_lc);
+	$replace_apostrophes							= array('’','`','&acute;','&grave;','&#39;','&#96;','&#101;','&#145;','&#146;','&#158;','&#180;','&#207;','&#208;','&#8216;','&#8217;');
+	$commentdata_comment_content_lc_norm_apost 		= str_replace($replace_apostrophes,"'",$commentdata_comment_content_lc_deslashed);
 	
 	$commentdata_comment_type						= $commentdata['comment_type'];
 	
@@ -2123,7 +2164,9 @@ function spamshield_content_filter($commentdata) {
 	$commentdata_user_agent					= $_SERVER['HTTP_USER_AGENT'];
 	$commentdata_user_agent_lc				= strtolower($commentdata_user_agent);
 	$commentdata_remote_addr				= $_SERVER['REMOTE_ADDR'];
+	$commentdata_remote_addr_regex 			= preg_quote($commentdata_remote_addr);
 	$commentdata_remote_addr_lc				= strtolower($commentdata_remote_addr);
+	$commentdata_remote_addr_lc_regex 		= preg_quote($commentdata_remote_addr_lc);
 
 	$commentdata_referrer					= $_SERVER['HTTP_REFERER'];
 	$commentdata_referrer_lc				= strtolower($commentdata_referrer);
@@ -2145,10 +2188,13 @@ function spamshield_content_filter($commentdata) {
 		$MaskedIPValid=true;
 		$MaskedIPCore=rtrim($MaskedIP," unknown;,");
 		}
-	$ReverseDNS = gethostbyaddr($commentdata_remote_addr);
-	$ReverseDNSIP = gethostbyname($ReverseDNS);
-	$ReverseDNS_LC = strtolower($ReverseDNS);
-	$ReverseDNS_LC_Rev = strrev($ReverseDNS_LC);
+	$ReverseDNS 				= gethostbyaddr($commentdata_remote_addr);
+	$ReverseDNSIP 				= gethostbyname($ReverseDNS);
+	$ReverseDNSIP_regex 		= preg_quote($ReverseDNSIP);
+	$ReverseDNS_LC 				= strtolower($ReverseDNS);
+	$ReverseDNS_LC_regex 		= preg_quote($ReverseDNS_LC);
+	$ReverseDNS_LC_Rev 			= strrev($ReverseDNS_LC);
+	$ReverseDNS_LC_Rev_regex 	= preg_quote($ReverseDNS_LC_Rev);
 	
 	if ( $_SERVER['REMOTE_HOST'] ) {
 		$commentdata_remote_host = $_SERVER['REMOTE_HOST'];
@@ -2177,7 +2223,7 @@ function spamshield_content_filter($commentdata) {
 		$ipProxyData=$commentdata_remote_addr.' | MASKED IP: '.$MaskedIP;
 		$ProxyStatus='TRUE';
 		//Google Chrome Compression Check
-		if ( strpos( $ipProxyVIA_LC, 'chrome compression proxy' ) !== false && preg_match( "@^google-proxy-(.*).google.com$@i", $ReverseDNS ) ) {
+		if ( strpos( $ipProxyVIA_LC, 'chrome compression proxy' ) !== false && preg_match( "@^google-proxy-(.*)\.google\.com$@i", $ReverseDNS ) ) {
 			$ipProxyChromeCompression='TRUE';
 			}
 		else {
@@ -2198,8 +2244,8 @@ function spamshield_content_filter($commentdata) {
 	$blacklist_word_combo_total = 0;
 	
 	// Filter 1: Number of occurrences of 'http://' in comment_content
-	$filter_1_count_http = substr_count($commentdata_comment_content_lc, 'http://');
-	$filter_1_count_https = substr_count($commentdata_comment_content_lc, 'https://');
+	$filter_1_count_http = substr_count($commentdata_comment_content_lc_deslashed, 'http://');
+	$filter_1_count_https = substr_count($commentdata_comment_content_lc_deslashed, 'https://');
 	$filter_1_count = $filter_1_count_http + $filter_1_count_https;
 	$filter_1_limit = 4;
 	$filter_1_trackback_limit = 1;
@@ -2210,19 +2256,19 @@ function spamshield_content_filter($commentdata) {
 	// Dev Note: Redo later to use word breaks in php regex
 	
 	$filter_2_term = 'viagra';
-	$filter_2_count = substr_count($commentdata_comment_content_lc, $filter_2_term);
+	$filter_2_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_2_term);
 	$filter_2_limit = 2;
 	$filter_2_trackback_limit = 1;
-	$filter_2_author_count = substr_count($commentdata_comment_author_lc, $filter_2_term);
+	$filter_2_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_2_term);
 	$filter_2_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_2_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_2_author_count;
 	// Filter 3: Number of occurrences of 'v1agra' in comment_content
 	$filter_3_term = 'v1agra';
-	$filter_3_count = substr_count($commentdata_comment_content_lc, $filter_3_term);
+	$filter_3_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_3_term);
 	$filter_3_limit = 1;
 	$filter_3_trackback_limit = 1;
-	$filter_3_author_count = substr_count($commentdata_comment_author_lc, $filter_3_term);
+	$filter_3_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_3_term);
 	$filter_3_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_3_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_3_author_count;
@@ -2232,345 +2278,345 @@ function spamshield_content_filter($commentdata) {
 	$filter_4_term_space = ' '.$filter_4_term; 
 	$filter_4_term_slash = '-'.$filter_4_term; 
 	$filter_4_term_dash = '/'.$filter_4_term;
-	$filter_4_count = substr_count($commentdata_comment_content_lc, $filter_4_term_space)+substr_count($commentdata_comment_content_lc, $filter_4_term_slash)+substr_count($commentdata_comment_content_lc, $filter_4_term_dash);
-	//$filter_4_count = substr_count($commentdata_comment_content_lc, $filter_4_term);
+	$filter_4_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term_space)+substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term_slash)+substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term_dash);
+	//$filter_4_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term);
 	$filter_4_limit = 2;
 	$filter_4_trackback_limit = 1;
-	$filter_4_author_count = substr_count($commentdata_comment_author_lc, $filter_4_term_space)+substr_count($commentdata_comment_author_lc, $filter_4_term_slash)+substr_count($commentdata_comment_author_lc, $filter_4_term_dash);
-	//$filter_4_author_count = substr_count($commentdata_comment_author_lc, $filter_4_term);
+	$filter_4_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term_space)+substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term_slash)+substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term_dash);
+	//$filter_4_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term);
 	$filter_4_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_4_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_4_author_count;
 	// Filter 5: Number of occurrences of 'c1alis' in comment_content
 	$filter_5_term = 'c1alis';
-	$filter_5_count = substr_count($commentdata_comment_content_lc, $filter_5_term);
+	$filter_5_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_5_term);
 	$filter_5_limit = 1;
 	$filter_5_trackback_limit = 1;
-	$filter_5_author_count = substr_count($commentdata_comment_author_lc, $filter_5_term);
+	$filter_5_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_5_term);
 	$filter_5_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_5_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_5_author_count;
 	// Filter 6: Number of occurrences of 'levitra' in comment_content
 	$filter_6_term = 'levitra';
-	$filter_6_count = substr_count($commentdata_comment_content_lc, $filter_6_term);
+	$filter_6_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_6_term);
 	$filter_6_limit = 2;
 	$filter_6_trackback_limit = 1;
-	$filter_6_author_count = substr_count($commentdata_comment_author_lc, $filter_6_term);
+	$filter_6_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_6_term);
 	$filter_6_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_6_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_6_author_count;
 	// Filter 7: Number of occurrences of 'lev1tra' in comment_content
 	$filter_7_term = 'lev1tra';
-	$filter_7_count = substr_count($commentdata_comment_content_lc, $filter_7_term);
+	$filter_7_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_7_term);
 	$filter_7_limit = 1;
 	$filter_7_trackback_limit = 1;
-	$filter_7_author_count = substr_count($commentdata_comment_author_lc, $filter_7_term);
+	$filter_7_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_7_term);
 	$filter_7_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_7_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_7_author_count;
 	// Filter 8: Number of occurrences of 'erectile dysfunction' in comment_content
 	$filter_8_term = 'erectile dysfunction';
-	$filter_8_count = substr_count($commentdata_comment_content_lc, $filter_8_term);
+	$filter_8_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_8_term);
 	$filter_8_limit = 2;
 	$filter_8_trackback_limit = 1;
-	$filter_8_author_count = substr_count($commentdata_comment_author_lc, $filter_8_term);
+	$filter_8_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_8_term);
 	$filter_8_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_8_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_8_author_count;
 	// Filter 9: Number of occurrences of 'erection' in comment_content
 	$filter_9_term = 'erection';
-	$filter_9_count = substr_count($commentdata_comment_content_lc, $filter_9_term);
+	$filter_9_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_9_term);
 	$filter_9_limit = 3;
 	$filter_9_trackback_limit = 1;
-	$filter_9_author_count = substr_count($commentdata_comment_author_lc, $filter_9_term);
+	$filter_9_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_9_term);
 	$filter_9_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_9_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_9_author_count;
 	// Filter 10: Number of occurrences of 'erectile' in comment_content
 	$filter_10_term = 'erectile';
-	$filter_10_count = substr_count($commentdata_comment_content_lc, $filter_10_term);
+	$filter_10_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_10_term);
 	$filter_10_limit = 2;
 	$filter_10_trackback_limit = 1;
-	$filter_10_author_count = substr_count($commentdata_comment_author_lc, $filter_10_term);
+	$filter_10_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_10_term);
 	$filter_10_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_10_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_10_author_count;
 	// Filter 11: Number of occurrences of 'xanax' in comment_content
 	$filter_11_term = 'xanax';
-	$filter_11_count = substr_count($commentdata_comment_content_lc, $filter_11_term);
+	$filter_11_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_11_term);
 	$filter_11_limit = 3;
 	$filter_11_trackback_limit = 2;
-	$filter_11_author_count = substr_count($commentdata_comment_author_lc, $filter_11_term);
+	$filter_11_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_11_term);
 	$filter_11_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_11_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_11_author_count;
 	// Filter 12: Number of occurrences of 'zithromax' in comment_content
 	$filter_12_term = 'zithromax';
-	$filter_12_count = substr_count($commentdata_comment_content_lc, $filter_12_term);
+	$filter_12_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_12_term);
 	$filter_12_limit = 3;
 	$filter_12_trackback_limit = 2;
-	$filter_12_author_count = substr_count($commentdata_comment_author_lc, $filter_12_term);
+	$filter_12_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_12_term);
 	$filter_12_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_12_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_12_author_count;
 	// Filter 13: Number of occurrences of 'phentermine' in comment_content
 	$filter_13_term = 'phentermine';
-	$filter_13_count = substr_count($commentdata_comment_content_lc, $filter_13_term);
+	$filter_13_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_13_term);
 	$filter_13_limit = 3;
 	$filter_13_trackback_limit = 2;
-	$filter_13_author_count = substr_count($commentdata_comment_author_lc, $filter_13_term);
+	$filter_13_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_13_term);
 	$filter_13_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_13_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_13_author_count;
 	// Filter 14: Number of occurrences of ' soma ' in comment_content
 	$filter_14_term = ' soma ';
-	$filter_14_count = substr_count($commentdata_comment_content_lc, $filter_14_term);
+	$filter_14_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_14_term);
 	$filter_14_limit = 3;
 	$filter_14_trackback_limit = 2;
-	$filter_14_author_count = substr_count($commentdata_comment_author_lc, $filter_14_term);
+	$filter_14_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_14_term);
 	$filter_14_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_14_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_14_author_count;
 	// Filter 15: Number of occurrences of ' soma.' in comment_content
 	$filter_15_term = ' soma.';
-	$filter_15_count = substr_count($commentdata_comment_content_lc, $filter_15_term);
+	$filter_15_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_15_term);
 	$filter_15_limit = 3;
 	$filter_15_trackback_limit = 2;
-	$filter_15_author_count = substr_count($commentdata_comment_author_lc, $filter_15_term);
+	$filter_15_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_15_term);
 	$filter_15_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_15_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_15_author_count;
 	// Filter 16: Number of occurrences of 'prescription' in comment_content
 	$filter_16_term = 'prescription';
-	$filter_16_count = substr_count($commentdata_comment_content_lc, $filter_16_term);
+	$filter_16_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_16_term);
 	$filter_16_limit = 3;
 	$filter_16_trackback_limit = 2;
-	$filter_16_author_count = substr_count($commentdata_comment_author_lc, $filter_16_term);
+	$filter_16_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_16_term);
 	$filter_16_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_16_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_16_author_count;
 	// Filter 17: Number of occurrences of 'tramadol' in comment_content
 	$filter_17_term = 'tramadol';
-	$filter_17_count = substr_count($commentdata_comment_content_lc, $filter_17_term);
+	$filter_17_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_17_term);
 	$filter_17_limit = 3;
 	$filter_17_trackback_limit = 2;
-	$filter_17_author_count = substr_count($commentdata_comment_author_lc, $filter_17_term);
+	$filter_17_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_17_term);
 	$filter_17_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_17_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_17_author_count;
 	// Filter 18: Number of occurrences of 'penis enlargement' in comment_content
 	$filter_18_term = 'penis enlargement';
-	$filter_18_count = substr_count($commentdata_comment_content_lc, $filter_18_term);
+	$filter_18_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_18_term);
 	$filter_18_limit = 2;
 	$filter_18_trackback_limit = 1;
-	$filter_18_author_count = substr_count($commentdata_comment_author_lc, $filter_18_term);
+	$filter_18_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_18_term);
 	$filter_18_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_18_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_18_author_count;
 	// Filter 19: Number of occurrences of 'buy pills' in comment_content
 	$filter_19_term = 'buy pills';
-	$filter_19_count = substr_count($commentdata_comment_content_lc, $filter_19_term);
+	$filter_19_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_19_term);
 	$filter_19_limit = 3;
 	$filter_19_trackback_limit = 2;
-	$filter_19_author_count = substr_count($commentdata_comment_author_lc, $filter_19_term);
+	$filter_19_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_19_term);
 	$filter_19_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_19_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_19_author_count;
 	// Filter 20: Number of occurrences of 'diet pill' in comment_content
 	$filter_20_term = 'diet pill';
-	$filter_20_count = substr_count($commentdata_comment_content_lc, $filter_20_term);
+	$filter_20_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_20_term);
 	$filter_20_limit = 3;
 	$filter_20_trackback_limit = 2;
-	$filter_20_author_count = substr_count($commentdata_comment_author_lc, $filter_20_term);
+	$filter_20_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_20_term);
 	$filter_20_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_20_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_20_author_count;
 	// Filter 21: Number of occurrences of 'weight loss pill' in comment_content
 	$filter_21_term = 'weight loss pill';
-	$filter_21_count = substr_count($commentdata_comment_content_lc, $filter_21_term);
+	$filter_21_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_21_term);
 	$filter_21_limit = 3;
 	$filter_21_trackback_limit = 2;
-	$filter_21_author_count = substr_count($commentdata_comment_author_lc, $filter_21_term);
+	$filter_21_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_21_term);
 	$filter_21_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_21_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_21_author_count;
 	// Filter 22: Number of occurrences of 'pill' in comment_content
 	$filter_22_term = 'pill';
-	$filter_22_count = substr_count($commentdata_comment_content_lc, $filter_22_term);
+	$filter_22_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_22_term);
 	$filter_22_limit = 10;
 	$filter_22_trackback_limit = 2;
-	$filter_22_author_count = substr_count($commentdata_comment_author_lc, $filter_22_term);
+	$filter_22_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_22_term);
 	$filter_22_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_22_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_22_author_count;
 	// Filter 23: Number of occurrences of ' pill,' in comment_content
 	$filter_23_term = ' pill,';
-	$filter_23_count = substr_count($commentdata_comment_content_lc, $filter_23_term);
+	$filter_23_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_23_term);
 	$filter_23_limit = 5;
 	$filter_23_trackback_limit = 2;
-	$filter_23_author_count = substr_count($commentdata_comment_author_lc, $filter_23_term);
+	$filter_23_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_23_term);
 	$filter_23_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_23_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_23_author_count;
 	// Filter 24: Number of occurrences of ' pills,' in comment_content
 	$filter_24_term = ' pills,';
-	$filter_24_count = substr_count($commentdata_comment_content_lc, $filter_24_term);
+	$filter_24_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_24_term);
 	$filter_24_limit = 5;
 	$filter_24_trackback_limit = 2;
-	$filter_24_author_count = substr_count($commentdata_comment_author_lc, $filter_24_term);
+	$filter_24_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_24_term);
 	$filter_24_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_24_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_24_author_count;
 	// Filter 25: Number of occurrences of 'propecia' in comment_content
 	$filter_25_term = 'propecia';
-	$filter_25_count = substr_count($commentdata_comment_content_lc, $filter_25_term);
+	$filter_25_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_25_term);
 	$filter_25_limit = 2;
 	$filter_25_trackback_limit = 1;
-	$filter_25_author_count = substr_count($commentdata_comment_author_lc, $filter_25_term);
+	$filter_25_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_25_term);
 	$filter_25_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_25_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_25_author_count;
 	// Filter 26: Number of occurrences of 'propec1a' in comment_content
 	$filter_26_term = 'propec1a';
-	$filter_26_count = substr_count($commentdata_comment_content_lc, $filter_26_term);
+	$filter_26_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_26_term);
 	$filter_26_limit = 1;
 	$filter_26_trackback_limit = 1;
-	$filter_26_author_count = substr_count($commentdata_comment_author_lc, $filter_26_term);
+	$filter_26_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_26_term);
 	$filter_26_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_26_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_26_author_count;
 	// Filter 27: Number of occurrences of 'online pharmacy' in comment_content
 	$filter_27_term = 'online pharmacy';
-	$filter_27_count = substr_count($commentdata_comment_content_lc, $filter_27_term);
+	$filter_27_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_27_term);
 	$filter_27_limit = 5;
 	$filter_27_trackback_limit = 2;
-	$filter_27_author_count = substr_count($commentdata_comment_author_lc, $filter_27_term);
+	$filter_27_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_27_term);
 	$filter_27_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_27_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_27_author_count;
 	// Filter 28: Number of occurrences of 'medication' in comment_content
 	$filter_28_term = 'medication';
-	$filter_28_count = substr_count($commentdata_comment_content_lc, $filter_28_term);
+	$filter_28_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_28_term);
 	$filter_28_limit = 7;
 	$filter_28_trackback_limit = 3;
-	$filter_28_author_count = substr_count($commentdata_comment_author_lc, $filter_28_term);
+	$filter_28_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_28_term);
 	$filter_28_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_28_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_28_author_count;
 	// Filter 29: Number of occurrences of 'buy now' in comment_content
 	$filter_29_term = 'buy now';
-	$filter_29_count = substr_count($commentdata_comment_content_lc, $filter_29_term);
+	$filter_29_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_29_term);
 	$filter_29_limit = 7;
 	$filter_29_trackback_limit = 3;
-	$filter_29_author_count = substr_count($commentdata_comment_author_lc, $filter_29_term);
+	$filter_29_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_29_term);
 	$filter_29_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_29_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_29_author_count;
 	// Filter 30: Number of occurrences of 'ephedrin' in comment_content
 	$filter_30_term = 'ephedrin';
-	$filter_30_count = substr_count($commentdata_comment_content_lc, $filter_30_term);
+	$filter_30_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_30_term);
 	$filter_30_limit = 3;
 	$filter_30_trackback_limit = 2;
-	$filter_30_author_count = substr_count($commentdata_comment_author_lc, $filter_30_term);
+	$filter_30_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_30_term);
 	$filter_30_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_30_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_30_author_count;
 	// Filter 31: Number of occurrences of 'ephedrin' in comment_content
 	$filter_31_term = 'ephedrine';
-	$filter_31_count = substr_count($commentdata_comment_content_lc, $filter_31_term);
+	$filter_31_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_31_term);
 	$filter_31_limit = 3;
 	$filter_31_trackback_limit = 2;
-	$filter_31_author_count = substr_count($commentdata_comment_author_lc, $filter_31_term);
+	$filter_31_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_31_term);
 	$filter_31_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_31_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_31_author_count;
 	// Filter 32: Number of occurrences of 'ephedrin' in comment_content
 	$filter_32_term = 'ephedr1n';
-	$filter_32_count = substr_count($commentdata_comment_content_lc, $filter_32_term);
+	$filter_32_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_32_term);
 	$filter_32_limit = 1;
 	$filter_32_trackback_limit = 1;
-	$filter_32_author_count = substr_count($commentdata_comment_author_lc, $filter_32_term);
+	$filter_32_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_32_term);
 	$filter_32_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_32_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_32_author_count;
 	// Filter 33: Number of occurrences of 'ephedrin' in comment_content
 	$filter_33_term = 'ephedr1ne';
-	$filter_33_count = substr_count($commentdata_comment_content_lc, $filter_33_term);
+	$filter_33_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_33_term);
 	$filter_33_limit = 1;
 	$filter_33_trackback_limit = 1;
-	$filter_33_author_count = substr_count($commentdata_comment_author_lc, $filter_33_term);
+	$filter_33_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_33_term);
 	$filter_33_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_33_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_33_author_count;
 	// Filter 34: Number of occurrences of 'ephedra' in comment_content
 	$filter_34_term = 'ephedra';
-	$filter_34_count = substr_count($commentdata_comment_content_lc, $filter_34_term);
+	$filter_34_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_34_term);
 	$filter_34_limit = 3;
 	$filter_34_trackback_limit = 2;
-	$filter_34_author_count = substr_count($commentdata_comment_author_lc, $filter_34_term);
+	$filter_34_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_34_term);
 	$filter_34_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_34_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_34_author_count;
 	// Filter 35: Number of occurrences of 'valium' in comment_content
 	$filter_35_term = 'valium';
-	$filter_35_count = substr_count($commentdata_comment_content_lc, $filter_35_term);
+	$filter_35_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_35_term);
 	$filter_35_limit = 3;
 	$filter_35_trackback_limit = 2;
-	$filter_35_author_count = substr_count($commentdata_comment_author_lc, $filter_35_term);
+	$filter_35_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_35_term);
 	$filter_35_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_35_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_35_author_count;
 	// Filter 36: Number of occurrences of 'adipex' in comment_content
 	$filter_36_term = 'adipex';
-	$filter_36_count = substr_count($commentdata_comment_content_lc, $filter_36_term);
+	$filter_36_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_36_term);
 	$filter_36_limit = 3;
 	$filter_36_trackback_limit = 2;
-	$filter_36_author_count = substr_count($commentdata_comment_author_lc, $filter_36_term);
+	$filter_36_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_36_term);
 	$filter_36_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_36_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_36_author_count;
 	// Filter 37: Number of occurrences of 'accutane' in comment_content
 	$filter_37_term = 'accutane';
-	$filter_37_count = substr_count($commentdata_comment_content_lc, $filter_37_term);
+	$filter_37_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_37_term);
 	$filter_37_limit = 3;
 	$filter_37_trackback_limit = 2;
-	$filter_37_author_count = substr_count($commentdata_comment_author_lc, $filter_37_term);
+	$filter_37_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_37_term);
 	$filter_37_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_37_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_37_author_count;
 	// Filter 38: Number of occurrences of 'acomplia' in comment_content
 	$filter_38_term = 'acomplia';
-	$filter_38_count = substr_count($commentdata_comment_content_lc, $filter_38_term);
+	$filter_38_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_38_term);
 	$filter_38_limit = 3;
 	$filter_38_trackback_limit = 2;
-	$filter_38_author_count = substr_count($commentdata_comment_author_lc, $filter_38_term);
+	$filter_38_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_38_term);
 	$filter_38_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_38_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_38_author_count;
 	// Filter 39: Number of occurrences of 'rimonabant' in comment_content
 	$filter_39_term = 'rimonabant';
-	$filter_39_count = substr_count($commentdata_comment_content_lc, $filter_39_term);
+	$filter_39_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_39_term);
 	$filter_39_limit = 3;
 	$filter_39_trackback_limit = 2;
-	$filter_39_author_count = substr_count($commentdata_comment_author_lc, $filter_39_term);
+	$filter_39_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_39_term);
 	$filter_39_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_39_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_39_author_count;
 	// Filter 40: Number of occurrences of 'zimulti' in comment_content
 	$filter_40_term = 'zimulti';
-	$filter_40_count = substr_count($commentdata_comment_content_lc, $filter_40_term);
+	$filter_40_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_40_term);
 	$filter_40_limit = 3;
 	$filter_40_trackback_limit = 2;
-	$filter_40_author_count = substr_count($commentdata_comment_author_lc, $filter_40_term);
+	$filter_40_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_40_term);
 	$filter_40_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_40_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_40_author_count;
 	// Filter 41: Number of occurrences of 'herbalife' in comment_content
 	$filter_41_term = 'herbalife';
-	$filter_41_count = substr_count($commentdata_comment_content_lc, $filter_41_term);
+	$filter_41_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_41_term);
 	$filter_41_limit = 8;
 	$filter_41_trackback_limit = 7;
-	$filter_41_author_count = substr_count($commentdata_comment_author_lc, $filter_41_term);
+	$filter_41_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_41_term);
 	$filter_41_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_41_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_41_author_count;
@@ -2579,10 +2625,10 @@ function spamshield_content_filter($commentdata) {
 	// Non-Medical Author Tests
 	// Filter 210: Number of occurrences of 'drassyassut' in comment_content
 	$filter_210_term = 'drassyassut'; //DrassyassuT
-	$filter_210_count = substr_count($commentdata_comment_content_lc, $filter_210_term);
+	$filter_210_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_210_term);
 	$filter_210_limit = 1;
 	$filter_210_trackback_limit = 1;
-	$filter_210_author_count = substr_count($commentdata_comment_author_lc, $filter_210_term);
+	$filter_210_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_210_term);
 	$filter_210_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_210_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_210_author_count;
@@ -2590,289 +2636,289 @@ function spamshield_content_filter($commentdata) {
 	// Sex-Related Filter
 	// Comment Content ONLY - These are not Author Tests
 	// Filter 104: Number of occurrences of 'porn' in comment_content
-	$filter_104_count = substr_count($commentdata_comment_content_lc, 'porn');
+	$filter_104_count = substr_count($commentdata_comment_content_lc_deslashed, 'porn');
 	$filter_104_limit = 5;
 	$filter_104_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_104_count;
 	// Filter 105: Number of occurrences of 'teen porn' in comment_content
-	$filter_105_count = substr_count($commentdata_comment_content_lc, 'teen porn');
+	$filter_105_count = substr_count($commentdata_comment_content_lc_deslashed, 'teen porn');
 	$filter_105_limit = 1;
 	$filter_105_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_105_count;
 	// Filter 106: Number of occurrences of 'rape porn' in comment_content
-	$filter_106_count = substr_count($commentdata_comment_content_lc, 'rape porn');
+	$filter_106_count = substr_count($commentdata_comment_content_lc_deslashed, 'rape porn');
 	$filter_106_limit = 1;
 	$filter_106_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_106_count;
 	// Filter 107: Number of occurrences of 'incest porn' in comment_content
-	$filter_107_count = substr_count($commentdata_comment_content_lc, 'incest porn');
+	$filter_107_count = substr_count($commentdata_comment_content_lc_deslashed, 'incest porn');
 	$filter_107_limit = 1;
 	$filter_107_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_107_count;
 	// Filter 108: Number of occurrences of 'hentai' in comment_content
-	$filter_108_count = substr_count($commentdata_comment_content_lc, 'hentai');
+	$filter_108_count = substr_count($commentdata_comment_content_lc_deslashed, 'hentai');
 	$filter_108_limit = 2;
 	$filter_108_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_108_count;
 	// Filter 109: Number of occurrences of 'sex movie' in comment_content
-	$filter_109_count = substr_count($commentdata_comment_content_lc, 'sex movie');
+	$filter_109_count = substr_count($commentdata_comment_content_lc_deslashed, 'sex movie');
 	$filter_109_limit = 2;
 	$filter_109_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_109_count;
 	// Filter 110: Number of occurrences of 'sex tape' in comment_content
-	$filter_110_count = substr_count($commentdata_comment_content_lc, 'sex tape');
+	$filter_110_count = substr_count($commentdata_comment_content_lc_deslashed, 'sex tape');
 	$filter_110_limit = 2;
 	$filter_110_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_110_count;
 	// Filter 111: Number of occurrences of 'sex' in comment_content
-	$filter_111_count = substr_count($commentdata_comment_content_lc, 'sex');
+	$filter_111_count = substr_count($commentdata_comment_content_lc_deslashed, 'sex');
 	$filter_111_limit = 5; // you may increase to 15+ if blog's topic is adult in nature
 	$filter_111_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_111_count;
 	// Filter 112: Number of occurrences of 'sex' in comment_content
-	$filter_112_count = substr_count($commentdata_comment_content_lc, 'pussy');
+	$filter_112_count = substr_count($commentdata_comment_content_lc_deslashed, 'pussy');
 	$filter_112_limit = 3;
 	$filter_112_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_112_count;
 	// Filter 113: Number of occurrences of 'penis' in comment_content
-	$filter_113_count = substr_count($commentdata_comment_content_lc, 'penis');
+	$filter_113_count = substr_count($commentdata_comment_content_lc_deslashed, 'penis');
 	$filter_113_limit = 3;
 	$filter_113_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_113_count;
 	// Filter 114: Number of occurrences of 'vagina' in comment_content
-	$filter_114_count = substr_count($commentdata_comment_content_lc, 'vagina');
+	$filter_114_count = substr_count($commentdata_comment_content_lc_deslashed, 'vagina');
 	$filter_114_limit = 3;
 	$filter_114_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_114_count;
 	// Filter 115: Number of occurrences of 'gay porn' in comment_content
-	$filter_115_count = substr_count($commentdata_comment_content_lc, 'gay porn');
+	$filter_115_count = substr_count($commentdata_comment_content_lc_deslashed, 'gay porn');
 	$filter_115_limit = 2;
 	$filter_115_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_115_count;
 	// Filter 116: Number of occurrences of 'torture porn' in comment_content
-	$filter_116_count = substr_count($commentdata_comment_content_lc, 'torture porn');
+	$filter_116_count = substr_count($commentdata_comment_content_lc_deslashed, 'torture porn');
 	$filter_116_limit = 1; 
 	$filter_116_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_116_count;
 	// Filter 117: Number of occurrences of 'masturbation' in comment_content
-	$filter_117_count = substr_count($commentdata_comment_content_lc, 'masturbation');
+	$filter_117_count = substr_count($commentdata_comment_content_lc_deslashed, 'masturbation');
 	$filter_117_limit = 3;
 	$filter_117_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_117_count;
 	// Filter 118: Number of occurrences of 'masterbation' in comment_content
-	$filter_118_count = substr_count($commentdata_comment_content_lc, 'masterbation');
+	$filter_118_count = substr_count($commentdata_comment_content_lc_deslashed, 'masterbation');
 	$filter_118_limit = 2;
 	$filter_118_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_118_count;
 	// Filter 119: Number of occurrences of 'masturbate' in comment_content
-	$filter_119_count = substr_count($commentdata_comment_content_lc, 'masturbate');
+	$filter_119_count = substr_count($commentdata_comment_content_lc_deslashed, 'masturbate');
 	$filter_119_limit = 3;
 	$filter_119_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_119_count;
 	// Filter 120: Number of occurrences of 'masterbate' in comment_content
-	$filter_120_count = substr_count($commentdata_comment_content_lc, 'masterbate');
+	$filter_120_count = substr_count($commentdata_comment_content_lc_deslashed, 'masterbate');
 	$filter_120_limit = 2;
 	$filter_120_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_120_count;
 	// Filter 121: Number of occurrences of 'masturbating' in comment_content
-	$filter_121_count = substr_count($commentdata_comment_content_lc, 'masturbating');
+	$filter_121_count = substr_count($commentdata_comment_content_lc_deslashed, 'masturbating');
 	$filter_121_limit = 3;
 	$filter_121_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_121_count;
 	// Filter 122: Number of occurrences of 'masterbating' in comment_content
-	$filter_122_count = substr_count($commentdata_comment_content_lc, 'masterbating');
+	$filter_122_count = substr_count($commentdata_comment_content_lc_deslashed, 'masterbating');
 	$filter_122_limit = 2;
 	$filter_122_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_122_count;
 	// Filter 123: Number of occurrences of 'anal sex' in comment_content
-	$filter_123_count = substr_count($commentdata_comment_content_lc, 'anal sex');
+	$filter_123_count = substr_count($commentdata_comment_content_lc_deslashed, 'anal sex');
 	$filter_123_limit = 3;
 	$filter_123_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_123_count;
 	// Filter 124: Number of occurrences of 'xxx' in comment_content
-	$filter_124_count = substr_count($commentdata_comment_content_lc, 'xxx');
+	$filter_124_count = substr_count($commentdata_comment_content_lc_deslashed, 'xxx');
 	$filter_124_limit = 5;
 	$filter_124_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_124_count;
 	// Filter 125: Number of occurrences of 'naked' in comment_content
-	$filter_125_count = substr_count($commentdata_comment_content_lc, 'naked');
+	$filter_125_count = substr_count($commentdata_comment_content_lc_deslashed, 'naked');
 	$filter_125_limit = 5;
 	$filter_125_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_125_count;
 	// Filter 126: Number of occurrences of 'nude' in comment_content
-	$filter_126_count = substr_count($commentdata_comment_content_lc, 'nude');
+	$filter_126_count = substr_count($commentdata_comment_content_lc_deslashed, 'nude');
 	$filter_126_limit = 5;
 	$filter_126_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_126_count;
 	// Filter 127: Number of occurrences of 'fucking' in comment_content
-	$filter_127_count = substr_count($commentdata_comment_content_lc, 'fucking');
+	$filter_127_count = substr_count($commentdata_comment_content_lc_deslashed, 'fucking');
 	$filter_127_limit = 5;
 	$filter_127_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_127_count;
 	// Filter 128: Number of occurrences of 'orgasm' in comment_content
-	$filter_128_count = substr_count($commentdata_comment_content_lc, 'orgasm');
+	$filter_128_count = substr_count($commentdata_comment_content_lc_deslashed, 'orgasm');
 	$filter_128_limit = 5;
 	$filter_128_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_128_count;
 	// Filter 129: Number of occurrences of 'pron' in comment_content
-	$filter_129_count = substr_count($commentdata_comment_content_lc, 'pron');
+	$filter_129_count = substr_count($commentdata_comment_content_lc_deslashed, 'pron');
 	$filter_129_limit = 5;
 	$filter_129_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_129_count;
 	// Filter 130: Number of occurrences of 'bestiality' in comment_content
-	$filter_130_count = substr_count($commentdata_comment_content_lc, 'bestiality');
+	$filter_130_count = substr_count($commentdata_comment_content_lc_deslashed, 'bestiality');
 	$filter_130_limit = 2;
 	$filter_130_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_130_count;
 	// Filter 131: Number of occurrences of 'animal sex' in comment_content
-	$filter_131_count = substr_count($commentdata_comment_content_lc, 'animal sex');
+	$filter_131_count = substr_count($commentdata_comment_content_lc_deslashed, 'animal sex');
 	$filter_131_limit = 2;
 	$filter_131_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_131_count;
 	// Filter 132: Number of occurrences of 'dildo' in comment_content
-	$filter_132_count = substr_count($commentdata_comment_content_lc, 'dildo');
+	$filter_132_count = substr_count($commentdata_comment_content_lc_deslashed, 'dildo');
 	$filter_132_limit = 4;
 	$filter_132_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_132_count;
 	// Filter 133: Number of occurrences of 'ejaculate' in comment_content
-	$filter_133_count = substr_count($commentdata_comment_content_lc, 'ejaculate');
+	$filter_133_count = substr_count($commentdata_comment_content_lc_deslashed, 'ejaculate');
 	$filter_133_limit = 3;
 	$filter_133_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_133_count;
 	// Filter 134: Number of occurrences of 'ejaculation' in comment_content
-	$filter_134_count = substr_count($commentdata_comment_content_lc, 'ejaculation');
+	$filter_134_count = substr_count($commentdata_comment_content_lc_deslashed, 'ejaculation');
 	$filter_134_limit = 3;
 	$filter_134_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_134_count;
 	// Filter 135: Number of occurrences of 'ejaculating' in comment_content
-	$filter_135_count = substr_count($commentdata_comment_content_lc, 'ejaculating');
+	$filter_135_count = substr_count($commentdata_comment_content_lc_deslashed, 'ejaculating');
 	$filter_135_limit = 3;
 	$filter_135_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_135_count;
 	// Filter 136: Number of occurrences of 'lesbian' in comment_content
-	$filter_136_count = substr_count($commentdata_comment_content_lc, 'lesbian');
+	$filter_136_count = substr_count($commentdata_comment_content_lc_deslashed, 'lesbian');
 	$filter_136_limit = 7;
 	$filter_136_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_136_count;
 	// Filter 137: Number of occurrences of 'sex video' in comment_content
-	$filter_137_count = substr_count($commentdata_comment_content_lc, 'sex video');
+	$filter_137_count = substr_count($commentdata_comment_content_lc_deslashed, 'sex video');
 	$filter_137_limit = 2;
 	$filter_137_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_137_count;
 	// Filter 138: Number of occurrences of ' anal ' in comment_content
-	$filter_138_count = substr_count($commentdata_comment_content_lc, ' anal ');
+	$filter_138_count = substr_count($commentdata_comment_content_lc_deslashed, ' anal ');
 	$filter_138_limit = 5;
 	$filter_138_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_138_count;
 	// Filter 139: Number of occurrences of '>anal ' in comment_content
-	$filter_139_count = substr_count($commentdata_comment_content_lc, '>anal ');
+	$filter_139_count = substr_count($commentdata_comment_content_lc_deslashed, '>anal ');
 	$filter_139_limit = 5;
 	$filter_139_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_139_count;
 	// Filter 140: Number of occurrences of 'desnuda' in comment_content
-	$filter_140_count = substr_count($commentdata_comment_content_lc, 'desnuda');
+	$filter_140_count = substr_count($commentdata_comment_content_lc_deslashed, 'desnuda');
 	$filter_140_limit = 5;
 	$filter_140_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_140_count;
 	// Filter 141: Number of occurrences of 'cumshots' in comment_content
-	$filter_141_count = substr_count($commentdata_comment_content_lc, 'cumshots');
+	$filter_141_count = substr_count($commentdata_comment_content_lc_deslashed, 'cumshots');
 	$filter_141_limit = 2;
 	$filter_141_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_141_count;
 	// Filter 142: Number of occurrences of 'porntube' in comment_content
-	$filter_142_count = substr_count($commentdata_comment_content_lc, 'porntube');
+	$filter_142_count = substr_count($commentdata_comment_content_lc_deslashed, 'porntube');
 	$filter_142_limit = 2;
 	$filter_142_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_142_count;
 	// Filter 143: Number of occurrences of 'fuck' in comment_content
-	$filter_143_count = substr_count($commentdata_comment_content_lc, 'fuck');
+	$filter_143_count = substr_count($commentdata_comment_content_lc_deslashed, 'fuck');
 	$filter_143_limit = 6;
 	$filter_143_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_143_count;
 	// Filter 144: Number of occurrences of 'celebrity' in comment_content
-	$filter_144_count = substr_count($commentdata_comment_content_lc, 'celebrity');
+	$filter_144_count = substr_count($commentdata_comment_content_lc_deslashed, 'celebrity');
 	$filter_144_limit = 6;
 	$filter_144_trackback_limit = 6;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_144_count;
 	// Filter 145: Number of occurrences of 'celebrities' in comment_content
-	$filter_145_count = substr_count($commentdata_comment_content_lc, 'celebrities');
+	$filter_145_count = substr_count($commentdata_comment_content_lc_deslashed, 'celebrities');
 	$filter_145_limit = 6;
 	$filter_145_trackback_limit = 6;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_145_count;
 	// Filter 146: Number of occurrences of 'erotic' in comment_content
-	$filter_146_count = substr_count($commentdata_comment_content_lc, 'erotic');
+	$filter_146_count = substr_count($commentdata_comment_content_lc_deslashed, 'erotic');
 	$filter_146_limit = 6;
 	$filter_146_trackback_limit = 4;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_146_count;
 	// Filter 147: Number of occurrences of 'gay' in comment_content
-	$filter_147_count = substr_count($commentdata_comment_content_lc, 'gay');
+	$filter_147_count = substr_count($commentdata_comment_content_lc_deslashed, 'gay');
 	$filter_147_limit = 7;
 	$filter_147_trackback_limit = 4;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_147_count;
 	// Filter 148: Number of occurrences of 'heterosexual' in comment_content
-	$filter_148_count = substr_count($commentdata_comment_content_lc, 'heterosexual');
+	$filter_148_count = substr_count($commentdata_comment_content_lc_deslashed, 'heterosexual');
 	$filter_148_limit = 7;
 	$filter_148_trackback_limit = 4;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_148_count;
 	// Filter 149: Number of occurrences of 'blowjob' in comment_content
-	$filter_149_count = substr_count($commentdata_comment_content_lc, 'blowjob');
+	$filter_149_count = substr_count($commentdata_comment_content_lc_deslashed, 'blowjob');
 	$filter_149_limit = 2;
 	$filter_149_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_149_count;
 	// Filter 150: Number of occurrences of 'blow job' in comment_content
-	$filter_150_count = substr_count($commentdata_comment_content_lc, 'blow job');
+	$filter_150_count = substr_count($commentdata_comment_content_lc_deslashed, 'blow job');
 	$filter_150_limit = 2;
 	$filter_150_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_150_count;
 	// Filter 151: Number of occurrences of 'rape' in comment_content
-	$filter_151_count = substr_count($commentdata_comment_content_lc, 'rape');
+	$filter_151_count = substr_count($commentdata_comment_content_lc_deslashed, 'rape');
 	$filter_151_limit = 5;
 	$filter_151_trackback_limit = 3;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_151_count;
 	// Filter 152: Number of occurrences of 'prostitute' in comment_content
-	$filter_152_count = substr_count($commentdata_comment_content_lc, 'prostitute');
+	$filter_152_count = substr_count($commentdata_comment_content_lc_deslashed, 'prostitute');
 	$filter_152_limit = 7;
 	$filter_152_trackback_limit = 5;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_152_count;
 	// Filter 153: Number of occurrences of 'call girl' in comment_content
-	$filter_153_count = substr_count($commentdata_comment_content_lc, 'call girl');
+	$filter_153_count = substr_count($commentdata_comment_content_lc_deslashed, 'call girl');
 	$filter_153_limit = 7;
 	$filter_153_trackback_limit = 5;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_153_count;
 	// Filter 154: Number of occurrences of 'escort service' in comment_content
-	$filter_154_count = substr_count($commentdata_comment_content_lc, 'escort service');
+	$filter_154_count = substr_count($commentdata_comment_content_lc_deslashed, 'escort service');
 	$filter_154_limit = 7;
 	$filter_154_trackback_limit = 5;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_154_count;
 	// Filter 155: Number of occurrences of 'sexual service' in comment_content
-	$filter_155_count = substr_count($commentdata_comment_content_lc, 'sexual service');
+	$filter_155_count = substr_count($commentdata_comment_content_lc_deslashed, 'sexual service');
 	$filter_155_limit = 7;
 	$filter_155_trackback_limit = 5;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_155_count;
 	// Filter 156: Number of occurrences of 'adult movie' in comment_content
-	$filter_156_count = substr_count($commentdata_comment_content_lc, 'adult movie');
+	$filter_156_count = substr_count($commentdata_comment_content_lc_deslashed, 'adult movie');
 	$filter_156_limit = 4;
 	$filter_156_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_156_count;
 	// Filter 157: Number of occurrences of 'adult video' in comment_content
-	$filter_157_count = substr_count($commentdata_comment_content_lc, 'adult video');
+	$filter_157_count = substr_count($commentdata_comment_content_lc_deslashed, 'adult video');
 	$filter_157_limit = 4;
 	$filter_157_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_157_count;
 	// Filter 158: Number of occurrences of 'clitoris' in comment_content
-	$filter_158_count = substr_count($commentdata_comment_content_lc, 'clitoris');
+	$filter_158_count = substr_count($commentdata_comment_content_lc_deslashed, 'clitoris');
 	$filter_158_limit = 3;
 	$filter_158_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_158_count;
 	// Filter 159: Number of occurrences of 'cyber sex' in comment_content
-	$filter_159_count = substr_count($commentdata_comment_content_lc, 'cyber sex');
+	$filter_159_count = substr_count($commentdata_comment_content_lc_deslashed, 'cyber sex');
 	$filter_159_limit = 3;
 	$filter_159_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_159_count;
 	
 	// Pingback/Trackback Filters
 	// Filter 200: Pingback: Blank data in comment_content: [...]  [...]
-	$filter_200_count = substr_count($commentdata_comment_content_lc, '[...]  [...]');
+	$filter_200_count = substr_count($commentdata_comment_content_lc_deslashed, '[...]  [...]');
 	$filter_200_limit = 1;
 	$filter_200_trackback_limit = 1;
 
@@ -2881,25 +2927,25 @@ function spamshield_content_filter($commentdata) {
 
 
 	// Author Test: for *author names* surrounded by asterisks
-	if ( preg_match( "/^\*/", $commentdata_comment_author_lc ) || preg_match( "/\*$/", $commentdata_comment_author_lc ) ) {
+	if ( preg_match( "/^\*/", $commentdata_comment_author_lc_deslashed ) || preg_match( "/\*$/", $commentdata_comment_author_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 300001AUTH-STAR';
 		}
 		
-	// Author Test: if $commentdata_comment_author_lc is a URL, NO GO
-	if ( preg_match( "@^https?@i", $commentdata_comment_author_lc ) ) {
+	// Author Test: if $commentdata_comment_author_lc_deslashed is a URL, NO GO
+	if ( preg_match( "@^https?@i", $commentdata_comment_author_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 300002AUTH-HTTP';
 		}
 
-	// Author Test: if $commentdata_comment_author_lc contains more than 7 words, NO GO
-	if ( $commentdata_comment_author_lc_words > 7 && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
+	// Author Test: if $commentdata_comment_author_lc_deslashed contains more than 7 words, NO GO
+	if ( $commentdata_comment_author_lc_deslashed_words > 7 && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 300003AUTH-MAX';
 		}
 
-	// Author Test: if $commentdata_comment_author_lc contains "seo" at either end of phrase, NO GO
-	if ( ( preg_match( "/^seo /i", $commentdata_comment_author_lc ) || preg_match( "/ seo$/i", $commentdata_comment_author_lc ) ) && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
+	// Author Test: if $commentdata_comment_author_lc_deslashed contains "seo" at either end of phrase, NO GO
+	if ( ( preg_match( "/^seo\s/i", $commentdata_comment_author_lc_deslashed ) || preg_match( "/\sseo$/i", $commentdata_comment_author_lc_deslashed ) ) && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 300004AUTH-SEO';
 		}
@@ -2923,62 +2969,62 @@ function spamshield_content_filter($commentdata) {
 
 	// General Spam Terms
 	// Filter 500: Number of occurrences of ' loan' in comment_content
-	$filter_500_count = substr_count($commentdata_comment_content_lc, ' loan');
+	$filter_500_count = substr_count($commentdata_comment_content_lc_deslashed, ' loan');
 	$filter_500_limit = 7;
 	$filter_500_trackback_limit = 3;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_500_count;
 	// Filter 501: Number of occurrences of 'student ' in comment_content
-	$filter_501_count = substr_count($commentdata_comment_content_lc, 'student ');
+	$filter_501_count = substr_count($commentdata_comment_content_lc_deslashed, 'student ');
 	$filter_501_limit = 11;
 	$filter_501_trackback_limit = 6;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_501_count;
 	// Filter 502: Number of occurrences of 'loan consolidation' in comment_content
-	$filter_502_count = substr_count($commentdata_comment_content_lc, 'loan consolidation');
+	$filter_502_count = substr_count($commentdata_comment_content_lc_deslashed, 'loan consolidation');
 	$filter_502_limit = 5;
 	$filter_502_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_502_count;
 	// Filter 503: Number of occurrences of 'credit card' in comment_content
-	$filter_503_count = substr_count($commentdata_comment_content_lc, 'credit card');
+	$filter_503_count = substr_count($commentdata_comment_content_lc_deslashed, 'credit card');
 	$filter_503_limit = 5;
 	$filter_503_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_503_count;
 	// Filter 504: Number of occurrences of 'health insurance' in comment_content
-	$filter_504_count = substr_count($commentdata_comment_content_lc, 'health insurance');
+	$filter_504_count = substr_count($commentdata_comment_content_lc_deslashed, 'health insurance');
 	$filter_504_limit = 5;
 	$filter_504_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_504_count;
 	// Filter 505: Number of occurrences of 'student loan' in comment_content
-	$filter_505_count = substr_count($commentdata_comment_content_lc, 'student loan');
+	$filter_505_count = substr_count($commentdata_comment_content_lc_deslashed, 'student loan');
 	$filter_505_limit = 4;
 	$filter_505_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_505_count;
 	// Filter 506: Number of occurrences of 'student credit card' in comment_content
-	$filter_506_count = substr_count($commentdata_comment_content_lc, 'student credit card');
+	$filter_506_count = substr_count($commentdata_comment_content_lc_deslashed, 'student credit card');
 	$filter_506_limit = 4;
 	$filter_506_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_506_count;
 	// Filter 507: Number of occurrences of 'consolidation student' in comment_content
-	$filter_507_count = substr_count($commentdata_comment_content_lc, 'consolidation student');
+	$filter_507_count = substr_count($commentdata_comment_content_lc_deslashed, 'consolidation student');
 	$filter_507_limit = 4;
 	$filter_507_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_507_count;
 	// Filter 508: Number of occurrences of 'student health insurance' in comment_content
-	$filter_508_count = substr_count($commentdata_comment_content_lc, 'student health insurance');
+	$filter_508_count = substr_count($commentdata_comment_content_lc_deslashed, 'student health insurance');
 	$filter_508_limit = 4;
 	$filter_508_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_508_count;
 	// Filter 509: Number of occurrences of 'student loan consolidation' in comment_content
-	$filter_509_count = substr_count($commentdata_comment_content_lc, 'student loan consolidation');
+	$filter_509_count = substr_count($commentdata_comment_content_lc_deslashed, 'student loan consolidation');
 	$filter_509_limit = 4;
 	$filter_509_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_509_count;
 	// Filter 510: Number of occurrences of 'data entry' in comment_content
-	$filter_510_count = substr_count($commentdata_comment_content_lc, 'data entry');
+	$filter_510_count = substr_count($commentdata_comment_content_lc_deslashed, 'data entry');
 	$filter_510_limit = 5;
 	$filter_510_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_510_count;
 	// Filter 511: Number of occurrences of 'asdf' in comment_content
-	$filter_511_count = substr_count($commentdata_comment_content_lc, 'asdf');
+	$filter_511_count = substr_count($commentdata_comment_content_lc_deslashed, 'asdf');
 	$filter_511_limit = 6;
 	$filter_511_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_511_count;
@@ -3016,41 +3062,41 @@ function spamshield_content_filter($commentdata) {
 	// Check for Optimized URL's and Keyword Phrases Occurring in Author Name and Content
 	
 	// Filter 10001: Number of occurrences of 'this is something special' in comment_content
-	$filter_10001_count = substr_count($commentdata_comment_content_lc, 'this is something special');
+	$filter_10001_count = substr_count($commentdata_comment_content_lc_deslashed, 'this is something special');
 	$filter_10001_limit = 1;
 	$filter_10001_trackback_limit = 1;
 	// Filter 10002: Number of occurrences of 'http://groups.google.com/group/' in comment_content
-	$filter_10002_count = substr_count($commentdata_comment_content_lc, 'http://groups.google.com/group/');
+	$filter_10002_count = substr_count($commentdata_comment_content_lc_deslashed, 'http://groups.google.com/group/');
 	$filter_10002_limit = 1;
 	$filter_10002_trackback_limit = 1;
 	// Filter 10003: Number of occurrences of 'youporn' in comment_content
-	$filter_10003_count = substr_count($commentdata_comment_content_lc, 'youporn');
+	$filter_10003_count = substr_count($commentdata_comment_content_lc_deslashed, 'youporn');
 	$filter_10003_limit = 1;
 	$filter_10003_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_10003_count;
 	// Filter 10004: Number of occurrences of 'pornotube' in comment_content
-	$filter_10004_count = substr_count($commentdata_comment_content_lc, 'pornotube');
+	$filter_10004_count = substr_count($commentdata_comment_content_lc_deslashed, 'pornotube');
 	$filter_10004_limit = 1;
 	$filter_10004_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_10004_count;
 	// Filter 10005: Number of occurrences of 'porntube' in comment_content
-	$filter_10005_count = substr_count($commentdata_comment_content_lc, 'porntube');
+	$filter_10005_count = substr_count($commentdata_comment_content_lc_deslashed, 'porntube');
 	$filter_10005_limit = 1;
 	$filter_10005_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_10005_count;
 	// Filter 10006: Number of occurrences of 'http://groups.google.us/group/' in comment_content
-	$filter_10006_count = substr_count($commentdata_comment_content_lc, 'http://groups.google.us/group/');
+	$filter_10006_count = substr_count($commentdata_comment_content_lc_deslashed, 'http://groups.google.us/group/');
 	$filter_10006_limit = 1;
 	$filter_10006_trackback_limit = 1;
 	
 	
 	// Regular Expression Tests - 2nd Gen - Comment Author/Author URL - BEGIN
 
-	// 10500 - Complex Test for terms in Comment Author/URL - $commentdata_comment_author_lc/$CommentAuthorURLDomain
+	// 10500 - Complex Test for terms in Comment Author/URL - $commentdata_comment_author_lc_deslashed/$CommentAuthorURLDomain
 	// Added V 1.1.1.0 - 04/14
 	$CommentAuthorURLDomain = spamshield_get_domain($commentdata_comment_author_url_lc);
 	// PayDay Loan Spammers
-	if ( preg_match( "@((payday|students?|title)([a-z0-9-\s]*)loan|cash(\s+)advance)@i", $CommentAuthorURLDomain ) ) {
+	if ( preg_match( "@((payday|students?|title)([a-z0-9-]*)loan|cash([a-z0-9-]*)advance)@i", $CommentAuthorURLDomain ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10501AU';
 		}
@@ -3066,64 +3112,64 @@ function spamshield_content_filter($commentdata) {
 		$spamshield_error_code .= ' 10510AU-MSC';
 		}
 	// Debt Consolidation Spammers
-	if ( preg_match( "@(debt(\s*))?consolidat(ion|or|er)((\s*)loan)?@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(debt(\s*))?consolidat(ion|or|er)((\s*)loan)?@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10521A-DC';
 		}
 	// SEO Spammers
-	if ( preg_match( "@((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|seo|sem)$@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|seo|sem)$@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10601A-SEO';
 		}
-	if ( preg_match( "@((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|link(\s*)build(ing|er)|web(\s*)(site)?(\s*)promot(ion|ing|er)|(trackback|social|comments?)(\s*)(submit(ter|ting)?|poster))@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|link(\s*)build(ing|er)|web(\s*)(site)?(\s*)promot(ion|ing|er)|(trackback|social|comments?)(\s*)(submit(ter|ting)?|poster))@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10602A-SEO';
 		}
 	// Website Design/Hosting Spammers
-	if ( preg_match( "@(web(\s*)(site)?(\s+)(host(ing)?|design(er|ing)?|develop(ment|er|ing)?)|javascript|webmaster|website|template)@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(web(\s*)(site)?(\s+)(host(ing)?|design(er|ing)?|develop(ment|er|ing)?)|javascript|webmaster|website|template)@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10701A-WEB';
 		}
 	// Online Gambling Spammers
-	if ( ( preg_match( "@(online|internet|web)(\s*)(gambling|casino|poker|blackjack)@i", $commentdata_comment_author_lc ) || preg_match( "@(gambling|casino|poker)(\s*)(online|internet|web)@i", $commentdata_comment_author_lc ) ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( ( preg_match( "@(online|internet|web)(\s*)(gambling|casino|poker|blackjack)@i", $commentdata_comment_author_lc_deslashed ) || preg_match( "@(gambling|casino|poker)(\s*)(online|internet|web)@i", $commentdata_comment_author_lc_deslashed ) ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10801A-OLG';
 		}
 	// Medical Spammers
 	// Correlates to filters 2-41 AUTH
-	if ( preg_match( "@(v(([i1y])agra|c([i1y])alis|lev([i1y])tra|erect([i1y])le([\s-]*)d([i1y])sfunct([i1y])on|erect([i1y])(on|le)|xanax|z([i1y])thromax|phenterm([i1y])ne|(\s*)soma([.\s]*)|prescr([i1y])pt([i1y])on|tramadol|pen([i1y])s([\s-]*)enlargement|^pen([i1y])s([\s-]*)|^vagina([l\s]*)|buy([\s-]*)pills|(diet|weight([\s-]*)loss)([\s-]*)pill|([\s-]*)pills?([\s,-]*)|propec([i1y])a|onl([i1y])ne([\s-]*)pharmacy|med([i1y])cat([i1y])on|ephedr(([i1y])ne?|a)|val([i1y])um|ad([i1y])pex|accutane|acompl([i1y])a|r([i1y])monabant|z([i1y])mult([i1y])|herbal([i1y])fe|steroid|drug(\s+)rehab|plantar(\s+)fasciitis)@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(v(([i1y])agra|c([i1y])alis|lev([i1y])tra|erect([i1y])le([\s-]*)d([i1y])sfunct([i1y])on|erect([i1y])(on|le)|xanax|z([i1y])thromax|phenterm([i1y])ne|(\s*)soma([.\s]*)|prescr([i1y])pt([i1y])on|tramadol|pen([i1y])s([\s-]*)enlargement|^pen([i1y])s([\s-]*)|^vagina([l\s]*)|buy([\s-]*)pills|(diet|weight([\s-]*)loss)([\s-]*)pill|([\s-]*)pills?([\s,-]*)|propec([i1y])a|onl([i1y])ne([\s-]*)pharmacy|med([i1y])cat([i1y])on|ephedr(([i1y])ne?|a)|val([i1y])um|ad([i1y])pex|accutane|acompl([i1y])a|r([i1y])monabant|z([i1y])mult([i1y])|herbal([i1y])fe|steroid|drug(\s+)rehab|plantar(\s+)fasciitis)@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10901A-MED';
 		}
 	// Porn/Sex Spammers
 	// Correlates to filters 104-159
-	if ( preg_match( "@(^([\s-]*)(p(or|ro)n|sex|mast(u|e)rbat(e|ion|ing)|rap(e|er|ist|ing)|incest(ual|uous)?|bestiality|cum|hentai|pussy|penis|vagina|xxx|naked|nude|desnuda|orgasm|fuck(ing)?|dildo|ejaculat(e|ion|ing)|lesbian|gay|(homo|bi|hetero)?sexual|cumshots|anal|erotic(ism)?|clitoris|porntube|blow([\s-]*)jobs?|prostitutes?|hookers?|call([\s-]*)girls?|(escort|sex(ual)?)([\s-]*)services?|celebrit(y|ies))([\s-]*)$|([a-z0-9-]*)([\s-]+)(p(or|ro)n|sex|xxx|hentai)([\s-]*)$|(teen|rape|incest|anal|vaginal|gay|lesbian|torture|bestiality|animal|celebrit(y|ies)|cyber)([\s-]*)(porn|hentai|xxx|sex)|(sex|adult|xxx|p(or|ro)n|hentai)([\s-]*)(movie|tape|vid(s|eos?)))@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(^([\s-]*)(p(or|ro)n|sex|mast(u|e)rbat(e|ion|ing)|rap(e|er|ist|ing)|incest(ual|uous)?|bestiality|cum|hentai|pussy|penis|vagina|xxx|naked|nude|desnuda|orgasm|fuck(ing)?|dildo|ejaculat(e|ion|ing)|lesbian|gay|(homo|bi|hetero)?sexual|cumshots|anal|erotic(ism)?|clitoris|porntube|blow([\s-]*)jobs?|prostitutes?|hookers?|call([\s-]*)girls?|(escort|sex(ual)?)([\s-]*)services?|celebrit(y|ies))([\s-]*)$|([a-z0-9-]*)([\s-]+)(p(or|ro)n|sex|xxx|hentai)([\s-]*)$|(teen|rape|incest|anal|vaginal|gay|lesbian|torture|bestiality|animal|celebrit(y|ies)|cyber)([\s-]*)(porn|hentai|xxx|sex)|(sex|adult|xxx|p(or|ro)n|hentai)([\s-]*)(movie|tape|vid(s|eos?)))@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 11001A-SXP';
 		}
 	// Offshore/Outsourcing Spam
 	// Correlates to filters 300-423 AUTH
-	if ( preg_match( "@((india|russia|ukraine|china)(\s+)(offshore|outsourc(e|ing))|(offshore|outsourc(e|ing))(\s+)(india|russia|ukraine|china)|data(\s+)entry(\s+)(india|russia|ukraine|china))@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@((india|russia|ukraine|china)(\s+)(offshore|outsourc(e|ing))|(offshore|outsourc(e|ing))(\s+)(india|russia|ukraine|china)|data(\s+)entry(\s+)(india|russia|ukraine|china))@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 12001A-OFS';
 		}
 	// Miscellaneous Spammers
 	// Correlates to filters 300-423 AUTH
-	if ( preg_match( "@(modulesoft|(\s+)company|business|organization|(\s+)seminar|phpdug|(\s+)review|(\s+)sunglasses|(designer|christian(\s+)dior|hermes|michael(\s+)kors)?(\s+)handbags?|(\s+)outlet|property(\s+)vault|foreclosure|earn(\s+)money|software|home(\s+)design|(learning|how(\s*)to)(\s+)|youtube|facebook|twitter|instagram|social(\s+)bookmark|united(\s+)states|johannesburg|bucuresti|(\s+)city|for(\s+)sale|buy(\s+)(cheap|online)|property|logo(\s+)design|injury(\s+)lawyer|internas?tional|information|advertising|car(\s+)rental|rent(\s+)a(\s+)car|development|technology|forex(\s+)trading|anonymous|php(\s+)expert|travel(\s+)deals|college(\s+)student|health(\s*)(insurance|care)|click(\s+)here|visit(\s+)now|turbo(\s+)tax|photoshop|power(\s+)kite|stop(\s+)sweating?(\s+)me|sweating?(\s+)on|online(\s+)jobs|jobs(\s+)online|(pc|computer|laptop|laptopuri)(\s+)(repair|reparatii)|(repair|reparatii)(\s+)(pc|computer|laptop|laptopuri)|mobilabonnement(\s+)priser|kroatien(\s+)insel(\s+)brac|unblocked|(\s+)(coupon|discount)s?|(coupon|promo|voucher|shipping)(\s+)codes?|personalization|(\s+)homepage|(\s+)best(\s+)|bluetooth|proxy(\s+)surf|(\s+)homepage)@i", $commentdata_comment_author_lc ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(modulesoft|(\s+)company|business|organization|(\s+)seminar|phpdug|(\s+)review|(\s+)sunglasses|(designer|christian(\s+)dior|hermes|michael(\s+)kors)?(\s+)handbags?|(\s+)outlet|property(\s+)vault|foreclosure|earn(\s+)money|software|home(\s+)design|(learning|how(\s*)to)(\s+)|youtube|facebook|twitter|instagram|social(\s+)bookmark|united(\s+)states|johannesburg|bucuresti|(\s+)city|for(\s+)sale|buy(\s+)(cheap|online)|property|logo(\s+)design|injury(\s+)lawyer|internas?tional|information|advertising|car(\s+)rental|rent(\s+)a(\s+)car|development|technology|forex(\s+)trading|anonymous|php(\s+)expert|travel(\s+)deals|college(\s+)student|health(\s*)(insurance|care)|click(\s+)here|visit(\s+)now|turbo(\s+)tax|photoshop|power(\s+)kite|stop(\s+)sweating?(\s+)me|sweating?(\s+)on|online(\s+)jobs|jobs(\s+)online|(pc|computer|laptop|laptopuri)(\s+)(repair|reparatii)|(repair|reparatii)(\s+)(pc|computer|laptop|laptopuri)|mobilabonnement(\s+)priser|kroatien(\s+)insel(\s+)brac|unblocked|(\s+)(coupon|discount)s?|(coupon|promo|voucher|shipping)(\s+)codes?|personalization|(\s+)homepage|(\s+)best(\s+)|bluetooth|prox(y|ies)(\s+)(surf(ing|er)?|software)|(\s+)homepage)@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 12501A-MSC';
 		}
 
 	// Regular Expression Tests - 2nd Gen - Comment Author/Author URL - END
 
-	$commentdata_comment_author_lc_spam_strong = '<strong>'.$commentdata_comment_author_lc.'</strong>'; // Trackbacks
+	$commentdata_comment_author_lc_spam_strong = '<strong>'.$commentdata_comment_author_lc_deslashed.'</strong>'; // Trackbacks
 
 	$commentdata_comment_author_lc_spam_strong_dot1 = '...</strong>'; // Trackbacks
 	$commentdata_comment_author_lc_spam_strong_dot2 = '...</b>'; // Trackbacks
 	$commentdata_comment_author_lc_spam_strong_dot3 = '<strong>...'; // Trackbacks
 	$commentdata_comment_author_lc_spam_strong_dot4 = '<b>...'; // Trackbacks
-	$commentdata_comment_author_lc_spam_a1 = $commentdata_comment_author_lc.'</a>'; // Trackbacks/Pingbacks
-	$commentdata_comment_author_lc_spam_a2 = $commentdata_comment_author_lc.' </a>'; // Trackbacks/Pingbacks
+	$commentdata_comment_author_lc_spam_a1 = $commentdata_comment_author_lc_deslashed.'</a>'; // Trackbacks/Pingbacks
+	$commentdata_comment_author_lc_spam_a2 = $commentdata_comment_author_lc_deslashed.' </a>'; // Trackbacks/Pingbacks
 	
 	$WPCommentsPostURL = $commentdata_blog_lc.'/wp-comments-post.php';
 
@@ -3144,7 +3190,7 @@ function spamshield_content_filter($commentdata) {
 	$KeywordURLPhrases = explode('/',$TempPhrase6);
 	$KeywordURLPhrasesCount = count($KeywordURLPhrases);
 	$KeywordCommentAuthorPhrasePunct = array('\:','\;','\+','\-','\!','\.','\,','\[','\]','\@','\#','\$','\%','\^','\&','\*','\(','\)','\/','\\','\|','\=','\_');
-	$KeywordCommentAuthorTempPhrase = str_replace($KeywordCommentAuthorPhrasePunct,'',$commentdata_comment_author_lc);
+	$KeywordCommentAuthorTempPhrase = str_replace($KeywordCommentAuthorPhrasePunct,'',$commentdata_comment_author_lc_deslashed);
 	$KeywordCommentAuthorPhrase1 = str_replace(' ','',$KeywordCommentAuthorTempPhrase);
 	$KeywordCommentAuthorPhrase2 = str_replace(' ','-',$KeywordCommentAuthorTempPhrase);
 	$KeywordCommentAuthorPhrase3 = str_replace(' ','_',$KeywordCommentAuthorTempPhrase);
@@ -3173,7 +3219,7 @@ function spamshield_content_filter($commentdata) {
 	// Execute Simple Filter Test(s)
 	if ( $filter_1_count >= $filter_1_limit ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
-		$spamshield_error_code .= ' 1';
+		$spamshield_error_code .= ' 1-HT';
 		}
 	if ( $filter_2_count >= $filter_2_limit ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
@@ -3728,8 +3774,8 @@ function spamshield_content_filter($commentdata) {
 		$filter_phrase 					= $filter_phrase_parameters[0];
 		$filter_phrase_limit 			= $filter_phrase_parameters[1];
 		$filter_phrase_trackback_limit 	= $filter_phrase_parameters[2];
-		$filter_phrase_count			= substr_count( $commentdata_comment_content_lc, $filter_phrase );
-		if ( ( $filter_phrase_limit != 0 && $filter_phrase_count >= $filter_phrase_limit ) || ( $filter_phrase_limit == 1 && strpos( $commentdata_comment_author_lc, $filter_phrase ) !== false || $commentdata_comment_author_lc == $filter_phrase ) ) {
+		$filter_phrase_count			= substr_count( $commentdata_comment_content_lc_deslashed, $filter_phrase );
+		if ( ( $filter_phrase_limit != 0 && $filter_phrase_count >= $filter_phrase_limit ) || ( $filter_phrase_limit == 1 && strpos( $commentdata_comment_author_lc_deslashed, $filter_phrase ) !== false || $commentdata_comment_author_lc_deslashed == $filter_phrase ) ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			}
 		$i++;
@@ -3737,28 +3783,25 @@ function spamshield_content_filter($commentdata) {
 	*/
 	
 	// Regular Expression Tests - Comment Content
-	
-	if ( preg_match( "@\<a\ href\=\"http\:\/\/([a-z0-9\.\-]+)\.com/\"\>([a-z0-9\.\-]+)\<\/a\>\,\ \[url\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/url\]\,\ \[link\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/link\]\,\ http\:\/\/([a-z0-9\.\-]+)\.com\/@i", $commentdata_comment_content_lc ) ) {
+	//REDO NEXT 4 - 4/30/2014
+	if ( preg_match( "@\<a\ href\=\"http\:\/\/([a-z0-9\.\-]+)\.com/\"\>([a-z0-9\.\-]+)\<\/a\>\,\ \[url\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/url\]\,\ \[link\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/link\]\,\ http\:\/\/([a-z0-9\.\-]+)\.com\/@i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' RE10001';
 		}
-	if ( preg_match( "@\<a\ href\=\\\"http\:\/\/([a-z0-9\.\-]+)\.com\/\\\"\>([a-z0-9\.\-]+)\<\/a\>\,\ \[url\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/url\]\,\ \[link\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/link\]\,\ http\:\/\/([a-z0-9\.\-]+)\.com\/@i", $commentdata_comment_content_lc ) ) {
+	if ( preg_match( "@\<a\ href\=\\\"http\:\/\/([a-z0-9\.\-]+)\.com\/\\\"\>([a-z0-9\.\-]+)\<\/a\>\,\ \[url\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/url\]\,\ \[link\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/link\]\,\ http\:\/\/([a-z0-9\.\-]+)\.com\/@i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' RE10001';
 		}
-	if ( preg_match( "@\<a\ href\=\\\"http\:\/\/([a-z0-9\.\-]+)\.com\/\\\"\>([a-z0-9\.\-]+)\<\/a\>\,\ \[url\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/url\]\,\ \[link\=http\:\/\/([a-z0-9\.\-]+)\.\com\/]([a-z0-9\.\-\ ]+)\[\/link\]\,\ http\:\/\/([a-z0-9\.\-]+)\.com\/@i", $commentdata_comment_content_lc ) ) {
+	if ( preg_match( "@\<a\ href\=\\\"http\:\/\/([a-z0-9\.\-]+)\.com\/\\\"\>([a-z0-9\.\-]+)\<\/a\>\,\ \[url\=http\:\/\/([a-z0-9\.\-]+)\.com\/\]([a-z0-9\.\-]+)\[\/url\]\,\ \[link\=http\:\/\/([a-z0-9\.\-]+)\.\com\/]([a-z0-9\.\-\ ]+)\[\/link\]\,\ http\:\/\/([a-z0-9\.\-]+)\.com\/@i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' RE10002';
 		}
-	if ( preg_match( "@\<a\ href\=@i", $commentdata_comment_content_lc ) && preg_match( "@\<\/a\>,@i", $commentdata_comment_content_lc ) && preg_match( "@\[url\=http\:\/\/@i", $commentdata_comment_content_lc ) && preg_match( "@\.com\/\]@i", $commentdata_comment_content_lc ) && preg_match( "@\[\/url\]\,@i", $commentdata_comment_content_lc ) && preg_match( "@\[link\=http\:\/\/@i", $commentdata_comment_content_lc )  && preg_match( "@\[\/link\]\,@i", $commentdata_comment_content_lc ) && substr_count(  $commentdata_comment_content_lc, "http\:\/\/" ) > 2 ) {
+	if ( preg_match( "@\<a\ href\=@i", $commentdata_comment_content_lc_deslashed ) && preg_match( "@\<\/a\>,@i", $commentdata_comment_content_lc_deslashed ) && preg_match( "@\[url\=http\:\/\/@i", $commentdata_comment_content_lc_deslashed ) && preg_match( "@\.com\/\]@i", $commentdata_comment_content_lc_deslashed ) && preg_match( "@\[\/url\]\,@i", $commentdata_comment_content_lc_deslashed ) && preg_match( "@\[link\=http\:\/\/@i", $commentdata_comment_content_lc_deslashed )  && preg_match( "@\[\/link\]\,@i", $commentdata_comment_content_lc_deslashed ) && substr_count(  $commentdata_comment_content_lc_deslashed, "http\:\/\/" ) > 2 ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' RE10003';
 		}
 
 	// Regular Expression Tests - 2nd Gen - Comment Content - BEGIN
-	
-	// Have to strip slashes to run any tests on Comment Content - DONE in LINE 2007
-	// $commentdata_comment_content_lc_deslashed = stripslashes($commentdata_comment_content_lc);
 	
 	// Miscellaneous Patterns that Keep Repeating
 	if ( preg_match( "@^([0-9]{6})\s([0-9]{6})(.*)\s([0-9]{6})$@i", $commentdata_comment_content_lc_deslashed ) ) {
@@ -3767,54 +3810,54 @@ function spamshield_content_filter($commentdata) {
 		}
 	
 	// PayDay Loan Spammers and the like...
-	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?://([a-z0-9-\.]+)\.([a-z0-9-_'\"\.\/\?\=\s]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)((payday|students?|title)(\s+)loan|cash(\s+)advance)([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) {
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?://([a-z0-9-\.]+)\.([a-z0-9-_'\"\.\/\?\&\=\s]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)((payday|students?|title)(\s+)loan|cash(\s+)advance)([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10501C-PDL';
 		}
 	// PayDay Loan Spammers Group
-	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?://(ww[w0-9]\.)?(burnleytaskforce\.org\.uk|ccls5280\.org|chrislonergan\.co\.uk|getwicked\.co\.uk|kickstartmediagroup\.co\.uk|mpaydayloansa1\.info|neednotgreed\.org\.uk|royalspicehastings\.co\.uk|snakepaydayloans\.co\.uk|solarsheild\.co\.uk|transitionwestcliff\.org\.uk|blyweertbeaufort\.co\.uk|disctoprint\.co\.uk|fish-instant-payday-loans\.co\.uk|heritagenorth\.co\.uk|standardsdownload\.co\.uk|21joannapaydayloanscompany\.joannaloans\.co\.uk)/?([a-z0-9-_'\"\.\?\=\s]*)(['\"])?>@i", $commentdata_comment_content_lc_deslashed ) ) {
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?://(ww[w0-9]\.)?(burnleytaskforce\.org\.uk|ccls5280\.org|chrislonergan\.co\.uk|getwicked\.co\.uk|kickstartmediagroup\.co\.uk|mpaydayloansa1\.info|neednotgreed\.org\.uk|royalspicehastings\.co\.uk|snakepaydayloans\.co\.uk|solarsheild\.co\.uk|transitionwestcliff\.org\.uk|blyweertbeaufort\.co\.uk|disctoprint\.co\.uk|fish-instant-payday-loans\.co\.uk|heritagenorth\.co\.uk|standardsdownload\.co\.uk|21joannapaydayloanscompany\.joannaloans\.co\.uk)/?([a-z0-9-_'\"\.\?\&\=\s]*)(['\"])?>@i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10502C-PDL';
 		}
 
 	// Miscellaneous Common Spam Domains - Comment Content
 	// Correlates to and replaces filters 20001-20072
-	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?://(ww[w0-9]\.)?(groups\.(google|yahoo)\.(com|us)|(phpbbserver|freehostia|free-site-host|keywordspy|t35|([12])50m|widecircles|netcallidus|webseomasters|mastersofseo|mysmartseo|sitemapwriter|shredderwarehouse|mmoinn|animatedfavicon|cignusweb|rsschannelwriter|clickaudit|choice-direct|experl|registry-error-cleaner|sunitawedsamit|agriimplements|submit(-trackback|bookmark)|(comment|youtube-)poster|post-comments|wordpressautocomment|grillpartssteak|tpbunblocked|sqiar|redcamtube|globaldata4u)\.com|youporn([0-9]+)\.vox\.com|blogs\.ign\.com|members\.lycos\.co\.uk|([/\.])(christiantorrents\.ru|lifecity\.(tv|info))|(phpdug|kankamforum)\.net|(real-url|hit4hit)\.org|johnbeck(seminar|ssuccessstories)?\.(com|net|tv)|((ranksindia|ranksdigitalmedia|semmiami)\.(com|net|org))/?([a-z0-9-_'\"\.\?\=\s]*)(['\"])?>@i", $commentdata_comment_content_lc_deslashed ) ) {
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?://(ww[w0-9]\.)?(groups\.(google|yahoo)\.(com|us)|(phpbbserver|freehostia|free-site-host|keywordspy|t35|([12])50m|widecircles|netcallidus|webseomasters|mastersofseo|mysmartseo|sitemapwriter|shredderwarehouse|mmoinn|animatedfavicon|cignusweb|rsschannelwriter|clickaudit|choice-direct|experl|registry-error-cleaner|sunitawedsamit|agriimplements|submit(-trackback|bookmark)|(comment|youtube-)poster|post-comments|wordpressautocomment|grillpartssteak|tpbunblocked|sqiar|redcamtube|globaldata4u)\.com|youporn([0-9]+)\.vox\.com|blogs\.ign\.com|members\.lycos\.co\.uk|([/\.])(christiantorrents\.ru|lifecity\.(tv|info))|(phpdug|kankamforum)\.net|(real-url|hit4hit)\.org|johnbeck(seminar|ssuccessstories)?\.(com|net|tv)|((ranksindia|ranksdigitalmedia|semmiami)\.(com|net|org))/?([a-z0-9-_'\"\.\?\&\=\s]*)(['\"])?>@i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10510C-MSC';
 		}
 	// Online Gambling Spammers
-	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\=]+)(\s*)(['\"])?(\s*)>(\s*)(debt(\s*))?consolidat(ion|or|er)((\s*)loan)?([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)>(\s*)(debt(\s*))?consolidat(ion|or|er)((\s*)loan)?([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10521C-DC';
 		}
 	// SEO Spammers
-	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\=]+)(\s*)(['\"])?(\s*)>(\s*)(([a-z0-9-\s]*)\s)?((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|seo|sem)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)>(\s*)(([a-z0-9-\s]*)\s)?((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|seo|sem)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10601C-SEO';
 		}
-	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\=]+)(\s*)(['\"])?(\s*)>(\s*)(([a-z0-9-\s]*)\s)?((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|link(\s*)build(ing|er)|web(\s*)(site)?(\s*)promot(ion|ing|er)|(trackback|social|comments?)(\s*)(submit(ter|ting)?|poster))(\s*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)>(\s*)(([a-z0-9-\s]*)\s)?((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|link(\s*)build(ing|er)|web(\s*)(site)?(\s*)promot(ion|ing|er)|(trackback|social|comments?)(\s*)(submit(ter|ting)?|poster))(\s*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10602C-SEO';
 		}
 	// Website Design/Hosting Spammers
-	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\=]+)(\s*)(['\"])?(\s*)>(\s*)web(\s*)(site)?(\s+)(host(ing)?|design(er|ing)?|develop(ment|er|ing)?)(\s*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)>(\s*)web(\s*)(site)?(\s+)(host(ing)?|design(er|ing)?|develop(ment|er|ing)?)(\s*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10701C-WEB';
 		}
 	// Online Gambling Spammers
-	if ( ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\=]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)(online|internet|web)([a-z0-9-\s]*)(gambling|casino|poker|blackjack)([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) || preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\=]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)(gambling|casino|poker|blackjack)([a-z0-9-\s]*)(online|internet|web)([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)(online|internet|web)([a-z0-9-\s]*)(gambling|casino|poker|blackjack)([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) || preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)(gambling|casino|poker|blackjack)([a-z0-9-\s]*)(online|internet|web)([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10801C-OLG';
 		}
 	// Porn/Sex Spammers
-	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\=]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)(([a-z0-9-]*)([\s-]+)(p(or|ro)n|sex|xxx|hentai)([\s-]*)$|(teen|rape|incest|anal|vaginal|gay|lesbian|torture|bestiality|animal|celebrit(y|ies)|cyber)([\s-]*)(porn|hentai|xxx|sex)|(sex|adult|xxx|p(or|ro)n|hentai)([\s-]*)(movie|tape|vid(s|eos?)))([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)(([a-z0-9-]*)([\s-]+)(p(or|ro)n|sex|xxx|hentai)([\s-]*)$|(teen|rape|incest|anal|vaginal|gay|lesbian|torture|bestiality|animal|celebrit(y|ies)|cyber)([\s-]*)(porn|hentai|xxx|sex)|(sex|adult|xxx|p(or|ro)n|hentai)([\s-]*)(movie|tape|vid(s|eos?)))([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 11001C-SXP';
 		}
 	// Miscellaneous Spammers
 	// Correlates to filters 300-423 AUTH
-	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\=]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)((oakley|gucci|prescription)(\s+)sunglasses|(designer|christian(\s+)dior|hermes|michael(\s+)kors)?(\s+)handbags?|injury(\s+)lawyer|car(\s+)rental|rent(\s+)a(\s+)car|forex(\s+)trading|(pc|computer|laptop|laptopuri)(\s+)(repair|reparatii)|(repair|reparatii)(\s+)(pc|computer|laptop|laptopuri)|(\s+)(coupon|discount)s?|(coupon|promo|voucher|shipping)(\s+)codes?|proxy(\s+)surf)([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)https?\://([a-z0-9-\.]+\.)?([a-z0-9-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)>([a-z0-9-\s]*)((oakley|gucci|prescription)(\s+)sunglasses|(designer|christian(\s+)dior|hermes|michael(\s+)kors)?(\s+)handbags?|injury(\s+)lawyer|car(\s+)rental|rent(\s+)a(\s+)car|forex(\s+)trading|(pc|computer|laptop|laptopuri)(\s+)(repair|reparatii)|(repair|reparatii)(\s+)(pc|computer|laptop|laptopuri)|(\s+)(coupon|discount)s?|(coupon|promo|voucher|shipping)(\s+)codes?|proxy(\s+)surf)([a-z0-9-\s]*)<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 12501C-MSC';
 		}
@@ -3824,15 +3867,15 @@ function spamshield_content_filter($commentdata) {
 	// Test Comment Author 
 	// Words in Comment Author Repeated in Content - With Keyword Density
 	$RepeatedTermsFilters = array('.','-',':');
-	$RepeatedTermsTempPhrase = str_replace($RepeatedTermsFilters,'',$commentdata_comment_author_lc);
+	$RepeatedTermsTempPhrase = str_replace($RepeatedTermsFilters,'',$commentdata_comment_author_lc_deslashed);
 	$RepeatedTermsTest = explode(' ',$RepeatedTermsTempPhrase);
 	$RepeatedTermsTestCount = count($RepeatedTermsTest);
-	$CommentContentTotalWords = count( explode( ' ', $commentdata_comment_content_lc ) );
+	$CommentContentTotalWords = spamshield_count_words($commentdata_comment_content_lc_deslashed );
 	$i = 0;
 	while ( $i <= $RepeatedTermsTestCount ) {
 		if ( $RepeatedTermsTest[$i] ) {
-			$RepeatedTermsInContentCount = substr_count( $commentdata_comment_content_lc, $RepeatedTermsTest[$i] );
-			$RepeatedTermsInContentStrLength = strlen($RepeatedTermsTest[$i]);
+			$RepeatedTermsInContentCount = substr_count( $commentdata_comment_content_lc_deslashed, $RepeatedTermsTest[$i] );
+			$RepeatedTermsInContentStrLength = mb_strlen($RepeatedTermsTest[$i]);
 			if ( $RepeatedTermsInContentCount > 1 && $CommentContentTotalWords < $RepeatedTermsInContentCount ) {
 				$RepeatedTermsInContentCount = 1;
 				}
@@ -3846,20 +3889,22 @@ function spamshield_content_filter($commentdata) {
 		$i++;
 		}
 	// Comment Author and Comment Author URL appearing in Content
+	$commentdata_comment_author_url_lc_regex = preg_quote($commentdata_comment_author_url_lc);
 	if ( $commentdata_comment_author_url_lc ) {
-		$commentdata_comment_author_lc_inhref = '>'.$commentdata_comment_author_lc.'</a>';
+		$commentdata_comment_author_lc_inhref = '>'.$commentdata_comment_author_lc_deslashed.'</a>';
 		
-		if ( strpos( $commentdata_comment_content_lc, $commentdata_comment_author_url_lc ) !== false && strpos( $commentdata_comment_content_lc, $commentdata_comment_author_lc_inhref ) !== false ) {
+		if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_url_lc ) !== false && strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_inhref ) !== false ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 9100';
 			}
-		// REGEX VERSION - TESTING
-		if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)$commentdata_comment_author_url_lc(\s*)(['\"])?(\s*)>$commentdata_comment_author_lc<(\s*)/(\s*)a(\s*)>@i", 
-$commentdata_comment_content_lc_deslashed ) ) {
-			if ( !$content_filter_status ) { $content_filter_status = '1'; }
-			$spamshield_error_code .= ' 9100.T1';
-			}
 		}
+	// REGEX VERSION - TESTING
+	// Stage 3 Testing - Release in next Ver
+	if ( preg_match( "@<(\s*)a(\s+)([a-z0-9-_\.\?\='\"\:\s]*)(\s*)href(\s*)=(\s*)(['\"])?(\s*)$commentdata_comment_author_url_lc_regex([a-z0-9-_'\"\.\?\&\=\s]*)(['\"])?>$commentdata_comment_author_lc_deslashed_regex<(\s*)/(\s*)a(\s*)>@i", $commentdata_comment_content_lc_deslashed ) ) {
+		if ( !$content_filter_status ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 9100-T1';
+		}
+
 	// Emails
 	if ( $commentdata_comment_author_email_lc == 'aaron@yahoo.com' || $commentdata_comment_author_email_lc == 'asdf@yahoo.com' || $commentdata_comment_author_email_lc == 'a@a.com' || $commentdata_comment_author_email_lc == 'bill@berlin.com' || $commentdata_comment_author_email_lc == 'capricanrulz@hotmail.com' || $commentdata_comment_author_email_lc == 'dominic@mail.com' || $commentdata_comment_author_email_lc == 'fuck@you.com' || $commentdata_comment_author_email_lc == 'heel@mail.com' || $commentdata_comment_author_email_lc == 'jane@mail.com' || $commentdata_comment_author_email_lc == 'neo@hotmail.com' || $commentdata_comment_author_email_lc == 'nick76@mailbox.com' || $commentdata_comment_author_email_lc == '12345@yahoo.com' || 	$commentdata_comment_author_email_lc == 'poster78@gmail.com' || $commentdata_comment_author_email_lc == 'ycp_m23@hotmail.com' || $commentdata_comment_author_email_lc == 'grey_dave@yahoo.com' || $commentdata_comment_author_email_lc == 'grren_dave55@hotmail.com' || $commentdata_comment_author_email_lc == 'dave_morales@hotmail.com' || $commentdata_comment_author_email_lc == 'tbs_guy@hotmail.com' || $commentdata_comment_author_email_lc == 'test@test.com' || strpos( $commentdata_comment_author_email_lc, '.seo@gmail.com' ) !== false || strpos( $commentdata_comment_author_email_lc, '@keywordspy.com' ) !== false || strpos( $commentdata_comment_author_email_lc, '@ranksindia.net' ) !== false || strpos( $commentdata_comment_author_email_lc, '@ranksdigitalmedia.com' ) !== false || strpos( $commentdata_comment_author_email_lc, '@semmiami.com' ) !== false || strpos( $commentdata_comment_author_email_lc, '@hit4hit.org' ) !== false || strpos( $commentdata_comment_author_email_lc, '@fuckyou.com' ) !== false || strpos( $commentdata_comment_author_email_lc, 'fuckyou@' ) !== false || strpos( $commentdata_comment_author_email_lc, 'spammer@' ) !== false || strpos( $commentdata_comment_author_email_lc, 'spambot@' ) !== false || strpos( $commentdata_comment_author_email_lc, 'spam@' ) !== false || strpos( $commentdata_comment_author_email_lc, 'anonymous@' ) !== false || strpos( $commentdata_comment_author_email_lc, 'root@' ) !== false ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
@@ -3928,17 +3973,18 @@ $commentdata_comment_content_lc_deslashed ) ) {
 	if ( !$commentdata_user_agent_lc  ) {
 		// There is no reason for a blank UA String, unless it's been altered.
 		$content_filter_status = '1'; // Was 2, changed to 1 - V1.0.0.0
-		$spamshield_error_code .= ' UA1001';
+		$spamshield_error_code .= ' UA1001-0';
 		}
 	$commentdata_user_agent_lc_word_count = spamshield_count_words($commentdata_user_agent_lc);
 	if ( $commentdata_user_agent_lc && $commentdata_user_agent_lc_word_count < 3 ) {
-		if ( $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' || ( strpos( $commentdata_user_agent_lc, 'movabletype' ) === false && ( $commentdata_comment_type == 'trackback' || $commentdata_comment_type == 'pingback' ) ) ) {
+		if ( $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' || ( strpos( $commentdata_user_agent_lc, 'movabletype' ) === false && $commentdata_comment_type == 'trackback' ) ) {
+		//if ( $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' || ( strpos( $commentdata_user_agent_lc, 'movabletype' ) === false && ( $commentdata_comment_type == 'trackback' || $commentdata_comment_type == 'pingback' ) ) ) {
 			// Another test for altered UA's.
 			$content_filter_status = '1'; // Was 2, changed to 1 - V1.0.0.0
-			$spamshield_error_code .= ' UA1001.1-'.$commentdata_user_agent_lc;
+			$spamshield_error_code .= ' UA1001-1';
 			}
 		}
-	if ( strpos( $commentdata_user_agent_lc, 'libwww' ) !== false || preg_match( "/^(nutch|larbin|jakarta|java|mechanize)/i", $commentdata_user_agent_lc ) ) {
+	if ( strpos( $commentdata_user_agent_lc, 'libwww' ) !== false || preg_match( "/^(nutch|larbin|jakarta|java|mechanize|phpcrawl)/i", $commentdata_user_agent_lc ) ) {
 		// There is no reason for a human to use one of these UA strings. Commonly used to attack/spam WP.
 		$content_filter_status = '1'; // Was 2, changed to 1 - V1.0.0.0
 		$spamshield_error_code .= ' UA1002';
@@ -4018,7 +4064,7 @@ $commentdata_comment_content_lc_deslashed ) ) {
 								'193.46.236.234',
 								'194.44.97.14',
 								);
-	if ( in_array( $commentdata_remote_addr, $spamshield_ip_bans ) || strpos( $commentdata_remote_addr_lc, '78.129.202.' ) === 0 || preg_match( "/^92\.48\.122\.([0-9]|[12][0-9]|3[01])$/", $commentdata_remote_addr_lc ) || strpos( $commentdata_remote_addr_lc, '116.71.' ) === 0 || preg_match( "/^123\.237\.14([47])\./", $commentdata_remote_addr_lc ) || strpos( $commentdata_remote_addr_lc, '193.37.152.' ) === 0 || strpos( $commentdata_remote_addr_lc, '193.46.236.' ) === 0 || preg_match( "/^194\.8\.7([45])\./", $commentdata_remote_addr_lc ) ) {
+	if ( in_array( $commentdata_remote_addr_lc, $spamshield_ip_bans ) || strpos( $commentdata_remote_addr_lc, '78.129.202.' ) === 0 || preg_match( "/^92\.48\.122\.([0-9]|[12][0-9]|3[01])$/", $commentdata_remote_addr_lc ) || strpos( $commentdata_remote_addr_lc, '116.71.' ) === 0 || preg_match( "/^123\.237\.14([47])\./", $commentdata_remote_addr_lc ) || strpos( $commentdata_remote_addr_lc, '193.37.152.' ) === 0 || strpos( $commentdata_remote_addr_lc, '193.46.236.' ) === 0 || preg_match( "/^194\.8\.7([45])\./", $commentdata_remote_addr_lc ) ) {
 		// 194.8.74.0 - 194.8.75.255 BAD spam network - BRITISH VIRGIN ISLANDS
 		// 193.37.152.0 - 193.37.152.255 SPAM NETWORK - WEB HOST, NOT ISP - GERMANY
 		// 193.46.236.0 - 193.46.236.255 SPAM NETWORK - WEB HOST, NOT ISP - LATVIA
@@ -4089,11 +4135,11 @@ $commentdata_comment_content_lc_deslashed ) ) {
 		
 		// HOSTS NOT ISP, so all hits are from machines
 		// VERIFIED SPAMMERS + HACKERS - VERY BAD REPUTATIONS
-		if ( preg_match( "@^host?([0-9]+)\.server([0-9]+)\.vpn(999|2buy)\.com$@i", $ReverseDNS_LC ) ) {
+		if ( preg_match( "@^(host?|v)([0-9]+)\.server([0-9]+)\.vpn(999|2buy)\.com$@i", $ReverseDNS_LC ) ) {
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVD1031';
 			}
-			if ( preg_match( "@^(ip-)?([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})\.(rackcentre\.redstation\.net\.uk|static\.hostnoc\.net|ip\.idealhosting\.net\.tr|triolan\.net|chunkhost\.com)$@i", $ReverseDNS_LC ) ) {
+			if ( preg_match( "@^(ip-)?([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})\.(rackcentre\.redstation\.net\.uk|static\.hostnoc\.net|ip\.idealhosting\.net\.tr|triolan\.net|chunkhost\.com|unknown\.steephost\.(net|com))$@i", $ReverseDNS_LC ) ) {
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVD1032';
 			}
@@ -4109,23 +4155,23 @@ $commentdata_comment_content_lc_deslashed ) ) {
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVD1035';
 			}
-		if ( preg_match( "@^$commentdata_remote_addr\.static\.quadranet\.com$@i", $ReverseDNS_LC ) ) {
+		if ( preg_match( "@^$commentdata_remote_addr_lc_regex\.static\.quadranet\.com$@i", $ReverseDNS_LC ) ) {
 		//if ( preg_match( "@^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.static\.quadranet\.com$@i", $ReverseDNS_LC ) ) {
-			// First part of server matches $commentdata_remote_addr
+			// First part of server matches $commentdata_remote_addr_lc
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVD1036';
 			}
 
 		// The 8's Pattern
 		// The 8's - from relakks.com - Anonymous surfing, powered by bots
-		if ( preg_match( "@^anon-([0-9]+)-([0-9]+)\.relakks\.com$@i", $ReverseDNS_LC ) && preg_match( "@^([a-z]{8})$@i", $commentdata_comment_author_lc ) && preg_match( "/^([a-z]{8})@([a-z]{8})\.com$/i", $commentdata_comment_author_email_lc ) ) {
+		if ( preg_match( "@^anon-([0-9]+)-([0-9]+)\.relakks\.com$@i", $ReverseDNS_LC ) && preg_match( "@^([a-z]{8})$@i", $commentdata_comment_author_lc_deslashed ) && preg_match( "/^([a-z]{8})@([a-z]{8})\.com$/i", $commentdata_comment_author_email_lc ) ) {
 			//anon-###-##.relakks.com spammer pattern
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVDA-1050';
 			}
 		// The 8's - coming from from rackcentre.redstation.net.uk
 		/*
-		if ( preg_match( "@^([0-9]+)-([0-9]+)-([0-9]+)-([0-9]+)\.rackcentre.redstation.net.uk$@i", $ReverseDNS ) && preg_match( "@^([a-z]{8})$@i", $commentdata_comment_author_lc ) && preg_match( "/^([a-z]{8})@([a-z]{8})\.com$/i", $commentdata_comment_author_email_lc ) ) {
+		if ( preg_match( "@^([0-9]+)-([0-9]+)-([0-9]+)-([0-9]+)\.rackcentre.redstation.net.uk$@i", $ReverseDNS ) && preg_match( "@^([a-z]{8})$@i", $commentdata_comment_author_lc_deslashed ) && preg_match( "/^([a-z]{8})@([a-z]{8})\.com$/i", $commentdata_comment_author_email_lc ) ) {
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVDA-1051';
 			}
@@ -4158,7 +4204,7 @@ $commentdata_comment_content_lc_deslashed ) ) {
 	
 		if ( $filter_1_count >= $filter_1_trackback_limit ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
-			$spamshield_error_code .= ' T1';
+			$spamshield_error_code .= ' T1-HT';
 			}
 		if ( $filter_200_count >= $filter_200_trackback_limit ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
@@ -4180,9 +4226,12 @@ $commentdata_comment_content_lc_deslashed ) ) {
 				}
 			}
 
+		// Testing if Bot Uses Faked User-Agent for WordPress version that doesn't exist yet
 		// Check History of WordPress User-Agents and Keep up to Date
 		if ( strpos( $commentdata_user_agent_lc, 'incutio xml-rpc -- wordpress/' ) !== false ) {
-			$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc );
+			$wp_ua_search_array = array( 'mu', 'wordpress-mu-' );
+			$commentdata_user_agent_lc_wp = str_replace ( $wp_ua_search_array, '', $commentdata_user_agent_lc);
+			$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc_wp );
 			// Changed to version_compare in 1.0.1.0
 			//if ( $commentdata_user_agent_lc_explode[1] > WPSS_MAX_WP_VERSION && $commentdata_user_agent_lc_explode[1] !='MU' ) {
 			if ( version_compare( $commentdata_user_agent_lc_explode[1], WPSS_MAX_WP_VERSION, '>' ) && $commentdata_user_agent_lc_explode[1] !='MU' ) {
@@ -4191,22 +4240,26 @@ $commentdata_comment_content_lc_deslashed ) ) {
 				}
 			}
 		if ( strpos( $commentdata_user_agent_lc, 'the incutio xml-rpc php library -- wordpress/' ) !== false ) {
-			$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc );
+			$wp_ua_search_array = array( 'mu', 'wordpress-mu-' );
+			$commentdata_user_agent_lc_wp = str_replace ( $wp_ua_search_array, '', $commentdata_user_agent_lc);
+			$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc_wp );
 			if ( version_compare( $commentdata_user_agent_lc_explode[1], WPSS_MAX_WP_VERSION, '>' ) && $commentdata_user_agent_lc_explode[1] !='MU' ) {
 				if ( !$content_filter_status ) { $content_filter_status = '1'; }
 				$spamshield_error_code .= ' T1002';
 				}
 			}
-		/* 2014/04/07 - Test more before going live
-		if ( strpos( $commentdata_user_agent_lc, 'wordpress/' ) !== false ) {
-			$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc );
+		// 2014/04/07
+		if ( strpos( $commentdata_user_agent_lc, 'wordpress/' ) === 0 ) {
+			$wp_ua_search_array = array( 'mu', 'wordpress-mu-' );
+			$commentdata_user_agent_lc_wp = str_replace ( $wp_ua_search_array, '', $commentdata_user_agent_lc);
+			$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc_wp );
 			if ( version_compare( $commentdata_user_agent_lc_explode[1], WPSS_MAX_WP_VERSION, '>' ) && $commentdata_user_agent_lc_explode[1] !='MU' ) {
 				if ( !$content_filter_status ) { $content_filter_status = '1'; }
 				$spamshield_error_code .= ' T1003';
 				}
 			}
-		*/
-		if ( $commentdata_comment_author == $commentdata_comment_author_lc && preg_match( "/([a-z]+)/i", $commentdata_comment_author ) ) {
+
+		if ( $commentdata_comment_author == $commentdata_comment_author_lc_deslashed && preg_match( "/([a-z]+)/i", $commentdata_comment_author ) ) {
 			// Check to see if Comment Author is lowercase. Normal blog pings Authors are properly capitalized. No brainer.
 			// Added second test to only run when using standard alphabet.
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
@@ -4221,42 +4274,42 @@ $commentdata_comment_content_lc_deslashed ) ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' T1020';
 			}
-		if ( strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase1 ) !== false || strpos( $commentdata_comment_content_lc, $SplogTrackbackPhrase1a ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase2 ) !== false || strpos( $commentdata_comment_content_lc, $SplogTrackbackPhrase2a ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase3 ) !== false || strpos( $commentdata_comment_content_lc, $SplogTrackbackPhrase3a ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase4 ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase5 ) !== false || ( strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase20a ) !== false && ( strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase20b ) !== false || strpos( $commentdata_comment_content_lc, $SplogTrackbackPhrase20c ) !== false ) ) ) {
+		if ( strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase1 ) !== false || strpos( $commentdata_comment_content_lc_deslashed, $SplogTrackbackPhrase1a ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase2 ) !== false || strpos( $commentdata_comment_content_lc_deslashed, $SplogTrackbackPhrase2a ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase3 ) !== false || strpos( $commentdata_comment_content_lc_deslashed, $SplogTrackbackPhrase3a ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase4 ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase5 ) !== false || ( strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase20a ) !== false && ( strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase20b ) !== false || strpos( $commentdata_comment_content_lc_deslashed, $SplogTrackbackPhrase20c ) !== false ) ) ) {
 			// Check to see if common patterns exist in comment content.
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' T2002';
 			}
-		if ( strpos( $commentdata_comment_content_lc, $commentdata_comment_author_lc_spam_strong ) !== false ) {
+		if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_strong ) !== false ) {
 			// Check to see if Comment Author is repeated in content, enclosed in <strong> tags.
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' T2003';
 			}
-		if ( strpos( $commentdata_comment_content_lc, $commentdata_comment_author_lc_spam_a1 ) !== false || strpos( $commentdata_comment_content_lc, $commentdata_comment_author_lc_spam_a2 ) !== false ) {
+		if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_a1 ) !== false || strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_a2 ) !== false ) {
 			// Check to see if Comment Author is repeated in content, enclosed in <a> tags.
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' T2004';
 			}
-		if ( strpos( $commentdata_comment_content_lc, $commentdata_comment_author_lc_spam_strong_dot1 ) !== false ) {
+		if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_strong_dot1 ) !== false ) {
 			// Check to see if Phrase... in bold is in content
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' T2005';
 			}
-		if ( strpos( $commentdata_comment_content_lc, $commentdata_comment_author_lc_spam_strong_dot2 ) !== false ) {
+		if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_strong_dot2 ) !== false ) {
 			// Check to see if Phrase... in bold is in content
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' T2006';
 			}
-		if ( strpos( $commentdata_comment_content_lc, $commentdata_comment_author_lc_spam_strong_dot3 ) !== false ) {
+		if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_strong_dot3 ) !== false ) {
 			// Check to see if Phrase... in bold is in content
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' T2007';
 			}
-		if ( strpos( $commentdata_comment_content_lc, $commentdata_comment_author_lc_spam_strong_dot4 ) !== false ) {
+		if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_strong_dot4 ) !== false ) {
 			// Check to see if Phrase... in bold is in content
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' T2007';
 			}
-		if ( preg_match( "@<strong>(.*)?\[trackback\](.*)?</strong>@i", $commentdata_comment_content_lc ) ) {
+		if ( preg_match( "@<strong>(.*)?\[trackback\](.*)?</strong>@i", $commentdata_comment_content_lc_deslashed ) ) {
 			// Check to see if Phrase... in bold is in content
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' T2010';
@@ -4265,12 +4318,12 @@ $commentdata_comment_content_lc_deslashed ) ) {
 		// Start with url and convert to text phrase for matching against author.
 		$i = 0;
 		while ( $i <= $KeywordURLPhrasesCount ) {
-			if ( $KeywordURLPhrases[$i] == $commentdata_comment_author_lc ) {
+			if ( $KeywordURLPhrases[$i] == $commentdata_comment_author_lc_deslashed ) {
 				if ( !$content_filter_status ) { $content_filter_status = '1'; }
 
 				$spamshield_error_code .= ' T3001';
 				}
-			if ( $KeywordURLPhrases[$i] == $commentdata_comment_content_lc ) {
+			if ( $KeywordURLPhrases[$i] == $commentdata_comment_content_lc_deslashed ) {
 				if ( !$content_filter_status ) { $content_filter_status = '1'; }
 				$spamshield_error_code .= ' T3002';
 				}
@@ -4306,7 +4359,7 @@ $commentdata_comment_content_lc_deslashed ) ) {
 			$filter_phrase 					= $filter_phrase_parameters[0];
 			$filter_phrase_limit 			= $filter_phrase_parameters[1];
 			$filter_phrase_trackback_limit 	= $filter_phrase_parameters[2];
-			$filter_phrase_count			= substr_count( $commentdata_comment_content_lc, $filter_phrase );
+			$filter_phrase_count			= substr_count( $commentdata_comment_content_lc_deslashed, $filter_phrase );
 			if ( $filter_phrase_count >= $filter_phrase_trackback_limit ) {
 				if ( !$content_filter_status ) { $content_filter_status = '1'; }
 				}
@@ -4317,13 +4370,13 @@ $commentdata_comment_content_lc_deslashed ) ) {
 		// Test Comment Author 
 		// Words in Comment Author Repeated in Content		
 		$RepeatedTermsFilters = array('.','-',':');
-		$RepeatedTermsTempPhrase = str_replace($RepeatedTermsFilters,'',$commentdata_comment_author_lc);
+		$RepeatedTermsTempPhrase = str_replace($RepeatedTermsFilters,'',$commentdata_comment_author_lc_deslashed);
 		$RepeatedTermsTest = explode(' ',$RepeatedTermsTempPhrase);
 		$RepeatedTermsTestCount = count($RepeatedTermsTest);
 		$i = 0;
 		while ( $i <= $RepeatedTermsTestCount ) {
-			$RepeatedTermsInContentCount = substr_count( $commentdata_comment_content_lc, $RepeatedTermsTest[$i] );
-			$RepeatedTermsInContentStrLength = strlen($RepeatedTermsTest[$i]);
+			$RepeatedTermsInContentCount = substr_count( $commentdata_comment_content_lc_deslashed, $RepeatedTermsTest[$i] );
+			$RepeatedTermsInContentStrLength = mb_strlen($RepeatedTermsTest[$i]);
 			if ( $RepeatedTermsInContentCount >= 6 && $RepeatedTermsInContentStrLength >= 4 ) {		
 				if ( !$content_filter_status ) { $content_filter_status = '1'; }
 				$spamshield_error_code .= ' T9000-'.$i;
@@ -4340,16 +4393,16 @@ $commentdata_comment_content_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 5001';
 		}
-	if ( strpos( $commentdata_comment_content_lc, 'blastogranitic atremata antiviral unteacherlike choruser coccygalgia corynebacterium reason' ) !== false ) {
+	if ( strpos( $commentdata_comment_content_lc_deslashed, 'blastogranitic atremata antiviral unteacherlike choruser coccygalgia corynebacterium reason' ) !== false ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 5002';
 		}
-	if ( preg_match( "/^hey i know this is off topic but i was wondering if/i", $commentdata_comment_content_lc ) ) {
+	if ( preg_match( "/^hey i know this is off topic but i was wondering if/i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 
 		$spamshield_error_code .= ' 5003';
 		}
-	if ( preg_match( "/^this is kind of off topic but/i", $commentdata_comment_content_lc ) ) {
+	if ( preg_match( "/^this is kind of off topic but/i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 5004';
 		}
@@ -4367,7 +4420,7 @@ $commentdata_comment_content_lc_deslashed ) ) {
 	// Comment Author Tests
 	// Deleted Filter 2AUTH-34AUTH and replaced with REGEX Versions
 
-	if ( strpos( $commentdata_comment_author_lc, 'buy' ) !== false && ( strpos( $commentdata_comment_author_lc, 'online' ) !== false || strpos( $commentdata_comment_author_lc, 'pill' ) !== false ) ) {
+	if ( strpos( $commentdata_comment_author_lc_deslashed, 'buy' ) !== false && ( strpos( $commentdata_comment_author_lc_deslashed, 'online' ) !== false || strpos( $commentdata_comment_author_lc_deslashed, 'pill' ) !== false ) ) {
 		if ( !$content_filter_status ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 200AUTH';
 		$blacklist_word_combo++;
@@ -4384,59 +4437,59 @@ $commentdata_comment_content_lc_deslashed ) ) {
 	if ( $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
 	
 		// Simple Author='' Tests - Non-Trackback/Non-Pingback
-		if ( $commentdata_comment_author_lc == $filter_300400_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300400_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300400AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300401_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300401_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300401AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300402_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300402_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300402AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300403_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300403_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300403AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300404_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300404_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300404AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300405_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300405_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300405AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300406_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300406_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300406AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300407_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300407_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300407AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300408_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300408_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300408AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300409_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300409_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300409AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300410_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300410_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300410AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300411_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300411_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300411AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300412_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300412_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300412AUTH';
 			}
-		if ( $commentdata_comment_author_lc == $filter_300413_term ) {
+		if ( $commentdata_comment_author_lc_deslashed == $filter_300413_term ) {
 			if ( !$content_filter_status ) { $content_filter_status = '1'; }
 			$spamshield_error_code .= ' 300413AUTH';
 			}
@@ -4470,6 +4523,9 @@ $commentdata_comment_content_lc_deslashed ) ) {
 		$spamshield_error_code = 'No Error';
 		}
 	else {
+		if( $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' && $_COOKIE[$CookieValidationName] != $CookieValidationKey ) {
+			$spamshield_error_code .= ' COOKIE';
+			}
 		$spamshield_error_code = ltrim($spamshield_error_code);
 		if ( $spamshield_options['comment_logging'] ) {
 			spamshield_log_data( $commentdata, $spamshield_error_code );
@@ -4574,7 +4630,7 @@ function spamshield_modify_notification( $text, $comment_id ) {
 		$ipProxyData=$ip.' | MASKED IP: '.$MaskedIP;
 		$ProxyStatus='TRUE';
 		//Google Chrome Compression Check
-		if ( strpos( $ipProxyVIA_LC, 'chrome compression proxy' ) !== false && preg_match( "@^google-proxy-(.*).google.com$@i", $ReverseDNS ) ) {
+		if ( strpos( $ipProxyVIA_LC, 'chrome compression proxy' ) !== false && preg_match( "@^google-proxy-(.*)\.google\.com$@i", $ReverseDNS ) ) {
 			$ipProxyChromeCompression='TRUE';
 			}
 		else {

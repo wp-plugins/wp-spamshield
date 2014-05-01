@@ -140,10 +140,15 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.3.2, *released 05/01/14*
+
+* Added new filters and improved current filters in the algorithmic spam protection layer.
+* Made a few improvements to the blocked comment logging.
+
 Version 1.1.3.1, *released 04/28/14*
 
 * Fixed a bug in one of the spam filters.
-* Fixed 2 bugs that caused error messages on certain configurations.
+* Fixed 2 bugs that caused error messages on certain server configurations.
 
 Version 1.1.3.0, *released 04/25/14*
 
@@ -157,7 +162,7 @@ Version 1.1.2.2, *released 04/16/14*
 
 Version 1.1.2.1, *released 04/15/14*
 
-* Added new filters to the spam algorithm.
+* Added new filters to the spam blocking algorithm.
 * Added additional security checks.
 * Made a few improvements to the blocked comment logging data.
 * Minor bug fix.
@@ -165,18 +170,18 @@ Version 1.1.2.1, *released 04/15/14*
 Version 1.1.1.0, *released 04/11/14*
 
 * Added better trackback spam protection. This version adds a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is spam, *without fail*. This will eliminate more than 99.99% of trackback spam. Trackback spammers don't send spam out from the same server where their clients' websites reside.
-* Added new filters to the spam algorithm.
+* Added new filters to the spam blocking algorithm.
 * Made improvements to the overall compatibility with caching plugins.
 * Fixed a bug where the plugin was incorrectly detecting proxies.
 
 Version 1.1.0.0, *released 04/07/14*
 
 * Replaced all instances of eregi() function, which is deprecated in PHP 5.3. (Meaning it still works, but is being phased out and will be eliminated in a future version.) The plugin was already fully compatible with PHP 5.2 and below, and this update ensures full compatibility with PHP 5.3+.
-* Added new filters to the spam algorithm.
+* Added new filters to the spam blocking algorithm.
 
 Version 1.0.1.1, *released 04/03/14*
 
-* Added new filters to the spam algorithm.
+* Added new filters to the spam blocking algorithm.
 * Added additional security checks.
 * Code improvements and minor bug fixes.
 
