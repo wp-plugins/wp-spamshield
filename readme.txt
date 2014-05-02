@@ -140,6 +140,12 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.3.3, *released 05/02/14*
+
+* Fixed an issue occurring on some WordPress installations hosted on Microsoft IIS servers that have certain PHP functions disabled.
+* Removed WP-SpamShield Options page link from the "Plugins" menu in the WP Admin. Plugin options can still be accessed from the "Settings" menu.
+* Added new filters to the spam blocking algorithm.
+
 Version 1.1.3.2, *released 05/01/14*
 
 * Added new filters and improved current filters in the algorithmic spam protection layer.
