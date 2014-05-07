@@ -1,5 +1,6 @@
 <?php
-// Updated in Version 1.1.3.1
+// WP-SpamShield JS File
+// Updated in Version 1.1.4
 
 // Security Sanitization - BEGIN
 $id='';
@@ -13,18 +14,19 @@ if ( $_POST || $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 	}
 // Security Sanitization - END
 
-function wpss_microtime_js() {
+function spamshield_microtime_js() {
 	$mtime = microtime();
 	$mtime = explode(' ',$mtime); 
    	$mtime = $mtime[1]+$mtime[0];
 	return $mtime;
 	}
 	
-function wpss_create_random_key_js() {
+function spamshield_create_random_key_js() {
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     srand((double)microtime()*1000000);
+	$keyCode = '';
     $i = 0;
-    $pass = '' ;
+    $pass = '';
     while ($i <= 7) {
         $num = rand() % 33;
         $tmp = substr($chars, $num, 1);
@@ -34,7 +36,7 @@ function wpss_create_random_key_js() {
 	if ($keyCode=='') {
 		srand((double)74839201183*1000000);
     	$i = 0;
-    	$pass = '' ;
+    	$pass = '';
     	while ($i <= 7) {
         	$num = rand() % 33;
         	$tmp = substr($chars, $num, 1);
@@ -46,26 +48,28 @@ function wpss_create_random_key_js() {
 	}
 
 // Uncomment to use:
-//$wpss_js_start_time = wpss_microtime_js();
+//$wpss_js_start_time = spamshield_microtime_js();
 
-$wpss_session_test = session_id();
+$wpss_session_test = @session_id();
 if( empty($wpss_session_test) && !headers_sent() ) {
-	session_start();
+	@session_start();
 	global $wpss_session_id;
-	$wpss_session_id = session_id();
+	$wpss_session_id = @session_id();
 	}
-if ( $_SESSION['wpSpamShieldVer'] && $_SESSION['CookieValidationName'] && $_SESSION['CookieValidationKey'] ) {
+$spider_status_check = '';
+$spider_status_check_js = '';
+if ( isset($_SESSION['wpSpamShieldVer']) && isset($_SESSION['CookieValidationName']) && isset($_SESSION['CookieValidationKey']) ) {
 	$wpSpamShieldVer			= $_SESSION['wpSpamShieldVer'];
 	$CookieValidationName 		= $_SESSION['CookieValidationName'];
 	$CookieValidationKey 		= $_SESSION['CookieValidationKey'];
 	}
-elseif ( $session_wpSpamShieldVer && $session_CookieValidationName && $session_CookieValidationKey ) {
+elseif ( isset($session_wpSpamShieldVer) && isset($session_CookieValidationName) && isset($session_CookieValidationKey) ) {
 	$wpSpamShieldVer			= $session_wpSpamShieldVer;
 	$CookieValidationName  		= $session_CookieValidationName;
 	$CookieValidationKey 		= $session_CookieValidationKey;
 	}
 else {
-	if ( $_SESSION['spider_status_check'] ) {
+	if ( isset($_SESSION['spider_status_check']) ) {
 		$spider_status_check = $_SESSION['spider_status_check'];
 		}
 	elseif ( $_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR'] ) {
@@ -87,7 +91,7 @@ else {
 			}
 		$_SESSION['spider_status_check_js'] = $spider_status_check_js;
 		}
-	if ( !$spider_status_check_js && !$spider_status_check ) {
+	if ( $spider_status_check_js != 1 && $spider_status_check != 1 ) {
 		global $root, $wpSpamShieldVer, $spamshield_options, $CookieValidationName, $CookieValidationKey;
 		$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 		if (file_exists($root.'/wp-load.php')) {
@@ -104,14 +108,14 @@ else {
 		}
 	else {
 		$wpSpamShieldVer			= '1.0.0.0';
-		$randomComValCodeCVN1 		= wpss_create_random_key_js();
-		$randomComValCodeCVN2 		= wpss_create_random_key_js();
-		$randomComValCodeCVN3 		= wpss_create_random_key_js();
-		$randomComValCodeCVN4 		= wpss_create_random_key_js();
-		//$randomComValCodeCVN5 	= wpss_create_random_key_js();
-		//$randomComValCodeCVN6 	= wpss_create_random_key_js();
-		//$randomComValCodeCVN7 	= wpss_create_random_key_js();
-		//$randomComValCodeCVN8 	= wpss_create_random_key_js();
+		$randomComValCodeCVN1 		= spamshield_create_random_key_js();
+		$randomComValCodeCVN2 		= spamshield_create_random_key_js();
+		$randomComValCodeCVN3 		= spamshield_create_random_key_js();
+		$randomComValCodeCVN4 		= spamshield_create_random_key_js();
+		//$randomComValCodeCVN5 	= spamshield_create_random_key_js();
+		//$randomComValCodeCVN6 	= spamshield_create_random_key_js();
+		//$randomComValCodeCVN7 	= spamshield_create_random_key_js();
+		//$randomComValCodeCVN8 	= spamshield_create_random_key_js();
 		$CookieValidationName 		= $randomComValCodeCVN1.$randomComValCodeCVN2;
 		$CookieValidationKey  		= $randomComValCodeCVN3.$randomComValCodeCVN4;
 		//$CookieValidationNameJS	= $randomComValCodeCVN5.$randomComValCodeCVN6;
@@ -128,7 +132,7 @@ function commentValidation(){SetCookie('".$CookieValidationName."','".$CookieVal
 commentValidation();
 ";
 // Uncomment to use:
-//$wpss_js_end_time = wpss_microtime_js();
+//$wpss_js_end_time = spamshield_microtime_js();
 //$wpss_js_total_time = substr(($wpss_js_end_time - $wpss_js_start_time),0,8). " seconds";
 //echo "// Benchmark: ".$wpss_js_total_time."\n";
 

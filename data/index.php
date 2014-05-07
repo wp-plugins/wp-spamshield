@@ -7,9 +7,9 @@ header("HTTP/1.1 403 Forbidden");
 /* 
 You can avoid the need for pages like this by adding a single line of code to the beginning of your .htaccess file:
 
-## Add the following line to the beginning of your .htaccess
+## Add the following line to the beginning of your .htaccess for security and SEO.
 Options All -Indexes
-## This will turn off indexes so your site won't reveal contents directories that don't have an index file.
+## This will turn off indexes so your site won't reveal contents of directories that don't have an index file.
 
 */
 ?>

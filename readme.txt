@@ -140,6 +140,12 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.4, *released 05/06/14*
+
+* Fixed a couple of minor bugs.
+* Made various code improvements, including code efficiency and increased code strictness.
+* Added new filters and improved existing filters in the algorithmic spam protection layer.
+
 Version 1.1.3.3, *released 05/02/14*
 
 * Fixed an issue occurring on some WordPress installations hosted on Microsoft IIS servers that have certain PHP functions disabled.
@@ -148,7 +154,7 @@ Version 1.1.3.3, *released 05/02/14*
 
 Version 1.1.3.2, *released 05/01/14*
 
-* Added new filters and improved current filters in the algorithmic spam protection layer.
+* Added new filters and improved existing filters in the algorithmic spam protection layer.
 * Made a few improvements to the blocked comment logging.
 
 Version 1.1.3.1, *released 04/28/14*
@@ -158,7 +164,7 @@ Version 1.1.3.1, *released 04/28/14*
 
 Version 1.1.3.0, *released 04/25/14*
 
-* Added new filters and improved current filters in the algorithmic spam protection layer.
+* Added new filters and improved existing filters in the algorithmic spam protection layer.
 * Improved the efficiency of the code, and reduced main plugin file size significantly.
 * Fixed a couple of bugs.
 

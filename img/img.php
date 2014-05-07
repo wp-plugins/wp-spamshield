@@ -1,5 +1,6 @@
 <?php
-// Updated in Version 1.1.3.1
+// WP-SpamShield IMG File
+// Updated in Version 1.1.4
 
 // Security Sanitization - BEGIN
 $id='';
@@ -13,11 +14,12 @@ if ( $_POST || $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 	}
 // Security Sanitization - END
 
-function wpss_create_random_key_img() {
+function spamshield_create_random_key_img() {
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     srand((double)microtime()*1000000);
+	$keyCode = '';
     $i = 0;
-    $pass = '' ;
+    $pass = '';
     while ($i <= 7) {
         $num = rand() % 33;
         $tmp = substr($chars, $num, 1);
@@ -27,7 +29,7 @@ function wpss_create_random_key_img() {
 	if ($keyCode=='') {
 		srand((double)74839201183*1000000);
     	$i = 0;
-    	$pass = '' ;
+    	$pass = '';
     	while ($i <= 7) {
         	$num = rand() % 33;
         	$tmp = substr($chars, $num, 1);
@@ -38,24 +40,26 @@ function wpss_create_random_key_img() {
     return $keyCode;
 	}
 
-$wpss_session_test = session_id();
+$wpss_session_test = @session_id();
 if( empty($wpss_session_test) && !headers_sent() ) {
-	session_start();
+	@session_start();
 	global $wpss_session_id;
-	$wpss_session_id = session_id();
+	$wpss_session_id = @session_id();
 	}
-if ( $_SESSION['wpSpamShieldVer'] && $_SESSION['CookieValidationName'] && $_SESSION['CookieValidationKey'] ) {
+$spider_status_check = '';
+$spider_status_check_img = '';
+if ( isset($_SESSION['wpSpamShieldVer']) && isset($_SESSION['CookieValidationName']) && isset($_SESSION['CookieValidationKey']) ) {
 	$wpSpamShieldVer			= $_SESSION['wpSpamShieldVer'];
 	$CookieValidationName 		= $_SESSION['CookieValidationName'];
 	$CookieValidationKey 		= $_SESSION['CookieValidationKey'];
 	}
-elseif ( $session_wpSpamShieldVer && $session_CookieValidationName && $session_CookieValidationKey ) {
+elseif ( isset($session_wpSpamShieldVer) && isset($session_CookieValidationName) && isset($session_CookieValidationKey) ) {
 	$wpSpamShieldVer			= $session_wpSpamShieldVer;
 	$CookieValidationName  		= $session_CookieValidationName;
 	$CookieValidationKey 		= $session_CookieValidationKey;
 	}
 else {
-	if ( $_SESSION['spider_status_check'] ) {
+	if ( isset($_SESSION['spider_status_check']) ) {
 		$spider_status_check = $_SESSION['spider_status_check'];
 		}
 	elseif ( $_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR'] ) {
@@ -77,7 +81,7 @@ else {
 			}
 		$_SESSION['spider_status_check_img'] = $spider_status_check_img;
 		}
-	if ( !$spider_status_check_img && !$spider_status_check ) {
+	if ( $spider_status_check_img != 1 && $spider_status_check != 1 ) {
 		global $root, $wpSpamShieldVer, $spamshield_options, $CookieValidationName, $CookieValidationKey;
 		$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 		if (file_exists($root.'/wp-load.php')) {
@@ -94,14 +98,14 @@ else {
 		}
 	else {
 		$wpSpamShieldVer			= '1.0.0.0';
-		$randomComValCodeCVN1 		= wpss_create_random_key_img();
-		$randomComValCodeCVN2 		= wpss_create_random_key_img();
-		$randomComValCodeCVN3 		= wpss_create_random_key_img();
-		$randomComValCodeCVN4 		= wpss_create_random_key_img();
-		//$randomComValCodeCVN5 	= wpss_create_random_key_img();
-		//$randomComValCodeCVN6 	= wpss_create_random_key_img();
-		//$randomComValCodeCVN7 	= wpss_create_random_key_img();
-		//$randomComValCodeCVN8 	= wpss_create_random_key_img();
+		$randomComValCodeCVN1 		= spamshield_create_random_key_img();
+		$randomComValCodeCVN2 		= spamshield_create_random_key_img();
+		$randomComValCodeCVN3 		= spamshield_create_random_key_img();
+		$randomComValCodeCVN4 		= spamshield_create_random_key_img();
+		//$randomComValCodeCVN5 	= spamshield_create_random_key_img();
+		//$randomComValCodeCVN6 	= spamshield_create_random_key_img();
+		//$randomComValCodeCVN7 	= spamshield_create_random_key_img();
+		//$randomComValCodeCVN8 	= spamshield_create_random_key_img();
 		$CookieValidationName 		= $randomComValCodeCVN1.$randomComValCodeCVN2;
 		$CookieValidationKey  		= $randomComValCodeCVN3.$randomComValCodeCVN4;
 		//$CookieValidationNameJS	= $randomComValCodeCVN5.$randomComValCodeCVN6;
