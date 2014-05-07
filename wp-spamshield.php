@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.1.4
+Version: 1.1.4.1
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -41,7 +41,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.1.4' );
+define( 'WPSS_VERSION', '1.1.4.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -3081,61 +3081,61 @@ function spamshield_content_filter($commentdata) {
 		$spamshield_error_code .= ' 10510AU-MSC';
 		}
 	// Debt Consolidation Spammers
-	if ( preg_match( "@(debt(\s*))?consolidat(ion|or|er)((\s*)loan)?@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(debt([\s\.\-_]*))?consolidat(ion|or|er)(([\s\.\-_]*)loan)?@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10521A-DC';
 		}
 	// SEO Spammers
-	if ( preg_match( "@((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|seo|sem)$@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@((internet|search|zoekmachine|social([\s\.\-_]*)media)([\s\.\-_]+)(engine([\s\.\-_]+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|seo|sem)$@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10601A-SEO';
 		}
-	if ( preg_match( "@((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|网站推广|谷歌排名|link(\s*)build(ing|er)|web(\s*)(site)?(\s*)promot(ion|ing|er)|(trackback|social|comments?)(\s*)(submit(ter|ting)?|poster))@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@((internet|search|zoekmachine|social([\s\.\-_]*)media)([\s\.\-_]+)(engine([\s\.\-_]+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|网站推广|谷歌排名|link([\s\.\-_]*)build(ing|er)|web([\s\.\-_]*)(site)?([\s\.\-_]*)promot(ion|ing|er)|(trackback|social|comments?)([\s\.\-_]*)(submit(ter|ting)?|poster))@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10602A-SEO';
 		}
 	// Website Design/Hosting Spammers
-	if ( preg_match( "@(web(\s*)(site)?(\s*)(host(ing)?|design(er|ing)?|develop(ment|er|ing)?)|javascript|webmaster|website|template)@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(web([\s\.\-_]*)(site)?([\s\.\-_]*)(host(ing)?|design(er|ing)?|develop(ment|er|ing)?)|javascript|webmaster|website|template)@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10701A-WEB';
 		}
 	// Online Gambling Spammers
-	if ( ( preg_match( "@(online|internet|web)(\s*)(gambling|casinos?|poker|blackjack)@i", $commentdata_comment_author_lc_deslashed ) || preg_match( "@(gambling|casinos?|poker|blackjack)(\s*)(online|internet|web)@i", $commentdata_comment_author_lc_deslashed ) ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( ( preg_match( "@(online|internet|web)([\s\.\-_]*)(gambling|casinos?|poker|blackjack)@i", $commentdata_comment_author_lc_deslashed ) || preg_match( "@(gambling|casinos?|poker|blackjack)([\s\.\-_]*)(online|internet|web)@i", $commentdata_comment_author_lc_deslashed ) ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10801A-OLG';
 		}
 	// Medical Spammers
 	// Correlates to filters 2-41 AUTH
-	if ( preg_match( "@(v([i1y])agra|c([i1y])alis|lev([i1y])tra|erect([i1y])le([\s\-]*)d([i1y])sfunct([i1y])([o0])n|erect([i1y])(([o0])n|le)|xanax|z([i1y])thr([o0])max|phenterm([i1y])ne|(\s*)s([o0])ma([\.\s\-]*)|prescr([i1y])pt([i1y])([o0])n|tramad([o0])l|pen([i1y])s([\s\-]*)enlargement|^pen([i1y])s([\s\-]*)|^vagina([l\s]*)|buy([\s\-]*)pills|(diet|weight([\s\-]*)l([o0])ss)([\s\-]*)pills?|pr([o0])pec([i1y])a|([o0])nl([i1y])ne([\s\-]*)pharmacy|med([i1y])cat([i1y])([o0])n|ephedr(([i1y])ne?|a)|val([i1y])um|ad([i1y])pex|acc?utane|ac([o0])mpl([i1y])a|r([i1y])m([o0])nabant|z([i1y])mult([i1y])|herbal([i1y])fe|ster([o0])([i1y])|drug([\s\-]*)rehab|plantar([\s\-]*)fasc([i1y])([i1y])t([i1y])s)@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(v([i1y])agra|c([i1y])alis|lev([i1y])tra|erect([i1y])le([\s\.\-_]*)d([i1y])sfunct([i1y])([o0])n|erect([i1y])(([o0])n|le)|xanax|z([i1y])thr([o0])max|phenterm([i1y])ne|([\s\.\-_]*)s([o0])ma([\s\.\-_]*)|prescr([i1y])pt([i1y])([o0])n|tramad([o0])l|pen([i1y])s([\s\.\-_]*)enlargement|^pen([i1y])s([\s\.\-_]*)|^vagina([l\s]*)|buy([\s\.\-_]*)pills|(diet|weight([\s\.\-_]*)l([o0])ss)([\s\.\-_]*)pills?|pr([o0])pec([i1y])a|([o0])nl([i1y])ne([\s\.\-_]*)pharmacy|med([i1y])cat([i1y])([o0])n|ephedr(([i1y])ne?|a)|val([i1y])um|ad([i1y])pex|acc?utane|ac([o0])mpl([i1y])a|r([i1y])m([o0])nabant|z([i1y])mult([i1y])|herbal([i1y])fe|ster([o0])([i1y])|drug([\s\.\-_]*)rehab|plantar([\s\.\-_]*)fasc([i1y])([i1y])t([i1y])s)@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10901A-MED';
 		}
 	// Porn/Sex Spammers
 	// Correlates to filters 104-159
-	if ( preg_match( "@(^([\s\-]*)(p(or|ro)n|sex|mast(u|e)rbat(e|ion|ing)|rap(e|er|ist|ing)|incest(ual|uous)?|bestiality|cum|hentai|pussy|penis|vagina|xxx|naked|nude|desnuda|orgasm|fuck(ing)?|dildo|ejaculat(e|ion|ing)|lesbian|gay|(homo|bi|hetero)?sexual|cumshots|anal|erotic(ism)?|clitoris|porntube|blow([\s\-]*)jobs?|prostitutes?|hookers?|call([\s\-]*)girls?|(escort|sex(ual)?)([\s\-]*)services?|celebrit(y|ies))([\s\-]*)$|([a-z0-9\-]*)([\s\-]+)(p(or|ro)n|sex|xxx|hentai)([\s\-]*)$|(teen|rape|incest|anal|vaginal|gay|lesbian|torture|bestiality|animal|celebrit(y|ies)|cyber)([\s\-]*)(porn|hentai|xxx|sex)|(sex|adult|xxx|p(or|ro)n|hentai)([\s\-]*)(movie|tape|vid(s|eos?)))@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(^([\s\.\-_]*)(p(or|ro)n|sex|mast(u|e)rbat(e|ion|ing)|rap(e|er|ist|ing)|incest(ual|uous)?|bestiality|cum|hentai|pussy|penis|vagina|xxx|naked|nude|desnuda|orgasm|fuck(ing)?|dildo|ejaculat(e|ion|ing)|lesbian|gay|(homo|bi|hetero)?sexual|cumshots|anal|erotic(ism)?|clitoris|porntube|blow([\s\.\-_]*)jobs?|prostitutes?|hookers?|call([\s\.\-_]*)girls?|(escort|sex(ual)?)([\s\.\-_]*)services?|celebrit(y|ies))([\s\.\-_]*)$|([a-z0-9\-]*)([\s\.\-_]+)(p(or|ro)n|sex|xxx|hentai)([\s\.\-_]*)$|(teen|rape|incest|anal|vaginal|gay|lesbian|torture|bestiality|animal|celebrit(y|ies)|cyber)([\s\.\-_]*)(porn|hentai|xxx|sex)|(sex|adult|xxx|p(or|ro)n|hentai)([\s\.\-_]*)(movie|tape|vid(s|eos?)))@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 11001A-SXP';
 		}
 	// Offshore/Outsourcing Spam
 	// Correlates to filters 300-423 AUTH
-	if ( preg_match( "@((india|russia|ukraine|china)(\s+)(offshore|outsourc(e|ing))|(offshore|outsourc(e|ing))(\s+)(india|russia|ukraine|china)|data(\s+)entry(\s+)(india|russia|ukraine|china))@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@((india|russia|ukraine|china)([\s\.\-_]+)(offshore|outsourc(e|ing))|(offshore|outsourc(e|ing))([\s\.\-_]+)(india|russia|ukraine|china)|data([\s\.\-_]+)entry([\s\.\-_]+)(india|russia|ukraine|china))@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 12001A-OFS';
 		}
 	// Miscellaneous Spammers
 	// Correlates to filters 300-423 AUTH
-	if ( preg_match( "@(modulesoft|(\s+)company|business|organization|(\s+)seminar|phpdug|(\s+)review|(\s+)sunglasses|(designer|christian(\s+)dior|hermes|michael(\s+)kors)?(\s+)handbags?|(\s+)outlet|property(\s+)vault|foreclosure|earn(\s+)money|software|home(\s+)design|((\s+)e?-?learning(\s+)|how(\s*)to)(\s+)|youtube|facebook|twitter|instagram|social(\s+)bookmark|united(\s+)states|johannesburg|bucuresti|(\s+)city|for(\s+)sale|buy(\s+)(cheap|online)|property|logo(\s+)design|injury(\s+)lawyer|internas?tional|information|advertising|car(\s+)rental|rent(\s+)a(\s+)car|development|technology|forex(\s+)trading|anonymous|php(\s+)expert|travel(\s+)deals|college(\s+)student|health(\s*)(insurance|care)|click(\s+)here|visit(\s+)now|turbo(\s+)tax|photoshop|power(\s+)kite|stop(\s+)sweating?(\s+)me|sweating?(\s+)on|online(\s+)jobs|jobs(\s+)online|(pc|computer|laptop|laptopuri)(\s+)(repair|reparatii)|(repair|reparatii)(\s+)(pc|computer|laptop|laptopuri)|mobilabonnement(\s+)priser|kroatien(\s+)insel(\s+)brac|unblocked|(\s+)(coupon|discount)s?|(coupon|promo|voucher|shipping)(\s+)codes?|personalization|(\s+)homepage|(\s+)best(\s+)|bluetooth|prox(y|ies)(\s+)(surf(ing|er)?|software)|(\s+)homepage)@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(modulesoft|([\s\.\-_]+)company|business|organization|([\s\.\-_]+)seminar|phpdug|([\s\.\-_]+)review|([\s\.\-_]+)sunglasses|(designer|christian([\s\.\-_]+)dior|hermes|michael([\s\.\-_]+)kors)?([\s\.\-_]+)handbags?|([\s\.\-_]+)outlet|property([\s\.\-_]+)vault|foreclosure|earn([\s\.\-_]+)money|software|home([\s\.\-_]+)design|(([\s\.\-_]+)e?-?learning([\s\.\-_]+)|how([\s\.\-_]*)to)([\s\.\-_]+)|youtube|facebook|twitter|instagram|social([\s\.\-_]+)bookmark|united([\s\.\-_]+)states|johannesburg|bucuresti|([\s\.\-_]+)city$|for([\s\.\-_]+)sale|buy([\s\.\-_]+)(cheap|online)|property|logo([\s\.\-_]+)design|injury([\s\.\-_]+)lawyer|internas?tional|information|advertising|car([\s\.\-_]+)rental|rent([\s\.\-_]+)a([\s\.\-_]+)car|development|technology|forex([\s\.\-_]+)trading|anonymous|php([\s\.\-_]+)expert|travel([\s\.\-_]+)deals|college([\s\.\-_]+)student|health([\s\.\-_]*)(insurance|care)|click([\s\.\-_]+)here|visit([\s\.\-_]+)now|turbo([\s\.\-_]+)tax|photoshop|power([\s\.\-_]+)kite|stop([\s\.\-_]+)sweating?([\s\.\-_]+)me|sweating?([\s\.\-_]+)on|online([\s\.\-_]+)jobs|jobs([\s\.\-_]+)online|(pc|computer|laptop|laptopuri)([\s\.\-_]+)(repair|reparatii)|(repair|reparatii)([\s\.\-_]+)(pc|computer|laptop|laptopuri)|mobilabonnement([\s\.\-_]+)priser|kroatien([\s\.\-_]+)insel([\s\.\-_]+)brac|unblocked|([\s\.\-_]+)(coupon|discount)s?|(coupon|promo|voucher|shipping)([\s\.\-_]+)codes?|personalization|([\s\.\-_]+)homepage|([\s\.\-_]+)best([\s\.\-_]+)|bluetooth|prox(y|ies)([\s\.\-_]+)(surf(ing|er)?|software)|([\s\.\-_]+)homepage)@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 12501A-MSC';
 		}
 	//Misc - Author begins with Keyword
-	if ( preg_match( "@^(cheap|discount(ed)?|buy)(\s+)$@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@^(cheap|discount(ed)?|buy)([\s\.\-_]+)$@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 12502A-MSC';
 		}
 
 	//Misc - Author ends with Keyword
-	if ( preg_match( "@(\s+)(clothing|online|cheats?|reviews?)$@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@([\s\.\-_]+)(clothing|online|cheats?|reviews?)$@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 12503A-MSC';
 		}
@@ -3755,7 +3755,7 @@ function spamshield_content_filter($commentdata) {
 		}
 	
 	// PayDay Loan Spammers and the like...
-	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?://([a-z0-9\-\.]+)\.([a-z0-9\-_/'\"\.\/\?\&\=\s]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)((payday|students?|title)(\s+)loan|cash(\s+)advance)([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) ) {
+	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?://([a-z0-9\-\.]+)\.([a-z0-9\-_/'\"\.\/\?\&\=\s]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)((payday|students?|title)([\s\.\-_]+)loan|cash([\s\.\-_]+)advance)([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10501C-PDL';
 		}
@@ -3772,36 +3772,36 @@ function spamshield_content_filter($commentdata) {
 		$spamshield_error_code .= ' 10510C-MSC';
 		}
 	// Online Gambling Spammers
-	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])(\s*)(debt(\s*))?consolidat(ion|or|er)((\s*)loan)?([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])(\s*)(debt([\s\.\-_]*))?consolidat(ion|or|er)(([\s\.\-_]*)loan)?([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10521C-DC';
 		}
 	// SEO Spammers
-	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])(\s*)(([a-z0-9\-\s]*)\s)?((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|seo|sem)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])(\s*)(([a-z0-9\-\s]*)\s)?((internet|search|zoekmachine|social([\s\.\-_]*)media)([\s\.\-_]+)(engine([\s\.\-_]+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|seo|sem)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10601C-SEO';
 		}
-	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])(\s*)(([a-z0-9\-\s]*)\s)?((internet|search|zoekmachine|social(\s*)media)(\s+)(engine(\s+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|网站推广|谷歌排名|link(\s*)build(ing|er)|web(\s*)(site)?(\s*)promot(ion|ing|er)|(trackback|social|comments?)(\s*)(submit(ter|ting)?|poster))(\s*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])(\s*)(([a-z0-9\-\s]*)\s)?((internet|search|zoekmachine|social([\s\.\-_]*)media)([\s\.\-_]+)(engine([\s\.\-_]+))?(optimi[sz](ation|er|ing)|optimalisatie|market(ing|er)|consult(ant|ing)|rank(ing)?)|网站推广|谷歌排名|link([\s\.\-_]*)build(ing|er)|web([\s\.\-_]*)(site)?([\s\.\-_]*)promot(ion|ing|er)|(trackback|social|comments?)([\s\.\-_]*)(submit(ter|ting)?|poster))(\s*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10602C-SEO';
 		}
 	// Website Design/Hosting Spammers
-	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])(\s*)web(\s*)(site)?(\s*)(host(ing)?|design(er|ing)?|develop(ment|er|ing)?)(\s*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])(\s*)web([\s\.\-_]*)(site)?([\s\.\-_]*)(host(ing)?|design(er|ing)?|develop(ment|er|ing)?)(\s*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10701C-WEB';
 		}
 	// Online Gambling Spammers
-	if ( ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)(online|internet|web)([a-z0-9\-\s]*)(gambling|casinos?|poker|blackjack)([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) || preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)(gambling|casinos?|poker|blackjack)([a-z0-9\-\s]*)(online|internet|web)([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)(online|internet|web)([a-z0-9\-_\s]*)(gambling|casinos?|poker|blackjack)([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) || preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)(gambling|casinos?|poker|blackjack)([a-z0-9\-_\s]*)(online|internet|web)([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10801C-OLG';
 		}
-	// Online Gambling Spammers
-	if ( ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)(online|internet|web)([a-z0-9\-\s]*)(gambling|casinos?|poker|blackjack)([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) || preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)(v([i1y])agra|c([i1y])alis|lev([i1y])tra|erect([i1y])le([\s\-]*)d([i1y])sfunct([i1y])([o0])n|erect([i1y])(([o0])n|le)|xanax|z([i1y])thr([o0])max|phenterm([i1y])ne|(\s*)s([o0])ma([\.\s\-]*)|prescr([i1y])pt([i1y])([o0])n|tramad([o0])l|pen([i1y])s([\s\-]*)enlargement|^pen([i1y])s([\s\-]*)|^vagina([l\s]*)|buy([\s\-]*)pills|(diet|weight([\s\-]*)l([o0])ss)([\s\-]*)pills?|pr([o0])pec([i1y])a|([o0])nl([i1y])ne([\s\-]*)pharmacy|med([i1y])cat([i1y])([o0])n|ephedr(([i1y])ne?|a)|val([i1y])um|ad([i1y])pex|acc?utane|ac([o0])mpl([i1y])a|r([i1y])m([o0])nabant|z([i1y])mult([i1y])|herbal([i1y])fe|ster([o0])([i1y])|drug([\s\-]*)rehab|plantar([\s\-]*)fasc([i1y])([i1y])t([i1y])s)([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	// Medical Spammers
+	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)(v([i1y])agra|c([i1y])alis|lev([i1y])tra|erect([i1y])le([\s\.\-_]*)d([i1y])sfunct([i1y])([o0])n|erect([i1y])(([o0])n|le)|xanax|z([i1y])thr([o0])max|phenterm([i1y])ne|([\s\.\-_]*)s([o0])ma([\s\.\-_]*)|prescr([i1y])pt([i1y])([o0])n|tramad([o0])l|pen([i1y])s([\s\.\-_]*)enlargement|^pen([i1y])s([\s\.\-_]*)|^vagina([l\s]*)|buy([\s\.\-_]*)pills|(diet|weight([\s\.\-_]*)l([o0])ss)([\s\.\-_]*)pills?|pr([o0])pec([i1y])a|([o0])nl([i1y])ne([\s\.\-_]*)pharmacy|med([i1y])cat([i1y])([o0])n|ephedr(([i1y])ne?|a)|val([i1y])um|ad([i1y])pex|acc?utane|ac([o0])mpl([i1y])a|r([i1y])m([o0])nabant|z([i1y])mult([i1y])|herbal([i1y])fe|ster([o0])([i1y])|drug([\s\.\-_]*)rehab|plantar([\s\.\-_]*)fasc([i1y])([i1y])t([i1y])s)([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10901C-MED';
 		}
 	// Porn/Sex Spammers
-	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)(([a-z0-9\-]*)([\s\-]+)(p(or|ro)n|sex|xxx|hentai)([\s\-]*)$|(teen|rape|incest|anal|vaginal|gay|lesbian|torture|bestiality|animal|celebrit(y|ies)|cyber)([\s\-]*)(porn|hentai|xxx|sex)|(sex|adult|xxx|p(or|ro)n|hentai)([\s\-]*)(movie|tape|vid(s|eos?)))([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( preg_match( "@(<(\s*)a(\s+)([a-z0-9\-_\.\?\='\"\:\s]*)(\s*)href|\[(url|link))(\s*)\=(\s*)(['\"])?(\s*)https?\://([a-z0-9\-\.]+\.)?([a-z0-9\-_/\.\?\&\=]+)(\s*)(['\"])?(\s*)(>|\])([a-z0-9\-\s]*)(([a-z0-9\-]*)([\s\.\-_]+)(p(or|ro)n|sex|xxx|hentai)([\s\.\-_]*)$|(teen|rape|incest|anal|vaginal|gay|lesbian|torture|bestiality|animal|celebrit(y|ies)|cyber)([\s\.\-_]*)(porn|hentai|xxx|sex)|(sex|adult|xxx|p(or|ro)n|hentai)([\s\.\-_]*)(movie|tape|vid(s|eos?)))([a-z0-9\-\s]*)(<|\[)(\s*)/((\s*)a(\s*)>|(url|link)\])@i", $commentdata_comment_content_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 11001C-SXP';
 		}
@@ -3859,7 +3859,7 @@ function spamshield_content_filter($commentdata) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 9101';
 		}
-	if ( preg_match( "@^(ww[w0-9]\.)?$commentdata_comment_author_lc_deslashed_regex$@i", $commentdata_comment_author_url_domain_lc) && !preg_match( "@https?\://@i", $commentdata_comment_author_lc_deslashed ) ) {
+	if ( preg_match( "@^(ww[w0-9]\.)?$commentdata_comment_author_lc_deslashed_regex$@i", $commentdata_comment_author_url_domain_lc) && !preg_match( "@https?\://@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 9102';
 		}
@@ -4488,9 +4488,19 @@ function spamshield_stats() {
 	$spamshield_options = get_option('spamshield_options');
 
 	$InstallDate = $spamshield_options['install_date'];
+	if ( empty( $InstallDate ) ) {
+		$InstallDate = date('Y-m-d');
+		}
 	$CurrentDate = date('Y-m-d');
 	$NumDaysInstalled = spamshield_date_diff($InstallDate, $CurrentDate);
-	$AvgBlockedDaily = round( $spamshield_count / $NumDaysInstalled );
+	if ( $NumDaysInstalled < 1 ) {
+		$NumDaysInstalled = 1;
+		}
+	$SpamCountSoFar = $spamshield_count;
+	if ( $SpamCountSoFar < 1 ) {
+		$SpamCountSoFar = 1;
+		}
+	@$AvgBlockedDaily = round( $SpamCountSoFar / $NumDaysInstalled );
 	
 	if ( current_user_can('manage_options') ) {
 		$SpamStatInclLink = ' (<a href="options-general.php?page='.WPSS_PLUGIN_BASENAME.'"">Settings</a>)</p>'."\n";
@@ -4778,9 +4788,19 @@ if (!class_exists('wpSpamShield')) {
 			$spamshield_options = get_option('spamshield_options');
 		
 			$InstallDate = $spamshield_options['install_date'];
+			if ( empty( $InstallDate ) ) {
+				$InstallDate = date('Y-m-d');
+				}
 			$CurrentDate = date('Y-m-d');
 			$NumDaysInstalled = spamshield_date_diff($InstallDate, $CurrentDate);
-			$AvgBlockedDaily = round( $spamshield_count / $NumDaysInstalled );
+			if ( $NumDaysInstalled < 1 ) {
+				$NumDaysInstalled = 1;
+				}
+			$SpamCountSoFar = $spamshield_count;
+			if ( $SpamCountSoFar < 1 ) {
+				$SpamCountSoFar = 1;
+				}
+			@$AvgBlockedDaily = round( $SpamCountSoFar / $NumDaysInstalled );
 
 			$installation_plugins_get_test_1		= WPSS_PLUGIN_BASENAME; // 'wp-spamshield/wp-spamshield.php'
 			$installation_file_test_0 				= WPSS_PLUGIN_FILE_PATH; // '/public_html/wp-content/plugins/wp-spamshield/wp-spamshield.php'

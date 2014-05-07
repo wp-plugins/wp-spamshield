@@ -140,6 +140,10 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.4.1, *released 05/07/14*
+
+* Fixed a bug that caused a "Division by zero" error in the admin spam stats (if a new install) on some systems.
+
 Version 1.1.4, *released 05/06/14*
 
 * Fixed a couple of minor bugs.
