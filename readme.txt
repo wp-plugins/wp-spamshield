@@ -143,6 +143,7 @@ If you have any further questions, please submit them on the [support page](http
 Version 1.1.4.1, *released 05/07/14*
 
 * Fixed a bug that caused a "Division by zero" error in the admin spam stats (if a new install) on some systems.
+* Improved some of the existing filters in the algorithmic spam protection layer.
 
 Version 1.1.4, *released 05/06/14*
 
