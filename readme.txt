@@ -140,6 +140,12 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.4.2, *released 05/08/14*
+
+* Fixed a couple minor bugs.
+* Replaced all instances of split() function, which is deprecated in PHP 5.3. (Meaning it still works, but is being phased out and will be eliminated in a future version.) The plugin was already fully compatible with PHP 5.2 and below, and this update ensures full compatibility with PHP 5.3+.
+* Made some improvements to the validation of user input on the WP-SpamShield options page in the WP admin to keep the database neat and tidy.
+
 Version 1.1.4.1, *released 05/07/14*
 
 * Fixed a bug that caused a "Division by zero" error in the admin spam stats (if a new install) on some systems.
@@ -193,7 +199,7 @@ Version 1.1.1.0, *released 04/11/14*
 
 Version 1.1.0.0, *released 04/07/14*
 
-* Replaced all instances of eregi() function, which is deprecated in PHP 5.3. (Meaning it still works, but is being phased out and will be eliminated in a future version.) The plugin was already fully compatible with PHP 5.2 and below, and this update ensures full compatibility with PHP 5.3+.
+* Replaced all instances of eregi() function, which is deprecated in PHP 5.3. (Meaning it still works, but is being phased out and will be eliminated in a future version.) The plugin was already fully compatible with PHP 5.2 and below, and this update ensures compatibility with PHP 5.3+.
 * Added new filters to the spam blocking algorithm.
 
 Version 1.0.1.1, *released 04/03/14*

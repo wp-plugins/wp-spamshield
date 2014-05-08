@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.1.4.1
+Version: 1.1.4.2
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -41,7 +41,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.1.4.1' );
+define( 'WPSS_VERSION', '1.1.4.2' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -316,9 +316,9 @@ function spamshield_date_diff($start, $end) {
 	$start_ts = strtotime($start);
 	$end_ts = strtotime($end);
 	$diff = ( $end_ts - $start_ts );
-	$start_array = split("-", $start);
+	$start_array = explode('-', $start);
 	$start_year = $start_array[0];
-	$end_array = split("-", $end);
+	$end_array = explode('-', $end);
 	$end_year = $end_array[0];
 	$years = $end_year-$start_year;
 	if (($years%4) == 0) {
@@ -4851,7 +4851,8 @@ if (!class_exists('wpSpamShield')) {
 			if ( !empty( $_REQUEST['submit_wpss_contact_options'] ) && current_user_can('manage_options') && check_admin_referer('wpss_contact_options_nonce')  ) {
 				echo '<div class="updated fade"><p>Plugin Contact Form settings saved.</p></div>';
 				}
-			if ( $_REQUEST['wpss_action'] == 'blacklist_ip' && !empty( $_REQUEST['comment_ip'] ) && current_user_can('manage_options') && empty( $_REQUEST['submit_wpss_general_options'] ) && empty( $_REQUEST['submit_wpss_contact_options'] ) ) {
+			if ( !empty( $_REQUEST['wpss_action'] ) ) { $wpss_action = $_REQUEST['wpss_action']; } else { $wpss_action =''; }
+			if ( $wpss_action == 'blacklist_ip' && !empty( $_REQUEST['comment_ip'] ) && current_user_can('manage_options') && empty( $_REQUEST['submit_wpss_general_options'] ) && empty( $_REQUEST['submit_wpss_contact_options'] ) ) {
 				$ip_to_blacklist = trim(stripslashes($_REQUEST['comment_ip']));
 				if ( preg_match("/^([0-9]|[0-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]|[0-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]|[0-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]|[0-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$/" ,$ip_to_blacklist ) ) {
 					$$ip_to_blacklist_valid='1';
@@ -4895,18 +4896,19 @@ if (!class_exists('wpSpamShield')) {
 				else {
 					$CommentLoggingStartDate = 0;
 					}
+				
 				// Validate Request Values
 				$valid_req_spamshield_options = $_REQUEST;
-				if ( $_REQUEST['block_all_trackbacks'] 			== 'on' )	{ $valid_req_spamshield_options['block_all_trackbacks'] 		= 1; }
-				if ( $_REQUEST['block_all_pingbacks'] 			== 'on' ) 	{ $valid_req_spamshield_options['block_all_pingbacks'] 			= 1; }
-				if ( $_REQUEST['use_alt_cookie_method']			== 'on' ) 	{ $valid_req_spamshield_options['use_alt_cookie_method'] 		= 1; }
-				if ( $_REQUEST['use_alt_cookie_method_only'] 	== 'on' ) 	{ $valid_req_spamshield_options['use_alt_cookie_method_only'] 	= 1; }
-				if ( $_REQUEST['comment_logging'] 				== 'on' ) 	{ $valid_req_spamshield_options['comment_logging'] 				= 1; }
-				if ( $_REQUEST['comment_logging_all'] 			== 'on' ) 	{ $valid_req_spamshield_options['comment_logging_all'] 			= 1; }
-				if ( $_REQUEST['enhanced_comment_blacklist'] 	== 'on' ) 	{ $valid_req_spamshield_options['enhanced_comment_blacklist'] 	= 1; }
-				if ( $_REQUEST['allow_proxy_users'] 			== 'on' ) 	{ $valid_req_spamshield_options['allow_proxy_users'] 			= 1; }
-				if ( $_REQUEST['hide_extra_data'] 				== 'on' ) 	{ $valid_req_spamshield_options['hide_extra_data'] 				= 1; }
-				if ( $_REQUEST['promote_plugin_link'] 			== 'on' ) 	{ $valid_req_spamshield_options['promote_plugin_link'] 			= 1; }
+				
+				$wpss_options_general_boolean = array ( 'block_all_trackbacks', 'block_all_pingbacks', 'use_alt_cookie_method', 'use_alt_cookie_method_only', 'comment_logging', 'comment_logging_all', 'enhanced_comment_blacklist', 'allow_proxy_users', 'hide_extra_data', 'promote_plugin_link' );
+				$wpss_options_general_boolean_count = count( $wpss_options_general_boolean );
+				$i = 0;
+				while ( $i < $wpss_options_general_boolean_count ) {
+					if ( $_REQUEST[$wpss_options_general_boolean[$i]] == 'on' || $_REQUEST[$wpss_options_general_boolean[$i]] == 1 ) { $valid_req_spamshield_options[$wpss_options_general_boolean[$i]] = 1; }
+					else { $valid_req_spamshield_options[$wpss_options_general_boolean[$i]] = 0; }
+					$i++;
+					}
+
 				// Update Values
 				$spamshield_options_update = array (
 						'cookie_validation_name' 				=> $spamshield_options['cookie_validation_name'],
@@ -4968,7 +4970,61 @@ if (!class_exists('wpSpamShield')) {
 			if ( !empty( $_REQUEST['submitted_wpss_contact_options'] ) && current_user_can('manage_options') && check_admin_referer('wpss_contact_options_nonce') ) {
 				// Validate Request Values
 				$valid_req_spamshield_options = $_REQUEST;
-				if ( $_REQUEST['form_include_user_meta'] 		== 'on' ) 	{ $valid_req_spamshield_options['form_include_user_meta'] 		= 1; }
+				$spamshield_default = unserialize(WPSS_DEFAULT_VALUES);
+				$wpss_options_contact_boolean = array ( 'form_include_website', 'form_require_website', 'form_include_phone', 'form_require_phone', 'form_include_company', 'form_require_company', 'form_include_drop_down_menu', 'form_require_drop_down_menu', 'form_include_user_meta' );
+				$wpss_options_contact_boolean_count = count( $wpss_options_contact_boolean );
+				$i = 0;
+				while ( $i < $wpss_options_contact_boolean_count ) {
+					if ( $_REQUEST[$wpss_options_contact_boolean[$i]] == 'on' || $_REQUEST[$wpss_options_contact_boolean[$i]] == 1 ) { $valid_req_spamshield_options[$wpss_options_contact_boolean[$i]] = 1; }
+					else { $valid_req_spamshield_options[$wpss_options_contact_boolean[$i]] = 0; }
+					$i++;
+					}
+				
+				$wpss_options_contact_text = array ( 'form_drop_down_menu_title', 'form_drop_down_menu_item_1', 'form_drop_down_menu_item_2', 'form_drop_down_menu_item_3', 'form_drop_down_menu_item_4', 'form_drop_down_menu_item_5', 'form_drop_down_menu_item_6', 'form_drop_down_menu_item_7', 'form_drop_down_menu_item_8', 'form_drop_down_menu_item_9', 'form_drop_down_menu_item_10', 'form_response_thank_you_message' );
+				$wpss_options_contact_text_count = count( $wpss_options_contact_text );
+				$i = 0;
+				while ( $i < $wpss_options_contact_text_count ) {
+					if ( !empty( $_REQUEST[$wpss_options_contact_text[$i]] ) ) { $valid_req_spamshield_options[$wpss_options_contact_text[$i]] = trim( stripslashes( $_REQUEST[$wpss_options_contact_text[$i]] ) ); }
+					else { $valid_req_spamshield_options[$wpss_options_contact_text[$i]] = $spamshield_default[$wpss_options_contact_text[$i]]; }
+					$i++;
+					}
+				
+				if ( !empty( $_REQUEST['form_message_width'] ) ) {
+					$form_message_width_temp = trim( stripslashes( $_REQUEST['form_message_width'] ) );
+					if ( $form_message_width_temp < 40 ) {
+						$form_message_width_temp = 40;
+						}
+					$valid_req_spamshield_options['form_message_width']	= $form_message_width_temp;
+					}
+				else { $valid_req_spamshield_options['form_message_width']	= $spamshield_default['form_message_width']; }
+
+				if ( !empty( $_REQUEST['form_message_height'] ) ) {
+					$form_message_height_temp = trim( stripslashes( $_REQUEST['form_message_height'] ) );
+					if ( $form_message_height_temp < 5 ) {
+						$form_message_height_temp = 5;
+						}
+					$valid_req_spamshield_options['form_message_height']	= $form_message_height_temp;
+					}
+				else { $valid_req_spamshield_options['form_message_height']	= $spamshield_default['form_message_height']; }
+
+				if ( !empty( $_REQUEST['form_message_min_length'] ) ) {
+					$form_message_min_length_temp = trim( stripslashes( $_REQUEST['form_message_min_length'] ) );
+					if ( $form_message_min_length_temp < 15 ) {
+						$form_message_min_length_temp = 15;
+						}
+					$valid_req_spamshield_options['form_message_min_length']	= $form_message_min_length_temp;
+					}
+				else { $valid_req_spamshield_options['form_message_min_length']	= $spamshield_default['form_message_min_length']; }
+
+				if ( !empty( $_REQUEST['form_message_recipient'] ) ) {
+					$form_message_recipient_temp = trim( stripslashes( $_REQUEST['form_message_recipient'] ) );
+					if ( is_email( $form_message_recipient_temp ) ) {
+						$valid_req_spamshield_options['form_message_recipient'] = $form_message_recipient_temp;
+						}
+					else { $valid_req_spamshield_options['form_message_recipient']	= get_option('admin_email'); }
+					}
+				else { $valid_req_spamshield_options['form_message_recipient']	= get_option('admin_email'); }
+
 				$spamshield_options_update = array (
 						'cookie_validation_name' 				=> $spamshield_options['cookie_validation_name'],
 						'cookie_validation_key' 				=> $spamshield_options['cookie_validation_key'],
@@ -4993,30 +5049,30 @@ if (!class_exists('wpSpamShield')) {
 						'enhanced_comment_blacklist'			=> $spamshield_options['enhanced_comment_blacklist'],
 						'allow_proxy_users'						=> $spamshield_options['allow_proxy_users'],
 						'hide_extra_data'						=> $spamshield_options['hide_extra_data'],
-						'form_include_website' 					=> $_REQUEST['form_include_website'],
-						'form_require_website' 					=> $_REQUEST['form_require_website'],
-						'form_include_phone' 					=> $_REQUEST['form_include_phone'],
-						'form_require_phone' 					=> $_REQUEST['form_require_phone'],
-						'form_include_company' 					=> $_REQUEST['form_include_company'],
-						'form_require_company' 					=> $_REQUEST['form_require_company'],
-						'form_include_drop_down_menu'			=> $_REQUEST['form_include_drop_down_menu'],
-						'form_require_drop_down_menu'			=> $_REQUEST['form_require_drop_down_menu'],
-						'form_drop_down_menu_title'				=> trim(stripslashes($_REQUEST['form_drop_down_menu_title'])),
-						'form_drop_down_menu_item_1'			=> trim(stripslashes($_REQUEST['form_drop_down_menu_item_1'])),
-						'form_drop_down_menu_item_2'			=> trim(stripslashes($_REQUEST['form_drop_down_menu_item_2'])),
-						'form_drop_down_menu_item_3'			=> trim(stripslashes($_REQUEST['form_drop_down_menu_item_3'])),
-						'form_drop_down_menu_item_4'			=> trim(stripslashes($_REQUEST['form_drop_down_menu_item_4'])),
-						'form_drop_down_menu_item_5'			=> trim(stripslashes($_REQUEST['form_drop_down_menu_item_5'])),
-						'form_drop_down_menu_item_6'			=> trim(stripslashes($_REQUEST['form_drop_down_menu_item_6'])),
-						'form_drop_down_menu_item_7'			=> trim(stripslashes($_REQUEST['form_drop_down_menu_item_7'])),
-						'form_drop_down_menu_item_8'			=> trim(stripslashes($_REQUEST['form_drop_down_menu_item_8'])),
-						'form_drop_down_menu_item_9'			=> trim(stripslashes($_REQUEST['form_drop_down_menu_item_9'])),
-						'form_drop_down_menu_item_10'			=> trim(stripslashes($_REQUEST['form_drop_down_menu_item_10'])),
-						'form_message_width' 					=> trim(stripslashes($_REQUEST['form_message_width'])),
-						'form_message_height' 					=> trim(stripslashes($_REQUEST['form_message_height'])),
-						'form_message_min_length' 				=> trim(stripslashes($_REQUEST['form_message_min_length'])),
-						'form_message_recipient' 				=> trim(stripslashes($_REQUEST['form_message_recipient'])),
-						'form_response_thank_you_message' 		=> trim(stripslashes($_REQUEST['form_response_thank_you_message'])),
+						'form_include_website' 					=> $valid_req_spamshield_options['form_include_website'],
+						'form_require_website' 					=> $valid_req_spamshield_options['form_require_website'],
+						'form_include_phone' 					=> $valid_req_spamshield_options['form_include_phone'],
+						'form_require_phone' 					=> $valid_req_spamshield_options['form_require_phone'],
+						'form_include_company' 					=> $valid_req_spamshield_options['form_include_company'],
+						'form_require_company' 					=> $valid_req_spamshield_options['form_require_company'],
+						'form_include_drop_down_menu'			=> $valid_req_spamshield_options['form_include_drop_down_menu'],
+						'form_require_drop_down_menu'			=> $valid_req_spamshield_options['form_require_drop_down_menu'],
+						'form_drop_down_menu_title'				=> $valid_req_spamshield_options['form_drop_down_menu_title'],
+						'form_drop_down_menu_item_1'			=> $valid_req_spamshield_options['form_drop_down_menu_item_1'],
+						'form_drop_down_menu_item_2'			=> $valid_req_spamshield_options['form_drop_down_menu_item_2'],
+						'form_drop_down_menu_item_3'			=> $valid_req_spamshield_options['form_drop_down_menu_item_3'],
+						'form_drop_down_menu_item_4'			=> $valid_req_spamshield_options['form_drop_down_menu_item_4'],
+						'form_drop_down_menu_item_5'			=> $valid_req_spamshield_options['form_drop_down_menu_item_5'],
+						'form_drop_down_menu_item_6'			=> $valid_req_spamshield_options['form_drop_down_menu_item_6'],
+						'form_drop_down_menu_item_7'			=> $valid_req_spamshield_options['form_drop_down_menu_item_7'],
+						'form_drop_down_menu_item_8'			=> $valid_req_spamshield_options['form_drop_down_menu_item_8'],
+						'form_drop_down_menu_item_9'			=> $valid_req_spamshield_options['form_drop_down_menu_item_9'],
+						'form_drop_down_menu_item_10'			=> $valid_req_spamshield_options['form_drop_down_menu_item_10'],
+						'form_message_width' 					=> $valid_req_spamshield_options['form_message_width'],
+						'form_message_height' 					=> $valid_req_spamshield_options['form_message_height'],
+						'form_message_min_length' 				=> $valid_req_spamshield_options['form_message_min_length'],
+						'form_message_recipient' 				=> $valid_req_spamshield_options['form_message_recipient'],
+						'form_response_thank_you_message' 		=> $valid_req_spamshield_options['form_response_thank_you_message'],
 						'form_include_user_meta' 				=> $valid_req_spamshield_options['form_include_user_meta'],
 						'promote_plugin_link' 					=> $spamshield_options['promote_plugin_link'],
 						'install_date'							=> $InstallDate,
