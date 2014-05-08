@@ -140,6 +140,12 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.4.3, *released 05/08/14*
+
+* Fixed several minor bugs (mostly PHP Notices, not Warnings or Errors) specific to changes made in PHP 5.4 and 5.5.
+* Added new filters to the spam blocking algorithm.
+* For the last few weeks I've been making it a high priority to increase the strictness of the code because more recent versions of PHP use stricter code, have introduced new errors (including PHP Notices and Warnings) and have deprecated some older functions and functionality. That's why the new bugs have been popping up. I'm fixing them as quickly as possible. :)
+
 Version 1.1.4.2, *released 05/08/14*
 
 * Fixed a couple minor bugs.

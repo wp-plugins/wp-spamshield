@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.1.4.2
+Version: 1.1.4.3
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -41,7 +41,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.1.4.2' );
+define( 'WPSS_VERSION', '1.1.4.3' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -361,6 +361,23 @@ function spamshield_strlen($string) {
 	return $number_of_chars;
 	}
 
+function spamshield_substr_count( $haystack, $needle, $offset = 0, $length = NULL ) {
+	// Has error correction built in
+	$haystack_len = spamshield_strlen($haystack);
+	$needle_len = spamshield_strlen($needle);
+	if ( $offset >= $haystack_len || $offset < 0 ) { $offset = 0; }
+	if ( empty( $length ) || $length <= 0 ) { $length = $haystack_len; }
+	$haystack_len_offset_diff = $haystack_len - $offset;
+	if ( $length > $haystack_len_offset_diff ) {
+		$length = $haystack_len_offset_diff;
+		}
+	$needle_instances = 0;
+	if ( !empty( $needle ) && !empty( $haystack ) && $needle_len <= $haystack_len ) {
+		$needle_instances = substr_count( $haystack, $needle, $offset, $length );
+		}
+	return $needle_instances;
+	}
+
 function spamshield_check_cache_status() {
 	// TEST FOR CACHING
 	$wpss_active_plugins = get_option( 'active_plugins' );
@@ -433,7 +450,7 @@ function spamshield_ak_accuracy_fix() {
 		}
 	}
 
-function spamshield_counter($counter_option) {
+function spamshield_counter( $counter_option = 0 ) {
 	$counter_option_max = 9;
 	$counter_option_min = 1;
 	if ( empty ( $counter_option ) || $counter_option > $counter_option_max || $counter_option < $counter_option_min ) {
@@ -505,7 +522,7 @@ function spamshield_counter($counter_option) {
 	<?php
 	}
 
-function spamshield_counter_short($attr) {
+function spamshield_counter_short( $attr = NULL ) {
 	
 	$counter_option = $attr['style'];
 	
@@ -577,7 +594,7 @@ function spamshield_counter_short($attr) {
 	return $wpss_shortcode_content;
 	}
 
-function spamshield_counter_sm($counter_sm_option) {
+function spamshield_counter_sm( $counter_sm_option = 1 ) {
 	$counter_sm_option_max = 5;
 	$counter_sm_option_min = 1;
 	if ( empty( $counter_sm_option ) || $counter_sm_option > $counter_sm_option_max || $counter_sm_option < $counter_sm_option_min ) {
@@ -620,7 +637,7 @@ function spamshield_counter_sm($counter_sm_option) {
 	<?php
 	}
 
-function spamshield_counter_sm_short($attr) {
+function spamshield_counter_sm_short( $attr = NULL ) {
 	
 	$counter_sm_option = $attr['style'];
 	
@@ -667,7 +684,7 @@ function spamshield_counter_sm_short($attr) {
 
 // Widget
 function widget_spamshield_register() {
-	function widget_spamshield($args) {
+	function widget_spamshield( $args = NULL ) {
 		extract($args);
 		echo $before_widget;
 		echo $before_title.'Spam'.$after_title;
@@ -851,11 +868,11 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			$MaskedIPValid = true;
 			$MaskedIPCore = rtrim( $MaskedIP, " unknown;," );
 			}
-		$ReverseDNS = sanitize_text_field(gethostbyaddr($ip));
+		$ReverseDNS = gethostbyaddr($ip);
 		$ReverseDNSIP = gethostbyname($ReverseDNS);
 
 		if ( !empty( $_SERVER['REMOTE_HOST'] ) ) {
-			$submitter_remote_host = sanitize_text_field($_SERVER['REMOTE_HOST']);
+			$submitter_remote_host = $_SERVER['REMOTE_HOST'];
 			}
 		else {
 			$submitter_remote_host = $ReverseDNS;
@@ -923,8 +940,8 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			}
 		
 		//Sanitize the rest, but then again, this IS the LOG
-		$ipProxyVIA = sanitize_text_field($ipProxyVIA);
-		$MaskedIP = sanitize_text_field($MaskedIP);
+		//$ipProxyVIA = sanitize_text_field($ipProxyVIA);
+		//$MaskedIP = sanitize_text_field($MaskedIP);
 		$wpss_http_accept_language = sanitize_text_field($_SERVER['HTTP_ACCEPT_LANGUAGE']);
 		$wpss_http_accept = sanitize_text_field($_SERVER['HTTP_ACCEPT']);
 		$wpss_http_user_agent = sanitize_text_field($_SERVER['HTTP_USER_AGENT']);
@@ -1171,15 +1188,15 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			// Add New Tests for Logging - END
 
 			// PROCESSING CONTACT FORM - END
-			
+
 			/*
 			if ( empty( $wpss_contact_cc ) ) {
 				$wpss_contact_cc ='No';
 				}
 			*/
-			
+
 			// FORM INFO - BEGIN
-			
+
 			if ( !empty( $FormMessageRecipient ) ) {
 				$wpss_contact_form_to			= $FormMessageRecipient;
 				}
@@ -1194,19 +1211,18 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			$wpss_contact_form_msg_headers 		= "From: $wpss_contact_name <$wpss_contact_email>" . "\r\n" . "Reply-To: $wpss_contact_email" . "\r\n" . "Content-Type: text/plain\r\n";
 			$wpss_contact_form_blog				= WPSS_SITE_URL;
 			// Another option: "Content-Type: text/html"
-			
+
 			// FORM INFO - END
-			
+
 			// TEST TO PREVENT CONTACT FORM SPAM - BEGIN
 			
 			$ip 						= $_SERVER['REMOTE_ADDR'];
 			$ip_regex 					= preg_quote($ip);
 			$ip_lc						= strtolower($ip);
 			$ip_lc_regex 				= preg_quote($ip_lc);
-			$ReverseDNS 				= gethostbyaddr($_SERVER['REMOTE_ADDR']);
+			$ReverseDNS 				= gethostbyaddr($ip);
 			$ReverseDNSIP 				= gethostbyname($ReverseDNS);
 			$ReverseDNSIP_regex 		= preg_quote($ReverseDNSIP);
-			$ReverseDNS 				= sanitize_text_field($ReverseDNS);
 			$ReverseDNS_LC 				= strtolower($ReverseDNS);
 			$ReverseDNS_LC_regex 		= preg_quote($ReverseDNS_LC);
 			$ReverseDNS_LC_Rev 			= strrev($ReverseDNS_LC);
@@ -1220,69 +1236,69 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				
 			// ERROR CHECKING
 			
-			$contact_form_spam_1_count = substr_count( $wpss_contact_message_lc, 'link');
+			$contact_form_spam_1_count = spamshield_substr_count( $wpss_contact_message_lc, 'link');
 			$contact_form_spam_1_limit = 7;
-			$contact_form_spam_2_count = substr_count( $wpss_contact_message_lc, 'link building');
+			$contact_form_spam_2_count = spamshield_substr_count( $wpss_contact_message_lc, 'link building');
 			$contact_form_spam_2_limit = 3;
-			$contact_form_spam_3_count = substr_count( $wpss_contact_message_lc, 'link exchange');
+			$contact_form_spam_3_count = spamshield_substr_count( $wpss_contact_message_lc, 'link exchange');
 			$contact_form_spam_3_limit = 2;
-			$contact_form_spam_4_count = substr_count( $wpss_contact_message_lc, 'link request');
+			$contact_form_spam_4_count = spamshield_substr_count( $wpss_contact_message_lc, 'link request');
 			$contact_form_spam_4_limit = 1;
-			$contact_form_spam_5_count = substr_count( $wpss_contact_message_lc, 'link building service');
+			$contact_form_spam_5_count = spamshield_substr_count( $wpss_contact_message_lc, 'link building service');
 			$contact_form_spam_5_limit = 2;
-			$contact_form_spam_6_count = substr_count( $wpss_contact_message_lc, 'link building experts india');
+			$contact_form_spam_6_count = spamshield_substr_count( $wpss_contact_message_lc, 'link building experts india');
 			$contact_form_spam_6_limit = 0;
-			$contact_form_spam_7_count = substr_count( $wpss_contact_message_lc, 'india');
+			$contact_form_spam_7_count = spamshield_substr_count( $wpss_contact_message_lc, 'india');
 			$contact_form_spam_7_limit = 1;
-			$contact_form_spam_8_count = substr_count( $wpss_contact_message_lc, 'can you outsource some seo business to us? we will work according to you and your clients and for a long term relationship we can start our SEO services in only $99 per month per website. looking forward for your positive reply');
+			$contact_form_spam_8_count = spamshield_substr_count( $wpss_contact_message_lc, 'can you outsource some seo business to us? we will work according to you and your clients and for a long term relationship we can start our SEO services in only $99 per month per website. looking forward for your positive reply');
 			$contact_form_spam_8_limit = 0;
-			$contact_form_spam_9_count = substr_count( $wpss_contact_message_lc, 'can you outsource some seo business to us');
+			$contact_form_spam_9_count = spamshield_substr_count( $wpss_contact_message_lc, 'can you outsource some seo business to us');
 			$contact_form_spam_9_limit = 0;
-			$contact_form_spam_10_count = substr_count( $wpss_contact_message_lc, 'outsource some seo business');
+			$contact_form_spam_10_count = spamshield_substr_count( $wpss_contact_message_lc, 'outsource some seo business');
 			$contact_form_spam_10_limit = 0;
-			$contact_form_spam_11_count = substr_count( $wpss_contact_message_lc, 'hit4hit.org');
+			$contact_form_spam_11_count = spamshield_substr_count( $wpss_contact_message_lc, 'hit4hit.org');
 			$contact_form_spam_11_limit = 1;
-			$contact_form_spam_12_count = substr_count( $wpss_contact_message_lc, 'traffic exchange');
+			$contact_form_spam_12_count = spamshield_substr_count( $wpss_contact_message_lc, 'traffic exchange');
 			$contact_form_spam_12_limit = 1;
 			
 			$wpss_contact_subject_lc = strtolower( $wpss_contact_subject );
-			$contact_form_spam_subj_1_count = substr_count( $wpss_contact_subject_lc, 'link request');
+			$contact_form_spam_subj_1_count = spamshield_substr_count( $wpss_contact_subject_lc, 'link request');
 			$contact_form_spam_subj_1_limit = 0;
-			$contact_form_spam_subj_2_count = substr_count( $wpss_contact_subject_lc, 'link exchange');
+			$contact_form_spam_subj_2_count = spamshield_substr_count( $wpss_contact_subject_lc, 'link exchange');
 			$contact_form_spam_subj_2_limit = 0;
-			$contact_form_spam_subj_3_count = substr_count( $wpss_contact_subject_lc, 'seo service $99 per month');
+			$contact_form_spam_subj_3_count = spamshield_substr_count( $wpss_contact_subject_lc, 'seo service $99 per month');
 			$contact_form_spam_subj_3_limit = 0;
-			$contact_form_spam_subj_4_count = substr_count( $wpss_contact_subject_lc, 'seo services $99 per month');
+			$contact_form_spam_subj_4_count = spamshield_substr_count( $wpss_contact_subject_lc, 'seo services $99 per month');
 			$contact_form_spam_subj_4_limit = 0;
-			$contact_form_spam_subj_5_count = substr_count( $wpss_contact_subject_lc, 'seo services @ $99 per month');
+			$contact_form_spam_subj_5_count = spamshield_substr_count( $wpss_contact_subject_lc, 'seo services @ $99 per month');
 			$contact_form_spam_subj_5_limit = 0;
 			
 			$wpss_contact_email_lc = strtolower( $wpss_contact_email  );
-			$contact_form_spam_email_1_count = substr_count( $wpss_contact_email_lc, 'ranksindia.');
+			$contact_form_spam_email_1_count = spamshield_substr_count( $wpss_contact_email_lc, 'ranksindia.');
 			$contact_form_spam_email_1_limit = 0;
-			$contact_form_spam_email_2_count = substr_count( $wpss_contact_email_lc, 'ranksdigitalmedia.');
+			$contact_form_spam_email_2_count = spamshield_substr_count( $wpss_contact_email_lc, 'ranksdigitalmedia.');
 			$contact_form_spam_email_2_limit = 0;
-			$contact_form_spam_email_3_count = substr_count( $wpss_contact_email_lc, 'semmiami.');
+			$contact_form_spam_email_3_count = spamshield_substr_count( $wpss_contact_email_lc, 'semmiami.');
 			$contact_form_spam_email_3_limit = 0;
-			$contact_form_spam_email_4_count = substr_count( $wpss_contact_email_lc, 'globaldata4u.com');
+			$contact_form_spam_email_4_count = spamshield_substr_count( $wpss_contact_email_lc, 'globaldata4u.com');
 			$contact_form_spam_email_4_limit = 0;
 			
 			$wpss_contact_website_lc = strtolower( $wpss_contact_website  );
-			$contact_form_spam_website_1_count = substr_count( $wpss_contact_website_lc, 'ranksindia.');
+			$contact_form_spam_website_1_count = spamshield_substr_count( $wpss_contact_website_lc, 'ranksindia.');
 			$contact_form_spam_website_1_limit = 0;
-			$contact_form_spam_website_2_count = substr_count( $wpss_contact_website_lc, 'ranksdigitalmedia.');
+			$contact_form_spam_website_2_count = spamshield_substr_count( $wpss_contact_website_lc, 'ranksdigitalmedia.');
 			$contact_form_spam_website_2_limit = 0;
-			$contact_form_spam_website_3_count = substr_count( $wpss_contact_website_lc, 'semmiami.');
+			$contact_form_spam_website_3_count = spamshield_substr_count( $wpss_contact_website_lc, 'semmiami.');
 			$contact_form_spam_website_3_limit = 0;
-			$contact_form_spam_website_4_count = substr_count( $wpss_contact_website_lc, 'hit4hit.org');
+			$contact_form_spam_website_4_count = spamshield_substr_count( $wpss_contact_website_lc, 'hit4hit.org');
 			$contact_form_spam_website_4_limit = 0;
-			$contact_form_spam_website_5_count = substr_count( $wpss_contact_website_lc, 'globaldata4u.com');
+			$contact_form_spam_website_5_count = spamshield_substr_count( $wpss_contact_website_lc, 'globaldata4u.com');
 			$contact_form_spam_website_5_limit = 0;
 			
 			$contact_form_spam_term_total = $contact_form_spam_1_count + $contact_form_spam_2_count + $contact_form_spam_3_count + $contact_form_spam_4_count + $contact_form_spam_7_count + $contact_form_spam_10_count + $contact_form_spam_11_count + $contact_form_spam_12_count + $contact_form_spam_subj_1_count + $contact_form_spam_subj_2_count + $contact_form_spam_subj_3_count + $contact_form_spam_subj_4_count + $contact_form_spam_subj_5_count;
 			$contact_form_spam_term_total_limit = 15;
 			
-			if ( strpos( $ReverseDNS_LC_Rev, 'ni.' ) === 0 || strpos( $ReverseDNS_LC_Rev, 'ur.' ) === 0 || strpos( $ReverseDNS_LC_Rev, 'kp.' ) === 0 || strpos( $ReverseDNS_LC_Rev, 'nc.' ) === 0 || strpos( $ReverseDNS_LC_Rev, 'au.' ) === 0 || strpos( $ReverseDNS_LC_Rev, 'rt.' ) === 0 || preg_match( "/^1.22.2(19|20|23)./", $ip ) ) {
+			if ( strpos( $ReverseDNS_LC_Rev, 'ni.' ) === 0 || strpos( $ReverseDNS_LC_Rev, 'ur.' ) === 0 || strpos( $ReverseDNS_LC_Rev, 'kp.' ) === 0 || strpos( $ReverseDNS_LC_Rev, 'nc.' ) === 0 || strpos( $ReverseDNS_LC_Rev, 'au.' ) === 0 || strpos( $ReverseDNS_LC_Rev, 'rt.' ) === 0 || preg_match( "/^1\.22\.2(19|20|23)\./", $ip ) ) {
 				$contact_form_spam_loc = 1;
 				}
 			if ( ( $contact_form_spam_term_total > $contact_form_spam_term_total_limit || $contact_form_spam_1_count > $contact_form_spam_1_limit || $contact_form_spam_2_count > $contact_form_spam_2_limit || $contact_form_spam_5_count > $contact_form_spam_5_limit || $contact_form_spam_6_count > $contact_form_spam_6_limit || $contact_form_spam_10_count > $contact_form_spam_10_limit ) && !empty( $contact_form_spam_loc ) ) {
@@ -1575,7 +1591,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 
 			$spamshield_contact_form_content .= '<p>* Required Field</p>'."\n";
 			$spamshield_contact_form_content .= '<p>&nbsp;</p>'."\n";
-			
+
 			if ( !empty( $PromotePluginLink ) ) {
 				$server_ip_first_char = substr(WPSS_SERVER_ADDR, 0, 1);
 				if ( $server_ip_first_char == '7' ) {
@@ -1708,7 +1724,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				$content_filter_status = '2';
 				$spamshield_error_code .= ' CF-REVD1031';
 				}
-			if ( preg_match( "@^(ip-)?([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})\.(rackcentre\.redstation\.net\.uk|static\.hostnoc\.net|ip\.idealhosting\.net\.tr|triolan\.net|chunkhost\.com|unknown\.steephost\.(net|com))$@i", $ReverseDNS_LC ) ) {
+			if ( preg_match( "@^(ip-)?([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})([\.\-])(rackcentre\.redstation\.net\.uk|static\.hostnoc\.net|ip\.idealhosting\.net\.tr|triolan\.net|chunkhost\.com|customer-rethinkvps\.com|unknown\.steephost\.(net|com))$@i", $ReverseDNS_LC ) ) {
 				$content_filter_status = '2';
 				$spamshield_error_code .= ' CF-REVD1032';
 				}
@@ -2213,8 +2229,7 @@ function spamshield_content_filter($commentdata) {
 		$ReverseDNSAuthenticity = '[Verified]';
 		}
 	// Detect Use of Proxy
-	//if ( ( $_SERVER['HTTP_VIA'] && $_SERVER['HTTP_VIA'] !='' ) || ( $_SERVER['HTTP_X_FORWARDED_FOR'] && $_SERVER['HTTP_X_FORWARDED_FOR'] !='' ) ) {
-	if ( ( $ipProxyVIA && $ipProxyVIA !='' ) || ( $MaskedIP && $MaskedIP !='' ) ) {
+	if ( !empty( $ipProxyVIA ) || !empty( $MaskedIP ) ) {
 		if ( empty( $MaskedIP ) ) { $MaskedIP='[No Data]'; }
 		$ipProxy='PROXY DETECTED';
 		$ipProxyShort='PROXY';
@@ -2242,8 +2257,8 @@ function spamshield_content_filter($commentdata) {
 	$blacklist_word_combo_total = 0;
 	
 	// Filter 1: Number of occurrences of 'http://' in comment_content
-	$filter_1_count_http = substr_count($commentdata_comment_content_lc_deslashed, 'http://');
-	$filter_1_count_https = substr_count($commentdata_comment_content_lc_deslashed, 'https://');
+	$filter_1_count_http = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'http://');
+	$filter_1_count_https = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'https://');
 	$filter_1_count = $filter_1_count_http + $filter_1_count_https;
 	$filter_1_limit = 4;
 	$filter_1_trackback_limit = 1;
@@ -2254,19 +2269,19 @@ function spamshield_content_filter($commentdata) {
 	// Dev Note: Redo later to use word breaks in php regex
 	
 	$filter_2_term = 'viagra';
-	$filter_2_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_2_term);
+	$filter_2_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_2_term);
 	$filter_2_limit = 2;
 	$filter_2_trackback_limit = 1;
-	$filter_2_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_2_term);
+	$filter_2_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_2_term);
 	$filter_2_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_2_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_2_author_count;
 	// Filter 3: Number of occurrences of 'v1agra' in comment_content
 	$filter_3_term = 'v1agra';
-	$filter_3_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_3_term);
+	$filter_3_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_3_term);
 	$filter_3_limit = 1;
 	$filter_3_trackback_limit = 1;
-	$filter_3_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_3_term);
+	$filter_3_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_3_term);
 	$filter_3_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_3_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_3_author_count;
@@ -2276,345 +2291,345 @@ function spamshield_content_filter($commentdata) {
 	$filter_4_term_space = ' '.$filter_4_term; 
 	$filter_4_term_slash = '-'.$filter_4_term; 
 	$filter_4_term_dash = '/'.$filter_4_term;
-	$filter_4_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term_space)+substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term_slash)+substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term_dash);
-	//$filter_4_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term);
+	$filter_4_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term_space)+spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term_slash)+spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term_dash);
+	//$filter_4_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_4_term);
 	$filter_4_limit = 2;
 	$filter_4_trackback_limit = 1;
-	$filter_4_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term_space)+substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term_slash)+substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term_dash);
-	//$filter_4_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term);
+	$filter_4_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term_space)+spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term_slash)+spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term_dash);
+	//$filter_4_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_4_term);
 	$filter_4_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_4_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_4_author_count;
 	// Filter 5: Number of occurrences of 'c1alis' in comment_content
 	$filter_5_term = 'c1alis';
-	$filter_5_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_5_term);
+	$filter_5_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_5_term);
 	$filter_5_limit = 1;
 	$filter_5_trackback_limit = 1;
-	$filter_5_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_5_term);
+	$filter_5_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_5_term);
 	$filter_5_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_5_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_5_author_count;
 	// Filter 6: Number of occurrences of 'levitra' in comment_content
 	$filter_6_term = 'levitra';
-	$filter_6_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_6_term);
+	$filter_6_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_6_term);
 	$filter_6_limit = 2;
 	$filter_6_trackback_limit = 1;
-	$filter_6_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_6_term);
+	$filter_6_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_6_term);
 	$filter_6_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_6_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_6_author_count;
 	// Filter 7: Number of occurrences of 'lev1tra' in comment_content
 	$filter_7_term = 'lev1tra';
-	$filter_7_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_7_term);
+	$filter_7_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_7_term);
 	$filter_7_limit = 1;
 	$filter_7_trackback_limit = 1;
-	$filter_7_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_7_term);
+	$filter_7_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_7_term);
 	$filter_7_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_7_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_7_author_count;
 	// Filter 8: Number of occurrences of 'erectile dysfunction' in comment_content
 	$filter_8_term = 'erectile dysfunction';
-	$filter_8_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_8_term);
+	$filter_8_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_8_term);
 	$filter_8_limit = 2;
 	$filter_8_trackback_limit = 1;
-	$filter_8_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_8_term);
+	$filter_8_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_8_term);
 	$filter_8_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_8_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_8_author_count;
 	// Filter 9: Number of occurrences of 'erection' in comment_content
 	$filter_9_term = 'erection';
-	$filter_9_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_9_term);
+	$filter_9_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_9_term);
 	$filter_9_limit = 3;
 	$filter_9_trackback_limit = 1;
-	$filter_9_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_9_term);
+	$filter_9_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_9_term);
 	$filter_9_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_9_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_9_author_count;
 	// Filter 10: Number of occurrences of 'erectile' in comment_content
 	$filter_10_term = 'erectile';
-	$filter_10_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_10_term);
+	$filter_10_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_10_term);
 	$filter_10_limit = 2;
 	$filter_10_trackback_limit = 1;
-	$filter_10_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_10_term);
+	$filter_10_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_10_term);
 	$filter_10_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_10_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_10_author_count;
 	// Filter 11: Number of occurrences of 'xanax' in comment_content
 	$filter_11_term = 'xanax';
-	$filter_11_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_11_term);
+	$filter_11_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_11_term);
 	$filter_11_limit = 3;
 	$filter_11_trackback_limit = 2;
-	$filter_11_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_11_term);
+	$filter_11_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_11_term);
 	$filter_11_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_11_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_11_author_count;
 	// Filter 12: Number of occurrences of 'zithromax' in comment_content
 	$filter_12_term = 'zithromax';
-	$filter_12_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_12_term);
+	$filter_12_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_12_term);
 	$filter_12_limit = 3;
 	$filter_12_trackback_limit = 2;
-	$filter_12_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_12_term);
+	$filter_12_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_12_term);
 	$filter_12_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_12_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_12_author_count;
 	// Filter 13: Number of occurrences of 'phentermine' in comment_content
 	$filter_13_term = 'phentermine';
-	$filter_13_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_13_term);
+	$filter_13_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_13_term);
 	$filter_13_limit = 3;
 	$filter_13_trackback_limit = 2;
-	$filter_13_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_13_term);
+	$filter_13_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_13_term);
 	$filter_13_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_13_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_13_author_count;
 	// Filter 14: Number of occurrences of ' soma ' in comment_content
 	$filter_14_term = ' soma ';
-	$filter_14_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_14_term);
+	$filter_14_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_14_term);
 	$filter_14_limit = 3;
 	$filter_14_trackback_limit = 2;
-	$filter_14_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_14_term);
+	$filter_14_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_14_term);
 	$filter_14_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_14_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_14_author_count;
 	// Filter 15: Number of occurrences of ' soma.' in comment_content
 	$filter_15_term = ' soma.';
-	$filter_15_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_15_term);
+	$filter_15_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_15_term);
 	$filter_15_limit = 3;
 	$filter_15_trackback_limit = 2;
-	$filter_15_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_15_term);
+	$filter_15_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_15_term);
 	$filter_15_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_15_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_15_author_count;
 	// Filter 16: Number of occurrences of 'prescription' in comment_content
 	$filter_16_term = 'prescription';
-	$filter_16_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_16_term);
+	$filter_16_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_16_term);
 	$filter_16_limit = 3;
 	$filter_16_trackback_limit = 2;
-	$filter_16_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_16_term);
+	$filter_16_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_16_term);
 	$filter_16_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_16_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_16_author_count;
 	// Filter 17: Number of occurrences of 'tramadol' in comment_content
 	$filter_17_term = 'tramadol';
-	$filter_17_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_17_term);
+	$filter_17_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_17_term);
 	$filter_17_limit = 3;
 	$filter_17_trackback_limit = 2;
-	$filter_17_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_17_term);
+	$filter_17_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_17_term);
 	$filter_17_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_17_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_17_author_count;
 	// Filter 18: Number of occurrences of 'penis enlargement' in comment_content
 	$filter_18_term = 'penis enlargement';
-	$filter_18_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_18_term);
+	$filter_18_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_18_term);
 	$filter_18_limit = 2;
 	$filter_18_trackback_limit = 1;
-	$filter_18_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_18_term);
+	$filter_18_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_18_term);
 	$filter_18_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_18_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_18_author_count;
 	// Filter 19: Number of occurrences of 'buy pills' in comment_content
 	$filter_19_term = 'buy pills';
-	$filter_19_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_19_term);
+	$filter_19_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_19_term);
 	$filter_19_limit = 3;
 	$filter_19_trackback_limit = 2;
-	$filter_19_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_19_term);
+	$filter_19_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_19_term);
 	$filter_19_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_19_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_19_author_count;
 	// Filter 20: Number of occurrences of 'diet pill' in comment_content
 	$filter_20_term = 'diet pill';
-	$filter_20_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_20_term);
+	$filter_20_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_20_term);
 	$filter_20_limit = 3;
 	$filter_20_trackback_limit = 2;
-	$filter_20_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_20_term);
+	$filter_20_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_20_term);
 	$filter_20_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_20_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_20_author_count;
 	// Filter 21: Number of occurrences of 'weight loss pill' in comment_content
 	$filter_21_term = 'weight loss pill';
-	$filter_21_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_21_term);
+	$filter_21_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_21_term);
 	$filter_21_limit = 3;
 	$filter_21_trackback_limit = 2;
-	$filter_21_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_21_term);
+	$filter_21_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_21_term);
 	$filter_21_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_21_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_21_author_count;
 	// Filter 22: Number of occurrences of 'pill' in comment_content
 	$filter_22_term = 'pill';
-	$filter_22_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_22_term);
+	$filter_22_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_22_term);
 	$filter_22_limit = 10;
 	$filter_22_trackback_limit = 2;
-	$filter_22_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_22_term);
+	$filter_22_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_22_term);
 	$filter_22_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_22_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_22_author_count;
 	// Filter 23: Number of occurrences of ' pill,' in comment_content
 	$filter_23_term = ' pill,';
-	$filter_23_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_23_term);
+	$filter_23_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_23_term);
 	$filter_23_limit = 5;
 	$filter_23_trackback_limit = 2;
-	$filter_23_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_23_term);
+	$filter_23_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_23_term);
 	$filter_23_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_23_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_23_author_count;
 	// Filter 24: Number of occurrences of ' pills,' in comment_content
 	$filter_24_term = ' pills,';
-	$filter_24_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_24_term);
+	$filter_24_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_24_term);
 	$filter_24_limit = 5;
 	$filter_24_trackback_limit = 2;
-	$filter_24_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_24_term);
+	$filter_24_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_24_term);
 	$filter_24_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_24_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_24_author_count;
 	// Filter 25: Number of occurrences of 'propecia' in comment_content
 	$filter_25_term = 'propecia';
-	$filter_25_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_25_term);
+	$filter_25_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_25_term);
 	$filter_25_limit = 2;
 	$filter_25_trackback_limit = 1;
-	$filter_25_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_25_term);
+	$filter_25_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_25_term);
 	$filter_25_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_25_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_25_author_count;
 	// Filter 26: Number of occurrences of 'propec1a' in comment_content
 	$filter_26_term = 'propec1a';
-	$filter_26_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_26_term);
+	$filter_26_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_26_term);
 	$filter_26_limit = 1;
 	$filter_26_trackback_limit = 1;
-	$filter_26_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_26_term);
+	$filter_26_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_26_term);
 	$filter_26_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_26_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_26_author_count;
 	// Filter 27: Number of occurrences of 'online pharmacy' in comment_content
 	$filter_27_term = 'online pharmacy';
-	$filter_27_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_27_term);
+	$filter_27_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_27_term);
 	$filter_27_limit = 5;
 	$filter_27_trackback_limit = 2;
-	$filter_27_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_27_term);
+	$filter_27_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_27_term);
 	$filter_27_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_27_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_27_author_count;
 	// Filter 28: Number of occurrences of 'medication' in comment_content
 	$filter_28_term = 'medication';
-	$filter_28_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_28_term);
+	$filter_28_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_28_term);
 	$filter_28_limit = 7;
 	$filter_28_trackback_limit = 3;
-	$filter_28_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_28_term);
+	$filter_28_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_28_term);
 	$filter_28_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_28_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_28_author_count;
 	// Filter 29: Number of occurrences of 'buy now' in comment_content
 	$filter_29_term = 'buy now';
-	$filter_29_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_29_term);
+	$filter_29_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_29_term);
 	$filter_29_limit = 7;
 	$filter_29_trackback_limit = 3;
-	$filter_29_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_29_term);
+	$filter_29_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_29_term);
 	$filter_29_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_29_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_29_author_count;
 	// Filter 30: Number of occurrences of 'ephedrin' in comment_content
 	$filter_30_term = 'ephedrin';
-	$filter_30_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_30_term);
+	$filter_30_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_30_term);
 	$filter_30_limit = 3;
 	$filter_30_trackback_limit = 2;
-	$filter_30_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_30_term);
+	$filter_30_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_30_term);
 	$filter_30_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_30_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_30_author_count;
 	// Filter 31: Number of occurrences of 'ephedrin' in comment_content
 	$filter_31_term = 'ephedrine';
-	$filter_31_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_31_term);
+	$filter_31_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_31_term);
 	$filter_31_limit = 3;
 	$filter_31_trackback_limit = 2;
-	$filter_31_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_31_term);
+	$filter_31_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_31_term);
 	$filter_31_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_31_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_31_author_count;
 	// Filter 32: Number of occurrences of 'ephedrin' in comment_content
 	$filter_32_term = 'ephedr1n';
-	$filter_32_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_32_term);
+	$filter_32_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_32_term);
 	$filter_32_limit = 1;
 	$filter_32_trackback_limit = 1;
-	$filter_32_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_32_term);
+	$filter_32_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_32_term);
 	$filter_32_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_32_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_32_author_count;
 	// Filter 33: Number of occurrences of 'ephedrin' in comment_content
 	$filter_33_term = 'ephedr1ne';
-	$filter_33_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_33_term);
+	$filter_33_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_33_term);
 	$filter_33_limit = 1;
 	$filter_33_trackback_limit = 1;
-	$filter_33_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_33_term);
+	$filter_33_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_33_term);
 	$filter_33_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_33_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_33_author_count;
 	// Filter 34: Number of occurrences of 'ephedra' in comment_content
 	$filter_34_term = 'ephedra';
-	$filter_34_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_34_term);
+	$filter_34_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_34_term);
 	$filter_34_limit = 3;
 	$filter_34_trackback_limit = 2;
-	$filter_34_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_34_term);
+	$filter_34_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_34_term);
 	$filter_34_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_34_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_34_author_count;
 	// Filter 35: Number of occurrences of 'valium' in comment_content
 	$filter_35_term = 'valium';
-	$filter_35_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_35_term);
+	$filter_35_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_35_term);
 	$filter_35_limit = 3;
 	$filter_35_trackback_limit = 2;
-	$filter_35_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_35_term);
+	$filter_35_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_35_term);
 	$filter_35_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_35_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_35_author_count;
 	// Filter 36: Number of occurrences of 'adipex' in comment_content
 	$filter_36_term = 'adipex';
-	$filter_36_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_36_term);
+	$filter_36_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_36_term);
 	$filter_36_limit = 3;
 	$filter_36_trackback_limit = 2;
-	$filter_36_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_36_term);
+	$filter_36_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_36_term);
 	$filter_36_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_36_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_36_author_count;
 	// Filter 37: Number of occurrences of 'accutane' in comment_content
 	$filter_37_term = 'accutane';
-	$filter_37_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_37_term);
+	$filter_37_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_37_term);
 	$filter_37_limit = 3;
 	$filter_37_trackback_limit = 2;
-	$filter_37_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_37_term);
+	$filter_37_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_37_term);
 	$filter_37_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_37_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_37_author_count;
 	// Filter 38: Number of occurrences of 'acomplia' in comment_content
 	$filter_38_term = 'acomplia';
-	$filter_38_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_38_term);
+	$filter_38_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_38_term);
 	$filter_38_limit = 3;
 	$filter_38_trackback_limit = 2;
-	$filter_38_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_38_term);
+	$filter_38_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_38_term);
 	$filter_38_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_38_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_38_author_count;
 	// Filter 39: Number of occurrences of 'rimonabant' in comment_content
 	$filter_39_term = 'rimonabant';
-	$filter_39_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_39_term);
+	$filter_39_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_39_term);
 	$filter_39_limit = 3;
 	$filter_39_trackback_limit = 2;
-	$filter_39_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_39_term);
+	$filter_39_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_39_term);
 	$filter_39_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_39_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_39_author_count;
 	// Filter 40: Number of occurrences of 'zimulti' in comment_content
 	$filter_40_term = 'zimulti';
-	$filter_40_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_40_term);
+	$filter_40_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_40_term);
 	$filter_40_limit = 3;
 	$filter_40_trackback_limit = 2;
-	$filter_40_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_40_term);
+	$filter_40_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_40_term);
 	$filter_40_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_40_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_40_author_count;
 	// Filter 41: Number of occurrences of 'herbalife' in comment_content
 	$filter_41_term = 'herbalife';
-	$filter_41_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_41_term);
+	$filter_41_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_41_term);
 	$filter_41_limit = 8;
 	$filter_41_trackback_limit = 7;
-	$filter_41_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_41_term);
+	$filter_41_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_41_term);
 	$filter_41_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_41_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_41_author_count;
@@ -2623,10 +2638,10 @@ function spamshield_content_filter($commentdata) {
 	// Non-Medical Author Tests
 	// Filter 210: Number of occurrences of 'drassyassut' in comment_content
 	$filter_210_term = 'drassyassut'; //DrassyassuT
-	$filter_210_count = substr_count($commentdata_comment_content_lc_deslashed, $filter_210_term);
+	$filter_210_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, $filter_210_term);
 	$filter_210_limit = 1;
 	$filter_210_trackback_limit = 1;
-	$filter_210_author_count = substr_count($commentdata_comment_author_lc_deslashed, $filter_210_term);
+	$filter_210_author_count = spamshield_substr_count($commentdata_comment_author_lc_deslashed, $filter_210_term);
 	$filter_210_author_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_210_count;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_210_author_count;
@@ -2634,289 +2649,289 @@ function spamshield_content_filter($commentdata) {
 	// Sex-Related Filter
 	// Comment Content ONLY - These are not Author Tests
 	// Filter 104: Number of occurrences of 'porn' in comment_content
-	$filter_104_count = substr_count($commentdata_comment_content_lc_deslashed, 'porn');
+	$filter_104_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'porn');
 	$filter_104_limit = 5;
 	$filter_104_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_104_count;
 	// Filter 105: Number of occurrences of 'teen porn' in comment_content
-	$filter_105_count = substr_count($commentdata_comment_content_lc_deslashed, 'teen porn');
+	$filter_105_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'teen porn');
 	$filter_105_limit = 1;
 	$filter_105_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_105_count;
 	// Filter 106: Number of occurrences of 'rape porn' in comment_content
-	$filter_106_count = substr_count($commentdata_comment_content_lc_deslashed, 'rape porn');
+	$filter_106_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'rape porn');
 	$filter_106_limit = 1;
 	$filter_106_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_106_count;
 	// Filter 107: Number of occurrences of 'incest porn' in comment_content
-	$filter_107_count = substr_count($commentdata_comment_content_lc_deslashed, 'incest porn');
+	$filter_107_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'incest porn');
 	$filter_107_limit = 1;
 	$filter_107_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_107_count;
 	// Filter 108: Number of occurrences of 'hentai' in comment_content
-	$filter_108_count = substr_count($commentdata_comment_content_lc_deslashed, 'hentai');
+	$filter_108_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'hentai');
 	$filter_108_limit = 2;
 	$filter_108_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_108_count;
 	// Filter 109: Number of occurrences of 'sex movie' in comment_content
-	$filter_109_count = substr_count($commentdata_comment_content_lc_deslashed, 'sex movie');
+	$filter_109_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'sex movie');
 	$filter_109_limit = 2;
 	$filter_109_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_109_count;
 	// Filter 110: Number of occurrences of 'sex tape' in comment_content
-	$filter_110_count = substr_count($commentdata_comment_content_lc_deslashed, 'sex tape');
+	$filter_110_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'sex tape');
 	$filter_110_limit = 2;
 	$filter_110_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_110_count;
 	// Filter 111: Number of occurrences of 'sex' in comment_content
-	$filter_111_count = substr_count($commentdata_comment_content_lc_deslashed, 'sex');
+	$filter_111_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'sex');
 	$filter_111_limit = 5; // you may increase to 15+ if blog's topic is adult in nature
 	$filter_111_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_111_count;
 	// Filter 112: Number of occurrences of 'sex' in comment_content
-	$filter_112_count = substr_count($commentdata_comment_content_lc_deslashed, 'pussy');
+	$filter_112_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'pussy');
 	$filter_112_limit = 3;
 	$filter_112_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_112_count;
 	// Filter 113: Number of occurrences of 'penis' in comment_content
-	$filter_113_count = substr_count($commentdata_comment_content_lc_deslashed, 'penis');
+	$filter_113_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'penis');
 	$filter_113_limit = 3;
 	$filter_113_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_113_count;
 	// Filter 114: Number of occurrences of 'vagina' in comment_content
-	$filter_114_count = substr_count($commentdata_comment_content_lc_deslashed, 'vagina');
+	$filter_114_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'vagina');
 	$filter_114_limit = 3;
 	$filter_114_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_114_count;
 	// Filter 115: Number of occurrences of 'gay porn' in comment_content
-	$filter_115_count = substr_count($commentdata_comment_content_lc_deslashed, 'gay porn');
+	$filter_115_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'gay porn');
 	$filter_115_limit = 2;
 	$filter_115_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_115_count;
 	// Filter 116: Number of occurrences of 'torture porn' in comment_content
-	$filter_116_count = substr_count($commentdata_comment_content_lc_deslashed, 'torture porn');
+	$filter_116_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'torture porn');
 	$filter_116_limit = 1; 
 	$filter_116_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_116_count;
 	// Filter 117: Number of occurrences of 'masturbation' in comment_content
-	$filter_117_count = substr_count($commentdata_comment_content_lc_deslashed, 'masturbation');
+	$filter_117_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'masturbation');
 	$filter_117_limit = 3;
 	$filter_117_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_117_count;
 	// Filter 118: Number of occurrences of 'masterbation' in comment_content
-	$filter_118_count = substr_count($commentdata_comment_content_lc_deslashed, 'masterbation');
+	$filter_118_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'masterbation');
 	$filter_118_limit = 2;
 	$filter_118_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_118_count;
 	// Filter 119: Number of occurrences of 'masturbate' in comment_content
-	$filter_119_count = substr_count($commentdata_comment_content_lc_deslashed, 'masturbate');
+	$filter_119_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'masturbate');
 	$filter_119_limit = 3;
 	$filter_119_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_119_count;
 	// Filter 120: Number of occurrences of 'masterbate' in comment_content
-	$filter_120_count = substr_count($commentdata_comment_content_lc_deslashed, 'masterbate');
+	$filter_120_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'masterbate');
 	$filter_120_limit = 2;
 	$filter_120_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_120_count;
 	// Filter 121: Number of occurrences of 'masturbating' in comment_content
-	$filter_121_count = substr_count($commentdata_comment_content_lc_deslashed, 'masturbating');
+	$filter_121_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'masturbating');
 	$filter_121_limit = 3;
 	$filter_121_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_121_count;
 	// Filter 122: Number of occurrences of 'masterbating' in comment_content
-	$filter_122_count = substr_count($commentdata_comment_content_lc_deslashed, 'masterbating');
+	$filter_122_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'masterbating');
 	$filter_122_limit = 2;
 	$filter_122_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_122_count;
 	// Filter 123: Number of occurrences of 'anal sex' in comment_content
-	$filter_123_count = substr_count($commentdata_comment_content_lc_deslashed, 'anal sex');
+	$filter_123_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'anal sex');
 	$filter_123_limit = 3;
 	$filter_123_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_123_count;
 	// Filter 124: Number of occurrences of 'xxx' in comment_content
-	$filter_124_count = substr_count($commentdata_comment_content_lc_deslashed, 'xxx');
+	$filter_124_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'xxx');
 	$filter_124_limit = 5;
 	$filter_124_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_124_count;
 	// Filter 125: Number of occurrences of 'naked' in comment_content
-	$filter_125_count = substr_count($commentdata_comment_content_lc_deslashed, 'naked');
+	$filter_125_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'naked');
 	$filter_125_limit = 5;
 	$filter_125_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_125_count;
 	// Filter 126: Number of occurrences of 'nude' in comment_content
-	$filter_126_count = substr_count($commentdata_comment_content_lc_deslashed, 'nude');
+	$filter_126_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'nude');
 	$filter_126_limit = 5;
 	$filter_126_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_126_count;
 	// Filter 127: Number of occurrences of 'fucking' in comment_content
-	$filter_127_count = substr_count($commentdata_comment_content_lc_deslashed, 'fucking');
+	$filter_127_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'fucking');
 	$filter_127_limit = 5;
 	$filter_127_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_127_count;
 	// Filter 128: Number of occurrences of 'orgasm' in comment_content
-	$filter_128_count = substr_count($commentdata_comment_content_lc_deslashed, 'orgasm');
+	$filter_128_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'orgasm');
 	$filter_128_limit = 5;
 	$filter_128_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_128_count;
 	// Filter 129: Number of occurrences of 'pron' in comment_content
-	$filter_129_count = substr_count($commentdata_comment_content_lc_deslashed, 'pron');
+	$filter_129_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'pron');
 	$filter_129_limit = 5;
 	$filter_129_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_129_count;
 	// Filter 130: Number of occurrences of 'bestiality' in comment_content
-	$filter_130_count = substr_count($commentdata_comment_content_lc_deslashed, 'bestiality');
+	$filter_130_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'bestiality');
 	$filter_130_limit = 2;
 	$filter_130_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_130_count;
 	// Filter 131: Number of occurrences of 'animal sex' in comment_content
-	$filter_131_count = substr_count($commentdata_comment_content_lc_deslashed, 'animal sex');
+	$filter_131_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'animal sex');
 	$filter_131_limit = 2;
 	$filter_131_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_131_count;
 	// Filter 132: Number of occurrences of 'dildo' in comment_content
-	$filter_132_count = substr_count($commentdata_comment_content_lc_deslashed, 'dildo');
+	$filter_132_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'dildo');
 	$filter_132_limit = 4;
 	$filter_132_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_132_count;
 	// Filter 133: Number of occurrences of 'ejaculate' in comment_content
-	$filter_133_count = substr_count($commentdata_comment_content_lc_deslashed, 'ejaculate');
+	$filter_133_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'ejaculate');
 	$filter_133_limit = 3;
 	$filter_133_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_133_count;
 	// Filter 134: Number of occurrences of 'ejaculation' in comment_content
-	$filter_134_count = substr_count($commentdata_comment_content_lc_deslashed, 'ejaculation');
+	$filter_134_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'ejaculation');
 	$filter_134_limit = 3;
 	$filter_134_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_134_count;
 	// Filter 135: Number of occurrences of 'ejaculating' in comment_content
-	$filter_135_count = substr_count($commentdata_comment_content_lc_deslashed, 'ejaculating');
+	$filter_135_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'ejaculating');
 	$filter_135_limit = 3;
 	$filter_135_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_135_count;
 	// Filter 136: Number of occurrences of 'lesbian' in comment_content
-	$filter_136_count = substr_count($commentdata_comment_content_lc_deslashed, 'lesbian');
+	$filter_136_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'lesbian');
 	$filter_136_limit = 7;
 	$filter_136_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_136_count;
 	// Filter 137: Number of occurrences of 'sex video' in comment_content
-	$filter_137_count = substr_count($commentdata_comment_content_lc_deslashed, 'sex video');
+	$filter_137_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'sex video');
 	$filter_137_limit = 2;
 	$filter_137_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_137_count;
 	// Filter 138: Number of occurrences of ' anal ' in comment_content
-	$filter_138_count = substr_count($commentdata_comment_content_lc_deslashed, ' anal ');
+	$filter_138_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, ' anal ');
 	$filter_138_limit = 5;
 	$filter_138_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_138_count;
 	// Filter 139: Number of occurrences of '>anal ' in comment_content
-	$filter_139_count = substr_count($commentdata_comment_content_lc_deslashed, '>anal ');
+	$filter_139_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, '>anal ');
 	$filter_139_limit = 5;
 	$filter_139_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_139_count;
 	// Filter 140: Number of occurrences of 'desnuda' in comment_content
-	$filter_140_count = substr_count($commentdata_comment_content_lc_deslashed, 'desnuda');
+	$filter_140_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'desnuda');
 	$filter_140_limit = 5;
 	$filter_140_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_140_count;
 	// Filter 141: Number of occurrences of 'cumshots' in comment_content
-	$filter_141_count = substr_count($commentdata_comment_content_lc_deslashed, 'cumshots');
+	$filter_141_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'cumshots');
 	$filter_141_limit = 2;
 	$filter_141_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_141_count;
 	// Filter 142: Number of occurrences of 'porntube' in comment_content
-	$filter_142_count = substr_count($commentdata_comment_content_lc_deslashed, 'porntube');
+	$filter_142_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'porntube');
 	$filter_142_limit = 2;
 	$filter_142_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_142_count;
 	// Filter 143: Number of occurrences of 'fuck' in comment_content
-	$filter_143_count = substr_count($commentdata_comment_content_lc_deslashed, 'fuck');
+	$filter_143_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'fuck');
 	$filter_143_limit = 6;
 	$filter_143_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_143_count;
 	// Filter 144: Number of occurrences of 'celebrity' in comment_content
-	$filter_144_count = substr_count($commentdata_comment_content_lc_deslashed, 'celebrity');
+	$filter_144_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'celebrity');
 	$filter_144_limit = 6;
 	$filter_144_trackback_limit = 6;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_144_count;
 	// Filter 145: Number of occurrences of 'celebrities' in comment_content
-	$filter_145_count = substr_count($commentdata_comment_content_lc_deslashed, 'celebrities');
+	$filter_145_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'celebrities');
 	$filter_145_limit = 6;
 	$filter_145_trackback_limit = 6;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_145_count;
 	// Filter 146: Number of occurrences of 'erotic' in comment_content
-	$filter_146_count = substr_count($commentdata_comment_content_lc_deslashed, 'erotic');
+	$filter_146_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'erotic');
 	$filter_146_limit = 6;
 	$filter_146_trackback_limit = 4;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_146_count;
 	// Filter 147: Number of occurrences of 'gay' in comment_content
-	$filter_147_count = substr_count($commentdata_comment_content_lc_deslashed, 'gay');
+	$filter_147_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'gay');
 	$filter_147_limit = 7;
 	$filter_147_trackback_limit = 4;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_147_count;
 	// Filter 148: Number of occurrences of 'heterosexual' in comment_content
-	$filter_148_count = substr_count($commentdata_comment_content_lc_deslashed, 'heterosexual');
+	$filter_148_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'heterosexual');
 	$filter_148_limit = 7;
 	$filter_148_trackback_limit = 4;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_148_count;
 	// Filter 149: Number of occurrences of 'blowjob' in comment_content
-	$filter_149_count = substr_count($commentdata_comment_content_lc_deslashed, 'blowjob');
+	$filter_149_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'blowjob');
 	$filter_149_limit = 2;
 	$filter_149_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_149_count;
 	// Filter 150: Number of occurrences of 'blow job' in comment_content
-	$filter_150_count = substr_count($commentdata_comment_content_lc_deslashed, 'blow job');
+	$filter_150_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'blow job');
 	$filter_150_limit = 2;
 	$filter_150_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_150_count;
 	// Filter 151: Number of occurrences of 'rape' in comment_content
-	$filter_151_count = substr_count($commentdata_comment_content_lc_deslashed, 'rape');
+	$filter_151_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'rape');
 	$filter_151_limit = 5;
 	$filter_151_trackback_limit = 3;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_151_count;
 	// Filter 152: Number of occurrences of 'prostitute' in comment_content
-	$filter_152_count = substr_count($commentdata_comment_content_lc_deslashed, 'prostitute');
+	$filter_152_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'prostitute');
 	$filter_152_limit = 7;
 	$filter_152_trackback_limit = 5;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_152_count;
 	// Filter 153: Number of occurrences of 'call girl' in comment_content
-	$filter_153_count = substr_count($commentdata_comment_content_lc_deslashed, 'call girl');
+	$filter_153_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'call girl');
 	$filter_153_limit = 7;
 	$filter_153_trackback_limit = 5;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_153_count;
 	// Filter 154: Number of occurrences of 'escort service' in comment_content
-	$filter_154_count = substr_count($commentdata_comment_content_lc_deslashed, 'escort service');
+	$filter_154_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'escort service');
 	$filter_154_limit = 7;
 	$filter_154_trackback_limit = 5;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_154_count;
 	// Filter 155: Number of occurrences of 'sexual service' in comment_content
-	$filter_155_count = substr_count($commentdata_comment_content_lc_deslashed, 'sexual service');
+	$filter_155_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'sexual service');
 	$filter_155_limit = 7;
 	$filter_155_trackback_limit = 5;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_155_count;
 	// Filter 156: Number of occurrences of 'adult movie' in comment_content
-	$filter_156_count = substr_count($commentdata_comment_content_lc_deslashed, 'adult movie');
+	$filter_156_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'adult movie');
 	$filter_156_limit = 4;
 	$filter_156_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_156_count;
 	// Filter 157: Number of occurrences of 'adult video' in comment_content
-	$filter_157_count = substr_count($commentdata_comment_content_lc_deslashed, 'adult video');
+	$filter_157_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'adult video');
 	$filter_157_limit = 4;
 	$filter_157_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_157_count;
 	// Filter 158: Number of occurrences of 'clitoris' in comment_content
-	$filter_158_count = substr_count($commentdata_comment_content_lc_deslashed, 'clitoris');
+	$filter_158_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'clitoris');
 	$filter_158_limit = 3;
 	$filter_158_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_158_count;
 	// Filter 159: Number of occurrences of 'cyber sex' in comment_content
-	$filter_159_count = substr_count($commentdata_comment_content_lc_deslashed, 'cyber sex');
+	$filter_159_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'cyber sex');
 	$filter_159_limit = 3;
 	$filter_159_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_159_count;
 	
 	// Pingback/Trackback Filters
 	// Filter 200: Pingback: Blank data in comment_content: [...]  [...]
-	$filter_200_count = substr_count($commentdata_comment_content_lc_deslashed, '[...]  [...]');
+	$filter_200_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, '[...]  [...]');
 	$filter_200_limit = 1;
 	$filter_200_trackback_limit = 1;
 
@@ -2966,62 +2981,62 @@ function spamshield_content_filter($commentdata) {
 
 	// General Spam Terms
 	// Filter 500: Number of occurrences of ' loan' in comment_content
-	$filter_500_count = substr_count($commentdata_comment_content_lc_deslashed, ' loan');
+	$filter_500_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, ' loan');
 	$filter_500_limit = 7;
 	$filter_500_trackback_limit = 3;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_500_count;
 	// Filter 501: Number of occurrences of 'student ' in comment_content
-	$filter_501_count = substr_count($commentdata_comment_content_lc_deslashed, 'student ');
+	$filter_501_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'student ');
 	$filter_501_limit = 11;
 	$filter_501_trackback_limit = 6;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_501_count;
 	// Filter 502: Number of occurrences of 'loan consolidation' in comment_content
-	$filter_502_count = substr_count($commentdata_comment_content_lc_deslashed, 'loan consolidation');
+	$filter_502_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'loan consolidation');
 	$filter_502_limit = 5;
 	$filter_502_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_502_count;
 	// Filter 503: Number of occurrences of 'credit card' in comment_content
-	$filter_503_count = substr_count($commentdata_comment_content_lc_deslashed, 'credit card');
+	$filter_503_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'credit card');
 	$filter_503_limit = 5;
 	$filter_503_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_503_count;
 	// Filter 504: Number of occurrences of 'health insurance' in comment_content
-	$filter_504_count = substr_count($commentdata_comment_content_lc_deslashed, 'health insurance');
+	$filter_504_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'health insurance');
 	$filter_504_limit = 5;
 	$filter_504_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_504_count;
 	// Filter 505: Number of occurrences of 'student loan' in comment_content
-	$filter_505_count = substr_count($commentdata_comment_content_lc_deslashed, 'student loan');
+	$filter_505_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'student loan');
 	$filter_505_limit = 4;
 	$filter_505_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_505_count;
 	// Filter 506: Number of occurrences of 'student credit card' in comment_content
-	$filter_506_count = substr_count($commentdata_comment_content_lc_deslashed, 'student credit card');
+	$filter_506_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'student credit card');
 	$filter_506_limit = 4;
 	$filter_506_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_506_count;
 	// Filter 507: Number of occurrences of 'consolidation student' in comment_content
-	$filter_507_count = substr_count($commentdata_comment_content_lc_deslashed, 'consolidation student');
+	$filter_507_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'consolidation student');
 	$filter_507_limit = 4;
 	$filter_507_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_507_count;
 	// Filter 508: Number of occurrences of 'student health insurance' in comment_content
-	$filter_508_count = substr_count($commentdata_comment_content_lc_deslashed, 'student health insurance');
+	$filter_508_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'student health insurance');
 	$filter_508_limit = 4;
 	$filter_508_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_508_count;
 	// Filter 509: Number of occurrences of 'student loan consolidation' in comment_content
-	$filter_509_count = substr_count($commentdata_comment_content_lc_deslashed, 'student loan consolidation');
+	$filter_509_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'student loan consolidation');
 	$filter_509_limit = 4;
 	$filter_509_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_509_count;
 	// Filter 510: Number of occurrences of 'data entry' in comment_content
-	$filter_510_count = substr_count($commentdata_comment_content_lc_deslashed, 'data entry');
+	$filter_510_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'data entry');
 	$filter_510_limit = 5;
 	$filter_510_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_510_count;
 	// Filter 511: Number of occurrences of 'asdf' in comment_content
-	$filter_511_count = substr_count($commentdata_comment_content_lc_deslashed, 'asdf');
+	$filter_511_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'asdf');
 	$filter_511_limit = 6;
 	$filter_511_trackback_limit = 2;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_511_count;
@@ -3030,30 +3045,30 @@ function spamshield_content_filter($commentdata) {
 	// Check for Optimized URL's and Keyword Phrases Occurring in Author Name and Content
 	
 	// Filter 10001: Number of occurrences of 'this is something special' in comment_content
-	$filter_10001_count = substr_count($commentdata_comment_content_lc_deslashed, 'this is something special');
+	$filter_10001_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'this is something special');
 	$filter_10001_limit = 1;
 	$filter_10001_trackback_limit = 1;
 	// Filter 10002: Number of occurrences of 'http://groups.google.com/group/' in comment_content
-	$filter_10002_count = substr_count($commentdata_comment_content_lc_deslashed, 'http://groups.google.com/group/');
+	$filter_10002_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'http://groups.google.com/group/');
 	$filter_10002_limit = 1;
 	$filter_10002_trackback_limit = 1;
 	// Filter 10003: Number of occurrences of 'youporn' in comment_content
-	$filter_10003_count = substr_count($commentdata_comment_content_lc_deslashed, 'youporn');
+	$filter_10003_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'youporn');
 	$filter_10003_limit = 1;
 	$filter_10003_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_10003_count;
 	// Filter 10004: Number of occurrences of 'pornotube' in comment_content
-	$filter_10004_count = substr_count($commentdata_comment_content_lc_deslashed, 'pornotube');
+	$filter_10004_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'pornotube');
 	$filter_10004_limit = 1;
 	$filter_10004_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_10004_count;
 	// Filter 10005: Number of occurrences of 'porntube' in comment_content
-	$filter_10005_count = substr_count($commentdata_comment_content_lc_deslashed, 'porntube');
+	$filter_10005_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'porntube');
 	$filter_10005_limit = 1;
 	$filter_10005_trackback_limit = 1;
 	$blacklist_word_combo_total = $blacklist_word_combo_total + $filter_10005_count;
 	// Filter 10006: Number of occurrences of 'http://groups.google.us/group/' in comment_content
-	$filter_10006_count = substr_count($commentdata_comment_content_lc_deslashed, 'http://groups.google.us/group/');
+	$filter_10006_count = spamshield_substr_count($commentdata_comment_content_lc_deslashed, 'http://groups.google.us/group/');
 	$filter_10006_limit = 1;
 	$filter_10006_trackback_limit = 1;
 	
@@ -3067,7 +3082,7 @@ function spamshield_content_filter($commentdata) {
 	// PayDay Loan Spammers
 	if ( preg_match( "@((payday|students?|title)([a-z0-9\-]*)loan|cash([a-z0-9\-]*)advance)@i", $commentdata_comment_author_url_domain_lc ) ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$spamshield_error_code .= ' 10501AU';
+		$spamshield_error_code .= ' 10501AU-PDL';
 		}
 	// PayDay Loan Spammers Group - Author URL
 	if ( preg_match( "@^(ww[w0-9]\.)?(burnleytaskforce\.org\.uk|ccls5280\.org|chrislonergan\.co\.uk|getwicked\.co\.uk|kickstartmediagroup\.co\.uk|mpaydayloansa1\.info|neednotgreed\.org\.uk|royalspicehastings\.co\.uk|snakepaydayloans\.co\.uk|solarsheild\.co\.uk|transitionwestcliff\.org\.uk|blyweertbeaufort\.co\.uk|disctoprint\.co\.uk|fish-instant-payday-loans\.co\.uk|heritagenorth\.co\.uk|standardsdownload\.co\.uk|21joannapaydayloanscompany\.joannaloans\.co\.uk)$@i", $commentdata_comment_author_url_domain_lc ) ) {
@@ -3079,6 +3094,29 @@ function spamshield_content_filter($commentdata) {
 	if ( preg_match( "@^(ww[w0-9]\.)?(groups\.(google|yahoo)\.(com|us)|(phpbbserver|freehostia|free-site-host|keywordspy|t35|(1|2)50m|widecircles|netcallidus|webseomasters|mastersofseo|mysmartseo|sitemapwriter|shredderwarehouse|mmoinn|animatedfavicon|cignusweb|rsschannelwriter|clickaudit|choice-direct|experl|registry-error-cleaner|sunitawedsamit|agriimplements|submit(-trackback|bookmark)|(comment|youtube-)poster|post-comments|wordpressautocomment|grillpartssteak|tpbunblocked|sqiar|redcamtube|globaldata4u|297286)\.com|youporn([0-9]+)\.vox\.com|blogs\.ign\.com|members\.lycos\.co\.uk|christiantorrents\.ru|lifecity\.(tv|info)|(phpdug|kankamforum)\.net|(real-url|hit4hit)\.org|johnbeck(seminar|ssuccessstories)?\.(com|net|tv)|(youtube|facebook|twitter)\.com|youtu\.be|(bitly|tinyurl)\.com|(bit|adf|ow)\.ly|(ranksindia|ranksdigitalmedia|semmiami)\.(com|net|org))$@i", $commentdata_comment_author_url_domain_lc ) ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10510AU-MSC';
+		}
+	// Testing for a unique identifying string from the comment content in the Author URL Domain
+	preg_match( "@\s+([a-z0-9]+)$@i", $commentdata_comment_content_lc_deslashed, $wpss_str_matches );
+	$wpss_spammer_id_string = $wpss_str_matches[1];
+	$commentdata_comment_author_url_domain_lc_elements = explode( '.', $commentdata_comment_author_url_domain_lc );
+	$commentdata_comment_author_url_domain_lc_elements_count = count( $commentdata_comment_author_url_domain_lc_elements );
+	$i = 0;
+	// The following line to prevent exploitation:
+	$i_max = 20;
+	while ( $i < $commentdata_comment_author_url_domain_lc_elements_count && $i < $i_max ) {
+		if ( !empty( $commentdata_comment_author_url_domain_lc_elements[$i] ) ) {
+			if ( $commentdata_comment_author_url_domain_lc_elements[$i] == $wpss_spammer_id_string ) {
+				if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
+				$spamshield_error_code .= ' 10511AUA';
+				break;
+				}
+			}
+		$i++;
+		}
+	// PayDay Loan Spammers
+	if ( preg_match( "@((payday|students?|title)([\s\.\-_]+)loan|cash([\s\.\-_]+)advance)@i", $commentdata_comment_author_lc_deslashed ) ) {
+		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 10501A-PDL';
 		}
 	// Debt Consolidation Spammers
 	if ( preg_match( "@(debt([\s\.\-_]*))?consolidat(ion|or|er)(([\s\.\-_]*)loan)?@i", $commentdata_comment_author_lc_deslashed ) && $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
@@ -3823,8 +3861,8 @@ function spamshield_content_filter($commentdata) {
 	$CommentContentTotalWords = spamshield_count_words($commentdata_comment_content_lc_deslashed);
 	$i = 0;
 	while ( $i < $RepeatedTermsTestCount ) {
-		if ( $RepeatedTermsTest[$i] ) {
-			$RepeatedTermsInContentCount = substr_count( $commentdata_comment_content_lc_deslashed, $RepeatedTermsTest[$i] );
+		if ( !empty( $RepeatedTermsTest[$i] ) ) {
+			$RepeatedTermsInContentCount = spamshield_substr_count( $commentdata_comment_content_lc_deslashed, $RepeatedTermsTest[$i] );
 			$RepeatedTermsInContentStrLength = spamshield_strlen($RepeatedTermsTest[$i]);
 			if ( $RepeatedTermsInContentCount > 1 && $CommentContentTotalWords < $RepeatedTermsInContentCount ) {
 				$RepeatedTermsInContentCount = 1;
@@ -3957,6 +3995,23 @@ function spamshield_content_filter($commentdata) {
 			$content_filter_status = '1';
 			$spamshield_error_code .= ' HA1003';
 			}
+		// More complex test for invalid 'HTTP_ACCEPT'
+		$user_http_accept_mod_1 = preg_replace( "/([\s\;]+)/", ",", $user_http_accept );
+		$user_http_accept_elements = explode( ',', $user_http_accept_mod_1 );
+		$user_http_accept_elements_count = count($user_http_accept_elements);
+		$i = 0;
+		// The following line to prevent exploitation:
+		$i_max = 20;
+		while ( $i < $user_http_accept_elements_count && $i < $i_max ) {
+			if ( !empty( $user_http_accept_elements[$i] ) ) {
+				if ( $user_http_accept_elements[$i] == '*' ) {
+					$content_filter_status = '1';
+					$spamshield_error_code .= ' HA1004';
+					break;
+					}
+				}
+			$i++;
+			}
 	
 		//Test HTTP_ACCEPT_LANGUAGE
 		$user_http_accept_language = trim($_SERVER['HTTP_ACCEPT_LANGUAGE']);
@@ -3967,6 +4022,23 @@ function spamshield_content_filter($commentdata) {
 		if ( $user_http_accept_language == '*' ) {
 			$content_filter_status = '1';
 			$spamshield_error_code .= ' HAL1002';
+			}
+		// More complex test for invalid 'HTTP_ACCEPT_LANGUAGE'
+		$user_http_accept_language_mod_1 = preg_replace( "/([\s\;]+)/", ",", $user_http_accept_language );
+		$user_http_accept_language_elements = explode( ',', $user_http_accept_language_mod_1 );
+		$user_http_accept_language_elements_count = count($user_http_accept_language_elements);
+		$i = 0;
+		// The following line to prevent exploitation:
+		$i_max = 20;
+		while ( $i < $user_http_accept_language_elements_count && $i < $i_max ) {
+			if ( !empty( $user_http_accept_language_elements[$i] ) ) {
+				if ( $user_http_accept_language_elements[$i] == '*' && strpos( $commentdata_user_agent_lc, 'links (' ) !== 0 ) {
+					$content_filter_status = '1';
+					$spamshield_error_code .= ' HAL1004';
+					break;
+					}
+				}
+			$i++;
 			}
 
 		//Test PROXY STATUS if option
@@ -4086,7 +4158,7 @@ function spamshield_content_filter($commentdata) {
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVD1031';
 			}
-			if ( preg_match( "@^(ip-)?([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})\.(rackcentre\.redstation\.net\.uk|static\.hostnoc\.net|ip\.idealhosting\.net\.tr|triolan\.net|chunkhost\.com|unknown\.steephost\.(net|com))$@i", $ReverseDNS_LC ) ) {
+			if ( preg_match( "@^(ip-)?([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})-([0-9]{1,3})([\.\-])(rackcentre\.redstation\.net\.uk|static\.hostnoc\.net|ip\.idealhosting\.net\.tr|triolan\.net|chunkhost\.com|customer-rethinkvps\.com|unknown\.steephost\.(net|com))$@i", $ReverseDNS_LC ) ) {
 			$content_filter_status = '2';
 			$spamshield_error_code .= ' REVD1032';
 			}
@@ -4280,9 +4352,9 @@ function spamshield_content_filter($commentdata) {
 			$KeywordCommentAuthorPhrase1Version = '/'.$KeywordCommentAuthorPhrase1.$KeywordCommentAuthorPhraseURLVariation[$i];
 			$KeywordCommentAuthorPhrase2Version = '/'.$KeywordCommentAuthorPhrase2.$KeywordCommentAuthorPhraseURLVariation[$i];
 			$KeywordCommentAuthorPhrase3Version = '/'.$KeywordCommentAuthorPhrase3.$KeywordCommentAuthorPhraseURLVariation[$i];
-			$KeywordCommentAuthorPhrase1SubStrCount = substr_count($commentdata_comment_author_url_lc, $KeywordCommentAuthorPhrase1Version);
-			$KeywordCommentAuthorPhrase2SubStrCount = substr_count($commentdata_comment_author_url_lc, $KeywordCommentAuthorPhrase2Version);
-			$KeywordCommentAuthorPhrase3SubStrCount = substr_count($commentdata_comment_author_url_lc, $KeywordCommentAuthorPhrase3Version);
+			$KeywordCommentAuthorPhrase1SubStrCount = spamshield_substr_count($commentdata_comment_author_url_lc, $KeywordCommentAuthorPhrase1Version);
+			$KeywordCommentAuthorPhrase2SubStrCount = spamshield_substr_count($commentdata_comment_author_url_lc, $KeywordCommentAuthorPhrase2Version);
+			$KeywordCommentAuthorPhrase3SubStrCount = spamshield_substr_count($commentdata_comment_author_url_lc, $KeywordCommentAuthorPhrase3Version);
 			if ( $KeywordCommentAuthorPhrase1SubStrCount >= 1 ) {
 				if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 				$spamshield_error_code .= ' T3003-1-'.$KeywordCommentAuthorPhrase1Version;
@@ -4304,7 +4376,7 @@ function spamshield_content_filter($commentdata) {
 			$filter_phrase 					= $filter_phrase_parameters[0];
 			$filter_phrase_limit 			= $filter_phrase_parameters[1];
 			$filter_phrase_trackback_limit 	= $filter_phrase_parameters[2];
-			$filter_phrase_count			= substr_count( $commentdata_comment_content_lc_deslashed, $filter_phrase );
+			$filter_phrase_count			= spamshield_substr_count( $commentdata_comment_content_lc_deslashed, $filter_phrase );
 			if ( $filter_phrase_count >= $filter_phrase_trackback_limit ) {
 				if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 				}
@@ -4316,11 +4388,16 @@ function spamshield_content_filter($commentdata) {
 		// Words in Comment Author Repeated in Content		
 		$RepeatedTermsFilters = array('.','-',':');
 		$RepeatedTermsTempPhrase = str_replace($RepeatedTermsFilters,'',$commentdata_comment_author_lc_deslashed);
+		$RepeatedTermsTempPhrase = preg_replace("/\s+/", " ", $RepeatedTermsTempPhrase);
 		$RepeatedTermsTest = explode(' ',$RepeatedTermsTempPhrase);
 		$RepeatedTermsTestCount = count($RepeatedTermsTest);
+		$RepeatedTermsInContentCount = 0;
 		$i = 0;
 		while ( $i < $RepeatedTermsTestCount ) {
-			$RepeatedTermsInContentCount = substr_count( $commentdata_comment_content_lc_deslashed, $RepeatedTermsTest[$i] );
+			$RepeatedTermsInContentCount = 0;
+			if ( !empty( $RepeatedTermsTest[$i] ) ) {
+				$RepeatedTermsInContentCount = spamshield_substr_count( $commentdata_comment_content_lc_deslashed, $RepeatedTermsTest[$i] );
+				}
 			$RepeatedTermsInContentStrLength = spamshield_strlen($RepeatedTermsTest[$i]);
 			if ( $RepeatedTermsInContentCount >= 6 && $RepeatedTermsInContentStrLength >= 4 ) {		
 				if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
@@ -4552,6 +4629,10 @@ function spamshield_modify_notification( $text, $comment_id ) {
 
 	$spamshield_options = get_option('spamshield_options');
 	
+	$post_jsonst 		= $_POST['JSONST'];
+	$post_ref2xjs 		= $_POST['ref2xJS'];
+	$post_ref2xjs_lc 	= strtolower($post_ref2xjs);
+	
 	// IP / PROXY INFO - BEGIN
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$ipBlock=explode('.',$ip);
@@ -4573,8 +4654,7 @@ function spamshield_modify_notification( $text, $comment_id ) {
 		$ReverseDNSAuthenticity = '[Verified]';
 		}
 	// Detect Use of Proxy
-	//if ($_SERVER['HTTP_VIA']||$_SERVER['HTTP_X_FORWARDED_FOR']) {
-	if ( ( $ipProxyVIA && $ipProxyVIA !='' ) || ( $MaskedIP && $MaskedIP !='' ) ) {
+	if ( !empty( $ipProxyVIA ) || !empty( $MaskedIP ) ) {
 		if ( empty( $MaskedIP ) ) { $MaskedIP='[No Data]'; }
 		$ipProxy='PROXY DETECTED';
 		$ipProxyShort='PROXY';
@@ -4601,7 +4681,7 @@ function spamshield_modify_notification( $text, $comment_id ) {
 
 	if ( empty( $spamshield_options['hide_extra_data'] ) ) {
 		
-		$CommentType = @ucwords( get_comment_type() );
+		$CommentType = ucwords( get_comment_type( $comment_id ) );
 
 		$text .= "\r\n------------------------------------------------------";
 		$text .= "\r\n:: Additional Technical Data Added by WP-SpamShield ::";
@@ -4612,32 +4692,23 @@ function spamshield_modify_notification( $text, $comment_id ) {
 
 		// DEBUG ONLY - BEGIN
 		if ( strpos( WPSS_SERVER_NAME_REV, WPSS_DEBUG_SERVER_NAME_REV ) === 0 ) {
-			if( $_POST[ 'ref2xJS' ] && ( $_POST[ 'ref2xJS' ] != '' ) ) {
-				$ref2xJS = addslashes( urldecode( $_POST[ 'ref2xJS' ] ) );
+			if( !empty( $post_ref2xjs ) ) {
+				$ref2xJS = addslashes( urldecode( $post_ref2xjs ) );
 				$ref2xJS = str_replace( '%3A', ':', $ref2xJS );
 				$ref2xJS = str_replace( ' ', '+', $ref2xJS );
 				$ref2xJS = esc_url_raw( $ref2xJS );
 				$text .= "\r\nJavaScript Page Referrer Check: $ref2xJS\r\n";
 				}
 
-			/*
-			// Removed for caching
-			if( $_POST[ 'ref2xPH' ] && ( $_POST[ 'ref2xPH' ] != '' ) ) {
-				$ref2xPH = esc_url_raw( $_POST[ 'ref2xPH' ] );
-				$ref2xPH = str_replace( '%3A', ':', $ref2xPH );
-				$text .= "\r\nPHP Page Referrer Check: $ref2xPH\r\n";
-				}
-			*/
-
-			if( $_POST[ 'JSONST' ] && ( $_POST[ 'JSONST' ] != '' ) ) {
-				$JSONST = sanitize_text_field( $_POST[ 'JSONST' ] );
+			if( !empty( $post_jsonst ) ) {
+				$JSONST = sanitize_text_field( $post_jsonst );
 				$text .= "\r\nJavaScript Off NoScript Test: $JSONST\r\n";
 				}
 			}
 		// DEBUG ONLY - END
 		else {
-			if( $_POST[ 'ref2xJS' ] && ( $_POST[ 'ref2xJS' ] != '' ) ) {
-				$ref2xJS = addslashes( urldecode( $_POST[ 'ref2xJS' ] ) );
+			if( !empty( $post_ref2xjs ) ) {
+				$ref2xJS = addslashes( urldecode( $post_ref2xjs ) );
 				$ref2xJS = str_replace( '%3A', ':', $ref2xJS );
 				$ref2xJS = str_replace( ' ', '+', $ref2xJS );
 				$ref2xJS = esc_url_raw( $ref2xJS );
@@ -4848,7 +4919,7 @@ if (!class_exists('wpSpamShield')) {
 			if ( !empty( $_REQUEST['submit_wpss_general_options'] ) && current_user_can('manage_options') && check_admin_referer('wpss_general_options_nonce') ) {
 				echo '<div class="updated fade"><p>Plugin Spam settings saved.</p></div>';
 				}
-			if ( !empty( $_REQUEST['submit_wpss_contact_options'] ) && current_user_can('manage_options') && check_admin_referer('wpss_contact_options_nonce')  ) {
+			if ( !empty( $_REQUEST['submit_wpss_contact_options'] ) && current_user_can('manage_options') && check_admin_referer('wpss_contact_options_nonce') ) {
 				echo '<div class="updated fade"><p>Plugin Contact Form settings saved.</p></div>';
 				}
 			if ( !empty( $_REQUEST['wpss_action'] ) ) { $wpss_action = $_REQUEST['wpss_action']; } else { $wpss_action =''; }
