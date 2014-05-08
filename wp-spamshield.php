@@ -4601,7 +4601,7 @@ function spamshield_modify_notification( $text, $comment_id ) {
 
 	if ( empty( $spamshield_options['hide_extra_data'] ) ) {
 		
-		$CommentType = ucwords(get_comment_type());
+		$CommentType = @ucwords( get_comment_type() );
 
 		$text .= "\r\n------------------------------------------------------";
 		$text .= "\r\n:: Additional Technical Data Added by WP-SpamShield ::";
