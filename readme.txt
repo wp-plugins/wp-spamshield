@@ -140,6 +140,14 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.4.4, *released 05/11/14*
+
+* Added new filters to the spam blocking algorithm.
+* Fixed several minor bugs.
+* Made improvements to the blocked comment logging data. Changed the date displayed from UTC to the local time user, according to WordPress settings.
+* Reformatted the comment log data to make it easier to read, both for users, and for support requests.
+* Made improvements to the readability of the contact form emails as well.
+
 Version 1.1.4.3, *released 05/08/14*
 
 * Fixed several minor bugs (mostly PHP Notices, not Warnings or Errors) specific to changes made in PHP 5.4 and 5.5.
