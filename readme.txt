@@ -144,7 +144,7 @@ Version 1.1.4.4, *released 05/11/14*
 
 * Added new filters to the spam blocking algorithm.
 * Fixed several minor bugs.
-* Made improvements to the blocked comment logging data. Changed the date displayed from UTC to the local time user, according to WordPress settings.
+* Made improvements to the blocked comment logging data. Changed the date displayed from UTC to the local time of the admin, according to WordPress settings.
 * Reformatted the log data to make it easier to read, both for users, and for support requests.
 * Added total script execution time to the log data so you can see exactly how low it took to run the filters and block a particular comment. Also helps with debugging and support.
 * Made improvements to the readability of the contact form emails.
