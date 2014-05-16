@@ -140,6 +140,12 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.5, *released 05/16/14*
+
+* Made a number of code improvements to improve overall performance, efficiency, and speed of the plugin.
+* Completely reformatted the blocked comment logging data. Added some relevant technical data that can aid in tech support.
+* Added new filters to the spam blocking algorithm.
+
 Version 1.1.4.4, *released 05/11/14*
 
 * Added new filters to the spam blocking algorithm.
