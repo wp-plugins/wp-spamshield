@@ -36,7 +36,7 @@ if ( ! defined( 'WPSS_SITE_URL' ) ) {
 		// If not available, then best guess
 		$raw_url = spamshield_get_url_img();
 		// Next line is a 3rd string backup...rarely ever happens and won't break anything
-		$wpss_site_url1 = preg_replace( "@\/\w\p\-\c\o\n\t\e\n\t\/\p\l\u\g\i\n\s\/wp-spamshield/js/jscripts\.php$@i", "", $raw_url );
+		$wpss_site_url1 = preg_replace( "@/wp-content/plugins/wp-spamshield/js/jscripts\.php$@i", "", $raw_url );
 		$wpss_site_url_exploded = explode( '/', $raw_url );
 		$wpss_site_url_exploded_count = count( $wpss_site_url_exploded );
 		if ( $wpss_site_url_exploded_count > 5 ) {
