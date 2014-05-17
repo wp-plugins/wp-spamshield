@@ -1,6 +1,6 @@
 <?php
 // WP-SpamShield Dynamic JS File
-// Updated in Version 1.1.5
+// Updated in Version 1.1.6
 
 // Security Sanitization - BEGIN
 $id='';
@@ -25,9 +25,9 @@ if( empty($wpss_session_test) && !headers_sent() ) {
 	$wpss_session_id = @session_id();
 	}
 
+$wpss_server_ip_nodot = preg_replace( "/\./", "", $_SERVER['SERVER_ADDR'] );
 if ( ! defined( 'WPSS_HASH_ALT' ) ) {
-	$wpss_alt_ip_hash = preg_replace( "/\./", "", $_SERVER['SERVER_ADDR'] );
-	$wpss_alt_prefix = hash( 'md5', $wpss_alt_ip_hash );
+	$wpss_alt_prefix = hash( 'md5', $wpss_server_ip_nodot );
 	define( 'WPSS_HASH_ALT', $wpss_alt_prefix );
 	}
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -38,6 +38,7 @@ if ( ! defined( 'WPSS_SITE_URL' ) ) {
 	else { 
 		// If not available, then best guess
 		$raw_url = spamshield_get_url_js();
+		// Next line is a 3rd string backup...rarely ever happens and won't break anything
 		$wpss_site_url1 = preg_replace( "@/wp-content/plugins/wp-spamshield/js/jscripts\.php$@i", "", $raw_url );
 		$wpss_site_url_exploded = explode( '/', $raw_url );
 		$wpss_site_url_exploded_count = count( $wpss_site_url_exploded );
@@ -160,32 +161,6 @@ function spamshield_microtime_js() {
    	$mtime = $mtime[1]+$mtime[0];
 	return $mtime;
 	}
-	
-function spamshield_create_random_key_js() {
-    $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    srand((double)microtime()*1000000);
-	$keyCode = '';
-    $i = 0;
-    $pass = '';
-    while ($i <= 7) {
-        $num = rand() % 33;
-        $tmp = substr($chars, $num, 1);
-        $keyCode = $keyCode . $tmp;
-        $i++;
-    	}
-	if ($keyCode=='') {
-		srand((double)74839201183*1000000);
-    	$i = 0;
-    	$pass = '';
-    	while ($i <= 7) {
-        	$num = rand() % 33;
-        	$tmp = substr($chars, $num, 1);
-        	$keyCode = $keyCode . $tmp;
-        	$i++;
-    		}
-		}
-    return $keyCode;
-	}
 
 function spamshield_get_url_js() {
 	if ( !empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] != 'off' ) { $url = 'https://'; } else { $url = 'http://'; }
@@ -193,77 +168,31 @@ function spamshield_get_url_js() {
 	return $url;
 	}
 
-$spider_status_check = '';
-$spider_status_check_js = '';
-if ( isset($_SESSION['wpss_CookieValidationName_'.WPSS_HASH]) && isset($_SESSION['wpss_CookieValidationKey_'.WPSS_HASH]) ) {
-	$CookieValidationName 		= $_SESSION['wpss_CookieValidationName_'.WPSS_HASH];
-	$CookieValidationKey 		= $_SESSION['wpss_CookieValidationKey_'.WPSS_HASH];
-	}
-elseif ( isset( $_SESSION['wpss_spamshield_options_'.WPSS_HASH] ) ) {
-	$spamshield_options  		= $_SESSION['wpss_spamshield_options_'.WPSS_HASH];
-	$CookieValidationName 		= $spamshield_options['cookie_validation_name'];
-	$CookieValidationKey 		= $spamshield_options['cookie_validation_key'];
-	}
-elseif ( isset($session_CookieValidationName) && isset($session_CookieValidationKey) ) {
-	$CookieValidationName  		= $session_CookieValidationName;
-	$CookieValidationKey 		= $session_CookieValidationKey;
-	}
-else {
-	if ( isset($_SESSION['wpss_spider_status_check_'.WPSS_HASH]) ) {
-		$spider_status_check = $_SESSION['wpss_spider_status_check_'.WPSS_HASH];
-		}
-	elseif ( $_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR'] ) {
-		$spider_status_check_js = 1;
-		}
-	else {
-		$spider_status_check_js = 0;
-		$wpss_spiders_array_js = array( 'googlebot', 'google.com', 'googleproducer', 'feedfetcher-google', 'google wireless transcoder', 'google favicon', 'mediapartners-google', 'adsbot-google', 'yahoo', 'slurp', 'msnbot', 'bingbot', 'gtmetrix', 'wordpress', 'twitterfeed', 'feedburner', 'ia_archiver', 'spider', 'crawler', 'search', 'bot', 'offline', 'download', 'validator', 'link', 'user-agent:', 'curl', 'httpclient', 'jakarta', 'java/', 'larbin', 'libwww', 'lwp-trivial', 'mechanize', 'nutch', 'parser', 'php/', 'python-urllib ', 'wget', 'snoopy', 'binget', 'lftp/', '!susie', 'arachmo', 'automate', 'cerberian', 'charlotte', 'cocoal.icio.us', 'copier', 'cosmos', 'covario', 'csscheck', 'cynthia', 'emailsiphon', 'extractor', 'ezooms', 'feedly', 'getright', 'heritrix', 'holmes', 'htdig', 'htmlparser', 'httrack', 'igdespyder', 'internetseer', 'itunes', 'l.webis', 'mabontland', 'magpie', 'metauri', 'mogimogi', 'morning paper', 'mvaclient', 'newsgator', 'nymesis', 'oegp', 'peach', 'pompos', 'pxyscand', 'qseero', 'reaper', 'sbider', 'scoutjet', 'scrubby', 'semanticdiscovery', 'snagger', 'silk', 'snappy', 'sqworm', 'stackrambler', 'stripper', 'sucker', 'teoma', 'truwogps', 'updated', 'vyu2', 'webcapture', 'webcopier', 'webzip', 'windows-media-player', 'yeti' );
-		$wpss_spiders_array_js_count = count($wpss_spiders_array_js);
-		// the User Agent
-		$user_agent_lc = strtolower($_SERVER['HTTP_USER_AGENT']);
-		$i = 0;
-		while ($i < $wpss_spiders_array_js_count) {
-			if ( strpos( $user_agent_lc, $wpss_spiders_array_js[$i] ) !== false ) {
-				$spider_status_check_js = 1;
-				break;
-				}
-			$i++;
-			}
-		$_SESSION['wpss_spider_status_check_js_'.WPSS_HASH] = $spider_status_check_js;
-		}
-	if ( $spider_status_check_js != 1 && $spider_status_check != 1 ) {
-		global $root, $spamshield_options, $CookieValidationName, $CookieValidationKey;
-		$root = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
-		if (file_exists($root.'/wp-load.php')) {
-			// WP 2.6
-			include_once($root.'/wp-load.php');
-			} else {
-			// Before 2.6
-			include_once($root.'/wp-config.php');
-			}
-		$spamshield_options		= get_option('spamshield_options');
-		$CookieValidationName  	= $spamshield_options['cookie_validation_name'];
-		$CookieValidationKey 	= $spamshield_options['cookie_validation_key'];
-		$_SESSION['wpss_CookieValidationName_'.WPSS_HASH]	= $CookieValidationName;
-	 	$_SESSION['wpss_CookieValidationKey_'.WPSS_HASH] 	= $CookieValidationKey;
-		$_SESSION['wpss_spamshield_options_'.WPSS_HASH] 	= $spamshield_options;
-		}
-	else {
-		$randomComValCodeCVN1 		= spamshield_create_random_key_js();
-		$randomComValCodeCVN2 		= spamshield_create_random_key_js();
-		$randomComValCodeCVN3 		= spamshield_create_random_key_js();
-		$randomComValCodeCVN4 		= spamshield_create_random_key_js();
-		$CookieValidationName 		= $randomComValCodeCVN1.$randomComValCodeCVN2;
-		$CookieValidationKey  		= $randomComValCodeCVN3.$randomComValCodeCVN4;
-		}
-	}
-@setcookie( $CookieValidationName, $CookieValidationKey, 0, '/' );
+// Set Cookie & JS Values - BEGIN
+$wpss_session_id = @session_id();
+//$wpss_server_ip_nodot = preg_replace( "/\./", "", $_SERVER['SERVER_ADDR'] );
+
+//CK
+$wpss_ck_key_phrase 	= 'wpss_ckkey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
+$wpss_ck_val_phrase 	= 'wpss_ckval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
+$wpss_ck_key 			= hash( 'md5', $wpss_ck_key_phrase );
+$wpss_ck_val 			= hash( 'md5', $wpss_ck_val_phrase );
+//JS
+/*
+$wpss_js_key_phrase 	= 'wpss_jskey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
+$wpss_js_val_phrase 	= 'wpss_jsval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
+$wpss_js_key 			= hash( 'md5', $wpss_js_key_phrase );
+$wpss_js_val 			= hash( 'md5', $wpss_js_val_phrase );
+*/
+// Set Cookie & JS Values - END
+
+@setcookie( $wpss_ck_key, $wpss_ck_val, 0, '/' );
 header('Cache-Control: no-cache');
 header('Pragma: no-cache');
 header('Content-Type: application/x-javascript');
 echo "
 function GetCookie(e){var t=document.cookie.indexOf(e+'=');var n=t+e.length+1;if(!t&&e!=document.cookie.substring(0,e.length)){return null}if(t==-1)return null;var r=document.cookie.indexOf(';',n);if(r==-1)r=document.cookie.length;return unescape(document.cookie.substring(n,r))}function SetCookie(e,t,n,r,i,s){var o=new Date;o.setTime(o.getTime());if(n){n=n*1e3*60*60*24}var u=new Date(o.getTime()+n);document.cookie=e+'='+escape(t)+(n?';expires='+u.toGMTString():'')+(r?';path='+r:'')+(i?';domain='+i:'')+(s?';secure':'')}function DeleteCookie(e,t,n){if(getCookie(e))document.cookie=e+'='+(t?';path='+t:'')+(n?';domain='+n:'')+';expires=Thu, 01-Jan-1970 00:00:01 GMT'}
-function commentValidation(){SetCookie('".$CookieValidationName."','".$CookieValidationKey."','','/');SetCookie('SJECT14','CKON14','','/');}
+function commentValidation(){SetCookie('".$wpss_ck_key ."','".$wpss_ck_val ."','','/');SetCookie('SJECT14','CKON14','','/');}
 commentValidation();
 ";
 
