@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.1.5
+Version: 1.1.6
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -41,7 +41,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.1.5' );
+define( 'WPSS_VERSION', '1.1.6' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 if ( ! defined( 'WPSS_SITE_URL' ) ) {
@@ -297,7 +297,8 @@ function spamshield_first_action() {
 	}
 	
 function spamshield_create_random_key( $length = 16, $special_chars = 1, $extra_special_chars = 1, $number_of_keys = 1 ) {
-
+	
+	// REMOVE ONCE HASHING TESTED
 	// TO DO: Modify function to let you specify a number of keys to generate and return in an array
 	
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -331,6 +332,8 @@ function spamshield_create_random_key( $length = 16, $special_chars = 1, $extra_
 	}
 	
 function spamshield_update_keys( $reset_keys = 0 ) {
+
+	// REMOVE ONCE HASHING TESTED
 	$spamshield_options = get_option('spamshield_options');
 	// Note: spamshield_update_session_data() normally goes here, it's after update below
 	
@@ -871,6 +874,33 @@ function spamshield_update_session_data( $spamshield_options, $extra_data = NULL
 	$_SESSION['wpss_user_ip_current_'.WPSS_HASH]		= $_SERVER['REMOTE_ADDR'];
 	}
 
+function spamshield_get_key_values() {
+	// Set Cookie & JS Values - BEGIN
+	$wpss_session_id = @session_id();
+	$wpss_server_ip_nodot = preg_replace( "/\./", "", $_SERVER['SERVER_ADDR'] );
+
+	//CK
+	$wpss_ck_key_phrase 	= 'wpss_ckkey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
+	$wpss_ck_val_phrase 	= 'wpss_ckval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
+	$wpss_ck_key 			= hash( 'md5', $wpss_ck_key_phrase );
+	$wpss_ck_val 			= hash( 'md5', $wpss_ck_val_phrase );
+	//JS
+	$wpss_js_key_phrase 	= 'wpss_jskey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
+	$wpss_js_val_phrase 	= 'wpss_jsval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
+	$wpss_js_key 			= hash( 'md5', $wpss_js_key_phrase );
+	$wpss_js_val 			= hash( 'md5', $wpss_js_val_phrase );
+	// Set Cookie & JS Values - END
+	
+	$wpss_key_values = array(
+							'wpss_ck_key' 			=> $wpss_ck_key,
+							'wpss_ck_val' 			=> $wpss_ck_val,
+							'wpss_js_key' 			=> $wpss_js_key,
+							'wpss_js_val' 			=> $wpss_js_val,						
+						);
+	
+	return $wpss_key_values;
+	}
+	
 function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_data_errors, $wpss_log_comment_type = 'comment', $wpss_log_contact_form_data = NULL ) {
 
 	$wpss_log_filename = 'temp-comments-log.txt';
@@ -1330,10 +1360,19 @@ function spamshield_content_addendum($content) {
 		$spamshield_options = get_option('spamshield_options');
 		spamshield_update_session_data($spamshield_options);
 		
-		$CookieValidationName  		= $spamshield_options['cookie_validation_name'];
-		$CookieValidationKey 		= $spamshield_options['cookie_validation_key'];
-		$FormValidationFieldJS 		= $spamshield_options['form_validation_field_js'];
-		$FormValidationKeyJS 		= $spamshield_options['form_validation_key_js'];
+		/**
+		* Old Values
+		* $CookieValidationName  	= $spamshield_options['cookie_validation_name'];
+		* $CookieValidationKey 		= $spamshield_options['cookie_validation_key'];
+		* $FormValidationFieldJS 	= $spamshield_options['form_validation_field_js'];
+		* $FormValidationKeyJS 		= $spamshield_options['form_validation_key_js'];
+		**/
+		
+		$wpss_key_values 			= spamshield_get_key_values();
+		$CookieValidationName  		= $wpss_key_values['wpss_ck_key'];
+		$CookieValidationKey 		= $wpss_key_values['wpss_ck_val'];
+		$FormValidationFieldJS 		= $wpss_key_values['wpss_js_key'];
+		$FormValidationKeyJS 		= $wpss_key_values['wpss_js_val'];
 		$UseAltCookieMethod			= $spamshield_options['use_alt_cookie_method'];
 		$UseAltCookieMethodOnly		= $spamshield_options['use_alt_cookie_method_only'];
 		
@@ -1592,8 +1631,18 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 	if ( is_page() && ( !is_home() && !is_feed() && !is_archive() && !is_search() && !is_404() ) ) {
 
 		$spamshield_options				= get_option('spamshield_options');
-		$CookieValidationName  			= $spamshield_options['cookie_validation_name'];
-		$CookieValidationKey 			= $spamshield_options['cookie_validation_key'];
+		
+		/** OLD VALUES
+		* $CookieValidationName  		= $spamshield_options['cookie_validation_name'];
+		* $CookieValidationKey 			= $spamshield_options['cookie_validation_key'];
+		**/
+		
+		$wpss_key_values 				= spamshield_get_key_values();
+		$CookieValidationName  			= $wpss_key_values['wpss_ck_key'];
+		$CookieValidationKey 			= $wpss_key_values['wpss_ck_val'];
+		$FormValidationFieldJS 			= $wpss_key_values['wpss_js_key'];
+		$FormValidationKeyJS 			= $wpss_key_values['wpss_js_val'];
+
 	
 		if ( !empty( $_COOKIE[$CookieValidationName] ) ) {
 			$WPContactValidationJS 		= $_COOKIE[$CookieValidationName];
@@ -2426,10 +2475,19 @@ function spamshield_check_comment_type($commentdata) {
 			// LOG DATA - BEGIN
 			//if ( !empty( $spamshield_options['comment_logging'] ) ) {
 			
-			$CookieValidationName  		= $spamshield_options['cookie_validation_name'];
-			$CookieValidationKey 		= $spamshield_options['cookie_validation_key'];
-			$FormValidationFieldJS 		= $spamshield_options['form_validation_field_js'];
-			$FormValidationKeyJS 		= $spamshield_options['form_validation_key_js'];
+			/** OLD VALUES
+			* $CookieValidationName  	= $spamshield_options['cookie_validation_name'];
+			* $CookieValidationKey 		= $spamshield_options['cookie_validation_key'];
+			* $FormValidationFieldJS 	= $spamshield_options['form_validation_field_js'];
+			* $FormValidationKeyJS 		= $spamshield_options['form_validation_key_js'];
+			**/
+			
+			$wpss_key_values 			= spamshield_get_key_values();
+			$CookieValidationName  		= $wpss_key_values['wpss_ck_key'];
+			$CookieValidationKey 		= $wpss_key_values['wpss_ck_val'];
+			$FormValidationFieldJS 		= $wpss_key_values['wpss_js_key'];
+			$FormValidationKeyJS 		= $wpss_key_values['wpss_js_val'];
+			
 			if ( !empty( $_COOKIE[$CookieValidationName] ) ) {
 				$WPCommentValidationJS 	= $_COOKIE[$CookieValidationName];
 				}
@@ -2503,10 +2561,20 @@ function spamshield_allowed_post( $approved = NULL ) {
 	// JavaScript and Cookies Layer
 	// TEST TO PREVENT COMMENT SPAM FROM BOTS - BEGIN
 	$spamshield_options			= get_option('spamshield_options');
-	$CookieValidationName  		= $spamshield_options['cookie_validation_name'];
-	$CookieValidationKey 		= $spamshield_options['cookie_validation_key'];
-	$FormValidationFieldJS 		= $spamshield_options['form_validation_field_js'];
-	$FormValidationKeyJS 		= $spamshield_options['form_validation_key_js'];
+	
+	/** OLD VALUES
+	* $CookieValidationName  	= $spamshield_options['cookie_validation_name'];
+	* $CookieValidationKey 		= $spamshield_options['cookie_validation_key'];
+	* $FormValidationFieldJS 	= $spamshield_options['form_validation_field_js'];
+	* $FormValidationKeyJS 		= $spamshield_options['form_validation_key_js'];
+	**/
+	
+	$wpss_key_values 			= spamshield_get_key_values();
+	$CookieValidationName  		= $wpss_key_values['wpss_ck_key'];
+	$CookieValidationKey 		= $wpss_key_values['wpss_ck_val'];
+	$FormValidationFieldJS 		= $wpss_key_values['wpss_js_key'];
+	$FormValidationKeyJS 		= $wpss_key_values['wpss_js_val'];
+
 	$KeyUpdateTime 				= $spamshield_options['last_key_update'];
 	if ( !empty( $_COOKIE[$CookieValidationName] ) ) {
 		$WPCommentValidationJS 	= $_COOKIE[$CookieValidationName];
@@ -2751,10 +2819,20 @@ function spamshield_content_filter($commentdata) {
 
 	$spamshield_options = get_option('spamshield_options');
 	spamshield_update_session_data($spamshield_options);
-	$CookieValidationName  		= $spamshield_options['cookie_validation_name'];
-	$CookieValidationKey 		= $spamshield_options['cookie_validation_key'];
-	$FormValidationFieldJS 		= $spamshield_options['form_validation_field_js'];
-	$FormValidationKeyJS 		= $spamshield_options['form_validation_key_js'];
+	
+	/** OLD VALUES
+	* $CookieValidationName  	= $spamshield_options['cookie_validation_name'];
+	* $CookieValidationKey 		= $spamshield_options['cookie_validation_key'];
+	* $FormValidationFieldJS 	= $spamshield_options['form_validation_field_js'];
+	* $FormValidationKeyJS 		= $spamshield_options['form_validation_key_js'];
+	**/
+	
+	$wpss_key_values 			= spamshield_get_key_values();
+	$CookieValidationName  		= $wpss_key_values['wpss_ck_key'];
+	$CookieValidationKey 		= $wpss_key_values['wpss_ck_val'];
+	$FormValidationFieldJS 		= $wpss_key_values['wpss_js_key'];
+	$FormValidationKeyJS 		= $wpss_key_values['wpss_js_val'];
+
 	$KeyUpdateTime 				= $spamshield_options['last_key_update'];
 			
 	if ( !empty( $_COOKIE[$CookieValidationName] ) ) {
@@ -6387,14 +6465,7 @@ if (!class_exists('wpSpamShield')) {
 
 		function spamshield_head_intercept(){
 			if (!is_admin()) {
-				if ( empty($session_wpss_bot_status) || empty($session_wpss_plugin_url) || empty($session_wpSpamShieldVer) || empty($session_spamshield_options) || empty($session_CookieValidationName) || empty($session_CookieValidationKey) ) {
-					global $session_wpss_bot_status,$session_wpss_plugin_url,$session_wpSpamShieldVer,$session_spamshield_options,$session_CookieValidationName,$session_CookieValidationKey;
-					}
-					
-				$spamshield_options 	= get_option('spamshield_options');
-				spamshield_update_session_data($spamshield_options);
-				$CookieValidationName 	= $spamshield_options['cookie_validation_name'];
-				$CookieValidationKey 	= $spamshield_options['cookie_validation_key'];
+				
 				//Following was in JS, but since this is immediately before that code is executed, placed here - may be problem with caching though, but minor
 				update_option( 'ak_count_pre', get_option('akismet_spam_count') );
 
@@ -6433,13 +6504,6 @@ if (!class_exists('wpSpamShield')) {
 							}
 						}
 					}
-
-				//Set Variables - deprecating
-				$session_CookieValidationName 		= $CookieValidationName;
-				$session_CookieValidationKey 		= $CookieValidationKey;
-				$session_spamshield_options 		= $spamshield_options;
-				$session_wpss_plugin_url 			= WPSS_PLUGIN_URL;
-				$session_wpSpamShieldVer 			= WPSS_VERSION;
 				
 				if ( !empty( $_SESSION['wpss_user_ip_init_'.WPSS_HASH] ) ) {
 					$_SESSION['wpss_user_ip_init_'.WPSS_HASH] 	= $_SERVER['REMOTE_ADDR'];
@@ -6454,45 +6518,47 @@ if (!class_exists('wpSpamShield')) {
 			spamshield_update_session_data($spamshield_options);
 			
 			//only run installation if not installed or if previous version installed
-			if ( ( $installed_ver === false || $installed_ver != $plugin_db_version ) && empty( $spamshield_options ) ) {
+			if ( empty( $installed_ver ) || $installed_ver != WPSS_VERSION || empty( $spamshield_options ) ) {
 				
 				// Import WP-SpamFree Options, only on first activation
 				$wpsf_installed_ver = get_option('wp_spamfree_version');
 				if ( !empty( $wpsf_installed_ver ) && $installed_ver === false ) {
 					$spamfree_options = get_option('spamfree_options');
 					}
-				
+					
 				//add a database version number for future upgrade purposes
 				update_option('wp_spamshield_version', WPSS_VERSION);
-
+				
+				// REMOVE ONCE HASHING TESTED
+				/** OLD VALUES
 				// Set Random Cookie Name
 				$randomComValCodeCVN1 = spamshield_create_random_key();
 				$randomComValCodeCVN2 = spamshield_create_random_key();
 				$CookieValidationName = strtoupper($randomComValCodeCVN1.$randomComValCodeCVN2);
-				/*
-				$CookieValidationName = spamshield_create_random_key( 16, 0, 0 );
-				*/
+				//$CookieValidationName = spamshield_create_random_key( 16, 0, 0 );
 				// Set Random Cookie Value
 				$randomComValCodeCKV1 = spamshield_create_random_key();
 				$randomComValCodeCKV2 = spamshield_create_random_key();
 				$CookieValidationKey = $randomComValCodeCKV1.$randomComValCodeCKV2;
-				/*
-				$CookieValidationKey = spamshield_create_random_key( 16, 1, 1 );
-				*/
+				//$CookieValidationKey = spamshield_create_random_key( 16, 1, 1 );
 				// Set Random Form Field Name
 				$randomComValCodeJSFFN1 = spamshield_create_random_key();
 				$randomComValCodeJSFFN2 = spamshield_create_random_key();
 				$FormValidationFieldJS = $randomComValCodeJSFFN1.$randomComValCodeJSFFN2;
-				/*
-				$FormValidationFieldJS = spamshield_create_random_key( 16, 0, 0 );
-				*/
+				//$FormValidationFieldJS = spamshield_create_random_key( 16, 0, 0 );
 				// Set Random Form Field Value
 				$randomComValCodeJS1 = spamshield_create_random_key();
 				$randomComValCodeJS2 = spamshield_create_random_key();
 				$FormValidationKeyJS = $randomComValCodeJS1.$randomComValCodeJS2;
-				/*
-				$FormValidationKeyJS = spamshield_create_random_key( 16, 1, 1 );
-				*/
+				//$FormValidationKeyJS = spamshield_create_random_key( 16, 1, 1 );
+				**/
+				
+				$wpss_key_values 			= spamshield_get_key_values();
+				$CookieValidationName  		= $wpss_key_values['wpss_ck_key'];
+				$CookieValidationKey 		= $wpss_key_values['wpss_ck_val'];
+				$FormValidationFieldJS 		= $wpss_key_values['wpss_js_key'];
+				$FormValidationKeyJS 		= $wpss_key_values['wpss_js_val'];
+				
 				// TIME
 				$KeyUpdateTime = time();
 				// DATE
