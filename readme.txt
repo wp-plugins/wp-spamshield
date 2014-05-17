@@ -143,7 +143,7 @@ If you have any further questions, please submit them on the [support page](http
 Version 1.1.6, *released 05/16/14*
 
 * Changed the implementation of the random key generation and testing, resulting in greater speed and efficiency.
-* Fixed a bug that kept the plugin from updating its version number in the database in certain situations when a new version is installed.
+* Fixed a bug that kept the plugin from updating its version number in the database in certain situations when upgrading to a new version of the plugin.
 
 Version 1.1.5, *released 05/16/14*
 
