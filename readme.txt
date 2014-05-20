@@ -140,6 +140,10 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.6.3, *released 05/20/14*
+
+* Fixed a bug (introduced in 1.1.6) that prevented users from commenting if caching is not active. One area of the plugin had not been updated to the new key generation system, causing the error, but this is now fixed. Everything works fine now, and the upgrades introduced in 1.1.6 will provide improved performance.
+
 Version 1.1.6.2, *released 05/16/14*
 
 * Changed the implementation of the random key generation and testing, resulting in greater speed and efficiency.

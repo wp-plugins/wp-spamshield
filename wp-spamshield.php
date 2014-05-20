@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy a WordPress blog without spam! Includes a spam-blocking contact form feature too.
 Author: Scott Allen
-Version: 1.1.6.2
+Version: 1.1.6.3
 Author URI: http://www.redsandmarketing.com/
 License: GPLv2
 */
@@ -41,7 +41,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.1.6.2' );
+define( 'WPSS_VERSION', '1.1.6.3' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -1353,9 +1353,13 @@ function spamshield_comment_form() {
 	$spamshield_options = get_option('spamshield_options');
 	spamshield_update_session_data($spamshield_options);
 	
-	$PromotePluginLink 						= $spamshield_options['promote_plugin_link'];
-	$FormValidationFieldJS 					= $spamshield_options['form_validation_field_js'];
-	$FormValidationKeyJS 					= $spamshield_options['form_validation_key_js'];
+	$PromotePluginLink 			= $spamshield_options['promote_plugin_link'];
+
+	$wpss_key_values 			= spamshield_get_key_values();
+	$CookieValidationName  		= $wpss_key_values['wpss_ck_key'];
+	$CookieValidationKey 		= $wpss_key_values['wpss_ck_val'];
+	$FormValidationFieldJS 		= $wpss_key_values['wpss_js_key'];
+	$FormValidationKeyJS 		= $wpss_key_values['wpss_js_val'];
 	
 	if ( !empty( $PromotePluginLink ) ) {
 		$server_ip_first_char = substr(WPSS_SERVER_ADDR, 0, 1);
