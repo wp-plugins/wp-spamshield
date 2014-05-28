@@ -107,9 +107,6 @@ If you want to modify the style of the form using CSS, all the form elements hav
 
 **Spam Options**
 
-**M2 - Use two methods to set cookies.**
-This adds a secondary non-JavaScript method to set cookies in addition to the standard JS method.
-
 **Blocked Comment Logging Mode**
 This is a temporary diagnostic mode that logs blocked comment submissions for 7 days, then turns off automatically. If you want to see what spam has been blocked on your site, this is the option to use. Also, if you experience any technical issues, this will help with diagnosis, as you can email this log file to support if necessary. If you suspect you are having a technical issue, please turn this on right away and start logging data. Then submit a [support request](http://www.redsandmarketing.com/plugins/wp-spamshield/support/), and we'll email you back asking to see the log file so we can help you fix whatever the issue may be. The log is cleared each time this feature is turned on, so make sure you download the file before turning it back on. Also the log is capped at 2MB for security. This feature may use slightly higher server resources, so for best performance, only use when necessary. (Most websites won't notice any difference.)
 
@@ -123,6 +120,9 @@ Use if trackback spam is excessive. It is recomended that you don't use this opt
 
 **Disable pingbacks.**
 Use if pingback spam is excessive. The disadvantage is a reduction of communication between blogs. When blogs ping each other, it's like saying "Hi, I just wrote about you" and disabling these pingbacks eliminates that ability. It is recomended that you don't use this option unless you are experiencing an extreme spam attack.
+
+**M2 - Use two methods to set cookies.**
+This adds a secondary non-JavaScript method to set cookies in addition to the standard JS method.
 
 **Help promote WP-SpamShield?**
 This places a small link under the comments and contact form, letting others know what's blocking spam on your blog. This plugin is provided for free, so this is much appreciated. It's a small way you can give back and let others know about WP-SpamShield.
@@ -139,6 +139,14 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+Version 1.1.7, *released 05/28/14*
+
+* Reorganized and rewrote some of the code to make it more efficient and improve overall performance of the plugin. This is the fastest version of the plugin to date.
+* Added new filters and improved existing filters in the algorithmic spam protection layer.
+* Made improvements to the blocked comment logging data.
+* Fixed a bug that caused some legitimate comments to be rejected if the page the user commented on contained added arguments in the URL query string (ie. "something=value" - for tracking marketing campaigns, etc).
+* Fixed several minor bugs that would show notices in the debug.log if WordPress debugging is turned on.
 
 Version 1.1.6.3, *released 05/20/14*
 

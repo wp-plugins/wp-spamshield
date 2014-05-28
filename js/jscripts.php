@@ -1,6 +1,8 @@
 <?php
-// WP-SpamShield Dynamic JS File
-// Updated in Version 1.1.6
+/*
+WP-SpamShield Dynamic JS File
+Version: 1.1.7
+*/
 
 // Security Sanitization - BEGIN
 $id='';
@@ -26,135 +28,114 @@ if( empty($wpss_session_test) && !headers_sent() ) {
 	}
 
 $wpss_server_ip_nodot = preg_replace( "/\./", "", $_SERVER['SERVER_ADDR'] );
-if ( ! defined( 'WPSS_HASH_ALT' ) ) {
-	$wpss_alt_prefix = hash( 'md5', $wpss_server_ip_nodot );
-	define( 'WPSS_HASH_ALT', $wpss_alt_prefix );
-	}
-if ( ! defined( 'WPSS_SITE_URL' ) ) {
-	if ( !empty( $_SESSION['wpss_site_url_'.WPSS_HASH_ALT] ) ) {
-		$wpss_site_url 		= $_SESSION['wpss_site_url_'.WPSS_HASH_ALT];
-		$wpss_plugin_url	= $_SESSION['wpss_plugin_url_'.WPSS_HASH_ALT];
-		} 
-	else { 
-		// If not available, then best guess
-		$raw_url = spamshield_get_url_js();
-		// Next line is a 3rd string backup...rarely ever happens and won't break anything
-		$wpss_site_url1 = preg_replace( "@/wp-content/plugins/wp-spamshield/js/jscripts\.php$@i", "", $raw_url );
-		$wpss_site_url_exploded = explode( '/', $raw_url );
-		$wpss_site_url_exploded_count = count( $wpss_site_url_exploded );
-		if ( $wpss_site_url_exploded_count > 5 ) {
-			$wpss_site_url_element_count = $wpss_site_url_exploded_count - 5;
-			}
-		$wpss_site_url_elements = array();
-		$i = 0;
-		while( $i < $wpss_site_url_element_count ) {
-			$wpss_site_url_elements[] = $wpss_site_url_exploded[$i];
-			$i++;
-			}
-		$wpss_site_url2 = implode('/', $wpss_site_url_elements);
-		if ( !empty( $wpss_site_url2 ) ) { $wpss_site_url = $wpss_site_url2; } else { $wpss_site_url = $wpss_site_url1; }	
-		}
+if ( ! defined( 'WPSS_HASH_ALT' ) ) { $wpss_alt_prefix = hash( 'md5', $wpss_server_ip_nodot ); define( 'WPSS_HASH_ALT', $wpss_alt_prefix ); }
+if ( ! defined( 'WPSS_SITE_URL' ) && !empty( $_SESSION['wpss_site_url_'.WPSS_HASH_ALT] ) ) {
+	$wpss_site_url 		= $_SESSION['wpss_site_url_'.WPSS_HASH_ALT];
+	$wpss_plugin_url	= $_SESSION['wpss_plugin_url_'.WPSS_HASH_ALT];
 	define( 'WPSS_SITE_URL', $wpss_site_url );
 	}
-if ( ! defined( 'WPSS_HASH' ) ) {
-	$wpss_hash_prefix = hash( 'md5', WPSS_SITE_URL );
-	define( 'WPSS_HASH', $wpss_hash_prefix );
+
+if ( defined( 'WPSS_SITE_URL' ) && ! defined( 'WPSS_HASH' ) ) { 
+	$wpss_hash_prefix = hash( 'md5', WPSS_SITE_URL ); define( 'WPSS_HASH', $wpss_hash_prefix ); 
+	}
+elseif ( !empty( $_SESSION ) && !empty( $_COOKIE ) && ! defined( 'WPSS_HASH' ) ) {
+	//$wpss_cookies = $_COOKIE;
+	foreach( $_COOKIE as $ck_name => $ck_val ) {
+		if ( preg_match( "/^comment_author_([a-z0-9]{32})$/i", $ck_name, $matches ) ) { define( 'WPSS_HASH', $matches[1] ); break; }
+		}
 	}
 // SESSION CHECK AND FUNCTIONS - END
 
-// IP, PAGE HITS, PAGES VISITED HISTORY - BEGIN
-// Initial IP Address when visitor first comes to site
-if ( empty( $_SESSION['wpss_user_ip_init_'.WPSS_HASH] ) ) {
-	$_SESSION['wpss_user_ip_init_'.WPSS_HASH] = $_SERVER['REMOTE_ADDR'];
-	}
-// IP History - Lets see if they change IP's
-if ( empty( $_SESSION['wpss_jscripts_ip_history_'.WPSS_HASH] ) ) {
-	$_SESSION['wpss_jscripts_ip_history_'.WPSS_HASH] = array();
-	$_SESSION['wpss_jscripts_ip_history_'.WPSS_HASH][] = $_SERVER['REMOTE_ADDR'];
-	}
-if ( $_SERVER['REMOTE_ADDR'] != $_SESSION['wpss_user_ip_init_'.WPSS_HASH] ) {
-	$_SESSION['wpss_jscripts_ip_history_'.WPSS_HASH][] = $_SERVER['REMOTE_ADDR'];
-	}
-//Page hits - this page is more reliable than main if caching is on, so we'll keep a separate count
-if ( empty( $_SESSION['wpss_page_hits_js_'.WPSS_HASH] ) ) {
-	$_SESSION['wpss_page_hits_js_'.WPSS_HASH] = 0;
-	}
-++$_SESSION['wpss_page_hits_js_'.WPSS_HASH];
-// Referrer History - More reliable way to keep a list of pages, than using main
-if ( empty( $_SESSION['wpss_jscripts_referers_history_'.WPSS_HASH] ) ) {
-	$_SESSION['wpss_jscripts_referers_history_'.WPSS_HASH] = array();
-	}
-if ( empty( $_SESSION['wpss_jscripts_referers_history_count_'.WPSS_HASH] ) ) {
-	$_SESSION['wpss_jscripts_referers_history_count_'.WPSS_HASH] = array();
-	}
-if ( !empty( $_SERVER['HTTP_REFERER'] ) ) {
-	$max = count( $_SESSION['wpss_jscripts_referers_history_'.WPSS_HASH] );
-	if ( $max >= 1 ) {
-		$o = 0;
-		$i = 0;
-		while ( $i < $max ) { if ( $_SESSION['wpss_jscripts_referers_history_'.WPSS_HASH][$i] == $_SERVER['HTTP_REFERER'] ) { $o++; } $i++; }
+if ( defined( 'WPSS_HASH' ) && !empty( $_SESSION )  ) {
+	// IP, PAGE HITS, PAGES VISITED HISTORY - BEGIN
+	// Initial IP Address when visitor first comes to site
+	$key_pages_hist 		= 'wpss_jscripts_referers_history_'.WPSS_HASH;
+	$key_hits_per_page		= 'wpss_jscripts_referers_history_count_'.WPSS_HASH;
+	$key_total_page_hits	= 'wpss_page_hits_js_'.WPSS_HASH;
+	$key_ip_hist 			= 'wpss_jscripts_ip_history_'.WPSS_HASH;
+	$key_init_ip			= 'wpss_user_ip_init_'.WPSS_HASH;
+	$current_ip 			= $_SERVER['REMOTE_ADDR'];
+	if ( empty( $_SESSION[$key_init_ip] ) ) { $_SESSION[$key_init_ip] = $current_ip; }
+	// IP History - Lets see if they change IP's
+	if ( empty( $_SESSION[$key_ip_hist] ) ) { $_SESSION[$key_ip_hist] = array(); $_SESSION[$key_ip_hist][] = $current_ip; }
+	if ( $current_ip != $_SESSION[$key_init_ip] ) { $_SESSION[$key_ip_hist][] = $current_ip; }
+	//Page hits - this page is more reliable than main if caching is on, so we'll keep a separate count
+	if ( empty( $_SESSION[$key_total_page_hits] ) ) { $_SESSION[$key_total_page_hits] = 0; }
+	++$_SESSION[$key_total_page_hits];
+	// Referrer History - More reliable way to keep a list of pages, than using main
+	if ( empty( $_SESSION[$key_pages_hist] ) ) { $_SESSION[$key_pages_hist] = array(); }
+	if ( empty( $_SESSION[$key_hits_per_page] ) ) { $_SESSION[$key_hits_per_page] = array(); }
+	if ( !empty( $_SERVER['HTTP_REFERER'] ) ) {
+		$current_ref 	= $_SERVER['HTTP_REFERER'];
+		$key_first_ref	= 'wpss_referer_init_'.WPSS_HASH;
+		$key_last_ref	= 'wpss_jscripts_referer_last_'.WPSS_HASH;
+		if ( !array_key_exists( $current_ref, $_SESSION[$key_pages_hist] ) ) {
+			$_SESSION[$key_pages_hist][] = $current_ref;
+			}
+		if ( !array_key_exists( $current_ref, $_SESSION[$key_hits_per_page] ) ) {
+			$_SESSION[$key_hits_per_page][$current_ref] = 1;
+			}
+		++$_SESSION[$key_hits_per_page][$current_ref];
+		// First Referrer - Where Visitor Entered Site
+		if ( empty( $_SESSION[$key_first_ref] ) ) { $_SESSION[$key_first_ref] = $current_ref; }
+		// Last Referrer
+		if ( empty( $_SESSION[$key_last_ref] ) ) {
+			$_SESSION[$key_last_ref] = '';
+			}
+		$_SESSION[$key_last_ref] = $current_ref;
 		}
-	if ( $max == 0 || $o == 0 ) {
-		$_SESSION['wpss_jscripts_referers_history_'.WPSS_HASH][] = $_SERVER['HTTP_REFERER'];
-		}
-	if ( empty( $_SESSION['wpss_jscripts_referers_history_count_'.WPSS_HASH][$_SERVER['HTTP_REFERER']] ) ) {
-		$_SESSION['wpss_jscripts_referers_history_count_'.WPSS_HASH][$_SERVER['HTTP_REFERER']] = 0;
-		}
-	++$_SESSION['wpss_jscripts_referers_history_count_'.WPSS_HASH][$_SERVER['HTTP_REFERER']];
-	// Last Referrer
-	if ( empty( $_SESSION['wpss_jscripts_referer_last_'.WPSS_HASH] ) ) {
-		$_SESSION['wpss_jscripts_referer_last_'.WPSS_HASH] = '';
-		}
-	$_SESSION['wpss_jscripts_referer_last_'.WPSS_HASH] = $_SERVER['HTTP_REFERER'];
-	}
-// IP, PAGE HITS, PAGES VISITED HISTORY - END
+	// IP, PAGE HITS, PAGES VISITED HISTORY - END
 
-// AUTHOR, EMAIL, URL - BEGIN
+	// AUTHOR, EMAIL, URL HISTORY - BEGIN
 
-// Keep history of Author, Author Email, and Author URL in case they keep changing
-// This will expose patterns
+	// Keep history of Author, Author Email, and Author URL in case they keep changing
+	// This will expose spammer behavior patterns
 
-// Comment Author
-if ( empty( $_SESSION['wpss_author_history_'.WPSS_HASH] ) ) {
-	$_SESSION['wpss_author_history_'.WPSS_HASH] = array();
-	if ( !empty( $_COOKIE['comment_author_'.WPSS_HASH] ) ) {
-		$_SESSION['comment_author_'.WPSS_HASH] = $_COOKIE['comment_author_'.WPSS_HASH];
-		$_SESSION['wpss_author_history_'.WPSS_HASH][] = $_COOKIE['comment_author_'.WPSS_HASH];
+	// Comment Author
+	$key_auth_hist 		= 'wpss_author_history_'.WPSS_HASH;
+	$key_comment_auth 	= 'comment_author_'.WPSS_HASH;
+	if ( empty( $_SESSION[$key_auth_hist] ) ) {
+		$_SESSION[$key_auth_hist] = array();
+		if ( !empty( $_COOKIE[$key_comment_auth] ) ) {
+			$_SESSION[$key_comment_auth] 	= $_COOKIE[$key_comment_auth];
+			$_SESSION[$key_auth_hist][] 	= $_COOKIE[$key_comment_auth];
+			}
 		}
-	}
-else {
-	if ( !empty( $_COOKIE['comment_author_'.WPSS_HASH] ) ) {
-		$_SESSION['comment_author_'.WPSS_HASH] = $_COOKIE['comment_author_'.WPSS_HASH];
+	else {
+		if ( !empty( $_COOKIE[$key_comment_auth] ) ) {
+			$_SESSION[$key_comment_auth] = $_COOKIE[$key_comment_auth];
+			}
 		}
-	}
-// Comment Author Email
-if ( empty( $_SESSION['wpss_author_email_history_'.WPSS_HASH] ) ) {
-	$_SESSION['wpss_author_email_history_'.WPSS_HASH] = array();
-	if ( !empty( $_COOKIE['comment_author_email_'.WPSS_HASH] ) ) {
-		$_SESSION['comment_author_email_'.WPSS_HASH] = $_COOKIE['comment_author_email_'.WPSS_HASH];
-		$_SESSION['wpss_author_email_history_'.WPSS_HASH][] = $_COOKIE['comment_author_email_'.WPSS_HASH];
+	// Comment Author Email
+	$key_email_hist 	= 'wpss_author_email_history_'.WPSS_HASH;
+	$key_comment_email	= 'comment_author_email_'.WPSS_HASH;
+	if ( empty( $_SESSION[$key_email_hist] ) ) {
+		$_SESSION[$key_email_hist] = array();
+		if ( !empty( $_COOKIE[$key_comment_email] ) ) {
+			$_SESSION[$key_comment_email] 	= $_COOKIE[$key_comment_email];
+			$_SESSION[$key_email_hist][] 	= $_COOKIE[$key_comment_email];
+			}
 		}
-	}
-else {
-	if ( !empty( $_COOKIE['comment_author_email_'.WPSS_HASH] ) ) {
-		$_SESSION['comment_author_email_'.WPSS_HASH] = $_COOKIE['comment_author_email_'.WPSS_HASH];
+	else {
+		if ( !empty( $_COOKIE[$key_comment_email] ) ) { $_SESSION[$key_comment_email] = $_COOKIE[$key_comment_email]; }
 		}
-	}
-// Comment Author URL
-if ( empty( $_SESSION['wpss_author_url_history_'.WPSS_HASH] ) ) {
-	$_SESSION['wpss_author_url_history_'.WPSS_HASH] = array();
-	if ( !empty( $_COOKIE['comment_author_url_'.WPSS_HASH] ) ) {
-		$_SESSION['comment_author_url_'.WPSS_HASH] = $_COOKIE['comment_author_url_'.WPSS_HASH];
-		$_SESSION['wpss_author_url_history_'.WPSS_HASH][] = $_COOKIE['comment_author_url_'.WPSS_HASH];
+	// Comment Author URL
+	$key_auth_url_hist 	= 'wpss_author_url_history_'.WPSS_HASH;
+	$key_comment_url	= 'comment_author_url_'.WPSS_HASH;
+	if ( empty( $_SESSION[$key_auth_url_hist] ) ) {
+		$_SESSION[$key_auth_url_hist] = array();
+		if ( !empty( $_COOKIE[$key_comment_url] ) ) {
+			$_SESSION[$key_comment_url] = $_COOKIE[$key_comment_url];
+			$_SESSION[$key_auth_url_hist][] = $_COOKIE[$key_comment_url];
+			}
 		}
-	}
-else {
-	if ( !empty( $_COOKIE['comment_author_url_'.WPSS_HASH] ) ) {
-		$_SESSION['comment_author_url_'.WPSS_HASH] = $_COOKIE['comment_author_url_'.WPSS_HASH];
+	else { 
+		if ( !empty( $_COOKIE[$key_comment_url] ) ) { $_SESSION[$key_comment_url] = $_COOKIE[$key_comment_url]; }
 		}
+	// AUTHOR, EMAIL, URL HISTORY - END
 	}
-// AUTHOR, EMAIL, URL - END
 
+// STANDARD FUNCTIONS - BEGIN
 function spamshield_microtime_js() {
 	$mtime = microtime();
 	$mtime = explode(' ',$mtime); 
@@ -168,23 +149,19 @@ function spamshield_get_url_js() {
 	return $url;
 	}
 
-// Set Cookie & JS Values - BEGIN
+// STANDARD FUNCTIONS - END
+
+// SET COOKIE VALUES - BEGIN
 $wpss_session_id = @session_id();
 //$wpss_server_ip_nodot = preg_replace( "/\./", "", $_SERVER['SERVER_ADDR'] );
-
-//CK
 $wpss_ck_key_phrase 	= 'wpss_ckkey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
 $wpss_ck_val_phrase 	= 'wpss_ckval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
 $wpss_ck_key 			= hash( 'md5', $wpss_ck_key_phrase );
 $wpss_ck_val 			= hash( 'md5', $wpss_ck_val_phrase );
-//JS
-/*
-$wpss_js_key_phrase 	= 'wpss_jskey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
-$wpss_js_val_phrase 	= 'wpss_jsval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
-$wpss_js_key 			= hash( 'md5', $wpss_js_key_phrase );
-$wpss_js_val 			= hash( 'md5', $wpss_js_val_phrase );
-*/
-// Set Cookie & JS Values - END
+// SET COOKIE VALUES - END
+
+// Last thing before headers sent
+$_SESSION['wpss_sess_status'] = 'on';
 
 @setcookie( $wpss_ck_key, $wpss_ck_val, 0, '/' );
 header('Cache-Control: no-cache');
@@ -200,5 +177,4 @@ commentValidation();
 $wpss_js_end_time = spamshield_microtime_js();
 $wpss_js_total_time = substr(($wpss_js_end_time - $wpss_js_start_time),0,8). " seconds";
 echo "// Generated in: ".$wpss_js_total_time."\n";
-
 ?>
