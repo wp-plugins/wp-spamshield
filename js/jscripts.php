@@ -1,12 +1,12 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.1.7
+Version: 1.1.7.1
 */
 
 // Security Sanitization - BEGIN
 $id='';
-if ( !empty( $_GET ) || preg_match ( "/\?/", $_SERVER['REQUEST_URI'] ) ) {
+if ( !empty( $_GET ) || preg_match ( "~\?~", $_SERVER['REQUEST_URI'] ) ) {
 	header('HTTP/1.1 403 Forbidden');
 	die('ERROR: This file will not function with a query string. Remove the query string from the URL and try again.');
 	}
@@ -27,21 +27,21 @@ if( empty($wpss_session_test) && !headers_sent() ) {
 	$wpss_session_id = @session_id();
 	}
 
-$wpss_server_ip_nodot = preg_replace( "/\./", "", $_SERVER['SERVER_ADDR'] );
-if ( ! defined( 'WPSS_HASH_ALT' ) ) { $wpss_alt_prefix = hash( 'md5', $wpss_server_ip_nodot ); define( 'WPSS_HASH_ALT', $wpss_alt_prefix ); }
-if ( ! defined( 'WPSS_SITE_URL' ) && !empty( $_SESSION['wpss_site_url_'.WPSS_HASH_ALT] ) ) {
+$wpss_server_ip_nodot = preg_replace( "~\.~", "", $_SERVER['SERVER_ADDR'] );
+if ( !defined( 'WPSS_HASH_ALT' ) ) { $wpss_alt_prefix = hash( 'md5', $wpss_server_ip_nodot ); define( 'WPSS_HASH_ALT', $wpss_alt_prefix ); }
+if ( !defined( 'WPSS_SITE_URL' ) && !empty( $_SESSION['wpss_site_url_'.WPSS_HASH_ALT] ) ) {
 	$wpss_site_url 		= $_SESSION['wpss_site_url_'.WPSS_HASH_ALT];
 	$wpss_plugin_url	= $_SESSION['wpss_plugin_url_'.WPSS_HASH_ALT];
 	define( 'WPSS_SITE_URL', $wpss_site_url );
 	}
 
-if ( defined( 'WPSS_SITE_URL' ) && ! defined( 'WPSS_HASH' ) ) { 
+if ( defined( 'WPSS_SITE_URL' ) && !defined( 'WPSS_HASH' ) ) { 
 	$wpss_hash_prefix = hash( 'md5', WPSS_SITE_URL ); define( 'WPSS_HASH', $wpss_hash_prefix ); 
 	}
-elseif ( !empty( $_SESSION ) && !empty( $_COOKIE ) && ! defined( 'WPSS_HASH' ) ) {
+elseif ( !empty( $_SESSION ) && !empty( $_COOKIE ) && !defined( 'WPSS_HASH' ) ) {
 	//$wpss_cookies = $_COOKIE;
 	foreach( $_COOKIE as $ck_name => $ck_val ) {
-		if ( preg_match( "/^comment_author_([a-z0-9]{32})$/i", $ck_name, $matches ) ) { define( 'WPSS_HASH', $matches[1] ); break; }
+		if ( preg_match( "~^comment_author_([a-z0-9]{32})$~i", $ck_name, $matches ) ) { define( 'WPSS_HASH', $matches[1] ); break; }
 		}
 	}
 // SESSION CHECK AND FUNCTIONS - END
@@ -153,7 +153,7 @@ function spamshield_get_url_js() {
 
 // SET COOKIE VALUES - BEGIN
 $wpss_session_id = @session_id();
-//$wpss_server_ip_nodot = preg_replace( "/\./", "", $_SERVER['SERVER_ADDR'] );
+//$wpss_server_ip_nodot = preg_replace( "~\.~", "", $_SERVER['SERVER_ADDR'] );
 $wpss_ck_key_phrase 	= 'wpss_ckkey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
 $wpss_ck_val_phrase 	= 'wpss_ckval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
 $wpss_ck_key 			= hash( 'md5', $wpss_ck_key_phrase );
@@ -163,6 +163,11 @@ $wpss_ck_val 			= hash( 'md5', $wpss_ck_val_phrase );
 // Last thing before headers sent
 $_SESSION['wpss_sess_status'] = 'on';
 
+if ( !empty( $current_ref ) && preg_match( "~([&\?])form\=response$~i", $current_ref ) && !empty( $_SESSION[$key_comment_auth] ) ) {
+	@setcookie( $key_comment_auth, $_SESSION[$key_comment_auth], 0, '/' );
+	if ( !empty( $_SESSION[$key_comment_auth] ) ) { @setcookie( $key_comment_email, $_SESSION[$key_comment_email], 0, '/' ); }
+	if ( !empty( $_SESSION[$key_comment_auth] ) ) { @setcookie( $key_comment_url, $_SESSION[$key_comment_url], 0, '/' ); }
+	}
 @setcookie( $wpss_ck_key, $wpss_ck_val, 0, '/' );
 header('Cache-Control: no-cache');
 header('Pragma: no-cache');

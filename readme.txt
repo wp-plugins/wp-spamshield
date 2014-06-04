@@ -26,10 +26,10 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 2. A counter on your dashboard to keep track of all the spam it's blocking. The numbers will show how effective this plugin is.
 3. **No CAPTCHA's, challenge questions or other inconvenience to site visitors** - it works silently in the background.
 4. Includes drop-in spam-free contact form, with easy shortcode implementation. Easy to use - no configuration necessary. (But you can configure if you like.)
-5. A more advanced fork of WP-SpamFree, by the original developer. Works as a truly plug and play replacement and will import your old data from WP-SpamFree automatically upon installation and activation, and features you were using on your site previously such as contact forms and spam stats will continue to work without any changes to pages, posts, or theme.
+5. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked comments and contact form submissions for 7 days, then turns off automatically. If you want to see what's been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
 6. No false positives due to the method of spam blocking, which leads to fewer frustrated readers, and less work for you. (If a comment gets blocked, a legit user has a chance to try again.)
-7. You won't have to waste valuable time sifting through a spam queue anymore, because there won't be much there, if anything.
-8. Powerful trackback and pingback spam protection and validation.
+7. You won't have to waste valuable time sifting through a spam queue any more, because there won't be much there, if anything.
+8. Powerful trackback and pingback spam protection and validation. 
 9. Easy to install - truly plug and play. Just upload and activate. (Installation Status on the plugin admin page to let you know if plugin is installed correctly.)
 10. The beauty of this plugin is the methods of blocking spam. It takes a different approach than most and stops spam at the door.
 11. Extremely low overhead and won't slow down your blog (very light database access), unlike some other anti-spam plugins.
@@ -38,8 +38,7 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 14. Helps keep your database slimmer and more efficient by keeping the spam out of it altogether.
 15. Works in WordPress Multisite as well.
 16. Enhanced Comment Blacklist option. Instead of just sending comments to moderation as with WordPress's default Comment Blacklist functionality, with this turned on, anything that matches a string in the blacklist will be **completely blocked**. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.
-17. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked comments and contact form submissions for 7 days, then turns off automatically. If you want to see what's been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
-18. No cost, no hidden fees. **Free** for **both Commercial and Personal** use.
+17. No cost, no hidden fees. **Free** for **both Commercial and Personal** use.
 
 = Background =
 Before I developed this plugin, our team and clients experienced the same frustration you do with comment spam on your WordPress blog. Every blog we manage had comment moderation enabled and various other anti-spam plugins installed, but we still had a ton of comments tagged as spam in the spam queue that we had to sort through. This wasted a lot of valuable time, and we all know, time is money. We needed a solution.
@@ -53,7 +52,11 @@ Most of the spam hitting your blog originates from bots. Few bots can process Ja
 
 Some would argue that using JS and cookies is too simplistic an approach. Traditionally, programmers prefer using some type of basic AI to fight bots by trying to figure out if a comment is spam. While that isn't a bad idea, when used alone this method falls short because no machine AI can ever accurately judge whether a comment is spam - many spam comments get through that could easily have been stopped, and there are many false positives where non-spam comments get flagged as spam. Others may argue that some spammers have programmed their bots to read JavaScript, etc. In reality, the percentage of bots with these capabilities is still extremely low - less than 1%. It's simply a numbers game. Statistics tell us that an effective solution would involve using a technology that few bots can handle, therefore eliminating their ability to spam your site. The important thing in fighting spam is that we create a solution that can reduce spam noticeably and improve the user experience, and a 99%+ reduction in spam would definitely make a difference for most bloggers and site visitors.
 
-Even so, it's important to know that the particular JS and cookies solution used in the WP-SpamShield anti-spam plugin has evolved quite a bit, and is no longer simple at all. There are now two layers of protection, a JavaScript/Cookies Layer, and an Algorithmic Layer. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop 95% of the spam that the JavaScript Layer blocks. (I'm working to make this 100% for fully redundant protection.) This JavaScript Layer utilizes randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer is what eliminates trackback/pingback spam, and much human spam as well. And, it does all that without hindering legitimate comments and trackbacks. The bottom line, is that this plugin just plain works, and is a **powerful weapon against spam**.
+Even so, it's important to know that the particular JS and cookies solution used in the WP-SpamShield anti-spam plugin has evolved quite a bit, and is no longer simple at all. There are now two layers of protection, a JavaScript/Cookies Layer, and an Algorithmic Layer. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop 95% of the spam that the JavaScript Layer blocks. (I'm working to make this 100% for fully redundant protection.) This JavaScript Layer utilizes randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer is what eliminates trackback/pingback spam, and much human spam as well. And, it does all that without hindering legitimate comments and trackbacks.
+
+The trackback validation contains a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is spam, without fail. This alone eliminates more than 99.99% of trackback spam. Trackback spammers don't send spam out from the same server where their clients' websites reside.
+
+The bottom line, is that this plugin just plain works, and is a **powerful weapon against spam**.
 
 = WordPress Blogging Without Spam =
 How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by giving it a good rating!
@@ -140,13 +143,19 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.7.1, *released 06/04/14*
+
+* Added new filters and improved existing filters in the algorithmic spam protection layer.
+* Fixed several minor bugs.
+* Made various code improvements.
+
 Version 1.1.7, *released 05/28/14*
 
 * Reorganized and rewrote some of the code to make it more efficient and improve overall performance of the plugin. This is the fastest version of the plugin to date.
 * Added new filters and improved existing filters in the algorithmic spam protection layer.
 * Made improvements to the blocked comment logging data.
-* Fixed a bug that caused some legitimate comments to be rejected if the page the user commented on contained added arguments in the URL query string (ie. "something=value" - for tracking marketing campaigns, etc).
-* Fixed several minor bugs that would show notices in the debug.log if WordPress debugging is turned on.
+* Fixed a bug that caused some legitimate comments to be rejected if the page the user commented on contained added arguments (tracking variables, etc.) in the URL query string (ie. "something=value" - for tracking marketing campaigns, etc).
+* Fixed several minor bugs that would show notices in the "debug.log" file if WordPress debugging is turned on.
 
 Version 1.1.6.3, *released 05/20/14*
 
@@ -169,7 +178,7 @@ Version 1.1.4.4, *released 05/11/14*
 * Fixed several minor bugs.
 * Made improvements to the blocked comment logging data. Changed the date displayed from UTC to the local time of the admin, according to WordPress settings.
 * Reformatted the log data to make it easier to read, both for users, and for support requests.
-* Added total script execution time to the log data so you can see exactly how low it took to run the filters and block a particular comment. Also helps with debugging and support.
+* Added total script execution time to the log data so you can see exactly how long it took to run the filters and block a particular comment. Also helps with debugging and support.
 * Made improvements to the readability of the contact form emails.
 
 Version 1.1.4.3, *released 05/08/14*
