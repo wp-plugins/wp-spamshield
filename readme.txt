@@ -147,6 +147,7 @@ Version 1.1.7.2, *released 06/06/14*
 
 * Added new filters to the spam blocking algorithm.
 * Removed some deprecated filters (which have already been replaced with newer more efficient ones) and reduced main plugin file size significantly.
+* Added a feature to clean up the WordPress blacklist. Now if you view the blacklist through the WP-SpamShield Settings page, it will be sorted in order and have duplicate items removed. When you save WP-SpamShield General Options (not Contact Form Options), it will store this cleaned up version in the database so that whenever you view it again, whether there or on the Discussion settings page, you'll see the cleaned up version.
 * Fixed a minor bug.
 
 Version 1.1.7.1, *released 06/04/14*
