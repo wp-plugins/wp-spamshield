@@ -116,13 +116,13 @@ This is a temporary diagnostic mode that logs blocked comment submissions for 7 
 **Log All Comments**
 Requires that Blocked Comment Logging Mode be engaged. Instead of only logging blocked comments, this will allow the log to capture *all* comments while logging mode is turned on. This provides more technical data for comment submissions than WordPress provides, and helps us improve the plugin. If you plan on submitting spam samples to us for analysis, it's helpful for you to turn this on, otherwise it's not necessary. If you have any spam comments that you feel WP-SpamShield should have blocked (usually human spam), then please submit a [support request](http://www.redsandmarketing.com/plugins/wp-spamshield/support/). When we email you back we will ask you to forward the data to us by email.
 
-This extra data will be extremely valuable in helping us improve the spam protection capabilites of the plugin.
+This extra data will be extremely valuable in helping us improve the spam protection capabilities of the plugin.
 
 **Disable trackbacks.**
-Use if trackback spam is excessive. It is recomended that you don't use this option unless you are experiencing an extreme spam attack.
+Use if trackback spam is excessive. It is recommended that you don't use this option unless you are experiencing an extreme spam attack.
 
 **Disable pingbacks.**
-Use if pingback spam is excessive. The disadvantage is a reduction of communication between blogs. When blogs ping each other, it's like saying "Hi, I just wrote about you" and disabling these pingbacks eliminates that ability. It is recomended that you don't use this option unless you are experiencing an extreme spam attack.
+Use if pingback spam is excessive. The disadvantage is a reduction of communication between blogs. When blogs ping each other, it's like saying "Hi, I just wrote about you" and disabling these pingbacks eliminates that ability. It is recommended that you don't use this option unless you are experiencing an extreme spam attack.
 
 **M2 - Use two methods to set cookies.**
 This adds a secondary non-JavaScript method to set cookies in addition to the standard JS method.
@@ -142,6 +142,12 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+Version 1.1.7.2, *released 06/06/14*
+
+* Added new filters to the spam blocking algorithm.
+* Removed some deprecated filters (which have already been replaced with newer more efficient ones) and reduced main plugin file size significantly.
+* Fixed a minor bug.
 
 Version 1.1.7.1, *released 06/04/14*
 
