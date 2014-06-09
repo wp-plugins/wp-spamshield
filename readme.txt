@@ -143,6 +143,10 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.1.7.3, *released 06/09/14*
+
+* Improved some of the filters in the spam blocking algorithm.
+
 Version 1.1.7.2, *released 06/06/14*
 
 * Added new filters to the spam blocking algorithm.
