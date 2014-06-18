@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature, and protection from registration spam too.
 Author: Scott Allen
-Version: 1.2
+Version: 1.2.1
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.2' );
+define( 'WPSS_VERSION', '1.2.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -69,7 +69,7 @@ define( 'WPSS_MAX_WP_VERSION', '4.0' );
 * WPSS_PLUGIN_INCL_PATH				- Ex: /public_html/wp-content/plugins/wp-spamshield/includes
 * WPSS_PLUGIN_JS_PATH				- Ex: /public_html/wp-content/plugins/wp-spamshield/js
 **/
-if ( !defined( 'WPSS_DEBUG' ) ) 				{ define( 'WPSS_DEBUG', false ); } // Do not change value unless developer ask you to - for debugging only. Change in wp-config.php.
+if ( !defined( 'WPSS_DEBUG' ) ) 				{ define( 'WPSS_DEBUG', false ); } // Do not change value unless developer asks you to - for debugging only. Change in wp-config.php.
 if ( !defined( 'WPSS_SITE_URL' ) ) 				{ define( 'WPSS_SITE_URL', untrailingslashit( site_url() ) ); }
 if ( !defined( 'WPSS_CONTENT_DIR_URL' ) ) 		{ define( 'WPSS_CONTENT_DIR_URL', WP_CONTENT_URL ); }
 if ( !defined( 'WPSS_CONTENT_DIR_PATH' ) ) 		{ define( 'WPSS_CONTENT_DIR_PATH', WP_CONTENT_DIR ); }
@@ -304,6 +304,42 @@ function spamshield_get_domain($url) {
 	return $hostname;
 	}
 
+function spamshield_parse_links( $haystack, $type = 'url' ) {
+	// Parse a body of content for links - extracts URLs and Anchor Text
+	// $type - 'url' for URLs, 'domain' for just Domains, 'anchor_text' for Anchor Text
+	// Returns an array
+	$parse_links_regex = "~(<\s*a\s+[a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*\s*href|\[(url|link))\s*\=\s*['\"]?\s*(https?\://[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*['\"]?\s*[a-z0-9\-_\.\?\='\"\:;\(\)\{\}\s]*\s*(>|\])([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*)(<|\[)\s*\/\s*a\s*(>|(url|link)\])~i";
+	$search_http_regex ="~(^|\s+)(https?\://[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)($|\s+)~i";
+	preg_match_all( $parse_links_regex, $haystack, $matches_links, PREG_PATTERN_ORDER );
+	$parsed_links_matches 			= $matches_links[3]; // Array containing URLs parsed from haystack text
+	$parsed_anchortxt_matches		= $matches_links[5]; // Array containing Anchor Text parsed from haystack text
+	if ( $type == 'url' || $type == 'domain' ) {
+		preg_match_all( $search_http_regex, $haystack, $matches_http, PREG_PATTERN_ORDER );
+		$parsed_http_matches 		= $matches_http[2]; // Array containing URLs parsed from haystack text
+		$parsed_urls_all_raw 		= array_merge( $parsed_links_matches, $parsed_http_matches );
+		$parsed_urls_all			= array_unique( $parsed_urls_all_raw );
+		if ( $type == 'url' ) {
+			$results = $parsed_urls_all;
+			}
+		elseif ( $type == 'domain' ) {
+			$parsed_urls_all_domains	= array();
+			foreach( $parsed_urls_all as $u => $url_raw ) {
+				$url = strtolower( trim( stripslashes( $url_raw ) ) );
+				if ( empty( $url ) ) { continue; }
+				$domain = spamshield_get_domain($url); // Add arg to strip www in function
+				if ( !in_array( $domain, $parsed_urls_all_domains, true ) ) {
+					$parsed_urls_all_domains[] = $domain;
+					}
+				}
+			$results = $parsed_urls_all_domains;
+			}
+		}
+	elseif ( $type == 'anchor_text' ) {
+		$results = $parsed_anchortxt_matches;
+		}
+	return $results;
+	}
+
 function spamshield_fix_url($url) {
 	// Fix poorly formed URLs so as not to throw errors or cause problems
 	// Too many forward slashes or colons after http
@@ -366,7 +402,7 @@ function spamshield_get_regex_phrase( $input, $custom_delim = NULL, $flag = "N" 
 		"email_domain" 	=> "@((ww[w0-9]|m)\.)?(X)$",
 		"domain" 		=> "^((ww[w0-9]|m)\.)?(X)$",
 		"authorkw"		=> "(^|\s+)(X)($|\s+)",
-		"atxtwrap"		=> "(<\s*a\s+[a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*\s*href|\[(url|link))\s*\=\s*['\"]?\s*(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*['\"]?\s*[a-z0-9\-_\.\?\='\"\:;\(\)\{\}\s]*\s*(>|\])([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*)(X)([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*)(<|\[)\s*\/\s*a\s*(>|(url|link)\])",
+		"atxtwrap"		=> "(<\s*a\s+[a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*\s*href|\[(url|link))\s*\=\s*['\"]?\s*(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*['\"]?\s*[a-z0-9\-_\.\?\='\"\:;\(\)\{\}\s]*\s*(>|\])([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*\s+)?(X)([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*\s+)?(<|\[)\s*\/\s*a\s*(>|(url|link)\])",
 		// REFERENCE: Parse full html links with this:
 		// $parse_links_regex = "~(<\s*a\s+[a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*\s*href|\[(url|link))\s*\=\s*['\"]?\s*(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*['\"]?\s*[a-z0-9\-_\.\?\='\"\:;\(\)\{\}\s]*\s*(>|\])([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*)(<|\[)\s*\/\s*a\s*(>|(url|link)\])~i";
 		"linkwrap"		=> "(<\s*a\s+([a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*)\s*href|\[(url|link))\s*\=\s*(['\"])?\s*https?\:/+((ww[w0-9]|m)\.)?(X)/?([a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]*)(['\"])?(>|\])",
@@ -2449,25 +2485,20 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 	return $blacklist_status;
 	}
 
-function spamshield_link_blacklist_chk( $haystack = NULL, $http_link = false ) {
+function spamshield_link_blacklist_chk( $haystack = NULL ) {
 	// Link Blacklist Check
 	// $haystack can be any body of content you want to search for links to blacklisted domains
 	$blacklist_status = false;
 	if ( empty( $haystack ) ) { return false; }
-	$blacklisted_domains = spamshield_domain_blacklist_chk('',true);
-	foreach( $blacklisted_domains as $i => $blacklisted_domain ) {
-		if ( !empty( $http_link ) ) {
-			$regex_phrase = spamshield_get_regex_phrase($blacklisted_domain,'','httplinkwrap');
-			}
-		else {
-			$regex_phrase = spamshield_get_regex_phrase($blacklisted_domain,'','linkwrap');
-			}
-		if ( preg_match( $regex_phrase, $haystack ) ) {
+	$extracted_domains = spamshield_parse_links( $haystack, 'domain' );
+	//spamshield_append_log_data( "\n".'$extracted_domains: "'.implode( '|', $extracted_domains ).'" Line: '.__LINE__ );
+	foreach( $extracted_domains as $d => $domain ) {
+		if ( spamshield_domain_blacklist_chk( $domain ) ) {
 			$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'$domain: '.$domain.' Line: '.__LINE__ );
 			break;
 			}
 		}
-	//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
 	return $blacklist_status;
 	}
 
@@ -2477,31 +2508,31 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 	// This list assembled based on statistical analysis of common anchor text spam keyphrases.
 	// Script creates all the necessary alphanumeric and linguistic variations to effectively test.
 	// $haystack_type can be 'author' (default) or 'content'
-	$blacklist_keyphrases = array( // 375
-		"2013", "2014", "2015", "accident", "account", "accountant", "accounting", "accutane", "acomplia", "action", "adipex", "administration", "advertise", "advertising", "affiliate", "alprostadil", "amature", 
-		"android", "anonymous", "attorney", "avanafil", "bamboo", "bandage", "bankruptcy", "basement", "beginner", "behavior", "bespoke", "bestiality", "betting", "bisexual", "blackjack", "blow job", "bluetooth", 
-		"boutique", "bucuresti", "builder", "building", "business", "buy pill", "caffeine", "calculator", "call girl", "cambogia", "cannabis", "car rental", "cash advance", "casinos", "casinos", "chat room", 
-		"cheap", "cheat", "chiropractic", "chiropractor", "cialis", "cleaning", "cleanse", "click here", "clitoris", "clothing", "college student", "coming", "comments", "comment poster", "commercial", 
-		"commission", "company", "compagnie", "computer", "concrete", "configure", "consolidation", "constructeur", "consultant", "consulting", "contracting", "contractor", "control", "cosmetic", "county", 
-		"coupon", "crack", "credit card", "cum", "cumshot", "cum shot", "custom", "dailymotion", "design", "desnuda", "development", "diet pill", "diets", "dildo", "discount", "domain", "download", "drug rehab", 
-		"dui lawyer", "dysfunction", "e-learning", "earn money", "educational", "ejaculate", "emergency", "engine", "enlargement", "enhancement", "ephedra", "ephedrine", "erectile", "erection", "erotic", 
-		"eroticism", "escort service", "exercise", "exterminator", "extreme", "eyeglasses", "facebook", "feminine", "flooring", "financial", "follower", "following", "foreclosure", "forex", "formula", "for sale", 
-		"free code", "frontier", "fuck", "fuckbuddy", "fuckin", "furniture", "galaxy", "gambling", "gambling online", "gaming", "garcinia", "garcinia cambogia", "generation", "generator", "genesis", "get rid of", 
-		"glazing", "gratis", "gratuit", "green coffee", "green tea", "guarantee", "hand bag", "health", "health care", "hearthstone", "heating", "hentai", "herbalife", "heterosexual", "home design", "homeopathic", 
-		"homepage", "homosexual", "hormone", "hosting", "hotel", "how to", "incest", "india outsource", "infection", "infestation", "information", "inhibitor", "injury lawyer", "instagram", "installation", 
-		"installer", "instant", "insurance", "international", "internet", "interview", "javascript", "johannesburg", "junction", "jungle", "keratin", "kroatien insel brac", "laptop", "laptopuri", "legend", 
-		"leveling", "levelling", "levitra", "levtira", "libido", "link builder", "link building", "logo design", "lose weight", "lunette", "machine", "marijuana", "massage", "medical", "medication", "message", 
-		"mobilabonnement priser", "modern", "modulesoft", "montaigne", "movie", "moving", "muscle", "naked", "natural", "nude", "nudism", "numerology", "nursery", "online", "online gambling", "online marketing", 
-		"opiate", "optimization", "organization", "orgasm", "outlet", "outsource india", "password", "payday", "petroleum", "penis", "periodontist", "personalization", "pharmacy", "phentermine", "photoshop", 
-		"phpdug", "php expert", "plantar fasciitis", "plastic", "platinum", "plumbing", "political", "politic", "porn", "porno", "pornographic", "pornography", "porntube", "power kite", "premium", "prepaid", 
-		"prescription", "primary", "promo code", "promotion", "propecia", "property", "prostitute", "protein", "proxy", "proxy surf", "proxy surfer", "pussy", "racing", "ranking", "rapes", "raping", "rapist", 
-		"redeem", "release", "removal", "renovating", "renovation", "rent a car", "rental", "repair", "reparatii", "repellent", "replica", "restoration", "restore", "revatio", "reviews", "rhinoplasty", 
-		"rimonabant", "ripped", "router", "search engine", "search marketing", "secondary", "secret", "sem", "seo", "seminar", "septum", "services", "sex", "sex drive", "sex tape", "sexe", "sexual", 
-		"sexual performance", "sexual services", "sexy", "shampoo", "shipping", "short-term loan", "sildenafil", "social", "social bookmark", "social media", "social poster", "social submitter", "software", 
-		"soma", "staxyn", "stendra", "steroid", "streaming", "student loan", "submitter", "sunglasses", "supplement", "surgeons", "surgery", "survey", "sweating", "tablet", "tadalafil", "tanning", "technology", 
-		"template", "testosterone", "therapy", "title", "trackback", "tractor", "trading", "tramadol", "travel", "treatment", "turbo tax", "twitter", "unblocked", "unique", "united states", "unlimited", "unlock", 
-		"vagina", "vaginal", "valium", "vardenafil", "ventilation", "viagra", "video", "videography", "vigara", "vigrx", "visit now", "voucher", "webmaster", "web page", "web site", "weight loss", "wholesale", 
-		"xanax", "xxx", "youtube", "zimulti", "zithromax", "zoekmachine optimalisatie", 
+	$blacklist_keyphrases = array( // 387
+		"2013", "2014", "2015", "access", "accident", "account", "accountant", "accounting", "accutane", "acomplia", "action", "adipex", "administration", "advertise", "advertising", "affiliate", "alprostadil", 
+		"amature", "android", "anonymous", "attorney", "avanafil", "average", "balance", "bamboo", "bandage", "bankruptcy", "basement", "beginner", "behavior", "bespoke", "bestiality", "betting", "bisexual", 
+		"blackjack", "blow job", "bluetooth", "boutique", "bucuresti", "builder", "building", "business", "buy pill", "caffeine", "calculator", "call girl", "cambogia", "cannabis", "car rental", "cash advance", 
+		"casinos", "casinos", "chat room", "cheap", "cheat", "chiropractic", "chiropractor", "cialis", "cleaning", "cleanse", "click here", "clitoris", "clothing", "college student", "coming", "comments", 
+		"comment poster", "commercial", "commission", "company", "compagnie", "compilation", "computer", "concrete", "configure", "consolidation", "constructeur", "consultant", "consulting", "contracting", 
+		"contractor", "control", "cosmetic", "county", "coupon", "crack", "credit card", "cum", "cumshot", "cum shot", "custom", "dailymotion", "design", "desnuda", "development", "diet pill", "diets", "dildo", 
+		"discount", "domain", "dosage", "download", "drug rehab", "dui lawyer", "dysfunction", "e-learning", "earn money", "educational", "ejaculate", "emergency", "employment", "engine", "enlargement", 
+		"enhancement", "ephedra", "ephedrine", "erectile", "erection", "erotic", "eroticism", "escort service", "exercise", "exterminator", "extreme", "eyeglasses", "facebook", "feminine", "flooring", "financial", 
+		"follower", "following", "foreclosure", "forex", "formula", "for sale", "free code", "frontier", "fuck", "fuckbuddy", "fuckin", "furniture", "galaxy", "gambling", "gambling online", "gaming", "garcinia", 
+		"garcinia cambogia", "generation", "generator", "genesis", "get rid of", "glazing", "gratis", "gratuit", "green coffee", "green tea", "guarantee", "hand bag", "health", "health care", "hearthstone", 
+		"heating", "heavenly", "hentai", "herbalife", "heterosexual", "home design", "homeopathic", "homepage", "homosexual", "hormone", "hosting", "hotel", "how to", "incest", "india outsource", "infection", 
+		"infestation", "information", "inhibitor", "injury lawyer", "instagram", "installation", "installer", "instant", "insurance", "international", "internet", "interview", "javascript", "johannesburg", 
+		"junction", "jungle", "keratin", "ketone", "kroatien insel brac", "laptop", "laptopuri", "legend", "leveling", "levelling", "levitra", "levtira", "libido", "link builder", "link building", "logo design", 
+		"lose weight", "lunette", "machine", "marijuana", "massage", "medical", "medication", "message", "mobilabonnement priser", "modern", "modulesoft", "monster", "montaigne", "mortal", "movie", "moving", 
+		"muscle", "naked", "natural", "nude", "nudism", "numerology", "nursery", "online", "online gambling", "online marketing", "opiate", "optimization", "organization", "orgasm", "outlet", "outsource india", 
+		"password", "payday", "petroleum", "penis", "periodontist", "personalization", "pharmacy", "phentermine", "photoshop", "phpdug", "php expert", "plantar fasciitis", "plastic", "platinum", "plumbing", 
+		"political", "politic", "porn", "porno", "pornographic", "pornography", "porntube", "power kite", "premium", "prepaid", "prescription", "previous", "primary", "promo code", "promotion", "propecia", 
+		"property", "prostitute", "protein", "proxy", "psychic", "pussy", "racing", "ranking", "rapes", "raping", "rapist", "redeem", "release", "removal", "renovating", "renovation", "rent a car", "rental", 
+		"repair", "reparatii", "repellent", "replica", "restoration", "restore", "revatio", "reviews", "rhinoplasty", "rimonabant", "ripped", "router", "search engine", "search marketing", "secondary", "secret", 
+		"sem", "seo", "seminar", "septum", "services", "sex", "sex drive", "sex tape", "sexe", "sexual", "sexual performance", "sexual services", "sexy", "shampoo", "shipping", "short-term loan", "sildenafil", 
+		"social", "social bookmark", "social media", "social poster", "social submitter", "software", "soma", "staxyn", "stendra", "steroid", "streaming", "student loan", "submitter", "sunglasses", "supplement", 
+		"surgeons", "surgery", "survey", "sweating", "tablet", "tactic", "tadalafil", "tanning", "technology", "template", "testosterone", "therapy", "title", "trackback", "tractor", "trading", "tramadol", 
+		"travel", "treatment", "turbo tax", "twitter", "unblocked", "unique", "united states", "unlimited", "unlock", "vagina", "vaginal", "valium", "vardenafil", "ventilation", "viagra", "video", "videography", 
+		"vigara", "vigrx", "visit now", "voucher", "wayfarer", "webmaster", "web page", "web site", "weight loss", "wholesale", "xanax", "xxx", "youtube", "zimulti", "zithromax", "zoekmachine optimalisatie", 
 		);
 	$blacklist_keyphrases_lite = array( 
 		// Use this for content link anchor text, not author names
@@ -2518,17 +2549,20 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 		// Check 1: Testing for URLs in author name
 		if ( preg_match( "~^https?~i", $haystack ) ) {
 			$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'Check 1 - Line: '.__LINE__ );
 			return $blacklist_status;
 			}
 		// Check 2: Testing for max # words in author name, more than 7 is fail
 		$author_words = spamshield_count_words( $haystack );
 		if ( $author_words > 7 ) {
 			$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'Check 2 - Line: '.__LINE__ );
 			return $blacklist_status;
 			}
 		// Check 3: Testing for Odd Characters in author name
 		if ( preg_match( "~[\@\*]+~", $haystack ) ) {
 			$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'Check 3 - Line: '.__LINE__ );
 			return $blacklist_status;
 			}
 		/*
@@ -2541,6 +2575,7 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 		// Check 5: Testing for numbers ('1000') and cash references ('$5000') in author name 
 		if ( preg_match( "~(^|[\s\.])(\\$([0-9]+)|([0-9]{3,}))($|[\s])~", $haystack ) ) {
 			$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'Check 4 - Line: '.__LINE__ );
 			return $blacklist_status;
 			}
 		// Final Check: The Blacklist
@@ -2549,21 +2584,28 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 			$regex_check_phrase = spamshield_get_regex_phrase( $blacklist_keyphrase_rgx, '', 'authorkw' );
 			if ( preg_match( $regex_check_phrase, $haystack ) ) {
 				$blacklist_status = true;
+				//spamshield_append_log_data( "\n".'$regex_check_phrase:'.$regex_check_phrase.' Line: '.__LINE__ );
 				break;
 				}
 			}
 		}
 	elseif ( $haystack_type == 'content' ) {
-		// Parse context for links with Anchor Text
+		// Parse content for links with Anchor Text
 		// Test 1: Coming Soon
 		// For possible use later - from old filter: ((payday|students?|title|onli?ne|short([\s\.\-_]*)term)([\s\.\-_]*)loan|cash([\s\.\-_]*)advance)
 		// Final Check: The Blacklist
-		foreach( $blacklist_keyphrases_lite as $i => $blacklist_keyphrase ) {
-			$blacklist_keyphrase_rgx = spamshield_regexify( $blacklist_keyphrase );
-			$regex_check_phrase = spamshield_get_regex_phrase( $blacklist_keyphrase_rgx, '', 'atxtwrap' );
-			if ( preg_match( $regex_check_phrase, $haystack ) ) {
-				$blacklist_status = true;
-				break;
+		$anchor_text_phrases = spamshield_parse_links( $haystack, 'anchor_text' );
+		//spamshield_append_log_data( "\n".'$anchor_text_phrases: "'.implode( '|', $anchor_text_phrases ).'" Line: '.__LINE__ );
+		foreach( $anchor_text_phrases as $a => $anchor_text_phrase ) {
+			foreach( $blacklist_keyphrases_lite as $i => $blacklist_keyphrase ) {
+				$blacklist_keyphrase_rgx = spamshield_regexify( $blacklist_keyphrase );
+				//$regex_check_phrase = spamshield_get_regex_phrase( $blacklist_keyphrase_rgx, '', 'atxtwrap' );
+				$regex_check_phrase = spamshield_get_regex_phrase( $blacklist_keyphrase_rgx, '', 'authorkw' );
+				if ( preg_match( $regex_check_phrase, $anchor_text_phrase ) ) {
+					$blacklist_status = true;
+					//spamshield_append_log_data( "\n".'$regex_check_phrase:'.$regex_check_phrase.' Line: '.__LINE__ );
+					break 2;
+					}
 				}
 			}
 		}
@@ -3456,7 +3498,7 @@ function spamshield_content_filter($commentdata) {
 		$spamshield_error_code .= ' 10500CAT-BL';
 		}
 	// Blacklisted Domains Check - Links in Content
-	if ( spamshield_link_blacklist_chk( $commentdata_comment_content_lc_deslashed, true ) ) {
+	if ( spamshield_link_blacklist_chk( $commentdata_comment_content_lc_deslashed ) ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 10500CU-BL';
 		}

@@ -147,6 +147,11 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.2.1, *released 06/18/14*
+
+* Updated the spam filters.
+* Fixed a minor bug in one of the filters.
+
 Version 1.2, *released 06/18/14*
 
 * Added a powerful new feature to stop user registration spam. No more automated bot signups on your site.
