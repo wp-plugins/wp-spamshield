@@ -147,6 +147,11 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.2.2, *released 06/20/14*
+
+* Updated the spam filters.
+* Made an improvement to the implementation of the new semantic filter.
+
 Version 1.2.1, *released 06/18/14*
 
 * Updated the spam filters.

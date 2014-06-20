@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature, and protection from registration spam too.
 Author: Scott Allen
-Version: 1.2.1
+Version: 1.2.2
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.2.1' );
+define( 'WPSS_VERSION', '1.2.2' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -189,7 +189,11 @@ $spamshield_default = array (
 	'promote_plugin_link'				=> 0,
 	);
 if ( !defined( 'WPSS_DEFAULT_VALUES' ) ) { define( 'WPSS_DEFAULT_VALUES', serialize( $spamshield_default ) ); }
-	
+
+// Includes - BEGIN
+require_once( WPSS_PLUGIN_INCL_PATH.'/blacklists.php' );
+// Includes - END
+
 // Standard Functions - BEGIN
 
 function spamshield_start_session() {
@@ -1475,7 +1479,7 @@ function spamshield_comment_form_addendum() {
 	$wpss_js_val 			= $wpss_key_values['wpss_js_val'];
 
 	?>
-	<script async defer type='text/javascript'>
+	<script async='async' defer='defer' type='text/javascript'>
 	// <![CDATA[
 	ref2xJS = escape( document[ 'referrer' ] );
 	document.write("<input type='hidden' name='ref2xJS' value='"+ref2xJS+"'>");
@@ -1667,8 +1671,8 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 		$form_require_website			= $spamshield_options['form_require_website'];
 		$form_include_phone				= $spamshield_options['form_include_phone'];
 		$form_require_phone				= $spamshield_options['form_require_phone'];
-		$FormIncludeCompany				= $spamshield_options['form_include_company'];
-		$FormRequireCompany				= $spamshield_options['form_require_company'];
+		$form_include_company			= $spamshield_options['form_include_company'];
+		$form_require_company			= $spamshield_options['form_require_company'];
 		$FormIncludeDropDownMenu		= $spamshield_options['form_include_drop_down_menu'];
 		$FormRequireDropDownMenu		= $spamshield_options['form_require_drop_down_menu'];
 		$FormDropDownMenuTitle			= $spamshield_options['form_drop_down_menu_title'];
@@ -1857,7 +1861,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 					}
 				}
 				
-			if ( empty( $wpss_contact_name ) || empty( $wpss_contact_email ) || empty( $wpss_contact_subject ) || empty( $wpss_contact_message ) || ( !empty( $form_include_website ) && !empty( $form_require_website ) && empty( $wpss_contact_website ) ) || ( !empty( $form_include_phone ) && !empty( $form_require_phone ) && empty( $wpss_contact_phone ) ) || ( !empty( $FormIncludeCompany ) && !empty( $FormRequireCompany ) && empty( $wpss_contact_company ) ) || ( !empty( $FormIncludeDropDownMenu ) && !empty( $FormRequireDropDownMenu ) && empty( $wpss_contact_drop_down_menu ) ) ) {
+			if ( empty( $wpss_contact_name ) || empty( $wpss_contact_email ) || empty( $wpss_contact_subject ) || empty( $wpss_contact_message ) || ( !empty( $form_include_website ) && !empty( $form_require_website ) && empty( $wpss_contact_website ) ) || ( !empty( $form_include_phone ) && !empty( $form_require_phone ) && empty( $wpss_contact_phone ) ) || ( !empty( $form_include_company ) && !empty( $form_require_company ) && empty( $wpss_contact_company ) ) || ( !empty( $FormIncludeDropDownMenu ) && !empty( $FormRequireDropDownMenu ) && empty( $wpss_contact_drop_down_menu ) ) ) {
 				$blank_field=1;
 				$spamshield_error_code .= ' CF-BLANKFIELD';
 				$contact_response_status_message_addendum .= '&bull; At least one required field was left blank.<br />&nbsp;<br />';
@@ -1931,7 +1935,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			if ( !empty( $form_include_phone ) ) {
 				$wpss_contact_form_msg_1 .= "Phone: 			".$wpss_contact_phone."\n";
 				}
-			if ( !empty( $FormIncludeCompany ) ) {
+			if ( !empty( $form_include_company ) ) {
 				$wpss_contact_form_msg_1 .= "Company: 		".$wpss_contact_company."\n";
 				}
 			if ( !empty( $form_include_website ) ) {
@@ -2089,9 +2093,9 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_phone" name="wpss_contact_phone" value="" size="40" /> </label></p>'."\n";
 				}
 
-			if ( !empty( $FormIncludeCompany ) ) {
+			if ( !empty( $form_include_company ) ) {
 				$spamshield_contact_form_content .= '<p><label><strong>Company</strong> ';
-				if ( !empty( $FormRequireCompany ) ) { 
+				if ( !empty( $form_require_company ) ) { 
 					$spamshield_contact_form_content .= '*'; 
 					}
 				$spamshield_contact_form_content .= '<br />'."\n";
@@ -2460,8 +2464,8 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
 		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
 		// SEO Spammers
-		"agenciade.serviciosdeseo.com", "click4pardeep.com", "hhmla.ca", "imediasolutions.biz",  "quickcontent.net", "ranksindia.net", "ranksdigitalmedia.com", "semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", 
-		"seooptimizationtipz.com", "seoservicesnewyork.org", "serviciosdeseo.com", "webpromotioner.com", 
+		"agenciade.serviciosdeseo.com", "click4pardeep.com", "dreamforweb.com", "hhmla.ca", "imediasolutions.biz",  "quickcontent.net", "ranksindia.net", "ranksdigitalmedia.com", "semmiami.com", "seo-services-new-york.weebly.com", 
+		"seoindia.co.in", "seooptimizationtipz.com", "seoservicesnewyork.org", "serviciosdeseo.com", "webpromotioner.com", 
 		// WebDev Spammers
 		"manektech.com", "retailon.co", "retailon.net", "rizecorp.com", "rizedigital.com", "webdesigncompany.org", 
 		// Add more here
@@ -2481,6 +2485,7 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 	// Final Check - The Blacklist...takes longest once blacklist is populated, so put last
 	$regex_phrase = spamshield_get_regex_phrase($blacklisted_domains,'','domain');
 	//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
+	//spamshield_append_log_data( "\n".'$domain:'.$domain.' Line: '.__LINE__ );
 	if ( preg_match( $regex_phrase, $domain ) ) { $blacklist_status = true; }
 	return $blacklist_status;
 	}
@@ -2508,35 +2513,25 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 	// This list assembled based on statistical analysis of common anchor text spam keyphrases.
 	// Script creates all the necessary alphanumeric and linguistic variations to effectively test.
 	// $haystack_type can be 'author' (default) or 'content'
-	$blacklist_keyphrases = array( // 387
-		"2013", "2014", "2015", "access", "accident", "account", "accountant", "accounting", "accutane", "acomplia", "action", "adipex", "administration", "advertise", "advertising", "affiliate", "alprostadil", 
-		"amature", "android", "anonymous", "attorney", "avanafil", "average", "balance", "bamboo", "bandage", "bankruptcy", "basement", "beginner", "behavior", "bespoke", "bestiality", "betting", "bisexual", 
-		"blackjack", "blow job", "bluetooth", "boutique", "bucuresti", "builder", "building", "business", "buy pill", "caffeine", "calculator", "call girl", "cambogia", "cannabis", "car rental", "cash advance", 
-		"casinos", "casinos", "chat room", "cheap", "cheat", "chiropractic", "chiropractor", "cialis", "cleaning", "cleanse", "click here", "clitoris", "clothing", "college student", "coming", "comments", 
-		"comment poster", "commercial", "commission", "company", "compagnie", "compilation", "computer", "concrete", "configure", "consolidation", "constructeur", "consultant", "consulting", "contracting", 
-		"contractor", "control", "cosmetic", "county", "coupon", "crack", "credit card", "cum", "cumshot", "cum shot", "custom", "dailymotion", "design", "desnuda", "development", "diet pill", "diets", "dildo", 
-		"discount", "domain", "dosage", "download", "drug rehab", "dui lawyer", "dysfunction", "e-learning", "earn money", "educational", "ejaculate", "emergency", "employment", "engine", "enlargement", 
-		"enhancement", "ephedra", "ephedrine", "erectile", "erection", "erotic", "eroticism", "escort service", "exercise", "exterminator", "extreme", "eyeglasses", "facebook", "feminine", "flooring", "financial", 
-		"follower", "following", "foreclosure", "forex", "formula", "for sale", "free code", "frontier", "fuck", "fuckbuddy", "fuckin", "furniture", "galaxy", "gambling", "gambling online", "gaming", "garcinia", 
-		"garcinia cambogia", "generation", "generator", "genesis", "get rid of", "glazing", "gratis", "gratuit", "green coffee", "green tea", "guarantee", "hand bag", "health", "health care", "hearthstone", 
-		"heating", "heavenly", "hentai", "herbalife", "heterosexual", "home design", "homeopathic", "homepage", "homosexual", "hormone", "hosting", "hotel", "how to", "incest", "india outsource", "infection", 
-		"infestation", "information", "inhibitor", "injury lawyer", "instagram", "installation", "installer", "instant", "insurance", "international", "internet", "interview", "javascript", "johannesburg", 
-		"junction", "jungle", "keratin", "ketone", "kroatien insel brac", "laptop", "laptopuri", "legend", "leveling", "levelling", "levitra", "levtira", "libido", "link builder", "link building", "logo design", 
-		"lose weight", "lunette", "machine", "marijuana", "massage", "medical", "medication", "message", "mobilabonnement priser", "modern", "modulesoft", "monster", "montaigne", "mortal", "movie", "moving", 
-		"muscle", "naked", "natural", "nude", "nudism", "numerology", "nursery", "online", "online gambling", "online marketing", "opiate", "optimization", "organization", "orgasm", "outlet", "outsource india", 
-		"password", "payday", "petroleum", "penis", "periodontist", "personalization", "pharmacy", "phentermine", "photoshop", "phpdug", "php expert", "plantar fasciitis", "plastic", "platinum", "plumbing", 
-		"political", "politic", "porn", "porno", "pornographic", "pornography", "porntube", "power kite", "premium", "prepaid", "prescription", "previous", "primary", "promo code", "promotion", "propecia", 
-		"property", "prostitute", "protein", "proxy", "psychic", "pussy", "racing", "ranking", "rapes", "raping", "rapist", "redeem", "release", "removal", "renovating", "renovation", "rent a car", "rental", 
-		"repair", "reparatii", "repellent", "replica", "restoration", "restore", "revatio", "reviews", "rhinoplasty", "rimonabant", "ripped", "router", "search engine", "search marketing", "secondary", "secret", 
-		"sem", "seo", "seminar", "septum", "services", "sex", "sex drive", "sex tape", "sexe", "sexual", "sexual performance", "sexual services", "sexy", "shampoo", "shipping", "short-term loan", "sildenafil", 
-		"social", "social bookmark", "social media", "social poster", "social submitter", "software", "soma", "staxyn", "stendra", "steroid", "streaming", "student loan", "submitter", "sunglasses", "supplement", 
-		"surgeons", "surgery", "survey", "sweating", "tablet", "tactic", "tadalafil", "tanning", "technology", "template", "testosterone", "therapy", "title", "trackback", "tractor", "trading", "tramadol", 
-		"travel", "treatment", "turbo tax", "twitter", "unblocked", "unique", "united states", "unlimited", "unlock", "vagina", "vaginal", "valium", "vardenafil", "ventilation", "viagra", "video", "videography", 
-		"vigara", "vigrx", "visit now", "voucher", "wayfarer", "webmaster", "web page", "web site", "weight loss", "wholesale", "xanax", "xxx", "youtube", "zimulti", "zithromax", "zoekmachine optimalisatie", 
-		);
+	$blacklist_keyphrases = spamshield_get_anchortxt_blacklist();
 	$blacklist_keyphrases_lite = array( 
 		// Use this for content link anchor text, not author names
-		"accident lawyer", "accutane", "acomplia", "adipex", "alprostadil", "amature movie", "amature video", "attorney", "avanafil", "bankruptcy", "bestiality", "betting", "bisexual", "blackjack", "blow job", "build link", "build muscle", "buy pill", "caffeine", "call girl", "cambogia", "cannabis", "cash advance", "casinos", "celebrity movie", "celebrity video", "cialis", "clitoris", "clonazepam", "comment poster", "comment submitter", "consolidate debt", "consolidation debt", "consolidation loan", "cosmetic surgeon", "cosmetic surgery", "credit card", "cum", "cum shot", "cumshot", "dapoxetine", "debt consolidation", "desnuda", "diet pill", "diets", "dildo", "drug rehab", "dui lawyer", "dysfunction", "earn money", "ejaculate", "enhancement", "enlargement", "ephedra", "ephedrine", "erectile", "erection", "erotic", "eroticism", "escort service", "financial", "foreclosure", "forex", "formula t10", "fuck", "fuckbuddy", "fuckin", "gambling", "gambling online", "garcinia", "garcinia cambogia", "hentai", "herbalife", "heterosexual", "homeopathic", "homosexual", "hormone", "incest", "india outsource", "inhibitor pde5", "injury lawyer", "keratin", "klonopin", "levitra", "levtira", "libido", "link builder", "link building", "loan payday", "loan student", "loan title", "logo design", "lose weight", "marijuana", "massage", "medical", "medication", "muscle build", "muscle builder", "muscle ripped", "naked", "nude", "online consultant", "online consulting", "online design", "online developer", "online development", "online hosting", "online gambling", "online marketer", "online marketing", "online optimization", "online rank", "online ranking", "online template", "opiate", "orgasm", "outsource india", "payday", "payday loan", "pde5 inhibitor", "penis", "pharmacy", "phentermine", "php expert", "plantar fasciitis", "plastic surgeon", "plastic surgery", "porn", "porno", "pornographic", "pornography", "porntube", "prescription", "priligy", "propecia", "prostitute", "pussy", "rapes", "raping", "rapist", "rhinoplasty", "rimonabant", "ripped muscle", "rivotril", "search engine", "search engine consulting", "search engine consultant", "search engine marketer", "search engine marketing", "search engine optimization", "search engine optimizer", "search engine rank", "search engine ranking", "search consultant", "search consulting", "search marketer", "search marketing", "search optimization", "search optimizer", "search rank", "search ranking", "sem", "seo", "sex", "sex chat", "sex drive", "sexe", "sex movie", "sex tape", "sex video", "sexual", "sexual performance", "sexual service", "sexy", "short term loan", "sildenafil", "social bookmark", "social media consulting", "social media marketing", "social media optimization", "social poster", "social submitter", "soma", "staxyn", "stendra", "steroid", "student loan", "supplement", "sweating", "tadalafil", "testosterone", "title loan", "trackback", "tramadol", "treatment", "vagina", "vaginal", "valium", "vardenafil", "viagra", "vigara", "vigrx", "webmaster", "weight loss", "xanax", "xxx", "zimulti", "zithromax", "zoekmachine optimalisatie",
+		"accident lawyer", "accutane", "acomplia", "adipex", "alprostadil", "amature movie", "amature video", "attorney", "avanafil", "bankruptcy", "bestiality", "betting", "bisexual", "blackjack", "blow job", 
+		"build link", "build muscle", "buy pill", "caffeine", "call girl", "cambogia", "cannabis", "cash advance", "casinos", "celebrity movie", "celebrity video", "cialis", "clitoris", "clonazepam", 
+		"comment poster", "comment submitter", "consolidate debt", "consolidation debt", "consolidation loan", "cosmetic surgeon", "cosmetic surgery", "credit card", "cum", "cum shot", "cumshot", "dapoxetine", 
+		"debt consolidation", "desnuda", "diet pill", "diets", "dildo", "drug rehab", "dui lawyer", "dysfunction", "earn money", "ejaculate", "enhancement", "enlargement", "ephedra", "ephedrine", "erectile", 
+		"erection", "erotic", "eroticism", "escort service", "financial", "foreclosure", "forex", "formula t10", "fuck", "fuckbuddy", "fuckin", "gambling", "gambling online", "garcinia", "garcinia cambogia", 
+		"hentai", "herbalife", "heterosexual", "homeopathic", "homosexual", "hormone", "incest", "india outsource", "inhibitor pde5", "injury lawyer", "keratin", "klonopin", "levitra", "levtira", "libido", 
+		"link builder", "link building", "loan payday", "loan student", "loan title", "logo design", "lose weight", "marijuana", "massage", "medical", "medication", "muscle build", "muscle builder", 
+		"muscle ripped", "naked", "nude", "online consultant", "online consulting", "online design", "online developer", "online development", "online hosting", "online gambling", "online marketer", 
+		"online marketing", "online optimization", "online rank", "online ranking", "online template", "opiate", "orgasm", "outsource india", "payday", "payday loan", "pde5 inhibitor", "penis", "pharmacy", 
+		"phentermine", "php expert", "plantar fasciitis", "plastic surgeon", "plastic surgery", "porn", "porno", "pornographic", "pornography", "porntube", "prescription", "priligy", "propecia", "prostitute", 
+		"pussy", "rapes", "raping", "rapist", "rhinoplasty", "rimonabant", "ripped muscle", "rivotril", "search engine", "search engine consulting", "search engine consultant", "search engine marketer", 
+		"search engine marketing", "search engine optimization", "search engine optimizer", "search engine rank", "search engine ranking", "search consultant", "search consulting", "search marketer", 
+		"search marketing", "search optimization", "search optimizer", "search rank", "search ranking", "sem", "seo", "sex", "sex chat", "sex drive", "sexe", "sex movie", "sex tape", "sex video", "sexual", 
+		"sexual performance", "sexual service", "sexy", "short term loan", "sildenafil", "social bookmark", "social media consulting", "social media marketing", "social media optimization", "social poster", 
+		"social submitter", "soma", "spence diamond", "staxyn", "stendra", "steroid", "student loan", "supplement", "sweating", "tadalafil", "testosterone", "title loan", "trackback", "tramadol", "treatment", 
+		"vagina", "vaginal", "valium", "vardenafil", "viagra", "vigara", "vigrx", "webmaster", "weight loss", "xanax", "xxx", "zimulti", "zithromax", "zoekmachine optimalisatie", 
 		);
 	if ( !empty( $get_list_arr ) ) { 
 		if ( $haystack_type == 'content' ) { return $blacklist_keyphrases_lite; }
@@ -2630,18 +2625,18 @@ function spamshield_regex_alpha_replace( $string ) {
 	//$tmp_string = spamshield_preg_quote( $string );
 	$tmp_string = strtolower( trim( $string ) );
 	
-	$input = array(
+	$input = array( // 24
 		"~(^|[\s\.])(online|internet|web(\s*(site|page))?)\s*gambling($|[\s])~i", "~(^|[\s\.])gambling\s*(online|internet|web(\s*(site|page))?)($|[\s])~i",
 		"~(?!^online|internet|web(\s*(site|page))?$)(^|[\s\.])(online|internet|web(\s*(site|page))?)($|[\s])~i", "~(?!^india|china|russia|ukraine$)(^|[\s\.])(india|china|russia|ukraine)($|[\s])~i",
-		"~(?!^offshore|outsource|data\s+entry$)(^|[\s\.])(offshore|outsource|data\s+entry)($|[\s])~i", "~ph~i",	"~(^|[\s\.])porn~i", "~al($|[\s])~i", "~ck($|[\s])~i", "~te($|[\s])~i", "~(?!te$)e($|[\s])~i",
-		"~er($|[\s])~i", "~ey($|[\s])~i", "~ic($|[\s])~i", "~ign($|[\s])~i", "~iou?r($|[\s])~i", "~ism($|[\s])~i", "~ous($|[\s])~i", "~ss($|[\s])~i", "~tion($|[\s])~i", "~y($|[\s])~i", 
-		"~([abcdghklmnoprtw])($|[\s])~i",
+		"~(?!^offshore|outsource|data\s+entry$)(^|[\s\.])(offshore|outsource|data\s+entry)($|[\s])~i", "~ph~i",	"~(^|[\s\.])porn~i", "~ual($|[\s])~i", "~al($|[\s])~i", "~ck($|[\s])~i", 
+		"~(ct|x)ion($|[\s])~i", "~te($|[\s])~i", "~(?!te$)e($|[\s])~i", "~er($|[\s])~i", "~ey($|[\s])~i", "~ic($|[\s])~i", "~ign($|[\s])~i", "~iou?r($|[\s])~i", "~ism($|[\s])~i", "~ous($|[\s])~i", 
+		"~ss($|[\s])~i", "~tion($|[\s])~i", "~y($|[\s])~i", "~([abcdghklmnoprtw])($|[\s])~i",
 		);
-	$output = array(
+	$output = array( // 24
 		" (online|internet|web( (site|page))?)s? (bet(ting|s)?|blackjack|casinos?|gambl(e|ing)|poker) ", " (bet(ting|s)?|blackjack|casinos?|gambl(e|ing)|poker) (online|internet|web( (site|page))?)s? ",
-		" (online|internet|web( (site|page))?)s? ", " (india|china|russia|ukraine) ", " (offshor(e(d|r|s|n|ly)?|ing)s?|outsourc(e(d|r|s|n|ly)?|ing)s?|data entry) ", "(ph|f)", "p(or|ro)n", "al(ly|s)? ",
-		"ck(e(d|r)?|ing)?s? ", "t(e(d|r|s|n|ly)?|ing|ion)?s? ", "(e(d|r|s|n|ly)?|ing|ation)s? ", "(er|ing)s? ", "eys? ", "i(ck?|que)(s|ly)? ", "ign(e(d|r))?s? ", "iou?rs? ", "is(m|t) ", "ous(ly)? ", 
-		"ss(es)? ", "(t|c)ions? ", "(y|ies?) ", "$1s? ", 
+		" (online|internet|web( (site|page))?)s? ", " (india|china|russia|ukraine) ", " (offshor(e(d|r|s|n|ly)?|ing)s?|outsourc(e(d|r|s|n|ly)?|ing)s?|data entry) ", "(ph|f)", "p(or|ro)n", "u(a|e)l(ly|s)? ", 
+		"al(ly|s)? ", "ck(e(d|r)?|ing)?s? ", "(ct|cc|x)ions? ", "t(e(d|r|s|n|ly)?|ing|ion)?s? ", "(e(d|r|s|n|ly)?|ing|ation)s? ", "(er|ing)s? ", "eys? ", "i(ck?|que)(s|ly)? ", "ign(e(d|r))?s? ", "iou?rs? ", 
+		"is(m|t) ", "ous(ly)? ", "ss(es)? ", "(t|c)ions? ", "(y|ies?) ", "$1s? ", 
 		);
 	$tmp_string = preg_replace( $input, $output, $tmp_string );
 	$tmp_string = strtolower( trim( $tmp_string ) );
@@ -4302,10 +4297,10 @@ if ( !function_exists('wp_new_user_notification') ) {
 		$wpss_user_id	 		= $user->ID;
 		
 		$text .= "\r\n";
-		$text .= sprintf(__('Display Name: %s', 'wp-spamshield'), $wpss_display_name) . "\r\n\r\n";
-		$text .= sprintf(__('First Name: %s', 'wp-spamshield'), $wpss_user_firstname) . "\r\n\r\n";
-		$text .= sprintf(__('Last Name: %s', 'wp-spamshield'), $wpss_user_lastname) . "\r\n\r\n";
-		$text .= sprintf(__('User ID: %s', 'wp-spamshield'), $wpss_user_id) . "\r\n\r\n\r\n";
+		$text .= sprintf( __( 'Display Name: %s' ), $wpss_display_name ) . "\r\n\r\n";
+		$text .= sprintf( __( 'First Name: %s' ), $wpss_user_firstname ) . "\r\n\r\n";
+		$text .= sprintf( __( 'Last Name: %s' ), $wpss_user_lastname ) . "\r\n\r\n";
+		$text .= sprintf( __( 'User ID: %s' ), $wpss_user_id ) . "\r\n\r\n\r\n";
 		
 		$text = spamshield_extra_notification_data( $text );
 
@@ -4325,9 +4320,9 @@ if ( !function_exists('wp_new_user_notification') ) {
 		$wpss_user_id	 		= $user->ID;
 		
 		$text .= "\r\n\r\n";
-		$text .= sprintf(__('Display Name: %s', 'wp-spamshield'), $wpss_display_name) . "\r\n";
-		$text .= sprintf(__('First Name: %s', 'wp-spamshield'), $wpss_user_firstname) . "\r\n";
-		$text .= sprintf(__('Last Name: %s', 'wp-spamshield'), $wpss_user_lastname) . "\r\n\r\n";
+		$text .= sprintf( __( 'Display Name: %s' ), $wpss_display_name ) . "\r\n";
+		$text .= sprintf( __( 'First Name: %s' ), $wpss_user_firstname ) . "\r\n";
+		$text .= sprintf( __( 'Last Name: %s' ), $wpss_user_lastname ) . "\r\n\r\n";
 
 		return $text;
 		}
@@ -5680,9 +5675,9 @@ if (!class_exists('wpSpamShield')) {
 
 				$wpSpamShieldVerJS=' v'.WPSS_VERSION;
 				echo "\n";
-				echo '<script type="text/javascript" async defer src="'.WPSS_PLUGIN_JS_URL.'/jscripts.php"></script> '."\n";
+				echo "<script type='text/javascript' async='async' defer='defer' src='".WPSS_PLUGIN_JS_URL."/jscripts.php'></script> "."\n";
 				if ( !empty( $_SESSION['wpss_user_ip_init_'.WPSS_HASH] ) ) {
-					$_SESSION['wpss_user_ip_init_'.WPSS_HASH] 	= $_SERVER['REMOTE_ADDR'];
+					$_SESSION['wpss_user_ip_init_'.WPSS_HASH] = $_SERVER['REMOTE_ADDR'];
 					}
 				}
 			}
