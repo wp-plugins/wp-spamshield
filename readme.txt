@@ -147,6 +147,11 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.2.3, *released 06/22/14*
+
+* Fixed a compatibility issue with the CommentLuv plugin. As of this version, the two plugins are 100% compatible with each other.
+* Updated the spam filters.
+
 Version 1.2.2, *released 06/20/14*
 
 * Updated the spam filters.

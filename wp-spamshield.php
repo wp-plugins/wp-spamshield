@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature, and protection from registration spam too.
 Author: Scott Allen
-Version: 1.2.2
+Version: 1.2.3
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.2.2' );
+define( 'WPSS_VERSION', '1.2.3' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -443,6 +443,18 @@ function spamshield_get_regex_phrase( $input, $custom_delim = NULL, $flag = "N" 
 		}
 	
 	return $regex_phrase;
+	}
+
+function spamshield_is_plugin_active( $plugin_name ) {
+	// Using this because is_plugin_active() only works in Admin
+	// ex. $plugin_name = 'commentluv/commentluv.php';
+	$plugin_active_status = false;
+	if( empty( $plugin_name ) ){ return $plugin_active_status; }
+	$wpss_active_plugins = get_option( 'active_plugins' );
+	if ( in_array( $plugin_name, $wpss_active_plugins, true ) ) {
+		$plugin_active_status = true;
+		}
+	return $plugin_active_status;
 	}
 
 // Standard Functions - END
@@ -1071,6 +1083,10 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 	$wpss_comments_status_current	= $wpss_log_session_data['wpss_comments_status_current'];
 	$wpss_append_log_data			= $wpss_log_session_data['wpss_append_log_data'];
 	
+	$wpss_active_plugins_arr 		= get_option( 'active_plugins' );
+	$wpss_active_plugins			= implode( ', ', $wpss_active_plugins_arr );
+	$wpss_cl_active					= spamshield_is_plugin_active( 'commentluv/commentluv.php' );
+	
 	$comment_logging 				= $spamshield_options['comment_logging'];
 	$comment_logging_start_date 	= $spamshield_options['comment_logging_start_date'];
 	$comment_logging_all 			= $spamshield_options['comment_logging_all'];
@@ -1362,7 +1378,6 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			else { $wpss_log_data_serial_get = ''; }
 			if ( !empty( $_POST ) ) { 		$wpss_log_data_serial_post 		= serialize($_POST); }
 			else { $wpss_log_data_serial_post = ''; }
-		
 			$wpss_log_comment_data .= "-------------------------------------------------------------------------------------\n";
 			$wpss_log_comment_data .= "PHP Session ID: 	['".$wpss_session_id."']\n";
 			$wpss_log_comment_data .= "PHP Session Cookie: 	['".$wpss_session_ck."']\n";
@@ -1383,6 +1398,7 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			$wpss_log_comment_data .= '$_COOKIE'." Data:		['".$wpss_log_data_serial_cookie."']\n";
 			$wpss_log_comment_data .= '$_GET'." Data: 		['".$wpss_log_data_serial_get."']\n";
 			$wpss_log_comment_data .= '$_POST'." Data: 		['".$wpss_log_data_serial_post."']\n";
+			$wpss_log_comment_data .= "CL Active: 		['".$wpss_cl_active."']\n";
 			$wpss_log_comment_data .= "Extra Data: 		['".$wpss_append_log_data."']\n";
 			}
 		// New Data Section - End
@@ -1417,6 +1433,8 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 		$wpss_log_comment_data .= "Failed Test Codes: 	['".$wpss_log_comment_data_errors."']\n";
 		$wpss_log_comment_data .= "-------------------------------------------------------------------------------------\n";
 		$wpss_log_comment_data .= "Debugging Data:		['PHP MemLimit: ".WPSS_PHP_MEM_LIMIT."; WP MemLimit: ".WP_MEMORY_LIMIT."; Sessions: ".$wpss_sessions_enabled."']\n";
+		$wpss_log_comment_data .= "-------------------------------------------------------------------------------------\n";
+		$wpss_log_comment_data .= "Active Plugins:		['".$wpss_active_plugins."']\n";
 		$wpss_log_comment_data .= "-------------------------------------------------------------------------------------\n";
 		$wpss_log_comment_data .= WPSS_USER_AGENT."\n";
 		$wpss_log_comment_data .= WPSS_PHP_UNAME."\n";
@@ -2422,7 +2440,7 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 	if ( !empty( $get_pref_list_arr ) ) { return $blacklisted_email_prefixes; }
 
 	$blacklisted_email_strings = array(
-		// Redflagged strings that occur anywhere in the email address
+		// Red-flagged strings that occur anywhere in the email address
 		".seo@gmail.com",
 		);
 	if ( !empty( $get_str_list_arr ) ) { return $blacklisted_email_strings; }
@@ -2513,6 +2531,7 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 	// This list assembled based on statistical analysis of common anchor text spam keyphrases.
 	// Script creates all the necessary alphanumeric and linguistic variations to effectively test.
 	// $haystack_type can be 'author' (default) or 'content'
+	$wpss_cl_active	= spamshield_is_plugin_active( 'commentluv/commentluv.php' ); // Check if active for compatibility with CommentLuv
 	$blacklist_keyphrases = spamshield_get_anchortxt_blacklist();
 	$blacklist_keyphrases_lite = array( 
 		// Use this for content link anchor text, not author names
@@ -2533,7 +2552,10 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 		"social submitter", "soma", "spence diamond", "staxyn", "stendra", "steroid", "student loan", "supplement", "sweating", "tadalafil", "testosterone", "title loan", "trackback", "tramadol", "treatment", 
 		"vagina", "vaginal", "valium", "vardenafil", "viagra", "vigara", "vigrx", "webmaster", "weight loss", "xanax", "xxx", "zimulti", "zithromax", "zoekmachine optimalisatie", 
 		);
-	if ( !empty( $get_list_arr ) ) { 
+	if ( $haystack_type == 'author' && !empty( $wpss_cl_active ) ) {
+		$blacklist_keyphrases = $blacklist_keyphrases_lite;
+		}
+	if ( !empty( $get_list_arr ) ) {
 		if ( $haystack_type == 'content' ) { return $blacklist_keyphrases_lite; }
 		else { return $blacklist_keyphrases; }
 		}
@@ -2549,13 +2571,17 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 			}
 		// Check 2: Testing for max # words in author name, more than 7 is fail
 		$author_words = spamshield_count_words( $haystack );
-		if ( $author_words > 7 ) {
+		$word_max = 7; // Default
+		If ( !empty( $wpss_cl_active ) ) { $word_max = 10; /* CL active */ }
+		if ( $author_words > $word_max ) {
 			$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'Check 2 - Line: '.__LINE__ );
 			return $blacklist_status;
 			}
 		// Check 3: Testing for Odd Characters in author name
-		if ( preg_match( "~[\@\*]+~", $haystack ) ) {
+		$odd_char_regex = "~[\@\*]+~"; // Default
+		If ( !empty( $wpss_cl_active ) ) { $odd_char_regex = "~(\@{2,}|\*)+~"; /* CL active */ }
+		if ( preg_match( $odd_char_regex, $haystack ) ) {
 			$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'Check 3 - Line: '.__LINE__ );
 			return $blacklist_status;
@@ -2568,9 +2594,9 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 			}
 		*/
 		// Check 5: Testing for numbers ('1000') and cash references ('$5000') in author name 
-		if ( preg_match( "~(^|[\s\.])(\\$([0-9]+)|([0-9]{3,}))($|[\s])~", $haystack ) ) {
+		if ( !empty( $wpss_cl_active ) && preg_match( "~(^|[\s\.])(\\$([0-9]+)|([0-9]{3,}))($|[\s])~", $haystack ) ) {
 			$blacklist_status = true;
-			//spamshield_append_log_data( "\n".'Check 4 - Line: '.__LINE__ );
+			//spamshield_append_log_data( "\n".'Check 5 - Line: '.__LINE__ );
 			return $blacklist_status;
 			}
 		// Final Check: The Blacklist
