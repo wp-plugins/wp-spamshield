@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature, and protection from registration spam too.
 Author: Scott Allen
-Version: 1.2.3
+Version: 1.2.4
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die('ERROR: This plugin requires WordPress and will not function if called directly.');
 	}
 
-define( 'WPSS_VERSION', '1.2.3' );
+define( 'WPSS_VERSION', '1.2.4' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -1497,7 +1497,7 @@ function spamshield_comment_form_addendum() {
 	$wpss_js_val 			= $wpss_key_values['wpss_js_val'];
 
 	?>
-	<script async='async' defer='defer' type='text/javascript'>
+	<script type='text/javascript'>
 	// <![CDATA[
 	ref2xJS = escape( document[ 'referrer' ] );
 	document.write("<input type='hidden' name='ref2xJS' value='"+ref2xJS+"'>");
@@ -5701,7 +5701,7 @@ if (!class_exists('wpSpamShield')) {
 
 				$wpSpamShieldVerJS=' v'.WPSS_VERSION;
 				echo "\n";
-				echo "<script type='text/javascript' async='async' defer='defer' src='".WPSS_PLUGIN_JS_URL."/jscripts.php'></script> "."\n";
+				echo "<script type='text/javascript' src='".WPSS_PLUGIN_JS_URL."/jscripts.php'></script> "."\n";
 				if ( !empty( $_SESSION['wpss_user_ip_init_'.WPSS_HASH] ) ) {
 					$_SESSION['wpss_user_ip_init_'.WPSS_HASH] = $_SERVER['REMOTE_ADDR'];
 					}

@@ -147,6 +147,10 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.2.4, *released 06/23/14*
+
+* Fixed a compatibility issue with Internet Explorer 9.
+
 Version 1.2.3, *released 06/22/14*
 
 * Fixed a compatibility issue with the CommentLuv plugin. As of this version, the two plugins are 100% compatible with each other.
