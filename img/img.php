@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic IMG File
-Version: 1.2.4
+Version: 1.3
 */
 
 // Security Sanitization - BEGIN
@@ -24,7 +24,7 @@ if( empty($wpss_session_test) && !headers_sent() ) {
 	$wpss_session_id = @session_id();
 	}
 
-$wpss_server_ip_nodot = preg_replace( "~\.~", "", $_SERVER['SERVER_ADDR'] );
+$wpss_server_ip_nodot = preg_replace( "~\.~", "", spamshield_get_server_addr_img() );
 if ( !defined( 'WPSS_HASH_ALT' ) ) { $wpss_alt_prefix = hash( 'md5', $wpss_server_ip_nodot ); define( 'WPSS_HASH_ALT', $wpss_alt_prefix ); }
 if ( !defined( 'WPSS_SITE_URL' ) && !empty( $_SESSION['wpss_site_url_'.WPSS_HASH_ALT] ) ) {
 	$wpss_site_url 		= $_SESSION['wpss_site_url_'.WPSS_HASH_ALT];
@@ -139,12 +139,15 @@ function spamshield_get_url_img() {
 	$url .= $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 	return $url;
 	}
-
+function spamshield_get_server_addr_img() {
+	if ( !empty( $_SERVER['SERVER_ADDR'] ) ) { $server_addr = $_SERVER['SERVER_ADDR']; } else { $server_addr = getenv('SERVER_ADDR'); }
+	return $server_addr;
+	}
 // STANDARD FUNCTIONS - END
 
 // SET COOKIE VALUES - BEGIN
 $wpss_session_id = @session_id();
-//$wpss_server_ip_nodot = preg_replace( "~\.~", "", $_SERVER['SERVER_ADDR'] );
+//$wpss_server_ip_nodot = preg_replace( "~\.~", "", spamshield_get_server_addr_img() );
 $wpss_ck_key_phrase 	= 'wpss_ckkey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
 $wpss_ck_val_phrase 	= 'wpss_ckval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
 $wpss_ck_key 			= hash( 'md5', $wpss_ck_key_phrase );
