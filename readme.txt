@@ -17,7 +17,7 @@ A robust and user-friendly anti-spam plugin that stops blog comment spam cold. E
 Comment spam has been a huge problem for bloggers since the inception of blogs, and it just doesn't seem to go away. The worst kind, and most prolific, is automated spam that comes from bots. Well, finally there is an anti-spam plugin for WordPress that provides an effective solution, without CAPTCHA's, challenge questions, or other inconvenience to site visitors. **WP-SpamShield eliminates automated blog comment spam from bots, including trackback and pingback spam.**
 
 = New Features =
-* Internationalization available. Comes with 3 initial translations. Ready for translation into other languages. Added in Version 1.3.
+* Internationalization available. Ready for translation into other languages. Added in Version 1.3.
 * Stops User Registration Spam now! Added in Version 1.2.
 * Shortcodes for easy contact form implementation.
 * Over 10x faster! Tested and verified with benchmarking software.
@@ -148,10 +148,15 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.3.1, *released 06/28/14*
+
+* Removed the three initial machine translations based on feedback. If anyone would like to donate their talent and a small amount of time to translating, it would be much appreciated. It's not hard - just [contact me](http://www.redsandmarketing.com/plugins/wp-spamshield/support/) and I'll get you set up. I'm happy to give credit and a website link to anyone who's willing to help out.
+* Updated the spam filters.
+
 Version 1.3, *released 06/27/14*
 
 * Prepared the plugin for internationalization, and created .pot file for translation.
-* Created three initial translations  with Google Translate and some other resources: French - fr_FR, Spanish - es_ES, and German - de_DE. I realize machine translations may not be the best, but I figured I'd at least get the ball rolling. If anyone wants to donate their talent and a small amount of time to translating, it would be much appreciated. It's not hard - just [contact me](http://www.redsandmarketing.com/plugins/wp-spamshield/support/) and I'll get you set up. It really doesn't take very long for each language/localization. I'm happy to give credit and a website link to anyone who's willing to help out.
+* Created three initial translations with Google Translate and some other resources: French (fr_FR), Spanish (es_ES), and German (de_DE). I realize machine translations may not be the best, but I figured I'd at least get the ball rolling.
 * Removed documentation from settings page, since the same info is provided on the plugin homepage (in greater detail). The "Quick Navigation - Contents" is still there, it just points to the plugin homepage now. All the info is still available, it just makes it a bit more efficient if I only have to update documentation in one place. Side benefit is that it slims down the plugin file size a little bit.
 * Updated the spam filters.
 
