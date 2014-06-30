@@ -148,6 +148,11 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.3.2, *released 06/30/14*
+
+* Added German Translation (de_DE). Thank you to Chris Krzikalla for doing the German translation.
+* Updated the spam filters.
+
 Version 1.3.1, *released 06/28/14*
 
 * Removed the three initial machine translations based on feedback. If anyone would like to donate their talent and a small amount of time to translating, it would be much appreciated. It's not hard - just [contact me](http://www.redsandmarketing.com/plugins/wp-spamshield/support/) and I'll get you set up. I'm happy to give credit and a website link to anyone who's willing to help out.

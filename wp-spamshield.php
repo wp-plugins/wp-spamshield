@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature, and protection from registration spam too.
 Author: Scott Allen
-Version: 1.3.1
+Version: 1.3.2
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.3.1' );
+define( 'WPSS_VERSION', '1.3.2' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -491,9 +491,16 @@ function spamshield_doc_txt() {
 	return $doc_txt;
 	}
 
-function spamshield_is_lang_en_us() {
-	// Test if site is set to use English (US) - the default - or another language
-	if ( defined('WPLANG') && !preg_match( "~^(en(_us)?)?$~i", WPLANG ) ) { $lang_en_us = false; } else { $lang_en_us = true; }
+function spamshield_is_lang_en_us( $strict = true ) {
+	// Test if site is set to use English (US) - the default - or another language/localization
+	if ( $strict != true ) {
+		// Not strict - English, but localized translations may be in use
+		if ( defined('WPLANG') && !preg_match( "~^(en(_[a-z]{2})?)?$~i", WPLANG ) ) { $lang_en_us = false; } else { $lang_en_us = true; }
+		}
+	else {
+		// Strict - English (US), no translation being used
+		if ( defined('WPLANG') && !preg_match( "~^(en(_us)?)?$~i", WPLANG ) ) { $lang_en_us = false; } else { $lang_en_us = true; }
+		}
 	return $lang_en_us;
 	}
 
@@ -2608,8 +2615,8 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 			return $blacklist_status;
 			}
 		*/
-		// Check 5: Testing for numbers ('1000') and cash references ('$5000') in author name 
-		if ( !empty( $wpss_cl_active ) && preg_match( "~(^|[\s\.])(\\$([0-9]+)|([0-9]{3,}))($|[\s])~", $haystack ) ) {
+		// Check 5: Testing for numbers and cash references ('1000','$5000', etc) in author name 
+		if ( empty( $wpss_cl_active ) && preg_match( "~(^|[\s\.])(\$([0-9]+)([0-9,\.]+)?|([0-9]+)([0-9,\.]{3,})|([0-9]{3,}))($|[\s])~", $haystack ) ) {
 			$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'Check 5 - Line: '.__LINE__ );
 			return $blacklist_status;
@@ -5507,6 +5514,11 @@ if (!class_exists('wpSpamShield')) {
 			<?php _e( 'Tech Support / Questions', WPSS_PLUGIN_NAME ); ?>: <a href="<?php echo WPSS_HOME_LINK; ?>support/" target="_blank" rel="external" ><?php _e( 'WP-SpamShield Support Page', WPSS_PLUGIN_NAME ); ?></a><br />
 			<?php _e( 'End Blog Spam', WPSS_PLUGIN_NAME ); ?>: <a href="<?php echo WPSS_HOME_LINK; ?>end-blog-spam/" target="_blank" rel="external" ><?php _e( 'Let Others Know About WP-SpamShield', WPSS_PLUGIN_NAME ); ?>!</a><br />
 			Twitter: <a href="http://twitter.com/WPSpamShield" target="_blank" rel="external" >@WPSpamShield</a><br />
+			<?php 
+			if ( spamshield_is_lang_en_us() ) {
+				echo 'Need WordPress Consulting? <a href="http://www.redsandmarketing.com/web-design/wordpress-consulting/" target="_blank" rel="external" >We can help.</a><br />';
+				}
+			?>
             <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="margin-top:10px;">
             <input type="hidden" name="cmd" value="_s-xclick">
             <input type="hidden" name="hosted_button_id" value="DFMTNHJEPFFUL">
