@@ -17,7 +17,7 @@ A robust and user-friendly anti-spam plugin that stops blog comment spam cold. E
 Comment spam has been a huge problem for bloggers since the inception of blogs, and it just doesn't seem to go away. The worst kind, and most prolific, is automated spam that comes from bots. Well, finally there is an anti-spam plugin for WordPress that provides an effective solution, without CAPTCHA's, challenge questions, or other inconvenience to site visitors. **WP-SpamShield eliminates automated blog comment spam from bots, including trackback and pingback spam.**
 
 = New Features =
-* Internationalization and localization available. Ready for translation into other languages. Added in Version 1.3.
+* Internationalization and localization available. Currently includes German (de_DE) translation. Ready for translation into other languages. Added in Version 1.3.
 * Stops User Registration Spam now! Added in Version 1.2.
 * Shortcodes for easy contact form implementation.
 * Over 10x faster! Tested and verified with benchmarking software.
