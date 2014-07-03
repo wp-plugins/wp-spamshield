@@ -148,6 +148,11 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.3.3, *released 07/03/14*
+
+* Updated the German Translation (de_DE).
+* Updated the spam filters.
+
 Version 1.3.2, *released 06/30/14*
 
 * Added German Translation (de_DE). Thank you to Chris Krzikalla for doing the German translation.
