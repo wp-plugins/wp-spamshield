@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2014-06-29 12:06+0100\n"
+"PO-Revision-Date: 2014-07-02 16:42-0800\n"
 "Last-Translator: Christoph Krzikalla <wordpress@krzikalla.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #: wp-spamshield.php:190 wp-spamshield.php:2039 wp-spamshield.php:5473
 msgid "Your message was sent successfully. Thank you."
-msgstr "Ihre Nachricht wurde erfolgreich gesendet. Vielen Dank!"
+msgstr "Deine Nachricht wurde erfolgreich gesendet. Vielen Dank!"
 
 #: wp-spamshield.php:484
 msgid "Documentation"
@@ -228,7 +228,7 @@ msgid ""
 "please hit the back button on your browser, and try posting your comment "
 "again. (You may need to reload the page.)"
 msgstr ""
-"Bitte stelle sicher, dass JavaScript und Cookies in Ihrem Browser aktiviert "
+"Bitte stelle sicher, dass JavaScript und Cookies in deinem Browser aktiviert "
 "sind. Dann drücke den Zurück Button deines Browsers, und versuche, deinen "
 "Kommentar noch einmal zu senden. (Eventuell musst du die Seite neu laden.)"
 
@@ -298,9 +298,9 @@ msgid ""
 "If you are a logged in user, and you are seeing this message repeatedly, "
 "then you may need to check your registered user information for spam data."
 msgstr ""
-"Wenn du ein angemeldeter Benutzer bist, und wiederholt diese Nachricht "
-"siehst, dann solltest du deine Rgistrierungsinformationen nach Spam-Daten "
-"durchsuchen ."
+"Wenn du ein angemeldeter Benutzer bist und wiederholt diese Nachricht "
+"siehst, dann solltest du deine Registrierungsinformationen nach Spam-Daten "
+"durchsuchen."
 
 #: wp-spamshield.php:3082
 msgid "Your comment was too short. Please try to say something useful."
@@ -930,7 +930,7 @@ msgstr "Wordpress Anti-Spam"
 
 #: wp-spamshield.php:5586 wp-spamshield.php:5587 wp-spamshield.php:5588
 msgid "Spam Blocked by WP-SpamShield"
-msgstr "Spam durch die WP-SpamShield blockiert"
+msgstr "Spam wird durch WP-SpamShield blockiert"
 
 #: wp-spamshield.php:5587
 msgid "WordPress Spam Plugin"
@@ -974,11 +974,11 @@ msgstr "WP-SpamShield Wordpress Anti-Spam-Plugin"
 
 #: wp-spamshield.php:5625 wp-spamshield.php:5626
 msgid "WordPress Anti-Spam by WP-SpamShield"
-msgstr "Wordpress Anti-Spam durch die WP-SpamShield"
+msgstr "Wordpress Anti-Spam durch WP-SpamShield"
 
 #: wp-spamshield.php:5627
 msgid "WordPress Anti Spam by WP-SpamShield"
-msgstr "Wordpress Anti-Spam durch die WP-SpamShield"
+msgstr "Wordpress Anti-Spam durch WP-SpamShield"
 
 #: wp-spamshield.php:5627
 msgid "WordPress Anti Spam"
@@ -1022,11 +1022,11 @@ msgstr "Kommentare geschützt durch WP-SpamShield für Wordpress"
 
 #: wp-spamshield.php:5632
 msgid "WP-SpamShield for WordPress"
-msgstr "WP-SpamShield für Wordpress"
+msgstr "WP-SpamShield für WordPress"
 
 #: wp-spamshield.php:5633
 msgid "Spam Blocking by WP-SpamShield"
-msgstr "Spam-Block durch die WP-SpamShield"
+msgstr "Spam-Block durch WP-SpamShield"
 
 #: wp-spamshield.php:5633
 msgid "Spam Blocking"
@@ -1042,7 +1042,7 @@ msgstr "Anti-Spam"
 
 #: wp-spamshield.php:5635
 msgid "Comment Spam Blocking by WP-SpamShield"
-msgstr "Kommentar-Spam geblockt durch die WP-Spamshield"
+msgstr "Kommentar-Spam geblockt durch WP-Spamshield"
 
 #: wp-spamshield.php:5635
 msgid "Comment Spam Blocking"
