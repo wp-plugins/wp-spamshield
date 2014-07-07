@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature, and protection from registration spam too.
 Author: Scott Allen
-Version: 1.3.3
+Version: 1.3.4
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.3.3' );
+define( 'WPSS_VERSION', '1.3.4' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -425,7 +425,7 @@ function spamshield_get_regex_phrase( $input, $custom_delim = NULL, $flag = "N" 
 		"authorkw"		=> "(^|\s+)(X)($|\s+)",
 		"atxtwrap"		=> "(<\s*a\s+[a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*\s*href|\[(url|link))\s*\=\s*['\"]?\s*(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*['\"]?\s*[a-z0-9\-_\.\?\='\"\:;\(\)\{\}\s]*\s*(>|\])([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*\s+)?(X)([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*\s+)?(<|\[)\s*\/\s*a\s*(>|(url|link)\])",
 		// REFERENCE: Parse full html links with this:
-		// $parse_links_regex = "~(<\s*a\s+[a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*\s*href|\[(url|link))\s*\=\s*['\"]?\s*(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*['\"]?\s*[a-z0-9\-_\.\?\='\"\:;\(\)\{\}\s]*\s*(>|\])([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*)(<|\[)\s*\/\s*a\s*(>|(url|link)\])~i";
+		// $parse_links_regex = "~(<\s*a\s+[a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*\s*href|\[(url|link))\s*\=\s*['\"]?\s*(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*['\"]?\s*[a-z0-9\-_\.\?\='\"\:;\(\)\{\}\s]*\s*(>|\])([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*)(<|\[)\s*\/\s*a\s*(>|(url|link)\])~iu";
 		"linkwrap"		=> "(<\s*a\s+([a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*)\s*href|\[(url|link))\s*\=\s*(['\"])?\s*https?\:/+((ww[w0-9]|m)\.)?(X)/?([a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]*)(['\"])?(>|\])",
 		"httplinkwrap"	=> "(^|\b)https?\:/+((ww[w0-9]|m)\.)?(X)/?([a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]*)",
 		//REFERENCE: Parse stripped http links with this:
@@ -444,7 +444,7 @@ function spamshield_get_regex_phrase( $input, $custom_delim = NULL, $flag = "N" 
 		$regex_phrase_pre_str 	= implode( "|", $regex_phrase_pre_arr );
 		$regex_phrase_str 		= preg_replace( "~X~", $regex_phrase_pre_str, $regex_flag );
 		if ( !empty( $custom_delim ) ) {  $delim = $custom_delim; } else { $delim = "~"; }
-		$regex_phrase = $delim.$regex_phrase_str.$delim."iu";
+		$regex_phrase = $delim.$regex_phrase_str.$delim."iu"; // UTF-8 enabled
 		}
 	elseif ( is_string( $input ) ) {
 		$val = $input;
@@ -453,7 +453,7 @@ function spamshield_get_regex_phrase( $input, $custom_delim = NULL, $flag = "N" 
 		if ( $flag == "rgx_str" || $flag == "authorkw" || $flag == "atxtwrap" ) { $val_reg_pre = $val; } // Variable must come in prepped for regex (preg_quoted)
 		$regex_phrase_str 		= preg_replace( "~X~", $val_reg_pre, $regex_flag );
 		if ( !empty( $custom_delim ) ) {  $delim = $custom_delim; } else { $delim = "~"; }
-		$regex_phrase = $delim.$regex_phrase_str.$delim."iu";	
+		$regex_phrase = $delim.$regex_phrase_str.$delim."iu"; // UTF-8 enabled
 		}
 	else {
 		return $input;
@@ -484,10 +484,6 @@ function spamshield_error_txt( $case = 'UC' ) {
 
 function spamshield_doc_txt() {
 	$doc_txt = __( 'Documentation', WPSS_PLUGIN_NAME );
-	/*
-	$doc_txt_raw = __( 'Documentation:' );
-	$doc_txt = str_replace( ':', '', $doc_txt_raw );
-	*/
 	return $doc_txt;
 	}
 
@@ -1447,7 +1443,7 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			$wpss_log_comment_data .= "Entries Accepted: 	['".$wpss_comments_accepted."']\n";
 			$wpss_log_comment_data .= "Entries Denied: 	['".$wpss_comments_denied."']\n";
 			$wpss_log_comment_data .= "Status Before This: 	['".$wpss_comments_status_current."']\n";
-			$wpss_log_comment_data .= '$_SESSION'." Data: 	['".$wpss_log_data_serial_session."']\n";
+			//$wpss_log_comment_data .= '$_SESSION'." Data: 	['".$wpss_log_data_serial_session."']\n";
 			$wpss_log_comment_data .= '$_COOKIE'." Data:		['".$wpss_log_data_serial_cookie."']\n";
 			$wpss_log_comment_data .= '$_GET'." Data: 		['".$wpss_log_data_serial_get."']\n";
 			$wpss_log_comment_data .= '$_POST'." Data: 		['".$wpss_log_data_serial_post."']\n";
@@ -1721,19 +1717,19 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 		$form_require_phone				= $spamshield_options['form_require_phone'];
 		$form_include_company			= $spamshield_options['form_include_company'];
 		$form_require_company			= $spamshield_options['form_require_company'];
-		$FormIncludeDropDownMenu		= $spamshield_options['form_include_drop_down_menu'];
-		$FormRequireDropDownMenu		= $spamshield_options['form_require_drop_down_menu'];
-		$FormDropDownMenuTitle			= $spamshield_options['form_drop_down_menu_title'];
-		$FormDropDownMenuItem1			= $spamshield_options['form_drop_down_menu_item_1'];
-		$FormDropDownMenuItem2			= $spamshield_options['form_drop_down_menu_item_2'];
-		$FormDropDownMenuItem3			= $spamshield_options['form_drop_down_menu_item_3'];
-		$FormDropDownMenuItem4			= $spamshield_options['form_drop_down_menu_item_4'];
-		$FormDropDownMenuItem5			= $spamshield_options['form_drop_down_menu_item_5'];
-		$FormDropDownMenuItem6			= $spamshield_options['form_drop_down_menu_item_6'];
-		$FormDropDownMenuItem7			= $spamshield_options['form_drop_down_menu_item_7'];
-		$FormDropDownMenuItem8			= $spamshield_options['form_drop_down_menu_item_8'];
-		$FormDropDownMenuItem9			= $spamshield_options['form_drop_down_menu_item_9'];
-		$FormDropDownMenuItem10			= $spamshield_options['form_drop_down_menu_item_10'];
+		$form_include_drop_down_menu	= $spamshield_options['form_include_drop_down_menu'];
+		$form_require_drop_down_menu	= $spamshield_options['form_require_drop_down_menu'];
+		$form_drop_down_menu_title		= $spamshield_options['form_drop_down_menu_title'];
+		$form_drop_down_menu_item_1		= $spamshield_options['form_drop_down_menu_item_1'];
+		$form_drop_down_menu_item_2		= $spamshield_options['form_drop_down_menu_item_2'];
+		$form_drop_down_menu_item_3		= $spamshield_options['form_drop_down_menu_item_3'];
+		$form_drop_down_menu_item_4		= $spamshield_options['form_drop_down_menu_item_4'];
+		$form_drop_down_menu_item_5		= $spamshield_options['form_drop_down_menu_item_5'];
+		$form_drop_down_menu_item_6		= $spamshield_options['form_drop_down_menu_item_6'];
+		$form_drop_down_menu_item_7		= $spamshield_options['form_drop_down_menu_item_7'];
+		$form_drop_down_menu_item_8		= $spamshield_options['form_drop_down_menu_item_8'];
+		$form_drop_down_menu_item_9		= $spamshield_options['form_drop_down_menu_item_9'];
+		$form_drop_down_menu_item_10	= $spamshield_options['form_drop_down_menu_item_10'];
 		$FormMessageWidth				= $spamshield_options['form_message_width'];
 		$FormMessageHeight				= $spamshield_options['form_message_height'];
 		$FormMessageMinLength			= $spamshield_options['form_message_min_length'];
@@ -1909,7 +1905,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 					}
 				}
 				
-			if ( empty( $wpss_contact_name ) || empty( $wpss_contact_email ) || empty( $wpss_contact_subject ) || empty( $wpss_contact_message ) || ( !empty( $form_include_website ) && !empty( $form_require_website ) && empty( $wpss_contact_website ) ) || ( !empty( $form_include_phone ) && !empty( $form_require_phone ) && empty( $wpss_contact_phone ) ) || ( !empty( $form_include_company ) && !empty( $form_require_company ) && empty( $wpss_contact_company ) ) || ( !empty( $FormIncludeDropDownMenu ) && !empty( $FormRequireDropDownMenu ) && empty( $wpss_contact_drop_down_menu ) ) ) {
+			if ( empty( $wpss_contact_name ) || empty( $wpss_contact_email ) || empty( $wpss_contact_subject ) || empty( $wpss_contact_message ) || ( !empty( $form_include_website ) && !empty( $form_require_website ) && empty( $wpss_contact_website ) ) || ( !empty( $form_include_phone ) && !empty( $form_require_phone ) && empty( $wpss_contact_phone ) ) || ( !empty( $form_include_company ) && !empty( $form_require_company ) && empty( $wpss_contact_company ) ) || ( !empty( $form_include_drop_down_menu ) && !empty( $form_require_drop_down_menu ) && empty( $wpss_contact_drop_down_menu ) ) ) {
 				$blank_field=1;
 				$spamshield_error_code .= ' CF-BLANKFIELD';
 				$contact_response_status_message_addendum .= '&bull; ' . __( 'At least one required field was left blank.', WPSS_PLUGIN_NAME ) . '<br />&nbsp;<br />';
@@ -1989,8 +1985,8 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			if ( !empty( $form_include_website ) ) {
 				$wpss_contact_form_msg_1 .= __( 'Website' ) . ': '.$wpss_contact_website_lc."\n";
 				}
-			if ( !empty( $FormIncludeDropDownMenu ) ) {
-				$wpss_contact_form_msg_1 .= $FormDropDownMenuTitle.": ".$wpss_contact_drop_down_menu."\n";
+			if ( !empty( $form_include_drop_down_menu ) ) {
+				$wpss_contact_form_msg_1 .= $form_drop_down_menu_title.": ".$wpss_contact_drop_down_menu."\n";
 				}
 			
 			$wpss_contact_form_msg_2 .= "\n";
@@ -2154,44 +2150,44 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_company" name="wpss_contact_company" value="" size="40" /> </label></p>'."\n";
 				}
 
-			if ( !empty( $FormIncludeDropDownMenu ) && !empty( $FormDropDownMenuTitle ) && !empty( $FormDropDownMenuItem1 ) && !empty( $FormDropDownMenuItem2 ) ) {
-				$spamshield_contact_form_content .= '<p><label><strong>'.$FormDropDownMenuTitle.'</strong> ';
-				if ( !empty( $FormRequireDropDownMenu ) ) { 
+			if ( !empty( $form_include_drop_down_menu ) && !empty( $form_drop_down_menu_title ) && !empty( $form_drop_down_menu_item_1 ) && !empty( $form_drop_down_menu_item_2 ) ) {
+				$spamshield_contact_form_content .= '<p><label><strong>'.$form_drop_down_menu_title.'</strong> ';
+				if ( !empty( $form_require_drop_down_menu ) ) { 
 					$spamshield_contact_form_content .= '*'; 
 					}
 				$spamshield_contact_form_content .= '<br />'."\n";
 				$spamshield_contact_form_content .= '<select id="wpss_contact_drop_down_menu" name="wpss_contact_drop_down_menu" > '."\n";
 				$spamshield_contact_form_content .= '<option value="" selected="selected">' . __( 'Select' ) . '</option> '."\n";
 				$spamshield_contact_form_content .= '<option value="">--------------------------</option> '."\n";
-				if ( !empty( $FormDropDownMenuItem1 ) ) {
-					$spamshield_contact_form_content .= '<option value="'.$FormDropDownMenuItem1.'">'.$FormDropDownMenuItem1.'</option> '."\n";
+				if ( !empty( $form_drop_down_menu_item_1 ) ) {
+					$spamshield_contact_form_content .= '<option value="'.$form_drop_down_menu_item_1.'">'.$form_drop_down_menu_item_1.'</option> '."\n";
 					}
-				if ( !empty( $FormDropDownMenuItem2 ) ) {
-					$spamshield_contact_form_content .= '<option value="'.$FormDropDownMenuItem2.'">'.$FormDropDownMenuItem2.'</option> '."\n";
+				if ( !empty( $form_drop_down_menu_item_2 ) ) {
+					$spamshield_contact_form_content .= '<option value="'.$form_drop_down_menu_item_2.'">'.$form_drop_down_menu_item_2.'</option> '."\n";
 					}
-				if ( !empty( $FormDropDownMenuItem3 ) ) {
-					$spamshield_contact_form_content .= '<option value="'.$FormDropDownMenuItem3.'">'.$FormDropDownMenuItem3.'</option> '."\n";
+				if ( !empty( $form_drop_down_menu_item_3 ) ) {
+					$spamshield_contact_form_content .= '<option value="'.$form_drop_down_menu_item_3.'">'.$form_drop_down_menu_item_3.'</option> '."\n";
 					}
-				if ( !empty( $FormDropDownMenuItem4 ) ) {
-					$spamshield_contact_form_content .= '<option value="'.$FormDropDownMenuItem4.'">'.$FormDropDownMenuItem4.'</option> '."\n";
+				if ( !empty( $form_drop_down_menu_item_4 ) ) {
+					$spamshield_contact_form_content .= '<option value="'.$form_drop_down_menu_item_4.'">'.$form_drop_down_menu_item_4.'</option> '."\n";
 					}
-				if ( !empty( $FormDropDownMenuItem5 ) ) {
-					$spamshield_contact_form_content .= '<option value="'.$FormDropDownMenuItem5.'">'.$FormDropDownMenuItem5.'</option> '."\n";
+				if ( !empty( $form_drop_down_menu_item_5 ) ) {
+					$spamshield_contact_form_content .= '<option value="'.$form_drop_down_menu_item_5.'">'.$form_drop_down_menu_item_5.'</option> '."\n";
 					}
-				if ( !empty( $FormDropDownMenuItem6 ) ) {
-					$spamshield_contact_form_content .= '<option value="'.$FormDropDownMenuItem6.'">'.$FormDropDownMenuItem6.'</option> '."\n";
+				if ( !empty( $form_drop_down_menu_item_6 ) ) {
+					$spamshield_contact_form_content .= '<option value="'.$form_drop_down_menu_item_6.'">'.$form_drop_down_menu_item_6.'</option> '."\n";
 					}
-				if ( !empty( $FormDropDownMenuItem7 ) ) {
-					$spamshield_contact_form_content .= '<option value="'.$FormDropDownMenuItem7.'">'.$FormDropDownMenuItem7.'</option> '."\n";
+				if ( !empty( $form_drop_down_menu_item_7 ) ) {
+					$spamshield_contact_form_content .= '<option value="'.$form_drop_down_menu_item_7.'">'.$form_drop_down_menu_item_7.'</option> '."\n";
 					}
-				if ( !empty( $FormDropDownMenuItem8 ) ) {
-					$spamshield_contact_form_content .= '<option value="'.$FormDropDownMenuItem8.'">'.$FormDropDownMenuItem8.'</option> '."\n";
+				if ( !empty( $form_drop_down_menu_item_8 ) ) {
+					$spamshield_contact_form_content .= '<option value="'.$form_drop_down_menu_item_8.'">'.$form_drop_down_menu_item_8.'</option> '."\n";
 					}
-				if ( !empty( $FormDropDownMenuItem9 ) ) {
-					$spamshield_contact_form_content .= '<option value="'.$FormDropDownMenuItem9.'">'.$FormDropDownMenuItem9.'</option> '."\n";
+				if ( !empty( $form_drop_down_menu_item_9 ) ) {
+					$spamshield_contact_form_content .= '<option value="'.$form_drop_down_menu_item_9.'">'.$form_drop_down_menu_item_9.'</option> '."\n";
 					}
-				if ( !empty( $FormDropDownMenuItem10 ) ) {
-					$spamshield_contact_form_content .= '<option value="'.$FormDropDownMenuItem10.'">'.$FormDropDownMenuItem10.'</option> '."\n";
+				if ( !empty( $form_drop_down_menu_item_10 ) ) {
+					$spamshield_contact_form_content .= '<option value="'.$form_drop_down_menu_item_10.'">'.$form_drop_down_menu_item_10.'</option> '."\n";
 					}
 				$spamshield_contact_form_content .= '</select> '."\n";
 				$spamshield_contact_form_content .= '</label></p>'."\n";
@@ -2505,8 +2501,8 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
 		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
 		// SEO Spammers
-		"agenciade.serviciosdeseo.com", "click4pardeep.com", "dreamforweb.com", "hhmla.ca", "imediasolutions.biz",  "quickcontent.net", "ranksindia.net", "ranksdigitalmedia.com", "searchmediapromotion.in", "semmiami.com", 
-		"seo-services-new-york.weebly.com", "seoindia.co.in", "seooptimizationtipz.com", "seoservicesnewyork.org", "serviciosdeseo.com", "triveniinfotech.com", "webpromotioner.com", 
+		"agenciade.serviciosdeseo.com", "click4pardeep.com", "dreamforweb.com", "hhmla.ca", "imediasolutions.biz",  "quickcontent.net", "ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "searchmediapromotion.in", 
+		"semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", "seooptimizationtipz.com", "seoservicesnewyork.org", "serviciosdeseo.com", "triveniinfotech.com", "webpromotioner.com", 
 		// WebDev Spammers
 		"manektech.com", "retailon.co", "retailon.net", "rizecorp.com", "rizedigital.com", "webdesigncompany.org", 
 		// Add more here
@@ -5370,78 +5366,78 @@ if (!class_exists('wpSpamShield')) {
 					</li>					
 					<li>
 					<label for="form_drop_down_menu_title">
-						<?php $FormDropDownMenuTitle = trim(stripslashes($spamshield_options['form_drop_down_menu_title'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_title" name="form_drop_down_menu_title" value="<?php if ( !empty( $FormDropDownMenuTitle ) ) { echo $FormDropDownMenuTitle; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_title = trim(stripslashes($spamshield_options['form_drop_down_menu_title'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_title" name="form_drop_down_menu_title" value="<?php if ( !empty( $form_drop_down_menu_title ) ) { echo $form_drop_down_menu_title; } else { echo '';} ?>" />
 						<strong><?php _e( 'Title of drop-down select menu. (Menu won\'t be shown if empty.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_drop_down_menu_item_1">
-						<?php $FormDropDownMenuItem1 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_1'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_item_1" name="form_drop_down_menu_item_1" value="<?php if ( !empty( $FormDropDownMenuItem1 ) ) { echo $FormDropDownMenuItem1; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_item_1 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_1'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_item_1" name="form_drop_down_menu_item_1" value="<?php if ( !empty( $form_drop_down_menu_item_1 ) ) { echo $form_drop_down_menu_item_1; } else { echo '';} ?>" />
 						<strong><?php _e( 'Drop-down select menu item 1. (Menu won\'t be shown if empty.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_drop_down_menu_item_2">
-						<?php $FormDropDownMenuItem2 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_2'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_item_2" name="form_drop_down_menu_item_2" value="<?php if ( !empty( $FormDropDownMenuItem2 ) ) { echo $FormDropDownMenuItem2; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_item_2 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_2'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_item_2" name="form_drop_down_menu_item_2" value="<?php if ( !empty( $form_drop_down_menu_item_2 ) ) { echo $form_drop_down_menu_item_2; } else { echo '';} ?>" />
 						<strong><?php _e( 'Drop-down select menu item 2. (Menu won\'t be shown if empty.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_drop_down_menu_item_3">
-						<?php $FormDropDownMenuItem3 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_3'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_item_3" name="form_drop_down_menu_item_3" value="<?php if ( !empty( $FormDropDownMenuItem3 ) ) { echo $FormDropDownMenuItem3; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_item_3 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_3'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_item_3" name="form_drop_down_menu_item_3" value="<?php if ( !empty( $form_drop_down_menu_item_3 ) ) { echo $form_drop_down_menu_item_3; } else { echo '';} ?>" />
 						<strong><?php _e( 'Drop-down select menu item 3. (Leave blank if not using.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_drop_down_menu_item_4">
-						<?php $FormDropDownMenuItem4 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_4'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_item_4" name="form_drop_down_menu_item_4" value="<?php if ( !empty( $FormDropDownMenuItem4 ) ) { echo $FormDropDownMenuItem4; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_item_4 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_4'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_item_4" name="form_drop_down_menu_item_4" value="<?php if ( !empty( $form_drop_down_menu_item_4 ) ) { echo $form_drop_down_menu_item_4; } else { echo '';} ?>" />
 						<strong><?php _e( 'Drop-down select menu item 4. (Leave blank if not using.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_drop_down_menu_item_5">
-						<?php $FormDropDownMenuItem5 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_5'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_item_5" name="form_drop_down_menu_item_5" value="<?php if ( !empty( $FormDropDownMenuItem5 ) ) { echo $FormDropDownMenuItem5; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_item_5 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_5'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_item_5" name="form_drop_down_menu_item_5" value="<?php if ( !empty( $form_drop_down_menu_item_5 ) ) { echo $form_drop_down_menu_item_5; } else { echo '';} ?>" />
 						<strong><?php _e( 'Drop-down select menu item 5. (Leave blank if not using.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_drop_down_menu_item_6">
-						<?php $FormDropDownMenuItem6 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_6'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_item_6" name="form_drop_down_menu_item_6" value="<?php if ( !empty( $FormDropDownMenuItem6 ) ) { echo $FormDropDownMenuItem6; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_item_6 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_6'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_item_6" name="form_drop_down_menu_item_6" value="<?php if ( !empty( $form_drop_down_menu_item_6 ) ) { echo $form_drop_down_menu_item_6; } else { echo '';} ?>" />
 						<strong><?php _e( 'Drop-down select menu item 6. (Leave blank if not using.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_drop_down_menu_item_7">
-						<?php $FormDropDownMenuItem7 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_7'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_item_7" name="form_drop_down_menu_item_7" value="<?php if ( !empty( $FormDropDownMenuItem7 ) ) { echo $FormDropDownMenuItem7; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_item_7 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_7'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_item_7" name="form_drop_down_menu_item_7" value="<?php if ( !empty( $form_drop_down_menu_item_7 ) ) { echo $form_drop_down_menu_item_7; } else { echo '';} ?>" />
 						<strong><?php _e( 'Drop-down select menu item 7. (Leave blank if not using.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_drop_down_menu_item_8">
-						<?php $FormDropDownMenuItem8 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_8'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_item_8" name="form_drop_down_menu_item_8" value="<?php if ( !empty( $FormDropDownMenuItem8 ) ) { echo $FormDropDownMenuItem8; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_item_8 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_8'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_item_8" name="form_drop_down_menu_item_8" value="<?php if ( !empty( $form_drop_down_menu_item_8 ) ) { echo $form_drop_down_menu_item_8; } else { echo '';} ?>" />
 						<strong><?php _e( 'Drop-down select menu item 8. (Leave blank if not using.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_drop_down_menu_item_9">
-						<?php $FormDropDownMenuItem9 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_9'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_item_9" name="form_drop_down_menu_item_9" value="<?php if ( !empty( $FormDropDownMenuItem9 ) ) { echo $FormDropDownMenuItem9; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_item_9 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_9'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_item_9" name="form_drop_down_menu_item_9" value="<?php if ( !empty( $form_drop_down_menu_item_9 ) ) { echo $form_drop_down_menu_item_9; } else { echo '';} ?>" />
 						<strong><?php _e( 'Drop-down select menu item 9. (Leave blank if not using.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_drop_down_menu_item_10">
-						<?php $FormDropDownMenuItem10 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_10'])); ?>
-						<input type="text" size="40" id="form_drop_down_menu_item_10" name="form_drop_down_menu_item_10" value="<?php if ( !empty( $FormDropDownMenuItem10 ) ) { echo $FormDropDownMenuItem10; } else { echo '';} ?>" />
+						<?php $form_drop_down_menu_item_10 = trim(stripslashes($spamshield_options['form_drop_down_menu_item_10'])); ?>
+						<input type="text" size="40" id="form_drop_down_menu_item_10" name="form_drop_down_menu_item_10" value="<?php if ( !empty( $form_drop_down_menu_item_10 ) ) { echo $form_drop_down_menu_item_10; } else { echo '';} ?>" />
 						<strong><?php _e( 'Drop-down select menu item 10. (Leave blank if not using.)', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
