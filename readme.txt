@@ -148,6 +148,11 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.3.5, *released 07/09/14*
+
+* Fixed a compatibility issue with the JetPack plugin.
+* Updated the spam filters.
+
 Version 1.3.4, *released 07/07/14*
 
 * Updated the spam filters.

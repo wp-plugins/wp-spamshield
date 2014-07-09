@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature, and protection from registration spam too.
 Author: Scott Allen
-Version: 1.3.4
+Version: 1.3.5
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.3.4' );
+define( 'WPSS_VERSION', '1.3.5' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '4.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -3644,8 +3644,14 @@ function spamshield_content_filter($commentdata) {
 	// TEST REFERRERS 3 - TO THE PAGE BEING COMMENTED ON
 	$test_fail = false;
 	if ( !empty( $commentdata_referrer_lc ) && $commentdata_referrer_lc != $commentdata_comment_post_url_lc && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
-		// If referrer exists, make sure referrer matches page being commented on
-		if ( strpos( $commentdata_referrer_lc, '?' ) !== false ) {
+		// If Comment Processor Referrer exists, make sure it matches page being commented on
+		// Test if JetPack Active - Added Compatibility Fix in 1.3.5
+		$wpss_jp_active	= spamshield_is_plugin_active( 'jetpack/jetpack.php' );
+		// Start Comment Processor Referrer Tests
+		if ( !empty( $wpss_jp_active ) && $commentdata_referrer_lc == 'http://jetpack.wordpress.com/jetpack-comment/' ) {
+			$test_fail = false;
+			}
+		elseif ( strpos( $commentdata_referrer_lc, '?' ) !== false ) {
 			$wpss_permalink_structure = get_option('permalink_structure');
 			//spamshield_append_log_data( "\n".'$wpss_permalink_structure:'.$wpss_permalink_structure.' Line: '.__LINE__ );
 			if ( !empty( $wpss_permalink_structure ) ) {

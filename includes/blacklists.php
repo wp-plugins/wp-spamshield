@@ -5,7 +5,7 @@ if ( !function_exists( 'add_action' ) ) {
 	}
 
 function spamshield_get_anchortxt_blacklist() {
-	$blacklist_keyphrases = array( // 563
+	$blacklist_keyphrases = array( // 565
 		"2013", "2014", "2015", "access", "accident", "account", "accountant", "accounting", "accutane", "acomplia", "action", "adipex", "administration", "advertise", "advertising", "affiliate", "african", 
 		"alabama", "alaska", "allied", "alprostadil", "amature", "android", "annual", "anonymous", "application", "arizona", "arkansas", "asphalt", "attorney", "avanafil", "average", "aviator", "balance", "bamboo", 
 		"bandage", "bankruptcy", "basement", "battery", "beginner", "behavior", "bespoke", "bestiality", "betting", "biggest", "birthday", "bisexual", "blackjack", "blogging", "blow job", "bluetooth", "boutique", 
@@ -39,8 +39,8 @@ function spamshield_get_anchortxt_blacklist() {
 		"surgery", "survey", "swatch", "sweating", "system", "tablet", "tactic", "tadalafil", "tanning", "tassel", "technology", "template", "testosterone", "therapy", "title", "trackback", "tractor", "trading", 
 		"tramadol", "transportation", "travel", "treatment", "turbo tax", "turquoise", "twitter", "tycoon", "ultimate", "unblocked", "underneath", "underwear", "unique", "united states", "university", "unlimited", 
 		"unlock", "uptown", "utility", "vagina", "vaginal", "valium", "vancouver", "vardenafil", "vehicle", "ventilation", "veterinarian", "veterinary", "viagra", "video", "videography", "vigara", "vigrx", 
-		"village", "vintage", "visit now", "volume", "voucher", "warfare", "watches", "wayfarer", "web page", "web site", "webmaster", "weight loss", "weightless", "west virginia", "wholesale", "wicked", 
-		"wisconsin", "wrestling", "writing service", "wyoming", "xanax", "xxx", "youtube", "zimulti", "zithromax", "zoekmachine optimalisatie", 
+		"village", "vintage", "visit now", "volume", "voucher", "warfare", "watches", "wayfarer", "web host", "web hosting", "web page", "web site", "webmaster", "weight loss", "weightless", "west virginia", 
+		"wholesale", "wicked", "wisconsin", "wrestling", "writing service", "wyoming", "xanax", "xxx", "youtube", "zimulti", "zithromax", "zoekmachine optimalisatie", 
 		);
 	return $blacklist_keyphrases;
 	}
