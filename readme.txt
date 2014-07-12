@@ -73,15 +73,16 @@ For more info and full documentation, visit the [WP-SpamShield homepage](http://
 == Installation ==
 
 = Installation Instructions =
-**Option 1:** Install the plugin directly through the WordPress Admin Dashboard (Recommended)
 
-1. Go to *Plugins* -> *Add New*.
+**Option 1:** Install the plugin directly through the WordPress Admin Dashboard (Recommended) 
 
-2. Type *WP-SpamShield* into the Search box, and click *Search Plugins*.
+1. Go to *Plugins* -> *Add New*. 
 
-3. When the results are displayed, click *Install Now*.
+2. Type *WP-SpamShield* into the Search box, and click *Search Plugins*. 
 
-4. When it says the plugin has successfully installed, click **Activate Plugin** to activate the plugin (or you can do this on the Plugins page).
+3. When the results are displayed, click *Install Now*. 
+
+4. When it says the plugin has successfully installed, click **Activate Plugin** to activate the plugin (or you can do this on the Plugins page). 
 
 **Option 2:** Install .zip file through WordPress Admin Dashboard
 
