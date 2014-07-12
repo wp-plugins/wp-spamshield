@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2014-07-02 16:42-0800\n"
+"PO-Revision-Date: 2014-07-12 08:41-0800\n"
 "Last-Translator: Christoph Krzikalla <wordpress@krzikalla.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -437,6 +437,15 @@ msgstr ""
 #: wp-spamshield.php:4610
 msgid "Average spam blocked daily"
 msgstr "Durchschnittliche Spam Blockierungen pro Tag"
+
+#: wp-spamshield.php:4755
+msgid ""
+"You have successfully upgraded from WP-SpamFree to WP-SpamShield. You will "
+"now experience improved security, page load speed, and spam-blocking power. "
+"All your old settings have been imported, and your contact forms will "
+"continue to work without you having to do anything else. You can safely "
+"remove the outdated WP-SpamFree plugin."
+msgstr ""
 
 #: wp-spamshield.php:4861
 msgid "Installed Correctly"
@@ -903,6 +912,12 @@ msgstr "WP-SpamShield-Support-Seite"
 #: wp-spamshield.php:5520
 msgid "End Blog Spam"
 msgstr "Blog Spam beenden"
+
+#: wp-spamshield.php:5572
+msgid ""
+"Plugin deactivated. WordPress Version %s required. Please upgrade WordPress "
+"to the latest version."
+msgstr ""
 
 #: wp-spamshield.php:5580
 msgid "SPAM BLOCKED"
