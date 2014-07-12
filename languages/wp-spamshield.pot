@@ -364,6 +364,10 @@ msgstr ""
 msgid "Average spam blocked daily"
 msgstr ""
 
+#: wp-spamshield.php:4755
+msgid "You have successfully upgraded from WP-SpamFree to WP-SpamShield. You will now experience improved security, page load speed, and spam-blocking power. All your old settings have been imported, and your contact forms will continue to work without you having to do anything else. You can safely remove the outdated WP-SpamFree plugin."
+msgstr ""
+
 #: wp-spamshield.php:4861
 msgid "Installed Correctly"
 msgstr ""
@@ -771,6 +775,10 @@ msgstr ""
 
 #: wp-spamshield.php:5520
 msgid "End Blog Spam"
+msgstr ""
+
+#: wp-spamshield.php:5572
+msgid "Plugin deactivated. WordPress Version %s required. Please upgrade WordPress to the latest version."
 msgstr ""
 
 #: wp-spamshield.php:5580

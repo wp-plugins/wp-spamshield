@@ -1,13 +1,13 @@
 === WP-SpamShield Anti-Spam ===
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
-Tags: antispam, anti-spam, comment, comments, contact, contact form, form, javascript, login, multisite, plugin, register, registration, security, signup, spam, trackback, wp-spamshield
+Tags: antispam, anti-spam, comment, comments, contact, contact form, form, forms, javascript, login, multisite, register, registration, security, signup, spam, trackback
 Requires at least: 3.0
 Tested up to: 3.9
 Stable tag: trunk
 License: GPLv2
 
-A robust and user-friendly anti-spam plugin that stops blog comment spam cold. Enjoy blogging without spam! Includes spam-blocking contact form.
+A robust and user-friendly anti-spam plugin that stops blog comment spam cold. Includes spam-blocking contact form & blocks registration spam as well.
 
 == Description ==
 
@@ -28,7 +28,7 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 2. A counter on your dashboard to keep track of all the spam it's blocking. The numbers will show how effective this plugin is.
 3. **No CAPTCHA's, challenge questions or other inconvenience to site visitors** - it works silently in the background.
 4. Includes drop-in spam-free contact form, with easy shortcode implementation. Easy to use - no configuration necessary. (But you can configure if you like.)
-5. Protects your site from user registration spam. No more automated bot signups on your site.
+5. Protects your site from user registration spam. No more automated bot signups through the login page on your site.
 6. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked comments and contact form submissions for 7 days, then turns off automatically. If you want to see what's been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
 7. No false positives due to the method of spam blocking, which leads to fewer frustrated readers, and less work for you. (If a comment gets blocked, a legit user has a chance to try again.)
 8. You won't have to waste valuable time sifting through a spam queue any more, because there won't be much there, if anything.
@@ -42,6 +42,7 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 16. Works in WordPress Multisite as well.
 17. Enhanced Comment Blacklist option. Instead of just sending comments to moderation as with WordPress's default Comment Blacklist functionality, with this turned on, anything that matches a string in the blacklist will be **completely blocked**. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.
 18. No cost, no hidden fees. **Free** for **both Commercial and Personal** use.
+19. A truly plug and play replacement and upgrade for WP-SpamFree. (A far more advanced fork of WP-SpamFree with dramatically improved page load speed, security, and spam blocking power, by its original author.) It will import your old data from WP-SpamFree automatically upon installation and activation, and features you were using on your site previously such as contact forms and spam stats will continue to work without any changes to pages, posts, or theme.
 
 = Background =
 Before I developed this plugin, our team and clients experienced the same frustration you do with comment spam on your WordPress blog. Every blog we manage had comment moderation enabled and various other anti-spam plugins installed, but we still had a ton of comments tagged as spam in the spam queue that we had to sort through. This wasted a lot of valuable time, and we all know, time is money. We needed a solution.
@@ -53,13 +54,13 @@ To further the development of this anti-spam plugin, I now study thousands and t
 = How It Works =
 Most of the spam hitting your blog originates from bots. Few bots can process JavaScript (JS). Few bots can process cookies. Fewer still, can handle both. In a nutshell, this plugin uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 99%+ of automated spam from ever getting to your site. Almost 100% of web site visitors will have these turned on by default, so this type of solution works silently in the background, with no inconveniences. There may be a few users (less than 2%) that have JavaScript and/or cookies turned off by default, but they will be prompted to simply turn those back on to post their comment. Overall, the few might be inconvenienced because they have JS and cookies turned off will be far fewer than the 100% who would be annoyed by CAPTCHA's, challenge questions, and other validation methods.
 
-Some would argue that using JS and cookies is too simplistic an approach. Traditionally, programmers prefer using some type of basic AI to fight bots by trying to figure out if a comment is spam. While that isn't a bad idea, when used alone this method falls short because no machine AI can ever accurately judge whether a comment is spam - many spam comments get through that could easily have been stopped, and there are many false positives where non-spam comments get flagged as spam. Others may argue that some spammers have programmed their bots to read JavaScript, etc. In reality, the percentage of bots with these capabilities is still extremely low - less than 1%. It's simply a numbers game. Statistics tell us that an effective solution would involve using a technology that few bots can handle, therefore eliminating their ability to spam your site. The important thing in fighting spam is that we create a solution that can reduce spam noticeably and improve the user experience, and a 99%+ reduction in spam would definitely make a difference for most bloggers and site visitors.
+Some would argue that using JS and cookies is too simplistic an approach. Traditionally, programmers prefer using some type of basic AI or community-based data gathering to fight bots by trying to figure out if a comment is spam. While that isn't a bad idea, when used alone this method falls short because no machine AI can ever accurately judge whether a comment is spam - many spam comments get through that could easily have been stopped, and there are many false positives where non-spam comments get flagged as spam. Others may argue that some spammers have programmed their bots to read JavaScript, etc. In reality, the percentage of bots with these capabilities is still extremely low - less than 1%. It's simply a numbers game. Statistics tell us that an effective solution would involve using a technology that few bots can handle, therefore eliminating their ability to spam your site. The important thing in fighting spam is that we create a solution that can reduce spam noticeably and improve the user experience, and a 99%+ reduction in spam would definitely make a difference for most bloggers and site visitors.
 
 Even so, it's important to know that the particular JS and cookies solution used in the WP-SpamShield anti-spam plugin has evolved quite a bit, and is no longer simple at all. There are now two layers of protection, a JavaScript/Cookies Layer, and an Algorithmic Layer. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop 95% of the spam that the JavaScript Layer blocks. (I'm working to make this 100% for fully redundant protection.) This JavaScript Layer utilizes randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer is what eliminates trackback/pingback spam, and much human spam as well. And, it does all that without hindering legitimate comments and trackbacks.
 
 The trackback validation contains a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is spam, without fail. This alone eliminates more than 99.99% of trackback spam. Trackback spammers don't send spam out from the same server where their clients' websites reside.
 
-As of Version 1.2 the plugin also includes powerful protection from user registration spam. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up on your site anymore.
+As of Version 1.2 the plugin also includes powerful protection from user registration spam. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up on your site's login page any more.
 
 The bottom line, is that this plugin just plain works, and is a **powerful weapon against spam**.
 
@@ -85,14 +86,14 @@ For more info and full documentation, visit the [WP-SpamShield homepage](http://
 You're done! Sit back and see what it feels like to live without comment spam!
 
 = For Best Results =
-WP-SpamShield was created specifically to stop automated comment spam (which accounts for over 99% of comment spam), and recently we have added some features that help combat human comment spam, as well as trackback/pingback spam. Unfortunately, no plugin can perfectly detect human comment spam. As other experts will tell you, the most effective strategy for blocking spam involves applying a variety of techniques. For best results, enable comment moderation, and if you desire a backup, feel free to use Akismet (even though unnecessary), as the two plugins are compatible.
+WP-SpamShield was created specifically to stop automated comment spam (which accounts for over 99.9% of comment spam), and recently we have added some features that help combat human comment spam, as well as trackback/pingback spam. Unfortunately, no plugin can perfectly detect human comment spam. As other experts will tell you, the most effective strategy for blocking spam involves applying a variety of techniques. For best results, enable comment moderation, and if you desire a backup, feel free to use Akismet (even though unnecessary), as the two plugins are compatible.
 
 = Displaying Stats on Your Blog =
-Want to show off your spam stats on your blog and tell others about WP-SpamShield? Simply add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-9 corresponding to one of the background styles you'd like to use. (See plugin admin page for more info.)
+Want to show off your spam stats on your blog and tell others about WP-SpamShield? Simply add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-9 corresponding to one of the background styles you'd like to use. (See plugin homepage for more info.)
 
 To add it to any page or post, add the following shortcode to the page or post where you'd like the stats displayed (using the HTML editing tab, NOT the Visual editor): `[spamshieldcounter style=1]` where '1' is the style. Replace the '1' with a number from 1-9 that corresponds to one of the images below that matches the style you'd like to use. To simply display text stats on your site (no graphic), replace the '1' with '0'.
 
-To add smaller counter to your site, add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-5 that corresponds to the style you'd like to use. (See plugin admin page for more info.)
+To add smaller counter to your site, add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-5 that corresponds to the style you'd like to use. (See plugin homepage for more info.)
 
 To add it to any page or post, add the following shortcode to the page or post where you'd like the stats displayed (using the HTML editing tab, NOT the Visual editor): `[spamshieldcountersm style=1]` where '1' is the style. Replace the '1' with a number from 1-5 that corresponds to the style you'd like to use.
 
@@ -105,11 +106,9 @@ There is no need to configure the form. It allows you to simply drop it into the
 
 If you want to modify the style of the form using CSS, all the form elements have an ID attribute you can reference in your stylesheet.
 
-**What the Contact Form feature IS:** A simple drop-in contact form that won't get spammed. 
+**What the Contact Form feature IS:** A simple drop-in contact form that won't get spammed.
 
-**What the Contact Form feature is NOT:** A configurable and full-featured plugin like some other contact form plugins out there. 
-
-**Note:** Please do not request new features for the contact form, as the main focus of the plugin is spam protection. Thank you. 
+**What the Contact Form feature is NOT:** A configurable and full-featured plugin like some other contact form plugins out there.
 
 = Configuration Information =
 
@@ -147,6 +146,13 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+Version 1.3.6, *released 07/12/14*
+
+* Added additional security checks.
+* Improved the process of [upgrading from WP-SpamFree to WP-SpamShield](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_10). (WP-SpamFree is the old version of this plugin, which I wrote in 2007, and passed on to other developers in 2010. It is no longer supported, but this plugin will gracefully upgrade from it, and import all your old settings, automatically. All contact forms will continue to work without any modifications.)
+* Fixed a couple minor bugs.
+* Updated the spam filters.
 
 Version 1.3.5, *released 07/09/14*
 
@@ -200,7 +206,7 @@ Version 1.2.1, *released 06/18/14*
 
 Version 1.2, *released 06/18/14*
 
-* Added a powerful new feature to stop user registration spam. No more automated bot signups on your site.
+* Added a powerful new feature to stop user registration spam. No more automated bot signups through the login page on your site..
 * Added a new semantic filter to the algorithmic protection layer, for improved protection against human spam.
 * Overhauled and improved many of the filters in the spam blocking algorithm.
 
@@ -341,7 +347,7 @@ Version 1.0.0.0, *released 03/10/14* - Over 20 improvements from its predecessor
 * Added additional info to spam logging for improved diagnostics.
 * Added shortcodes for implementing contact form.
 * Added shortcodes for displaying spam stats.
-* Added display of number of spam per day blocked to admin.
+* Added display of the average number of spam comments blocked per day to the admin dashboard.
 
 Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 
