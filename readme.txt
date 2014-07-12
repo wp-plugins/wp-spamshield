@@ -7,7 +7,7 @@ Tested up to: 3.9
 Stable tag: trunk
 License: GPLv2
 
-A robust and user-friendly anti-spam plugin that stops blog comment spam cold. Includes spam-blocking contact form & blocks registration spam as well.
+A robust and user-friendly anti-spam plugin that stops blog comment spam cold. Includes spam-blocking contact form & blocks registration spam too.
 
 == Description ==
 
@@ -73,20 +73,34 @@ For more info and full documentation, visit the [WP-SpamShield homepage](http://
 == Installation ==
 
 = Installation Instructions =
-1. After downloading, unzip file and upload the enclosed `wp-spamshield` directory to your WordPress plugins directory: `/wp-content/plugins/`.
+**Option 1:** Install the plugin directly through the WordPress Admin Dashboard (Recommended)
+1. Go to *Plugins* -> *Add New*.
+2. Type *WP-SpamShield* into the Search box, and click *Search Plugins*.
+3. When the results are displayed, click *Install Now*.
+4. When it says the plugin has successfully installed, click **Activate Plugin** to activate the plugin (or you can do this on the Plugins page).
 
-2. As always, **activate** the plugin on your WordPress plugins page.
+**Option 2:** Install .zip file through WordPress Admin Dashboard
+1. Go to *Plugins* -> *Add New* -> *Upload*.
+2. Click *Choose File* and find `wp-spamshield.zip` on your computer's hard drive.
+3. Click *Install Now*.
+4. Click **Activate Plugin** to activate the plugin (or you can do this on the Plugins page).
 
-3. Check to make sure the plugin is installed properly. Many support requests for this plugin originate from improper installation and can be easily prevented. To check proper installation status, go to the WP-SpamShield page in your Admin. It's a submenu link on the Plugins page. Go the the 'Installation Status' area near the top and it will tell you if the plugin is installed correctly. If it tells you that the plugin is not installed correctly, please double-check what directory you have installed WP-SpamShield in, delete any WP-SpamShield files you have uploaded to your server, re-read the Installation Instructions, and start the Installation process over from step 1. If it is installed correctly, then move on to the next step.
+**Option 3:** Install .zip file through an FTP Client (Recommended for Advanced Users Only)
+1. After downloading, unzip file and use an FTP client to upload the enclosed `wp-spamshield` directory to your WordPress plugins directory (usually `/wp-content/plugins/`) on your web server.
+2. Go to your Plugins page in the WordPress Admin Dashboard, and find this plugin in the list.
+3. Click **Activate** to activate the plugin.
 
-4. Select desired configuration options. Due to popular request, I've added the option to block trackbacks and pingbacks if the user feels they are excessive. I'd recommend not doing this, but the choice is yours.
+= Next Steps After Installation = 
 
-5. If you are using front-end anti-spam plugins (CAPTCHA's, challenge questions, etc), be sure they are disabled since there's no longer a need for them, and these could likely conflict. Also if you were previously using WP-SpamFree, be sure to disable this as well. (Back-end anti-spam plugins like Akismet are fine, although unnecessary.)
+1. Check to make sure the plugin is installed properly. Many support requests for this plugin originate from improper installation and can be easily prevented. To check proper installation status, go to the WP-SpamShield page in your Admin. It's a submenu link under the *Settings*. Go the the 'Installation Status' area near the top and it will tell you if the plugin is installed correctly. If it tells you that the plugin is not installed correctly, please double-check what directory you have installed WP-SpamShield in, delete any WP-SpamShield files you have uploaded to your server, re-read the Installation Instructions, and start the Installation process over. If it is installed correctly, then move on to the next step.
+2. Select desired configuration options.
+3. If you are using front-end anti-spam plugins (CAPTCHA's, challenge questions, etc), be sure they are *disabled* since there's no longer a need for them, and these could likely conflict. (Back-end anti-spam plugins like Akismet are fine, although unnecessary.)
+4. Install a contact form if you like. (See below)
 
-You're done! Sit back and see what it feels like to live without comment spam!
+**You're done! Sit back and see what it feels like to live without comment spam, trackback spam, and registration spam!**
 
 = For Best Results =
-WP-SpamShield was created specifically to stop automated comment spam (which accounts for over 99.9% of comment spam), and recently we have added some features that help combat human comment spam, as well as trackback/pingback spam. Unfortunately, no plugin can perfectly detect human comment spam. As other experts will tell you, the most effective strategy for blocking spam involves applying a variety of techniques. For best results, enable comment moderation, and if you desire a backup, feel free to use Akismet (even though unnecessary), as the two plugins are compatible.
+WP-SpamShield was created specifically to stop automated comment spam (which accounts for over 99.9% of comment spam), and we have built in many features that combat human comment spam and completely eliminate trackback/pingback spam. Unfortunately, no plugin can perfectly detect human comment spam. As other experts will tell you, the most effective strategy for blocking spam involves applying a variety of techniques. For best results, *enable comment moderation* in your WordPress Settings. (If you desire a backup, feel free to use Akismet, as the two plugins are compatible, even though it's probably not necessary. I would recommend not using any other spam plugins at the same time, in order to keep keep your web server load down and prevent conflicts.)
 
 = Displaying Stats on Your Blog =
 Want to show off your spam stats on your blog and tell others about WP-SpamShield? Simply add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-9 corresponding to one of the background styles you'd like to use. (See plugin homepage for more info.)
