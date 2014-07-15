@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature, and protection from registration spam too.
 Author: Scott Allen
-Version: 1.3.6
+Version: 1.3.7
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -28,7 +28,7 @@ License: GPLv2
 */
 
 
-// Begin the Plugin
+// PLUGIN - BEGIN
 
 /* Note to any other PHP developers reading this:
 My use of the end curly braces "}" is a little funky in that I indent the closing braces, I know. IMO it's easier to debug. Just know that it's on purpose even though it's not standard. One of my programming quirks, and just how I roll. :)
@@ -42,10 +42,11 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.3.6' );
+define( 'WPSS_VERSION', '1.3.7' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
+* Constants prefixed with 'RSMP_' are shared with other RSM Plugins for efficiency.
 * RSMP_SITE_URL - THE Site base URL	- Ex: http://example.com
 * RSMP_CONTENT_DIR_URL 				- Ex: http://example.com/wp-content
 * RSMP_CONTENT_DIR_PATH 			- Ex: /public_html/wp-content
@@ -2515,8 +2516,8 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
 		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
 		// SEO Spammers
-		"agenciade.serviciosdeseo.com", "click4pardeep.com", "dreamforweb.com", "hhmla.ca", "imediasolutions.biz",  "quickcontent.net", "ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "searchmediapromotion.in", 
-		"semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", "seooptimizationtipz.com", "seoservicesnewyork.org", "serviciosdeseo.com", "triveniinfotech.com", "webpromotioner.com", 
+		"agenciade.serviciosdeseo.com", "click4pardeep.com", "dreamforweb.com", "hhmla.ca", "imediasolutions.biz",  "quickcontent.net", "ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "rubyseo.com", 
+		"searchmediapromotion.in", "semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", "seooptimizationtipz.com", "seoservicesnewyork.org", "serviciosdeseo.com", "triveniinfotech.com", "webpromotioner.com", 
 		// WebDev Spammers
 		"manektech.com", "retailon.co", "retailon.net", "rizecorp.com", "rizedigital.com", "webdesigncompany.org", 
 		// Add more here
@@ -2537,9 +2538,24 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 	$regex_phrase = spamshield_get_regex_phrase($blacklisted_domains,'','domain');
 	//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
 	//spamshield_append_log_data( "\n".'$domain:'.$domain.' Line: '.__LINE__ );
-	if ( preg_match( $regex_phrase, $domain ) ) { $blacklist_status = true; }
+	if ( preg_match( $regex_phrase, $domain ) ) { $blacklist_status = true; } // When $regex_phrase exceeds a certain size, switch this to run smaller groups or run each domain individually
 	return $blacklist_status;
 	}
+
+/*
+function spamshield_urlshort_blacklist_chk( $url = NULL, $email = NULL, $message_content = NULL ) {
+	// URL Shortener Blacklist Check
+	$url_shorteners = array(
+		// Initial Set - 55
+		"›.ws", "➹.ws", "➔.ws", "➞.ws", "➡.ws", "➨.ws", "➯.ws", "➽.ws", "✩.ws", "✿.ws", "❥.ws", "1url.com", "adcrun.ch", "adf.ly", "aka.gr", "bc.vc", "bit.do", "bit.ly", "bitly.com", "blankrefer.com", "budurl.com", "buff.ly", "buzurl.com", "cli.gs", "cutt.us", "dft.ba", "dlvr.it", "filoops.info", "fur.ly", "goo.gl", "hiderefer.com", "is.gd", "ity.im", "j.mp", "l.gg", "lemde.fr", "linkto.im", "moourl.com", "ow.ly", "q.gs", "qr.net", "rdlnk.com", "scrnch.me", "sn.im", "snipurl.com", "su.pr", "t.co", "tiny.cc", "tinyurl.com", "tota2.com", "twitthis.com", "u.to", "v.gd", "we.cx", "x.co", 
+		);
+	// Goes after array
+	$blacklist_status = false;
+	if ( empty( $url ) ) { return false; }
+
+
+	}
+*/
 
 function spamshield_link_blacklist_chk( $haystack = NULL ) {
 	// Link Blacklist Check
@@ -3003,6 +3019,8 @@ function spamshield_allowed_post( $approved = NULL ) {
 	// JavaScript and Cookies Layer
 	// TEST TO PREVENT COMMENT SPAM FROM BOTS - BEGIN
 	$spamshield_options	= get_option('spamshield_options');
+
+	$wpss_js_key_test 	= '';
 	
 	$wpss_key_values 	= spamshield_get_key_values();
 	$wpss_ck_key  		= $wpss_key_values['wpss_ck_key'];
@@ -4679,6 +4697,20 @@ function spamshield_admin_notices() {
 	delete_option('spamshield_admin_notices');
 	}
 
+function spamshield_admin_jp_fix() {
+	// Fix Compatibility with JetPack if active
+	$wpss_jp_active	= spamshield_is_plugin_active( 'jetpack/jetpack.php' );
+	if ( !empty( $wpss_jp_active ) ) {
+		$jp_active_mods = get_option('jetpack_active_modules');
+		$jp_com_key = array_search( 'comments', $jp_active_mods, true );
+		if ( !empty( $jp_com_key ) ) {
+			unset( $jp_active_mods[$jp_com_key] );
+			}
+		// This JP module modifies WordPress' comment system core functionality, incapacitating MANY fine plugins...sorry guys, but this has to be deactivated
+		update_option( 'jetpack_active_modules', $jp_active_mods );
+		}
+	}
+
 // Admin Functions - END
 
 
@@ -4701,7 +4733,7 @@ if (!class_exists('wpSpamShield')) {
 			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 && RSMP_SERVER_ADDR != '127.0.0.1' && WPSS_DEBUG != true ) {
 				error_reporting(0); // Prevents error display on production sites, but testing on 127.0.0.1 will display errors, or if debug mode turned on
 				}
-			register_activation_hook( __FILE__, array(&$this,'install_on_activation') );
+			register_activation_hook( __FILE__, array(&$this,'install_on_first_activation') );
 			add_action( 'admin_init', array(&$this,'spamshield_check_version') );
 			add_action( 'plugins_loaded', 'spamshield_load_languages' );
 			add_action( 'init', 'spamshield_first_action', 1 );
@@ -4736,7 +4768,7 @@ if (!class_exists('wpSpamShield')) {
 
 		// Class Admin Functions - BEGIN
 		
-		function install_on_activation() {
+		function install_on_first_activation() {
 			global $wpdb;
 			$installed_ver = get_option('wp_spamshield_version');
 			$spamshield_options = get_option('spamshield_options');
@@ -4843,9 +4875,13 @@ if (!class_exists('wpSpamShield')) {
 				update_option('ak_count_pre', get_option('akismet_spam_count'));
 				// Require Author Names and Emails on Comments - Added 1.1.7
 				update_option('require_name_email', '1');
+				// Set 'default_role' to 'subscriber' for security - Added 1.3.7
+				update_option('default_role', 'subscriber');
 				// Turn on Comment Moderation
 				//update_option('comment_moderation', 1);
 				//update_option('moderation_notify', 1);
+				// Compatibility Checks
+				spamshield_admin_jp_fix();
 				
 				// Ensure Correct Permissions of IMG and JS file - BEGIN
 				$installation_file_test_2 = WPSS_PLUGIN_IMG_PATH.'/img.php'; // DEPRECATED - GOING AWAY SOON
@@ -5573,9 +5609,7 @@ if (!class_exists('wpSpamShield')) {
 			}
 		
 		function spamshield_check_version() {
-			// Make sure user has minimum required version of WordPress
-			//global $wp_version;
-			//$wpss_wp_version = RSMP_WP_VERSION;
+			// Make sure user has minimum required WordPress version, in order to prevent issues
 			if ( version_compare( RSMP_WP_VERSION, WPSS_REQUIRED_WP_VERSION, '<' ) ) {
 				deactivate_plugins( WPSS_PLUGIN_BASENAME );
 				$notice_text = sprintf( __( 'Plugin deactivated. WordPress Version %s required. Please upgrade WordPress to the latest version.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_WP_VERSION );
@@ -5597,6 +5631,8 @@ if (!class_exists('wpSpamShield')) {
 				// Since WP-SpamShield takes over 100% of old version's responsibilities, there is no loss of functionality, only improvements.
 				// Site speed will improve and server load will now drop dramatically.
 				}
+			// Compatibility Checks
+			spamshield_admin_jp_fix();
 			// Check for pending admin notices
 			$admin_notices = get_option('spamshield_admin_notices');
 			if ( !empty( $admin_notices ) ) {
@@ -5736,4 +5772,5 @@ if (class_exists('wpSpamShield')) {
 	$wpSpamShield = new wpSpamShield();
 	}
 
+// PLUGIN - END
 ?>

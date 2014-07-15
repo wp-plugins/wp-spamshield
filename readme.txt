@@ -1,7 +1,7 @@
 === WP-SpamShield Anti-Spam ===
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
-Tags: antispam, anti-spam, comment, comments, contact, contact form, form, forms, javascript, login, multisite, register, registration, security, signup, spam, trackback
+Tags: antispam, anti-spam, block spam, comment, comment spam, comments, contact, contact form, form, forms, javascript, login, multisite, register, registration, security, signup, spam, spam filter, user registration spam, trackback
 Requires at least: 3.0
 Tested up to: 3.9
 Stable tag: trunk
@@ -175,6 +175,12 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+Version 1.3.7, *released 07/15/14*
+
+* Fixed a compatibility issue with the JetPack plugin.
+* Minor update to the German Translation (de_DE).
+* Updated the spam filters.
 
 Version 1.3.6, *released 07/12/14*
 
