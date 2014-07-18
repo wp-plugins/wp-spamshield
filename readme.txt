@@ -176,6 +176,12 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+Version 1.3.8, *released 07/18/14*
+
+* Added new filters to the spam blocking algorithm.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 Version 1.3.7, *released 07/15/14*
 
 * Fixed a compatibility issue with the JetPack plugin.
