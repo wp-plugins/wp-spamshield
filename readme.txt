@@ -7,11 +7,11 @@ Tested up to: 3.9
 Stable tag: trunk
 License: GPLv2
 
-A robust and user-friendly anti-spam plugin that stops blog comment spam cold. Includes spam-blocking contact form & blocks registration spam too.
+A powerful, user-friendly, all-in-one anti-spam plugin that eliminates comment spam & registration spam. Includes spam-blocking contact form.
 
 == Description ==
 
-**An extremely robust and user friendly WordPress anti-spam plugin that stops blog comment spam cold, including trackback and pingback spam.** See what it's like to run a WordPress site without spam! Includes spam-blocking contact form feature, and protection from user registration spam as well. WP-SpamShield is an all-in-one spam solution for WordPress.
+**An extremely powerful and user friendly WordPress anti-spam plugin that stops blog comment spam cold, including trackback and pingback spam.** See what it's like to run a WordPress site without spam! Includes spam-blocking contact form feature, and protection from user registration spam as well. WP-SpamShield is an all-in-one spam solution for WordPress.
 
 = A Powerful Weapon Against: Comment Spam, Trackback Spam, Contact Form Spam, and Registration Spam =
 Comment spam has been a huge problem for bloggers since the inception of blogs, and it just doesn't seem to go away. The worst kind, and most prolific, is automated spam that comes from bots. Well, finally there is an anti-spam plugin for WordPress that provides an effective solution, without CAPTCHA's, challenge questions, or other inconvenience to site visitors. **WP-SpamShield eliminates automated blog comment spam from bots, including trackback and pingback spam.**
@@ -19,6 +19,7 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 = New Features =
 * Internationalization and localization available. Currently includes German (de_DE) translation. Ready for translation into other languages. Added in Version 1.3.
 * Stops User Registration Spam now! Added in Version 1.2.
+* Protects your WordPress site against many common SQL Injection and XSS/XST exploits for better security. Added in version 1.4. (See changelog for more info.)
 * Shortcodes for easy contact form implementation.
 * Over 10x faster! Tested and verified with benchmarking software.
 * For more, please view the changelog.
@@ -52,9 +53,9 @@ Comment spam stems from an older problem - automated spamming of email contact f
 To further the development of this anti-spam plugin, I now study thousands and thousands of potential spam comments from many test blogs and contributors. I use a special diagnostic version of the plugin, which provides much more information on each of these spam comments than what is shown in WordPress. By analyzing patterns and behaviors consistent with spam, I can continually improve the plugin and ensure future accuracy.
 
 = How It Works =
-Most of the spam hitting your blog originates from bots. Few bots can process JavaScript (JS). Few bots can process cookies. Fewer still, can handle both. In a nutshell, this plugin uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 99%+ of automated spam from ever getting to your site. Almost 100% of web site visitors will have these turned on by default, so this type of solution works silently in the background, with no inconveniences. There may be a few users (less than 2%) that have JavaScript and/or cookies turned off by default, but they will be prompted to simply turn those back on to post their comment. Overall, the few might be inconvenienced because they have JS and cookies turned off will be far fewer than the 100% who would be annoyed by CAPTCHA's, challenge questions, and other validation methods.
+Most of the spam hitting your blog originates from bots. Few bots can process JavaScript (JS). Few bots can process cookies. Fewer still, can handle both, especially if you use some clever combinations. In a nutshell, this plugin uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 99.99%+ of automated spam from ever getting to your site. Almost 100% of web site visitors will have these turned on by default, so this type of solution works silently in the background, with no inconveniences. There may be a few users (less than 2%) that have JavaScript and/or cookies turned off by default, but they will be prompted to simply turn those back on to post their comment. Overall, the few might be inconvenienced because they have JS and cookies turned off will be far fewer than the 100% who would be annoyed by CAPTCHA's, challenge questions, and other validation methods.
 
-Some would argue that using JS and cookies is too simplistic an approach. Traditionally, programmers prefer using some type of basic AI or community-based data gathering to fight bots by trying to figure out if a comment is spam. While that isn't a bad idea, when used alone this method falls short because no machine AI can ever accurately judge whether a comment is spam - many spam comments get through that could easily have been stopped, and there are many false positives where non-spam comments get flagged as spam. Others may argue that some spammers have programmed their bots to read JavaScript, etc. In reality, the percentage of bots with these capabilities is still extremely low - less than 1%. It's simply a numbers game. Statistics tell us that an effective solution would involve using a technology that few bots can handle, therefore eliminating their ability to spam your site. The important thing in fighting spam is that we create a solution that can reduce spam noticeably and improve the user experience, and a 99%+ reduction in spam would definitely make a difference for most bloggers and site visitors.
+Some would argue that using JS and cookies is too simplistic an approach. Traditionally, programmers prefer using some type of basic AI or community-based data gathering to fight bots by trying to figure out if a comment is spam. While that isn't a bad idea, when used alone this method falls short because no machine AI can ever accurately judge whether a comment is spam - many spam comments get through that could easily have been stopped, and there are many false positives where non-spam comments get flagged as spam. Others may argue that some spammers have programmed their bots to read JavaScript, etc. In reality, the percentage of bots with these capabilities is still extremely low - less than 1%. It's simply a numbers game. Statistics tell us that an effective solution would involve using a technology that few bots can handle, therefore eliminating their ability to spam your site. The important thing in fighting spam is that we create a solution that can reduce spam noticeably and improve the user experience, and a 99.99%+ reduction in spam would definitely make a difference for most bloggers and site visitors.
 
 Even so, it's important to know that the particular JS and cookies solution used in the WP-SpamShield anti-spam plugin has evolved quite a bit, and is no longer simple at all. There are now two layers of protection, a JavaScript/Cookies Layer, and an Algorithmic Layer. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop 95% of the spam that the JavaScript Layer blocks. (I'm working to make this 100% for fully redundant protection.) This JavaScript Layer utilizes randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer is what eliminates trackback/pingback spam, and much human spam as well. And, it does all that without hindering legitimate comments and trackbacks.
 
@@ -64,7 +65,7 @@ As of Version 1.2 the plugin also includes powerful protection from user registr
 
 The bottom line, is that this plugin just plain works, and is a **powerful weapon against spam**.
 
-= WordPress Blogging Without Spam =
+>**WordPress Blogging Without Spam**
 How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by giving it a good rating!
 
 = More Info / Documentation =
@@ -176,99 +177,127 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
-Version 1.3.8, *released 07/18/14*
+= 1.4 =
+*released 07/21/14*
+
+* Added 2 fairly important security enhancements. There is a relatively new trend where hackers and link-spammers use search engine bots to do their SQL injections and exploits for them (to avoid leaving a trail back to them). Yes, Googlebot is being used for SQL injection exploits. (I'll be writing a blog post about this soon.) They post a spam comment to a blog that contains a link to a specially crafted exploit URL. If the spam comment gets accepted, when search engine spiders crawl the page, and go to the specially crafted exploit URL, the SQL injection happens. The SQL injection inserts either a link or bad code to the victim site. This version introduces some new protections against these kinds of exploits.
+  - **ALL** links in comment and contact form submissions will now be checked for these kinds of exploit URLs, so that these attacks will not originate from your site. (This includes the comment author website, the contact form sender's website, and the content of both contact forms and comments will be parsed for links...all included links will be checked.) This will also potentially help avoid having Google penalizing your site for linking to bad neighborhoods. (*Automated* spam attempts of this kind were always blocked, but now that we have more intel, the manual human spam attempts of this type will be blocked 100% as well.)
+  - Added a new security module to protect your site against these same query-string based SQL Injection attacks and XSS/XST exploits executed through vulnerable request methods.
+* Added new filters to the spam blocking algorithm.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
+= 1.3.8 =
+*released 07/18/14*
 
 * Added new filters to the spam blocking algorithm.
 * Improved some of the filters in the spam blocking algorithm.
 * Updated the spam filters.
 
-Version 1.3.7, *released 07/15/14*
+= 1.3.7 =
+*released 07/15/14*
 
 * Fixed a compatibility issue with the JetPack plugin.
 * Minor update to the German Translation (de_DE).
 * Updated the spam filters.
 
-Version 1.3.6, *released 07/12/14*
+= 1.3.6 =
+*released 07/12/14*
 
 * Added additional security checks.
 * Improved the process of [upgrading from WP-SpamFree to WP-SpamShield](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_10). (WP-SpamFree is the old version of this plugin, which I wrote in 2007, and passed on to other developers in 2010. It is no longer supported, but this plugin will gracefully upgrade from it, and import all your old settings, automatically. All contact forms will continue to work without any modifications.)
 * Fixed a couple minor bugs.
 * Updated the spam filters.
 
-Version 1.3.5, *released 07/09/14*
+= 1.3.5 =
+*released 07/09/14*
 
 * Fixed a compatibility issue with the JetPack plugin.
 * Updated the spam filters.
 
-Version 1.3.4, *released 07/07/14*
+= 1.3.4 =
+*released 07/07/14*
 
 * Updated the spam filters.
 
-Version 1.3.3, *released 07/03/14*
+= 1.3.3 =
+*released 07/03/14*
 
 * Updated the German Translation (de_DE).
 * Updated the spam filters.
 
-Version 1.3.2, *released 06/30/14*
+= 1.3.2 =
+*released 06/30/14*
 
 * Added German Translation (de_DE). Thank you to Chris Krzikalla for doing the German translation.
 * Updated the spam filters.
 
-Version 1.3.1, *released 06/28/14*
+= 1.3.1 =
+*released 06/28/14*
 
 * Removed the three initial machine translations based on feedback. If anyone would like to donate their talent and a small amount of time to translating, it would be much appreciated. It's not hard - just [contact me](http://www.redsandmarketing.com/plugins/wp-spamshield/support/) and I'll get you set up. I'm happy to give credit and a website link to anyone who's willing to help out.
 * Updated the spam filters.
 
-Version 1.3, *released 06/27/14*
+= 1.3 =
+*released 06/27/14*
 
 * Prepared the plugin for internationalization and localization, and created .pot file for translation.
 * Created three initial translations with Google Translate and some other resources: French (fr_FR), Spanish (es_ES), and German (de_DE). I realize machine translations may not be the best, but I figured I'd at least get the ball rolling.
 * Removed documentation from settings page, since the same info is provided on the plugin homepage (in greater detail). The "Quick Navigation - Contents" is still there, it just points to the plugin homepage now. All the info is still available, it just makes it a bit more efficient if I only have to update documentation in one place. Side benefit is that it slims down the plugin file size a little bit.
 * Updated the spam filters.
 
-Version 1.2.4, *released 06/23/14*
+= 1.2.4 =
+*released 06/23/14*
 
 * Fixed a compatibility issue with Internet Explorer 9.
 
-Version 1.2.3, *released 06/22/14*
+= 1.2.3 =
+*released 06/22/14*
 
 * Fixed a compatibility issue with the CommentLuv plugin. As of this version, the two plugins are 100% compatible with each other.
 * Updated the spam filters.
 
-Version 1.2.2, *released 06/20/14*
+= 1.2.2 =
+*released 06/20/14*
 
 * Updated the spam filters.
 * Made an improvement to the implementation of the new semantic filter.
 
-Version 1.2.1, *released 06/18/14*
+= 1.2.1 =
+*released 06/18/14*
 
 * Updated the spam filters.
 * Fixed a minor bug in one of the filters.
 
-Version 1.2, *released 06/18/14*
+= 1.2 =
+*released 06/18/14*
 
 * Added a powerful new feature to stop user registration spam. No more automated bot signups through the login page on your site..
 * Added a new semantic filter to the algorithmic protection layer, for improved protection against human spam.
 * Overhauled and improved many of the filters in the spam blocking algorithm.
 
-Version 1.1.7.3, *released 06/09/14*
+= 1.1.7.3 =
+*released 06/09/14*
 
 * Improved some of the filters in the spam blocking algorithm.
 
-Version 1.1.7.2, *released 06/06/14*
+= 1.1.7.2 =
+*released 06/06/14*
 
 * Added new filters to the spam blocking algorithm.
 * Removed some deprecated filters (which have already been replaced with newer more efficient ones) and reduced main plugin file size significantly.
 * Added a feature to clean up the WordPress blacklist. Now if you view the blacklist through the WP-SpamShield Settings page, it will be sorted in order and have duplicate items removed. When you save WP-SpamShield General Options (not Contact Form Options), it will store this cleaned up version in the database so that whenever you view it again, whether there or on the Discussion settings page, you'll see the cleaned up version.
 * Fixed a minor bug.
 
-Version 1.1.7.1, *released 06/04/14*
+= 1.1.7.1 =
+*released 06/04/14*
 
 * Added new filters and improved existing filters in the algorithmic spam protection layer.
 * Fixed several minor bugs.
 * Made various code improvements.
 
-Version 1.1.7, *released 05/28/14*
+= 1.1.7 =
+*released 05/28/14*
 
 * Reorganized and rewrote some of the code to make it more efficient and improve overall performance of the plugin. This is the fastest version of the plugin to date.
 * Added new filters and improved existing filters in the algorithmic spam protection layer.
@@ -276,22 +305,26 @@ Version 1.1.7, *released 05/28/14*
 * Fixed a bug that caused some legitimate comments to be rejected if the page the user commented on contained added arguments (tracking variables, etc.) in the URL query string (ie. "something=value" - for tracking marketing campaigns, etc).
 * Fixed several minor bugs that would show notices in the "debug.log" file if WordPress debugging is turned on.
 
-Version 1.1.6.3, *released 05/20/14*
+= 1.1.6.3 =
+*released 05/20/14*
 
 * Fixed a bug (introduced in 1.1.6) that prevented users from commenting if caching is not active. One area of the plugin had not been updated to the new key generation system, causing the error, but this is now fixed. Everything works fine now, and the upgrades introduced in 1.1.6 will provide improved performance.
 
-Version 1.1.6.2, *released 05/16/14*
+= 1.1.6.2 =
+*released 05/16/14*
 
 * Changed the implementation of the random key generation and testing, resulting in greater speed and efficiency.
 * Fixed a bug that kept the plugin from updating its version number in the database in certain situations when upgrading to a new version of the plugin.
 
-Version 1.1.5, *released 05/16/14*
+= 1.1.5 =
+*released 05/16/14*
 
 * Made a number of code improvements to improve overall performance, efficiency, and speed of the plugin.
 * Completely reformatted the blocked comment logging data. Added some relevant technical data that can aid in tech support.
 * Added new filters to the spam blocking algorithm.
 
-Version 1.1.4.4, *released 05/11/14*
+= 1.1.4.4 =
+*released 05/11/14*
 
 * Added new filters to the spam blocking algorithm.
 * Fixed several minor bugs.
@@ -300,85 +333,100 @@ Version 1.1.4.4, *released 05/11/14*
 * Added total script execution time to the log data so you can see exactly how long it took to run the filters and block a particular comment. Also helps with debugging and support.
 * Made improvements to the readability of the contact form emails.
 
-Version 1.1.4.3, *released 05/08/14*
+= 1.1.4.3 =
+*released 05/08/14*
 
 * Fixed several minor bugs (mostly PHP Notices, not Warnings or Errors) specific to changes made in PHP 5.4 and 5.5.
 * Added new filters to the spam blocking algorithm.
 * For the last few weeks I've been making it a high priority to increase the strictness of the code because more recent versions of PHP use stricter code, have introduced new errors (including PHP Notices and Warnings) and have deprecated some older functions and functionality. That's why the new bugs have been popping up. I'm fixing them as quickly as possible. :)
 
-Version 1.1.4.2, *released 05/08/14*
+= 1.1.4.2 =
+*released 05/08/14*
 
 * Fixed a couple minor bugs.
 * Replaced all instances of split() function, which is deprecated in PHP 5.3. (Meaning it still works, but is being phased out and will be eliminated in a future version.) The plugin was already fully compatible with PHP 5.2 and below, and this update ensures full compatibility with PHP 5.3+.
 * Made some improvements to the validation of user input on the WP-SpamShield options page in the WP admin to keep the database neat and tidy.
 
-Version 1.1.4.1, *released 05/07/14*
+= 1.1.4.1 =
+*released 05/07/14*
 
 * Fixed a bug that caused a "Division by zero" error in the admin spam stats (if a new install) on some systems.
 * Improved some of the existing filters in the algorithmic spam protection layer.
 
-Version 1.1.4, *released 05/06/14*
+= 1.1.4 =
+*released 05/06/14*
 
 * Fixed a couple of minor bugs.
 * Made various code improvements, including code efficiency and increased code strictness.
 * Added new filters and improved existing filters in the algorithmic spam protection layer.
 
-Version 1.1.3.3, *released 05/02/14*
+= 1.1.3.3 =
+*released 05/02/14*
 
 * Fixed an issue occurring on some WordPress installations hosted on Microsoft IIS servers that have certain PHP functions disabled.
 * Removed WP-SpamShield Options page link from the "Plugins" menu in the WP Admin. Plugin options can still be accessed from the "Settings" menu.
 * Added new filters to the spam blocking algorithm.
 
-Version 1.1.3.2, *released 05/01/14*
+= 1.1.3.2 =
+*released 05/01/14*
 
 * Added new filters and improved existing filters in the algorithmic spam protection layer.
 * Made a few improvements to the blocked comment logging.
 
-Version 1.1.3.1, *released 04/28/14*
+= 1.1.3.1 =
+*released 04/28/14*
 
 * Fixed a bug in one of the spam filters.
 * Fixed 2 bugs that caused error messages on certain server configurations.
 
-Version 1.1.3.0, *released 04/25/14*
+= 1.1.3 =
+*released 04/25/14*
 
 * Added new filters and improved existing filters in the algorithmic spam protection layer.
 * Improved the efficiency of the code, and reduced main plugin file size significantly.
 * Fixed a couple of bugs.
 
-Version 1.1.2.2, *released 04/16/14*
+= 1.1.2.2 =
+*released 04/16/14*
 
 * Fixed a minor bug in the blocked comment logging.
 
-Version 1.1.2.1, *released 04/15/14*
+= 1.1.2.1 =
+*released 04/15/14*
 
 * Added new filters to the spam blocking algorithm.
 * Added additional security checks.
 * Made a few improvements to the blocked comment logging data.
 * Minor bug fix.
 
-Version 1.1.1.0, *released 04/11/14*
+= 1.1.1 =
+*released 04/11/14*
 
 * Added better trackback spam protection. This version adds a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is spam, *without fail*. This will eliminate more than 99.99% of trackback spam. Trackback spammers don't send spam out from the same server where their clients' websites reside.
 * Added new filters to the spam blocking algorithm.
 * Made improvements to the overall compatibility with caching plugins.
 * Fixed a bug where the plugin was incorrectly detecting proxies.
 
-Version 1.1.0.0, *released 04/07/14*
+= 1.1 =
+*released 04/07/14*
 
 * Replaced all instances of eregi() function, which is deprecated in PHP 5.3. (Meaning it still works, but is being phased out and will be eliminated in a future version.) The plugin was already fully compatible with PHP 5.2 and below, and this update ensures compatibility with PHP 5.3+.
 * Added new filters to the spam blocking algorithm.
 
-Version 1.0.1.1, *released 04/03/14*
+= 1.0.1.1 =
+*released 04/03/14*
 
 * Added new filters to the spam blocking algorithm.
 * Added additional security checks.
 * Code improvements and minor bug fixes.
 
-Version 1.0.1.0, *released 03/26/14*
+= 1.0.1 =
+*released 03/26/14*
 
 * Improved compatibility with popular caching plugins. This version adds detection to see if caching is active or not, and if specific cache plugins are active, and makes adjustments accordingly.
 
-Version 1.0.0.0, *released 03/10/14* - Over 20 improvements from its predecessor WP-SpamFree...including:
+= 1.0 =
+*released 03/10/14* - Over 20 improvements from its predecessor WP-SpamFree...including:
 
 * Over 10x faster! Tested and verified with benchmarking software.
 * Reduced the number of database queries.
@@ -393,6 +441,10 @@ Version 1.0.0.0, *released 03/10/14* - Over 20 improvements from its predecessor
 Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
+
+== Upgrade Notice ==
+= 1.4 =
+Added important security enhancements that protect your WordPress site against many common SQL Injection and XSS/XST exploits. Also added new filters to the spam blocking algorithm, improved some of the existing filters, and updated the semantic spam filters.
 
 == Other Notes ==
 
@@ -414,7 +466,7 @@ If you're having trouble getting things to work after installing the plugin, her
 
 6. If you have multiple domains that resolve to the same server, or are parked on the same hosting account, make sure the domain set in the WordPress configuration options matches the domain where you are accessing the blog from. In other words, if you have people going to your blog using hxxp://www.yourdomain.com/ and the WordPress configuration has: hxxp://www.yourdomain2.com/ you will have a problem (not just with this plugin, but with a lot of things.)
 
-7. Check your WordPress Version. If you are using a release earlier than 2.3, you may want to upgrade for a whole slew of reasons, including features and security.
+7. Check your WordPress Version. If you are not using the latest version, you should upgrade for a whole slew of reasons, including features and security.
 
 8. Check the options you have selected to make sure they are not disabling a feature you want to use.
 

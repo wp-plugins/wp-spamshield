@@ -2,9 +2,9 @@
 /*
 Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
-Description: An extremely robust and user-friendly anti-spam plugin that simply destroys comment spam. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature, and protection from registration spam too.
+Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.3.8
+Version: 1.4
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -31,7 +31,7 @@ License: GPLv2
 // PLUGIN - BEGIN
 
 /* Note to any other PHP developers reading this:
-My use of the end curly braces "}" is a little funky in that I indent the closing braces, I know. IMO it's easier to debug. Just know that it's on purpose even though it's not standard. One of my programming quirks, and just how I roll. :)
+My use of the closing curly braces "}" is a little funky in that I indent them, I know. IMO it's easier to debug. Just know that it's on purpose even though it's not standard. One of my programming quirks, and just how I roll. :)
 */
 
 // Make sure plugin remains secure if called directly
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.3.8' );
+define( 'WPSS_VERSION', '1.4' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -331,6 +331,20 @@ function spamshield_get_domain($url) {
 	return $hostname;
 	}
 
+function spamshield_get_query_string($url) {
+	// Get query string from URL
+	// Filter URLs with nothing after http
+	if ( empty( $url ) || preg_match( "~^https?\:*/*$~i", $url ) ) { return ''; }
+	// Fix poorly formed URLs so as not to throw errors when parsing
+	$url = spamshield_fix_url($url);
+	// NOW start parsing
+	$parsed = parse_url($url);
+	// Filter URLs with no domain
+	if ( empty( $parsed['query'] ) ) { return ''; }
+	$query_string = $parsed['query'];
+	return $query_string;
+	}
+
 function spamshield_get_email_domain($email) {
 	// Get domain from email address
 	if ( empty( $email ) ) { return ''; }
@@ -343,6 +357,7 @@ function spamshield_parse_links( $haystack, $type = 'url' ) {
 	// Parse a body of content for links - extracts URLs and Anchor Text
 	// $type: 'url' for URLs, 'domain' for just Domains, 'url_at' for URLs from Anchor Text Links only, 'anchor_text' for Anchor Text
 	// Returns an array
+	//spamshield_append_log_data( "\n".'$haystack: "'.$haystack.'" Line: '.__LINE__ );
 	$parse_links_regex = "~(<\s*a\s+[a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*\s*href|\[(url|link))\s*\=\s*['\"]?\s*(https?\://[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*['\"]?\s*[a-z0-9\-_\.\?\='\"\:;\(\)\{\}\s]*\s*(>|\])([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*)(<|\[)\s*\/\s*a\s*(>|(url|link)\])~iu";
 	//$search_http_regex ="~(^|\s+)(https?\://[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)($|\s+)~iu";
 	$search_http_regex ="~(?:^|\s+)(https?\://[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)(?:$|\s+)~iu";
@@ -350,7 +365,7 @@ function spamshield_parse_links( $haystack, $type = 'url' ) {
 	$parsed_links_matches 			= $matches_links[3]; // Array containing URLs parsed from Anchor Text Links in haystack text
 	$parsed_anchortxt_matches		= $matches_links[5]; // Array containing Anchor Text parsed from Anchor Text Links in haystack text
 	if ( $type == 'url' || $type == 'domain' ) {
-		$url_haystack = preg_replace( "~\s~", ' - ', $haystack );
+		$url_haystack = preg_replace( "~\s~", ' - ', $haystack ); // Workaround Added 1.3.8
 		preg_match_all( $search_http_regex, $url_haystack, $matches_http, PREG_PATTERN_ORDER );
 		//$parsed_http_matches 		= $matches_http[2]; // Array containing URLs parsed from haystack text
 		$parsed_http_matches 		= $matches_http[1]; // Array containing URLs parsed from haystack text
@@ -378,6 +393,7 @@ function spamshield_parse_links( $haystack, $type = 'url' ) {
 	elseif ( $type == 'anchor_text' ) {
 		$results = $parsed_anchortxt_matches;
 		}
+	//spamshield_append_log_data( "\n".'$results: "'.implode( '|', $results ).'" Line: '.__LINE__ );
 	return $results;
 	}
 
@@ -409,8 +425,10 @@ function spamshield_get_server_name() {
 	}
 
 function spamshield_get_query_arr($url) {
+	// Get array of variables form query string
 	$parsed = parse_url($url);
 	$query = $parsed['query'];
+	// TEST: $query = spamshield_get_query_string($url); // REPLACE TWO PREV LINES - Note 1.4
 	if ( !empty( $query ) ) { $query_arr = explode( '&', $query ); } else { $query_arr = ''; }
 	return $query_arr;
 	}
@@ -538,6 +556,9 @@ function spamshield_load_languages() {
 
 function spamshield_first_action() {
 
+	// Run Security Module before spamshield_start_session() & before headers sent
+	spamshield_security_module();
+
 	spamshield_start_session();
 	// All all commands after this
 	
@@ -599,6 +620,32 @@ function spamshield_first_action() {
 		}
 	}
 
+function spamshield_security_module() {
+	// Security Module - Added 1.4
+	// Protect against query-string based SQL Injection attacks and XSS/XST exploits executed through vulnerable request methods
+
+	// Best defense is to do this in .htaccess file and use mod_security.
+	// This method is adapted for WordPress.
+	// We're using die(), not wp_die() to get attackers out of WordPress as quickly as possible.
+	
+	if ( !is_user_logged_in() ) {
+		// Block restricted REQUEST_METHOD's to Prevent XSS and XST attacks
+		if ( !empty( $_SERVER['REQUEST_METHOD'] ) ) { $wpss_request_method = $_SERVER['REQUEST_METHOD']; } else { $wpss_request_method = getenv('REQUEST_METHOD'); }
+		if ( empty( $wpss_request_method ) ) { $wpss_request_method = ''; }
+		if ( preg_match( "~^(TRACE|TRACK|DEBUG|DELETE)$~", $wpss_request_method ) ) {
+			header('HTTP/1.1 405 Method Not Allowed');
+			die('ERROR 405: Method Not Allowed');
+			}
+		// Block SQL Injections and Exploits
+		if ( !empty( $_SERVER['QUERY_STRING'] ) ) { $wpss_query_string = $_SERVER['QUERY_STRING']; } else { $wpss_query_string = getenv('QUERY_STRING'); }
+		if ( empty( $wpss_query_string ) ) { $wpss_query_string = ''; }
+		if ( preg_match( "~(\.\.(\/|%2f)|boot\.ini|tag\=|(ftp|https?)(\:|%3a)|mosconfig_[a-z_]{1,21}(\=|%3d)|base64_encode.*\(.*\)|[\[\]\(\)\{\}\<\>\|\"\';\?\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d|%0|%a|%b|%c|%d|%e|%f|127\.0|globals|encode|localhost|loopback|request|select|insert|union|declare)~i", $wpss_query_string ) ) {
+			header('HTTP/1.1 403 Forbidden'); // Get your ass outta here!!
+			die('ERROR 403: Forbidden');
+			}
+		}
+	}
+	
 function spamshield_check_cache_status() {
 	// TEST FOR CACHING
 	$wpss_active_plugins = get_option( 'active_plugins' );
@@ -1811,9 +1858,13 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				} else { $wpss_contact_subject 	= ''; }
 			if ( !empty( $_POST['wpss_contact_message'] ) ) {
 				$wpss_contact_message 			= sanitize_text_field($_POST['wpss_contact_message']);
+				$wpss_raw_contact_message 		= trim($_POST['wpss_contact_message']);
 				} else { $wpss_contact_message 	= ''; }
-			$wpss_contact_message_lc 		= strtolower($wpss_contact_message);
-			
+			$wpss_contact_message_lc 			= strtolower($wpss_contact_message);
+			$wpss_raw_contact_message_lc 		= strtolower($wpss_raw_contact_message);
+			$wpss_raw_contact_message_lc_deslashed	= stripslashes($wpss_raw_contact_message_lc);
+			$wpss_contact_extracted_urls 		= spamshield_parse_links( $wpss_raw_contact_message_lc_deslashed, 'url' ); // Parse message content for all URLs
+
 			// Update Session Vars
 			$key_comment_auth 				= 'comment_author_'.RSMP_HASH;
 			$key_comment_email				= 'comment_author_email_'.RSMP_HASH;
@@ -1926,7 +1977,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			else { $website_long_url = false; }
 			/*
 			// Spam URL Check -  Check for URL Shorteners, Bogus Long URLs, Social Media URLS, and Misc Spam Domains
-			if ( spamshield_at_link_spam_url_chk(( $wpss_contact_website_lc ) ) {
+			if ( spamshield_at_link_spam_url_chk( $wpss_contact_website_lc ) ) {
 				$website_spam_url = true; 
 				$spamshield_error_code .= ' CF-10510AU-BL';
 				}
@@ -1934,12 +1985,27 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			*/
 			// Add Social Media Check and Misc Spam URLs next...
 			
+			// Check Website URL for Exploits
+			if ( spamshield_exploit_url_chk( $wpss_contact_website_lc ) ) {
+				$website_exploit_url = true;
+				$spamshield_error_code .= ' CF-15000AU-XPL'; // Added in 1.4
+				}
+			else { $website_exploit_url = false; }
+			
 			// Message Content - Parse URLs and check for URL Shortener Links - Added in 1.3.8
-			if ( spamshield_cf_link_spam_url_chk( $wpss_contact_message_lc, $wpss_contact_email_lc ) ) {
+			//if ( spamshield_cf_link_spam_url_chk( $wpss_contact_message_lc_deslashed, $wpss_contact_email_lc ) ) {
+			if ( spamshield_cf_link_spam_url_chk( $wpss_raw_contact_message_lc_deslashed, $wpss_contact_email_lc ) ) {
 				$content_shortened_url = true; 
 				$spamshield_error_code .= ' CF-10530CU-BL';
 				}
 			else { $content_shortened_url = false; }
+			
+			// Check all URL's in Message Content for Exploits
+			if ( spamshield_exploit_url_chk( $wpss_contact_extracted_urls ) ) {
+				$content_exploit_url = true;
+				$spamshield_error_code .= ' CF-15000CU-XPL'; // Added in 1.4
+				}
+			else { $content_exploit_url = false; }
 			
 			$contact_form_spam_term_total = $contact_form_spam_1_count + $contact_form_spam_2_count + $contact_form_spam_3_count + $contact_form_spam_4_count + $contact_form_spam_7_count + $contact_form_spam_10_count + $contact_form_spam_11_count + $contact_form_spam_12_count + $subject_blacklisted_count;
 			$contact_form_spam_term_total_limit = 15;
@@ -1952,7 +2018,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				$spamshield_error_code .= ' CF-MSG-SPAM1';
 				$contact_response_status_message_addendum .= '&bull; ' . __( 'Message appears to be spam. Please note that link requests, link exchange requests, and SEO outsourcing requests will be automatically deleted, and are not an acceptable use of this contact form.', WPSS_PLUGIN_NAME ) . '<br />&nbsp;<br />';
 				}
-			elseif ( !empty( $subject_blacklisted ) || $contact_form_spam_8_count > $contact_form_spam_8_limit || $contact_form_spam_9_count > $contact_form_spam_9_limit || $contact_form_spam_11_count > $contact_form_spam_11_limit || $contact_form_spam_12_count > $contact_form_spam_12_limit || !empty( $email_blacklisted ) || !empty( $domain_blacklisted ) || !empty( $website_shortened_url ) || !empty( $website_long_url ) || !empty( $content_shortened_url ) ) {
+			elseif ( !empty( $subject_blacklisted ) || $contact_form_spam_8_count > $contact_form_spam_8_limit || $contact_form_spam_9_count > $contact_form_spam_9_limit || $contact_form_spam_11_count > $contact_form_spam_11_limit || $contact_form_spam_12_count > $contact_form_spam_12_limit || !empty( $email_blacklisted ) || !empty( $domain_blacklisted ) || !empty( $website_shortened_url ) || !empty( $website_long_url ) || !empty( $website_exploit_url ) || !empty( $content_shortened_url ) || !empty( $content_exploit_url ) ) {
 				$message_spam=1;
 				$spamshield_error_code .= ' CF-MSG-SPAM2';
 				$contact_response_status_message_addendum .= '&bull; ' . __( 'Message appears to be spam. Please note that link requests, link exchange requests, and SEO outsourcing/offshoring spam will be automatically deleted, and are not an acceptable use of this contact form.', WPSS_PLUGIN_NAME ) . '<br />&nbsp;<br />';
@@ -1967,6 +2033,20 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 					$message_spam=1;
 					$spamshield_error_code .= ' CF-REF-2-1023';
 					}
+				/*
+				// BAD ROBOT TEST - BEGIN
+					// Can remove previous CF-REF-2-1023 test above as this replaces it.
+				$bad_robot_filter_data 	 = spamshield_bad_robot_blacklist_chk( 'contact', '', '', '', $wpss_contact_name, $wpss_contact_email_lc );
+				//$cf_filter_status		 = $bad_robot_filter_data['status'];
+				$revdns_blacklisted 	 = $bad_robot_filter_data['blacklisted'];
+				if ( !empty( $revdns_blacklisted ) ) {
+					$message_spam=1;
+					$spamshield_error_code 	.= $bad_robot_filter_data['error_code'];
+					//$cf_badrobot_error = true;
+					}
+				
+				// BAD ROBOT TEST - END
+				*/
 				if ( $message_spam == 1 ) {
 					$contact_response_status_message_addendum .= '&bull; ' . __( 'Message appears to be spam. Please note that link requests, link exchange requests, and SEO outsourcing/offshoring spam will be automatically deleted, and are not an acceptable use of this contact form.', WPSS_PLUGIN_NAME ) . '<br />&nbsp;<br />';
 					}
@@ -2482,6 +2562,7 @@ function spamshield_bad_robot_blacklist_chk( $type = 'comment', $status = NULL, 
 	// HAL1005
 
 	// USER-AGENT
+	// Add Blacklisted User-Agent Function - Note 1.4
 	if ( empty( $user_agent ) ) {
 		$spamshield_error_code .= ' '.$pref.'UA1001-0';
 		$blacklisted = true;
@@ -2564,13 +2645,14 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		// General Spammers
 		"canadianwarmbloods.com", "crackfacebookaccount.com", "droa.com", "entiver.com", "entiveracademy.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", "globaldata4u.com", "hit4hit.org", 
 		"howtohypnotizesomeoneforbeginners.com", "hypnosisforbeginners.com", "incaltaminte-mopiel.ro", "keywordspy.com", "kleinkredit100.de", "lili-marlene-dortmund.de", "pattybeni.com", "probemosjuntos.com", "rxiied.com", "ryansheavenlyroofing.blogspot.com", 
-		"superbsocial.net", "votreserrurierparis.fr", "wellnessmn.net", 
+		"spencediamonds.com", "superbsocial.net", "votreserrurierparis.fr", "wellnessmn.net", 
 		// Payday Loan Spammmers
 		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
 		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
 		// SEO Spammers
 		"alkyonedigital.com", "agenciade.serviciosdeseo.com", "click4pardeep.com", "dreamforweb.com", "hhmla.ca", "imediasolutions.biz",  "quickcontent.net", "ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", 
-		"rubyseo.com", "searchmediapromotion.in", "semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", "seooptimizationtipz.com", "seoservicesnewyork.org", "serviciosdeseo.com", "triveniinfotech.com", "webpromotioner.com", 
+		"rubyseo.com", "searchmediapromotion.in", "semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", "seooptimizationtipz.com", "seoservicesnewyork.org", "seosorcery.in", "serviciosdeseo.com", "triveniinfotech.com", 
+		"webpromotioner.com", 
 		// WebDev Spammers
 		"manektech.com", "retailon.co", "retailon.net", "rizecorp.com", "rizedigital.com", "webdesigncompany.org", 
 		// Add more here
@@ -2582,10 +2664,11 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 	// Other Checks
 	$regex_phrases_other_checks = array(
 		"~((payday|short-?term)-?loans?|cash-?advance)~i", 		// Payday Loan Spammers - Keywords in Domain
+		"~(plan-?cul|tonplanq)~i",								// "plan cul" Spammers
 		"~^((ww[w0-9]|m)\.)?whereto(buy|get)cannabisoil~i", 	// Misc
 		);
 	foreach( $regex_phrases_other_checks as $i => $regex_phrase_chk ) {
-		if ( preg_match( $regex_phrase_chk, $domain ) ) { $blacklist_status = true; return $blacklist_status; }
+		if ( preg_match( $regex_phrase_chk, $domain ) ) { return true; }
 		}
 	// Final Check - The Blacklist...takes longest once blacklist is populated, so put last
 	$regex_phrase = spamshield_get_regex_phrase($blacklisted_domains,'','domain');
@@ -2597,16 +2680,17 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 
 function spamshield_urlshort_blacklist_chk( $url = NULL, $email_domain = NULL ) {
 	// URL Shortener Blacklist Check
+	// Dangerous because users have no idea what website they are clicking through to
 	$url_shorteners = array(
 		// Initial Set - Will add more as new ones are verified
 		// 15 per line
 		"›.ws", "➹.ws", "➔.ws", "➞.ws", "➡.ws", "➨.ws", "➯.ws", "➽.ws", "✩.ws", "✿.ws", "❥.ws", "014.me", "0rz.tw", "1url.com", "2.gp", 
-		"2tu.us", "66.re", "adcrun.ch", "adf.ly", "aka.gr", "amzn.to", "bc.vc", "bit.do", "bit.ly", "bitly.com", "blankrefer.com", "budurl.com", "buff.ly", "buzurl.com", "cli.gs", 
-		"cutt.us", "dft.ba", "dlvr.it", "fb.me", "filoops.info", "fur.ly", "goo.gl", "goxl.me", "hiderefer.com", "is.gd", "ity.im", "j.mp", "l.gg", "lemde.fr", "linkto.im", 
-		"moourl.com", "ow.ly", "po.st", "q.gs", "qr.net", "rdlnk.com", "scrnch.me", "smsh.me", "sn.im", "snipurl.com", "snurl.com", "su.pr", "t.co", "tiny.cc", "tinyurl.com", 
-		"tl.gd", "tota2.com", "twitthis.com", "u.to", "v.gd", "x.co", "y2u.be", "youtu.be", 
+		"2tu.us", "66.re", "888.hn", "adcrun.ch", "adf.ly", "aka.gr", "amzn.to", "bc.vc", "bit.do", "bit.ly", "bitly.com", "blankrefer.com", "budurl.com", "buff.ly", "buzurl.com", 
+		"cli.gs", "cutt.us", "dft.ba", "dlvr.it", "fb.me", "filoops.info", "fur.ly", "goo.gl", "goxl.me", "hiderefer.com", "is.gd", "ity.im", "j.mp", "l.gg", "lemde.fr", 
+		"linkto.im", "moourl.com", "ow.ly", "po.st", "q.gs", "qr.net", "rdlnk.com", "scrnch.me", "smsh.me", "sn.im", "snipurl.com", "snurl.com", "su.pr", "t.co", "tiny.cc", 
+		"tinyurl.com", "tl.gd", "tota2.com", "twitthis.com", "u.to", "v.gd", "x.co", "y2u.be", "youtu.be", 
 		// YOURLS user-created shorteners
-		"atho.me", "axr.be", "we.cx", 
+		"atho.me", "axr.be", "hgld.ru", "we.cx", 
 		);
 	// Goes after array
 	$blacklist_status = false;
@@ -2641,7 +2725,7 @@ function spamshield_social_media_url_chk( $url = NULL ) {
 	$social_media_domains = array(
 		// 10 per line
 		"apps.facebook.com", "bebo.com", "ca.linkedin.com", "dailymotion.com", "digg.com", "facebook.com", "flickr.com", "instagram.com", "linkedin.com", "meetup.com", 
-		"myspace.com", "pinterest.com", "plus.google.com", "stumbleupon.com", "tagged.com", "twitter.com", "vimeo.com", "vk.com", "youtube.com", 
+		"myspace.com", "pinterest.com", "plus.google.com", "recordr.tv", "stumbleupon.com", "tagged.com", "twitter.com", "vimeo.com", "vk.com", "youtube.com", 
 		);
 	// Goes after array
 	$blacklist_status = false;
@@ -2664,16 +2748,25 @@ function spamshield_misc_spam_url_chk( $url = NULL ) {
 	$spam_domains = array(
 		// 10 per line
 		"150m.com", "250m.com", "297286.com", "agriimplements.com", "animatedfavicon.com", "blogs.ign.com", "choice-direct.com", "christiantorrents.ru", "cignusweb.com", "clickaudit.com", 
-		"commentposter.com", "experl.com", "freehostia.com", "free-site-host.com", "grillpartssteak.com", "groups.google.com", "groups.google.us", "groups.yahoo.com", "groups.yahoo.us", "johnbeck.com", 
-		"johnbeck.net", "johnbeck.tv", "johnbeckseminar.com", "johnbeckseminar.net", "johnbeckseminar.tv", "johnbeckssuccessstories.com", "johnbeckssuccessstories.net", "johnbeckssuccessstories.tv", "kankamforum.net", "lifecity.info", 
-		"lifecity.tv", "mastersofseo.com", "members.lycos.co.uk", "mmoinn.com", "mysmartseo.com", "netcallidus.com", "phpbbserver.com", "phpdug.net", "play.google.com", "post-comments.com", 
-		"real-url.org", "redcamtube.com", "registry-error-cleaner.com", "rsschannelwriter.com", "shredderwarehouse.com", "sitemapwriter.com", "sqiar.com", "squidoo.com", "submitbookmark.com",	"submit-trackback.com", 
-		"sunitawedsamit.com", "t35.com", "tpbunblocked.com", "webseomasters.com", "widecircles.com", "wordpressautocomment.com", "youtube-poster.com", 
+		"commentposter.com", "docs.google.com", "experl.com", "freehostia.com", "free-site-host.com", "grillpartssteak.com", "groups.google.com", "groups.google.us", "groups.yahoo.com", "groups.yahoo.us", 
+		"johnbeck.com", "johnbeck.net", "johnbeck.tv", "johnbeckseminar.com", "johnbeckseminar.net", "johnbeckseminar.tv", "johnbeckssuccessstories.com", "johnbeckssuccessstories.net", "johnbeckssuccessstories.tv", 
+		"kankamforum.net", "lifecity.info", "lifecity.tv", "mastersofseo.com", "members.lycos.co.uk", "mmoinn.com", "mradar.com", "mysmartseo.com", "netcallidus.com", "page2rss.com", "phpbbserver.com", 
+		"phpdug.net", "play.google.com", "post-comments.com", "real-url.org", "redcamtube.com", "registry-error-cleaner.com", "rsschannelwriter.com", "shredderwarehouse.com", "sitemapwriter.com", "sqiar.com", 
+		"squidoo.com", "submitbookmark.com", "submit-trackback.com", "sunitawedsamit.com", "t35.com", "tpbunblocked.com", "webseomasters.com", "widecircles.com", "wordpressautocomment.com", "youtube-poster.com", 
 		);
 	// Goes after array
 	$blacklist_status = false;
 	if ( empty( $url ) ) { return false; }
 	$domain = spamshield_get_domain($url);
+	$regex_phrases_other_checks = array(
+		"~youporn([0-9]+)\.vox\.com~i",
+		"~shopsquareone\.com/stores/~i",
+		"~yellowpages\.ca/bus/~i",
+		"~spence-diamonds~i",
+		);
+	foreach( $regex_phrases_other_checks as $i => $regex_phrase_chk ) {
+		if ( preg_match( $regex_phrase_chk, $url ) ) { return true; }
+		}
 	$regex_phrase = spamshield_get_regex_phrase($spam_domains,'','domain');
 	//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
 	//spamshield_append_log_data( "\n".'$domain:'.$domain.' Line: '.__LINE__ );
@@ -2722,6 +2815,7 @@ function spamshield_at_link_spam_url_chk( $urls = NULL ) {
 		}
 	return $blacklist_status;
 	}
+
 function spamshield_cf_link_spam_url_chk( $haystack = NULL, $email = NULL ) {
 	// Contact Form Link Spam URL Check
 	// Check Anchor Text Links in message content for links to shortened URLs
@@ -2741,6 +2835,55 @@ function spamshield_cf_link_spam_url_chk( $haystack = NULL, $email = NULL ) {
 	return $blacklist_status;
 	}
 
+function spamshield_exploit_url_chk( $urls = NULL ) {
+	// Security - Misc Exploit URL Check - Added in 1.4
+	// Check ALL links for common exploit URLs
+	// $urls - an array of URLs parsed from comment or message content
+	// If $urls is string, will convert to array (so can be used for Comment Author URL or Contact Form Website)
+	$blacklist_status = false;
+	if ( empty( $urls ) ) { return false; }
+	if ( is_string( $urls ) ) {
+		$urls_arr 	= array();
+		$urls_arr[]	= $urls;
+		$urls 		= $urls_arr;
+		}
+	foreach( $urls as $u => $url ) {
+		$query_string = spamshield_get_query_string($url);
+		//spamshield_append_log_data( "\n".'Begin $url check - '.$u.': '.$url.' Line: '.__LINE__ );
+		if ( preg_match( "~/phpinfo\.php\?~i", $url ) ) {
+			// phpinfo.php Redirect - Used in XSS
+			$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
+			break;
+			}
+		elseif ( preg_match( "~^(https?\:/+)?([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/?~i", $url ) ) {
+			// IP Address URLs
+			// Normal people (and Trackbacks/Pingbacks) don't post IP addresses as their website address in a comment, DUH
+			// Dangerous because users have no idea what website they are clicking through to
+			// Likely a Phishing site or XSS
+			$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
+			break;
+			}
+		//elseif ( preg_match( "~(\=|%3d)(?:ftp|https?)%3a%2f%2f~i", $url ) || preg_match( "~%3c(a\++href%3d|script)~i", $url ) ) {
+		elseif ( !empty( $query_string ) && preg_match( "~(\.\.(\/|%2f)|boot\.ini|tag\=|(ftp|https?)(\:|%3a)|mosconfig_[a-z_]{1,21}(\=|%3d)|base64_encode.*\(.*\)|[\[\]\(\)\{\}\<\>\|\"\';\?\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d|%0|%a|%b|%c|%d|%e|%f|127\.0|globals|encode|localhost|loopback|request|select|insert|union|declare)~i", $query_string ) ) { // Check Query String
+			// Dangerous Exploit URLs - XSS, SQL injection, or other
+			// Test Query String - This covers a number of SQL Injection and other exploits
+			$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
+			break;
+			}			
+		elseif ( preg_match( "~([\[\]\(\)\{\}\<\>\|\"\';\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d)~i", $url ) ) { // Check Query String
+			// Dangerous Exploit URLs - XSS, SQL injection, or other
+			// Test URL - no reason these would occur in a normal URL - they're not legal in a URL, but we've seen them in spam URL submissions
+			$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
+			break;
+			}			
+		}
+	return $blacklist_status;
+	}
+
 function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = false, $haystack_type = 'author' ) {
 	// Author Keyword Blacklist Check
 	// Use for testing Comment Author, New User Registrations, and anywhere else you need to test an author name.
@@ -2751,22 +2894,25 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 	$blacklist_keyphrases = spamshield_get_anchortxt_blacklist();
 	$blacklist_keyphrases_lite = array( 
 		// Use this for content link anchor text, not author names
-		"accident lawyer", "accutane", "acomplia", "adipex", "alprostadil", "amature movie", "amature video", "attorney", "avanafil", "bankruptcy", "bestiality", "betting", "bisexual", "blackjack", "blow job", 
-		"build link", "build muscle", "buy pill", "caffeine", "call girl", "cambogia", "cannabis", "cash advance", "casinos", "celebrity movie", "celebrity video", "cialis", "clitoris", "clonazepam", 
-		"comment poster", "comment submitter", "consolidate debt", "consolidation debt", "consolidation loan", "cosmetic surgeon", "cosmetic surgery", "credit card", "cum", "cum shot", "cumshot", "dapoxetine", 
-		"debt consolidation", "desnuda", "diet pill", "diets", "dildo", "drug rehab", "dui lawyer", "dysfunction", "earn money", "ejaculate", "enhancement", "enlargement", "ephedra", "ephedrine", "erectile", 
-		"erection", "erotic", "eroticism", "escort service", "financial", "foreclosure", "forex", "formula t10", "fuck", "fuckbuddy", "fuckin", "gambling", "gambling online", "garcinia", "garcinia cambogia", 
-		"hentai", "herbalife", "heterosexual", "homeopathic", "homosexual", "hormone", "incest", "india outsource", "inhibitor pde5", "injury lawyer", "keratin", "klonopin", "levitra", "levtira", "libido", 
-		"link builder", "link building", "loan payday", "loan student", "loan title", "logo design", "lose weight", "marijuana", "massage", "medical", "medication", "muscle build", "muscle builder", 
-		"muscle ripped", "naked", "nude", "online consultant", "online consulting", "online design", "online developer", "online development", "online hosting", "online gambling", "online marketer", 
-		"online marketing", "online optimization", "online rank", "online ranking", "online template", "opiate", "orgasm", "outsource india", "payday", "payday loan", "pde5 inhibitor", "penis", "pharmacy", 
-		"phentermine", "php expert", "plantar fasciitis", "plastic surgeon", "plastic surgery", "porn", "porno", "pornographic", "pornography", "porntube", "prescription", "priligy", "propecia", "prostitute", 
-		"pussy", "rapes", "raping", "rapist", "rhinoplasty", "rimonabant", "ripped muscle", "rivotril", "search engine", "search engine consulting", "search engine consultant", "search engine marketer", 
-		"search engine marketing", "search engine optimization", "search engine optimizer", "search engine rank", "search engine ranking", "search consultant", "search consulting", "search marketer", 
-		"search marketing", "search optimization", "search optimizer", "search rank", "search ranking", "sem", "seo", "sex", "sex chat", "sex drive", "sexe", "sex movie", "sex tape", "sex video", "sexual", 
-		"sexual performance", "sexual service", "sexy", "short term loan", "sildenafil", "social bookmark", "social media consulting", "social media marketing", "social media optimization", "social poster", 
-		"social submitter", "soma", "spence diamond", "staxyn", "stendra", "steroid", "student loan", "supplement", "sweating", "tadalafil", "testosterone", "title loan", "trackback", "tramadol", "treatment", 
-		"vagina", "vaginal", "valium", "vardenafil", "viagra", "vigara", "vigrx", "webmaster", "weight loss", "xanax", "xxx", "zimulti", "zithromax", "zoekmachine optimalisatie", 
+		"accident lawyer", "accutane", "acomplia", "adipex", "air jordan", "alprostadil", "amature movie", "amature video", "attorney", "avanafil", "bankruptcy", "bestiality", "betting", "bisexual", 
+		"blackjack", "blow job", "build link", "build muscle", "buy pill", "call girl", "cambogia", "cannabis", "cash advance", "casinos", "celebrity movie", "celebrity video", "cellulite", "celulit", 
+		"chaturbate", "cialis", "clitoris", "clonazepam", "comment poster", "comment submitter", "consolidate debt", "consolidation debt", "consolidation loan", "cosmetic surgeon", "cosmetic surgery", 
+		"credit card", "cum", "cum shot", "dapoxetine", "debt consolidation", "desnuda", "diet pill", "dildo", "drug rehab", "dui lawyer", "earn money", "ejaculate", "ephedra", "ephedrine", "erectile", 
+		"erection", "eretil", "erotic", "eroticism", "escort service", "fat loss", "foreclosure", "forex", "formula t10", "fuck", "fuckbuddy", "fuckin", "gambling", "gambling online", "garcinia", 
+		"garcinia cambogia", "hack wifi", "hand bag", "hair loss", "hentai", "herbalife", "herpes", "heterosexual", "homeopathic", "homosexual", "impotence", "impotencia", "impotent", "incest", 
+		"india outsource", "inhibitor pde5", "injury lawyer", "keratin", "ketone", "klonopin", "labia", "labial", "labiale", "levitra", "levtira", "libido", "link builder", "link building", "loan payday", 
+		"loan student", "loan title", "logo design", "lose fat", "lose weight", "lunette", "make money", "marijuana", "massage", "masturbate", "medical", "medication", "milf", "money make", "muscle build", 
+		"muscle builder", "muscle ripped", "naked", "nike air", "nike shoe", "nude", "online consultant", "online consulting", "online design", "online developer", "online development", "online hosting", 
+		"online gambling", "online marketer", "online marketing", "online optimization", "online rank", "online ranking", "online template", "opiate", "orgasm", "outsource india", "page rank", "payday", 
+		"payday loan", "pde5 inhibitor", "penetracion", "penetrate", "peniana", "peniano", "penile", "penis", "pharmacy", "phentermine", "php expert", "pills", "plan cul", "plan q", "plantar fasciitis", 
+		"plastic surgeon", "plastic surgery", "porn", "porn star", "porno", "pornographic", "pornography", "porntube", "prescription", "priligy", "propecia", "prostitute", "pussy", "rapes", "raping", 
+		"rapist", "rhinoplasty", "rimonabant", "ripped muscle", "rivotril", "search engine", "search engine consulting", "search engine consultant", "search engine marketer", "search engine marketing", 
+		"search engine optimization", "search engine optimizer", "search engine rank", "search engine ranking", "search consultant", "search consulting", "search marketer", "search marketing", 
+		"search optimization", "search optimizer", "search rank", "search ranking", "sem", "seo", "sex", "sex chat", "sex drive", "sex movie", "sex tape",  "sex video", "sexcam", "sexe", "sexologia", "sexual", 
+		"sexual performance", "sexual service", "sexy", "short-term loan", "sildenafil", "social bookmark", "social media consulting", "social media marketing", "social media optimization", "social poster", 
+		"social submitter", "soma", "spence diamond", "staxyn", "stendra", "steroid", "student loan", "sunglasses", "supplement", "surgeons", "surgery", "sweating", "tadalafil", "testosterone", "title loan", 
+		"trackback", "tramadol", "treatment", "vagina", "vaginal", "valium", "vardenafil", "viagra", "vigara", "vigrx", "webmaster", "weight loss", "wifi hack", "wifi hacker","xanax", "xxx", "zimulti", 
+		"zithromax", "zoekmachine optimalisatie", 
 		);
 	if ( $haystack_type == 'author' && !empty( $wpss_cl_active ) ) {
 		$blacklist_keyphrases = $blacklist_keyphrases_lite;
@@ -2866,19 +3012,19 @@ function spamshield_regexify( $var ) {
 function spamshield_regex_alpha_replace( $string ) {
 	//$tmp_string = spamshield_preg_quote( $string );
 	$tmp_string = strtolower( trim( $string ) );
-	// Translates 1337 as well
-	$input = array( // 24
+	// Translates 1337 (LEET) as well
+	$input = array( // 26
 		"~(^|[\s\.])(online|internet|web(\s*(site|page))?)\s*gambling($|[\s])~i", "~(^|[\s\.])gambling\s*(online|internet|web(\s*(site|page))?)($|[\s])~i", 
 		"~(?!^online|internet|web(\s*(site|page))?$)(^|[\s\.])(online|internet|web(\s*(site|page))?)($|[\s])~i", "~(?!^india|china|russia|ukraine$)(^|[\s\.])(india|china|russia|ukraine)($|[\s])~i", 
-		"~(?!^offshore|outsource|data\s+entry$)(^|[\s\.])(offshore|outsource|data\s+entry)($|[\s])~i", "~ph~i",	"~(^|[\s\.])porn~i", "~ual($|[\s])~i", "~al($|[\s])~i", "~ck($|[\s])~i", 
+		"~(?!^offshore|outsource|data\s+entry$)(^|[\s\.])(offshore|outsource|data\s+entry)($|[\s])~i", "~ph~i",	"~(^|[\s\.])porn~i", "~ual($|[\s])~i", "~al($|[\s])~i", "~ay($|[\s])~i", "~ck($|[\s])~i", 
 		"~(ct|x)ion($|[\s])~i", "~te($|[\s])~i", "~(?!te$)e($|[\s])~i", "~er($|[\s])~i", "~ey($|[\s])~i", "~ic($|[\s])~i", "~ign($|[\s])~i", "~iou?r($|[\s])~i", "~ism($|[\s])~i", "~ous($|[\s])~i", 
-		"~ss($|[\s])~i", "~tion($|[\s])~i", "~y($|[\s])~i", "~([abcdghklmnoprtw])($|[\s])~i", 
+		"~oy($|[\s])~i", "~ss($|[\s])~i", "~tion($|[\s])~i", "~y($|[\s])~i", "~([abcdghklmnoprtw])($|[\s])~i", 
 		);
-	$output = array( // 24
+	$output = array( // 26
 		" (online|internet|web( (site|page))?)s? (bet(ting|s)?|blackjack|casinos?|gambl(e|ing)|poker) ", " (bet(ting|s)?|blackjack|casinos?|gambl(e|ing)|poker) (online|internet|web( (site|page))?)s? ", 
 		" (online|internet|web( (site|page))?)s? ", " (india|china|russia|ukraine) ", " (offshor(e(d|r|s|n|ly)?|ing)s?|outsourc(e(d|r|s|n|ly)?|ing)s?|data entry) ", "(ph|f)", "p(or|ro)n", "u(a|e)l(ly|s)? ", 
-		"al(ly|s)? ", "ck(e(d|r)?|ing)?s? ", "(ct|cc|x)ions? ", "t(e(d|r|s|n|ly)?|ing|ion)?s? ", "(e(d|r|s|n|ly)?|ing|ation)s? ", "(er|ing)s? ", "eys? ", "i(ck?|que)(s|ly)? ", "ign(e(d|r))?s? ", "iou?rs? ", 
-		"is(m|t) ", "ous(ly)? ", "ss(es)? ", "(t|c)ions? ", "(y|ies?) ", "$1s? ", 
+		"al(ly|s)? ", "ays? ", "ck(e(d|r)?|ing)?s? ", "(ct|cc|x)ions? ", "t(e(d|r|s|n|ly)?|ing|ion)?s? ", "(e(d|r|s|n|ly)?|ing|ation)s? ", "(er|ing)s? ", "eys? ", "i(ck?|que)(s|ly)? ", "ign(e(d|r))?s? ", 
+		"iou?rs? ", "is(m|t) ", "ous(ly)? ", "oys? ", "ss(es)? ", "(t|c)ions? ", "(y|ie(d|r|s)?) ", "$1s? ", 
 		);
 	$tmp_string = preg_replace( $input, $output, $tmp_string );
 	$tmp_string = strtolower( trim( $tmp_string ) );
@@ -2921,7 +3067,7 @@ function spamshield_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL
 		"REVD1029" => "~\.opentransfer\.com$~i",
 		"REVD1030" => "~(^|\.)arkada\.rovno\.ua$~i",
 		"REVD1031" => "~^(host?|vm?)[0-9]+\.server[0-9]+\.vpn(999|2buy)\.com$~i",
-		"REVD1032" => "~^(ip[\.\-])?[0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-](rdns\.(scalabledns\.com|as15003\.net|cloudradium\.com|ubiquityservers\.com)|static\.(hostnoc\.net|dimenoc\.com|reverse\.(softlayer\.com|queryfoundry\.net))|ip\.idealhosting\.net\.tr|triolan\.net|chunkhost\.com|hosted-by\.xtrmhosting\.com|rev\.poneytelecom\.eu|ipvnow.com|customer-(rethinkvps|incero)\.com|unknown\.steephost\.(net|com))$~i",
+		"REVD1032" => "~^(ip[\.\-])?[0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-](rdns\.(as15003\.net|cloudradium\.com|continuumdatacenters\.com|purewebtech\.net|scalabledns\.com|ubiquityservers\.com)|static\.(hostnoc\.net|dimenoc\.com|reverse\.(softlayer\.com|queryfoundry\.net))|ip\.idealhosting\.net\.tr|triolan\.net|chunkhost\.com|hosted-by\.xtrmhosting\.com|rev\.poneytelecom\.eu|ipvnow.com|customer-(rethinkvps|incero)\.com|unknown\.steephost\.(net|com))$~i",
 		"REVD1033" => "~^(r?d)?ns([0-9]{1,3})\.(webmasters|rootleveltech)\.com$~i",
 		"REVD1034" => "~^server([0-9]+)\.(shadowbrokers|junctionmethod|([a-z0-9\-]+))\.(com|net)$~i",
 		"REVD1035" => "~^(hosted-by\.(ipxcore\.com|hosthatch\.com|reliablesite\.net|slaskdatacenter\.pl)|host\.colocrossing\.com)$~i",
@@ -2931,13 +3077,14 @@ function spamshield_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL
 		"REVD1039" => "~^([a-z0-9\-\.]+)\.rev\.sprintdatacenter\.pl$~i",
 		"REVD1040" => "~^ns([0-9]+)\.ovh\.net$~i",
 		"REVD1041" => "~^(static|clients?)[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-](clients\.your-server\.de|customers\.filemedia\.net|hostwindsdns\.com)$~i",
-		"REVD1042" => "~^([0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}|ks[0-9]{7})[\.\-]kimsufi.com$~i",
+		"REVD1042" => "~^([0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}|ks[0-9]{7})[\.\-]kimsufi\.com$~i",
 		"REVD1043" => "~^[0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-]static-reverse\.[a-z]+-cloud\.serverhub\.com$~i",
 		"REVD1044" => "~^host[0-9]+\.sale24news\.com$~i",
 		"REVD1045" => "~^[0-9]+-[0-9]+-[0-9]+\.unassigned\.userdns\.com$~i",
 		"REVD1046" => "~^h?[0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-](rackcentre|host)\.redstation\.(co|net)\.uk$~i",
 		"REVD1047" => "~^[0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-]hostvenom\.com$~i",
 		"REVD1048" => "~^[a-z]+[0-9]*\.zeehostbox\.com$~i",
+		"REVD1049" => "~^(h[\.\-])?[0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-]keyweb\.de$~i",
 		);
 
 	foreach( $banned_servers as $error_code => $regex_phrase ) {
@@ -3489,7 +3636,8 @@ function spamshield_content_filter($commentdata) {
 	$commentdata_comment_content					= $commentdata['comment_content'];
 	$commentdata_comment_content_lc					= strtolower($commentdata_comment_content);
 	$commentdata_comment_content_lc_deslashed		= stripslashes($commentdata_comment_content_lc);
-	$commentdata_comment_content_extracted_urls_at 	= spamshield_parse_links( $commentdata_comment_content_lc_deslashed, 'url_at' );
+	$commentdata_comment_content_extracted_urls 	= spamshield_parse_links( $commentdata_comment_content_lc_deslashed, 'url' ); // Parse comment content for all URLs
+	$commentdata_comment_content_extracted_urls_at 	= spamshield_parse_links( $commentdata_comment_content_lc_deslashed, 'url_at' ); // Parse comment content for Anchor Text Link URLs
 	
 	$replace_apostrophes							= array('’','`','&acute;','&grave;','&#39;','&#96;','&#101;','&#145;','&#146;','&#158;','&#180;','&#207;','&#208;','&#8216;','&#8217;');
 	$commentdata_comment_content_lc_norm_apost 		= str_replace($replace_apostrophes,"'",$commentdata_comment_content_lc_deslashed);
@@ -3637,15 +3785,9 @@ function spamshield_content_filter($commentdata) {
 	// Check for URL Shorteners, Bogus Long URLs, Social Media URLS, and Misc Spam Domains
 	if ( spamshield_at_link_spam_url_chk( $commentdata_comment_author_url_lc ) ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$spamshield_error_code .= ' 10510AU-BL'; // Replacing 10510AU-MSC
+		$spamshield_error_code .= ' 10510AU-BL'; // Replaced 10510AU-MSC
 		}
 
-	// Miscellaneous Common Spam Domains - Author URL
-	// Correlates to and replaces filters 20001-20072
-	if ( preg_match( "~^((ww[w0-9]|m)\.)?(groups\.(google|yahoo)\.(com|us)|(phpbbserver|freehostia|free-site-host|keywordspy|t35|(1|2)50m|widecircles|netcallidus|webseomasters|mastersofseo|mysmartseo|sitemapwriter|shredderwarehouse|mmoinn|animatedfavicon|cignusweb|rsschannelwriter|clickaudit|choice-direct|experl|registry-error-cleaner|sunitawedsamit|agriimplements|submit(-trackback|bookmark)|(comment|youtube-)poster|post-comments|wordpressautocomment|grillpartssteak|tpbunblocked|sqiar|redcamtube|297286)\.com|youporn([0-9]+)\.vox\.com|blogs\.ign\.com|members\.lycos\.co\.uk|christiantorrents\.ru|lifecity\.(tv|info)|(phpdug|kankamforum)\.net|real-url\.org|johnbeck(seminar|ssuccessstories)?\.(com|net|tv)|(youtube|dailymotion|facebook|twitter|(plus|play)\.google)\.com|youtu\.be|squidoo\.com|(bitly|tinyurl)\.com|(bit|adf|ow)\.ly)$~i", $commentdata_comment_author_url_domain_lc ) ) {
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$spamshield_error_code .= ' 10510AU-MSC'; // Remove URL Shorteners from this as updated filters in 1.3.8 are tested.
-		}
 	// Testing for a unique identifying string from the comment content in the Author URL Domain
 	preg_match( "~\s+([a-z0-9]{6,})$~i", $commentdata_comment_content_lc_deslashed, $wpss_str_matches );
 	if ( !empty( $wpss_str_matches[1] ) ) { $wpss_spammer_id_string = $wpss_str_matches[1]; } else { $wpss_spammer_id_string = ''; }
@@ -3668,6 +3810,14 @@ function spamshield_content_filter($commentdata) {
 		}
 	// Potential Exploits
 	// Includes protection for Trackbacks and Pingbacks
+
+	// Check Author URL for Exploits
+	if ( spamshield_exploit_url_chk( $commentdata_comment_author_url_lc ) ) {
+		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
+		$spamshield_error_code .= ' 15000AU-XPL'; // Added in 1.4 - Replacing 15001AU-XPL and 15002AU-XPL, and adds additional protection
+		}
+
+	// REMOVE after 15000AU-XPL
 	if ( preg_match( "~/phpinfo\.php\?~i", $commentdata_comment_author_url_lc ) ) {
 		// Used in XSS
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
@@ -3681,7 +3831,9 @@ function spamshield_content_filter($commentdata) {
 		$spamshield_error_code .= ' 15002AU-XPL';
 		}
 
-		// Regular Expression Tests - 2nd Gen - Comment Author/Author URL - END
+	// Add URL Exploit Check Function
+	
+	// Regular Expression Tests - 2nd Gen - Comment Author/Author URL - END
 
 	$commentdata_comment_author_lc_spam_strong = '<strong>'.$commentdata_comment_author_lc_deslashed.'</strong>'; // Trackbacks
 
@@ -3766,12 +3918,10 @@ function spamshield_content_filter($commentdata) {
 		$spamshield_error_code .= ' 10510CU-BL'; // Replacing 10510CU-MSC
 		}
 	
-	// Miscellaneous Common Spam Domains - Comment Content
-	// Correlates to and replaces filters 20001-20072
-	// For now we are stopping links TO these sites but not blacklisting them
-	if ( preg_match( "~(<\s*a\s+([a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*)\s*href|\[(url|link))\s*\=\s*(['\"])?\s*https?\:/+((ww[w0-9]|m)\.)?(groups\.(google|yahoo)\.(com|us)|(phpbbserver|freehostia|free-site-host|t35|(1|2)50m|widecircles|netcallidus|webseomasters|mastersofseo|mysmartseo|sitemapwriter|shredderwarehouse|mmoinn|animatedfavicon|cignusweb|rsschannelwriter|clickaudit|choice-direct|experl|registry-error-cleaner|sunitawedsamit|agriimplements|submit(-trackback|bookmark)|(comment|youtube-)poster|post-comments|wordpressautocomment|grillpartssteak|tpbunblocked|sqiar|redcamtube|297286)\.com|youporn([0-9]+)\.vox\.com|blogs\.ign\.com|members\.lycos\.co\.uk|christiantorrents\.ru|lifecity\.(tv|info)|(phpdug|kankamforum)\.net|real-url\.org|johnbeck(seminar|ssuccessstories)?\.(com|net|tv)|(youtube|dailymotion|facebook|twitter|(plus|play)\.google)\.com|youtu\.be|squidoo\.com|(bitly|tinyurl)\.com|(bit|adf|ow)\.ly)/?([a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]*)(['\"])?(>|\])~i", $commentdata_comment_content_lc_deslashed ) ) {
+	// Check all URL's in Comment Content for Exploits
+	if ( spamshield_exploit_url_chk( $commentdata_comment_content_extracted_urls ) ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$spamshield_error_code .= ' 10510CU-MSC';  // Remove URL Shorteners from this as updated filters in 1.3.8 are tested. (Once New filter is added here.)
+		$spamshield_error_code .= ' 15000CU-XPL'; // Added in 1.4
 		}
 
 	// Regular Expression Tests - 2nd Gen - Comment Content - END
@@ -3801,18 +3951,8 @@ function spamshield_content_filter($commentdata) {
 			}
 		$i++;
 		}
-	// Comment Author and Comment Author URL appearing in Content
-	/* This test deprecated then deleted on 05/02/2014
-	if ( !empty( $commentdata_comment_author_url_lc ) ) {
-		$commentdata_comment_author_lc_inhref = '>'.$commentdata_comment_author_lc_deslashed.'</a>';
-		
-		if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_url_lc ) !== false && strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_inhref ) !== false ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$spamshield_error_code .= ' 9100';
-			}
-		}
-	*/
-	// REGEX VERSION
+
+	// Comment Author and Comment Author URL appearing in Content - REGEX VERSION
 	if ( preg_match( "~(<\s*a\s+([a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*)\s*href|\[(url|link))\s*\=\s*(['\"])?\s*$commentdata_comment_author_url_lc_regex([a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]*)(['\"])?(>|\])$commentdata_comment_author_lc_deslashed_regex(<|\[)\s*\/\s*a\s*(>|(url|link)\])~i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 9100-1';
@@ -4252,7 +4392,7 @@ function spamshield_content_filter($commentdata) {
 		$spamshield_error_code .= ' 5002';
 		}
 	// "Hey this is off topic but.." Then why are you commenting? Common phrase in spam
-	if ( preg_match( "~^([a-z0-9\s\.,!]{0,12})?((he.a?|h([ily]{1,2}))(\s+there)?|howdy|hello|bonjour)([\.,!])?\s+(([ily]{1,2})\s+know\s+)?th([ily]{1,2})s\s+([ily]{1,2})s\s+([a-z\s]{3,12}|somewhat|k([ily]{1,2})nd\s*of)?(of{1,2}\s+)?of{1,2}\s+top([ily]{1,2})c\s+(but|however)\s+([ily]{1,2})\s+(was\s+wonder([ily]{1,2})nn?g?\s+|need\s+some\s+adv([ily]{1,2})ce)~i", $commentdata_comment_content_lc_deslashed ) ) {
+	if ( preg_match( "~^([a-z0-9\s\.,!]{0,12})?((he.a?|h([ily]{1,2}))(\s+there)?|howdy|hello|bonjour|good\s+day)([\.,!])?\s+(([ily]{1,2})\s+know\s+)?th([ily]{1,2})s\s+([ily]{1,2})s\s+([a-z\s]{3,12}|somewhat|k([ily]{1,2})nd\s*of)?(of{1,2}\s+)?of{1,2}\s+top([ily]{1,2})c\s+(but|however)\s+([ily]{1,2})\s+(was\s+wonder([ily]{1,2})nn?g?|need\s+some\s+adv([ily]{1,2})ce)~i", $commentdata_comment_content_lc_deslashed ) ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 5003';
 		}
@@ -4260,6 +4400,7 @@ function spamshield_content_filter($commentdata) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$spamshield_error_code .= ' 5004';
 		}
+	// BOILERPLATE: Add common boilerplate/template spam phrases... Add Blacklist functions
 
 	// WP Blacklist Check - BEGIN
 	
@@ -5854,7 +5995,8 @@ if (!class_exists('wpSpamShield')) {
 			// "But couldn't that be done by..." Stop right there...No, it cannot.
 
 			if ( ( is_admin() && !is_user_logged_in() ) || ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) {
-				
+				// Seems weird at first glance...written like this so code is included on Registration Page as well!!
+
 				// Following was in JS, but since this is immediately before that code is executed, placed here
 				// May be issue with caching though, but minor
 				update_option( 'ak_count_pre', get_option('akismet_spam_count') );

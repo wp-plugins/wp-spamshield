@@ -1,18 +1,20 @@
 <?php
 /*
 WP-SpamShield Dynamic IMG File
-Version: 1.3.8
+Version: 1.4
 */
 
 // Security Sanitization - BEGIN
 $id='';
 if ( !empty( $_GET ) || preg_match ( "~\?~", $_SERVER['REQUEST_URI'] ) ) {
 	header('HTTP/1.1 403 Forbidden');
-	die('ERROR: This file will not function with a query string. Remove the query string from the URL and try again.');
+	die('ERROR 403: Forbidden. This file will not function with a query string. Remove the query string from the URL and try again.');
 	}
-if ( !empty( $_POST ) || $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+if ( !empty( $_SERVER['REQUEST_METHOD'] ) ) { $wpss_request_method = $_SERVER['REQUEST_METHOD']; } else { $wpss_request_method = getenv('REQUEST_METHOD'); }
+if ( empty( $wpss_request_method ) ) { $wpss_request_method = ''; }
+if ( !empty( $_POST ) || preg_match( "~^(POST|TRACE|TRACK|DEBUG|DELETE)$~", $wpss_request_method ) ) {
 	header('HTTP/1.1 405 Method Not Allowed');
-	die('ERROR: This file does not accept POST requests.');
+	die('ERROR 405: Method Not Allowed.');
 	}
 // Security Sanitization - END
 
