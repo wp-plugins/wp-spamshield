@@ -5,7 +5,7 @@ if ( !function_exists( 'add_action' ) ) {
 	}
 
 function spamshield_get_anchortxt_blacklist() {
-	$blacklist_keyphrases = array( // 735
+	$blacklist_keyphrases = array( // 738
 		"1 night stand", "1 nite stand", "2013", "2014", "2015", "3 way", "3 way link", "access", "accident", "account", "accountant", "accounting", "accutane", "acomplia", "action", "acupunture", "adipex", 
 		"administration", "adult", "adult chat", "advertise", "advertising", "affiliate", "african", "air jordan", "alabama", "alarm system", "alaska", "allied", "alprostadil", "amature", "ambassador", "android", 
 		"annual", "anonymous", "anxiety", "application", "arcane", "arctic", "argent", "arizona", "arkansas", "asphalt", "attorney", "auction", "aumento", "avanafil", "avenue", "average", "aviator", "balance", 
@@ -30,7 +30,7 @@ function spamshield_get_anchortxt_blacklist() {
 		"international", "internet", "interview", "italian", "jacket", "jacksonville", "jailbreak", "javascript", "jewelry", "johannesburg", "junction", "jungle", "kangaroo", "kentucky", "keratin", "ketone", 
 		"keyword", "klonopin", "kroatien insel brac", "labia", "labial", "labiale", "laptop", "laptopuri", "las vegas", "legend", "leveling", "levelling", "levitra", "levtira", "libido", "library", "limited", 
 		"link builder", "link building", "linked in", "locksmith", "logo design", "los angeles", "lose fat", "lose weight", "losing", "lottery", "louisiana", "louisville", "lunette", "lyric", "machine", 
-		"make money", "management", "marijuana", "massachusetts", "massage", "masturbate", "mature", "medical", "medication", "medium", "megapolis", "memphis", "message", "michigan", "milf", "minnesota", 
+		"make money", "management", "manager", "marijuana", "massachusetts", "massage", "masturbate", "mature", "medical", "medication", "medium", "megapolis", "memphis", "message", "michigan", "milf", "minnesota", 
 		"mississippi", "missouri", "mistake", "mobilabonnement priser", "mobile", "modern", "modernity", "modulesoft", "money make", "monster", "montaigne", "montre", "mortal", "movie", "moving", "murder", "muscle", 
 		"muscular", "naked", "nashville", "natural", "nebraska", "negotiation", "network", "nevada", "new hampshire", "new jersey", "new mexico", "new york", "nike air", "nike shoe", "north carolina", 
 		"north dakota", "nude", "nudism", "numerology", "nursery", "ob-gyn", "obstetric", "obstetrician", "office", "oklahoma", "one night stand", "one nite stand", "online", "online gambling", "online marketing", 
@@ -46,12 +46,12 @@ function spamshield_get_anchortxt_blacklist() {
 		"sexologia", "sexual", "sexual performance", "sexual services", "sexy", "shades", "shampoo", "shipping", "shoes", "short-term loan", "sildenafil", "simply", "sister", "skater", "skin care", "smoking", 
 		"sneaker", "soccer", "social", "social bookmark", "social media", "social poster", "social submitter", "software", "soma", "source", "south carolina", "south dakota", "special", "spence diamond", "spinal", 
 		"spray tan", "starcraft", "staxyn", "stendra", "steroid", "streaming", "student loan", "submitter", "success", "suggestion", "sunglasses", "supplement", "support", "surgeons", "surgery", "survey", "swatch", 
-		"sweating", "system", "tablet", "tactic", "tadalafil", "tanning", "tassel", "technology", "template", "testosterone", "therapy", "three way", "three way link", "through", "title", "trackback", "tractor", 
-		"trading", "traffic", "training", "tramadol", "transportation", "travel", "treatment", "troubleshoot", "troubleshooting", "turbo tax", "turquoise", "twitter", "tycoon", "ultimate", "unblocked", "underneath", 
-		"underwear", "unique", "united states", "university", "unlimited", "unlock", "uptown", "utility", "vagina", "vaginal", "valium", "vancouver", "vardenafil", "vehicle", "ventilation", "veterinarian", 
-		"veterinary", "viagra", "video", "videography", "vigara", "vigrx", "village", "vintage", "visit", "visit now", "volume", "voucher", "warfare", "watches", "wayfarer", "web host", "web hosting", "web page", 
-		"web site", "webmaster", "weight loss", "weightless", "west virginia", "wholesale", "wicked", "wifi hack", "wifi hacker", "wisconsin", "wrestling", "writing service", "wyoming", "xanax", "xxx", "youtube", 
-		"zimulti", "zithromax", "zoekmachine optimalisatie", 
+		"sweating", "system", "tablet", "tactic", "tadalafil", "tanning", "tassel", "technology", "template", "tequila", "testosterone", "therapy", "three way", "three way link", "through", "title", "trackback", 
+		"tractor", "trading", "traffic", "training", "tramadol", "transportation", "travel", "treatment", "troubleshoot", "troubleshooting", "turbo tax", "turnkey", "turquoise", "twitter", "tycoon", "ultimate", 
+		"unblocked", "underneath", "underwear", "unique", "united states", "university", "unlimited", "unlock", "uptown", "utility", "vagina", "vaginal", "valium", "vancouver", "vardenafil", "vehicle", 
+		"ventilation", "veterinarian", "veterinary", "viagra", "video", "videography", "vigara", "vigrx", "village", "vintage", "visit", "visit now", "volume", "voucher", "warfare", "watches", "wayfarer", 
+		"web host", "web hosting", "web page", "web site", "webmaster", "weight loss", "weightless", "west virginia", "wholesale", "wicked", "wifi hack", "wifi hacker", "wisconsin", "wrestling", "writing service", 
+		"wyoming", "xanax", "xxx", "youtube", "zimulti", "zithromax", "zoekmachine optimalisatie", 
 		);
 	return $blacklist_keyphrases;
 	}

@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.4
+Version: 1.4.1
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.4' );
+define( 'WPSS_VERSION', '1.4.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -548,6 +548,11 @@ function spamshield_is_lang_en_us( $strict = true ) {
 	return $lang_en_us;
 	}
 
+function spamshield_is_login_page() {
+	$wpss_login_page_check = in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) );
+    return $wpss_login_page_check;
+	}
+
 // Standard Functions - END
 
 function spamshield_load_languages() {
@@ -633,15 +638,22 @@ function spamshield_security_module() {
 		if ( !empty( $_SERVER['REQUEST_METHOD'] ) ) { $wpss_request_method = $_SERVER['REQUEST_METHOD']; } else { $wpss_request_method = getenv('REQUEST_METHOD'); }
 		if ( empty( $wpss_request_method ) ) { $wpss_request_method = ''; }
 		if ( preg_match( "~^(TRACE|TRACK|DEBUG|DELETE)$~", $wpss_request_method ) ) {
+			//$args = array( 'response' => '405' );
+			//wp_die( 'ERROR: 405 Method Not Allowed', '', $args );
 			header('HTTP/1.1 405 Method Not Allowed');
-			die('ERROR 405: Method Not Allowed');
+			die('ERROR: 405 Method Not Allowed');
 			}
 		// Block SQL Injections and Exploits
 		if ( !empty( $_SERVER['QUERY_STRING'] ) ) { $wpss_query_string = $_SERVER['QUERY_STRING']; } else { $wpss_query_string = getenv('QUERY_STRING'); }
 		if ( empty( $wpss_query_string ) ) { $wpss_query_string = ''; }
-		if ( preg_match( "~(\.\.(\/|%2f)|boot\.ini|tag\=|(ftp|https?)(\:|%3a)|mosconfig_[a-z_]{1,21}(\=|%3d)|base64_encode.*\(.*\)|[\[\]\(\)\{\}\<\>\|\"\';\?\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d|%0|%a|%b|%c|%d|%e|%f|127\.0|globals|encode|localhost|loopback|request|select|insert|union|declare)~i", $wpss_query_string ) ) {
-			header('HTTP/1.1 403 Forbidden'); // Get your ass outta here!!
-			die('ERROR 403: Forbidden');
+		// Login Page Redirect Check
+		if ( !empty( $_GET['redirect_to'] ) ) { $wpss_get_redirect_to = trim( $_GET['redirect_to'] ); } else { $wpss_get_redirect_to = ''; }
+		if ( spamshield_is_login_page() && preg_match( "~^https?(\:|%3a)~i", $wpss_get_redirect_to ) ) { $wpss_login_page_redir = true; } else { $wpss_login_page_redir = false; }
+		if ( empty( $wpss_login_page_redir ) && preg_match( "~(\.\.(\/|%2f)|boot\.ini|tag\=|(ftp|https?)(\:|%3a)|mosconfig_[a-z_]{1,21}(\=|%3d)|base64_encode.*\(.*\)|[\[\]\(\)\{\}\<\>\|\"\';\?\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d|%0|%a|%b|%c|%d|%e|%f|127\.0|globals|encode|localhost|loopback|request|select|insert|union|declare)~i", $wpss_query_string ) ) {
+			//$args = array( 'response' => '403' );
+			//wp_die( 'ERROR: 403 Forbidden', '', $args );
+			header('HTTP/1.1 403 Forbidden');
+			die('ERROR: 403 Forbidden');
 			}
 		}
 	}
@@ -2643,9 +2655,9 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 	$blacklisted_domains = array(
 		// THE Master List - Documented spammers - 10 per line
 		// General Spammers
-		"canadianwarmbloods.com", "crackfacebookaccount.com", "droa.com", "entiver.com", "entiveracademy.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", "globaldata4u.com", "hit4hit.org", 
-		"howtohypnotizesomeoneforbeginners.com", "hypnosisforbeginners.com", "incaltaminte-mopiel.ro", "keywordspy.com", "kleinkredit100.de", "lili-marlene-dortmund.de", "pattybeni.com", "probemosjuntos.com", "rxiied.com", "ryansheavenlyroofing.blogspot.com", 
-		"spencediamonds.com", "superbsocial.net", "votreserrurierparis.fr", "wellnessmn.net", 
+		"canadianwarmbloods.com", "crackfacebookaccount.com", "droa.com", "empirecompanyusa.com", "entiver.com", "entiveracademy.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", "globaldata4u.com", 
+		"hit4hit.org", "howtohypnotizesomeoneforbeginners.com", "hypnosisforbeginners.com", "incaltaminte-mopiel.ro", "keywordspy.com", "kleinkredit100.de", "lili-marlene-dortmund.de", "pattybeni.com", "probemosjuntos.com", "rxiied.com", 
+		"ryansheavenlyroofing.blogspot.com", "spencediamonds.com", "superbsocial.net", "votreserrurierparis.fr", "wellnessmn.net", 
 		// Payday Loan Spammmers
 		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
 		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
@@ -2655,6 +2667,8 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		"webpromotioner.com", 
 		// WebDev Spammers
 		"manektech.com", "retailon.co", "retailon.net", "rizecorp.com", "rizedigital.com", "webdesigncompany.org", 
+		// Hack/Exploit
+		"viralurl.com", "vur.me", 
 		// Add more here
 		);
 	if ( !empty( $get_list_arr ) ) { return $blacklisted_domains; }
@@ -2674,7 +2688,8 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 	$regex_phrase = spamshield_get_regex_phrase($blacklisted_domains,'','domain');
 	//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
 	//spamshield_append_log_data( "\n".'$domain:'.$domain.' Line: '.__LINE__ );
-	if ( preg_match( $regex_phrase, $domain ) ) { $blacklist_status = true; } // When $regex_phrase exceeds a certain size, switch this to run smaller groups or run each domain individually
+	if ( preg_match( $regex_phrase, $domain ) ) { $blacklist_status = true; }
+	// When $regex_phrase exceeds a certain size, switch this to run smaller groups or run each domain individually - see spamshield_anchortxt_blacklist_chk() - The blacklist
 	return $blacklist_status;
 	}
 
@@ -5994,7 +6009,8 @@ if (!class_exists('wpSpamShield')) {
 			// The JS file is really a dynamically generated script that uses both server-side and client-side code so it requires the PHP functionality.
 			// "But couldn't that be done by..." Stop right there...No, it cannot.
 
-			if ( ( is_admin() && !is_user_logged_in() ) || ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) {
+			//if ( ( is_admin() && !is_user_logged_in() ) || ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) {
+			if ( ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) {
 				// Seems weird at first glance...written like this so code is included on Registration Page as well!!
 
 				// Following was in JS, but since this is immediately before that code is executed, placed here
