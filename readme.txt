@@ -19,7 +19,6 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 = New Features =
 * Internationalization and localization available. Currently includes German (de_DE) translation. Ready for translation into other languages. Added in Version 1.3.
 * Stops User Registration Spam now! Added in Version 1.2.
-* Protects your WordPress site against many common SQL Injection and XSS/XST exploits for better security. Added in version 1.4. (See changelog for more info.)
 * Shortcodes for easy contact form implementation.
 * Over 10x faster! Tested and verified with benchmarking software.
 * For more, please view the changelog.
@@ -177,18 +176,10 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
-= 1.4.1 =
+= 1.4.2 =
 *released 07/22/14*
 
-* Fixed a bug in the new security module that prevented users from logging in if they tried to login from `/wp-admin/` instead of going directly to the `wp-login.php` page.
-* Updated the spam filters.
-
-= 1.4 =
-*released 07/21/14*
-
-* Added 2 fairly important security enhancements. There is a relatively new trend where hackers and link-spammers use search engine bots to do their SQL injections and exploits for them (to avoid leaving a trail back to them). Yes, Googlebot is being used for SQL injection exploits. (For more info, see my [blog post about this](http://www.redsandmarketing.com/blog/collision-seo-cybersecurity-googlebot-sql-injection-attacks/).) They post a spam comment to a blog that contains a link to a specially crafted exploit URL. If the spam comment gets accepted, when search engine spiders crawl the page, and go to the specially crafted exploit URL, the SQL injection happens. The SQL injection inserts either a link or bad code to the victim site. This version introduces some new protections against these kinds of exploits.
-  - **ALL** links in comment and contact form submissions will now be checked for these kinds of exploit URLs, so that these attacks will not originate from your site. (This includes the comment author website, the contact form sender's website, and the content of both contact forms and comments will be parsed for links...all included links will be checked.) This will also potentially help avoid having Google penalizing your site for linking to bad neighborhoods. (*Automated* spam attempts of this kind were always blocked, but now that we have more intel, the manual human spam attempts of this type will be blocked 100% as well.)
-  - Added a new security module to protect your site against these same query-string based SQL Injection attacks and XSS/XST exploits executed through vulnerable request methods.
+* There is a relatively new trend where hackers and link-spammers use search engine bots to do their SQL injections and exploits for them (to avoid leaving a trail back to them). Yes, Googlebot is being used for SQL injection exploits. Hackers use software to post a spam comment to a blog that contains a link to a specially crafted exploit URL. If the spam comment gets accepted, when search engine spiders crawl the page, and go to the specially crafted exploit URL, the SQL injection happens. The SQL injection inserts either a link or bad code to the victim site. Now **ALL** links in comment and contact form submissions will now be checked for these kinds of exploit URLs, so that these attacks will not originate from your site. (This includes the comment author website, the contact form sender's website, and the content of both contact forms and comments will be parsed for links...all included links will be checked.) This will also potentially help avoid having Google penalizing your site for linking to bad neighborhoods. (*Automated* spam attempts of this kind were always blocked, but now that we have more intel, the manual human spam attempts of this type will be blocked 100% as well.)
 * Added new filters to the spam blocking algorithm.
 * Improved some of the filters in the spam blocking algorithm.
 * Updated the spam filters.
@@ -449,8 +440,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.4.1 =
-Fixed a bug in the new security module that prevented users from logging in if they tried to login from `/wp-admin/` instead of going directly to the `wp-login.php` page, and updated the semantic spam filters.
+= 1.4.2 =
+Fixed a bug and updated the semantic spam filters.
 
 == Other Notes ==
 

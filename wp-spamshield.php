@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.4.1
+Version: 1.4.2
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.4.1' );
+define( 'WPSS_VERSION', '1.4.2' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -339,7 +339,7 @@ function spamshield_get_query_string($url) {
 	$url = spamshield_fix_url($url);
 	// NOW start parsing
 	$parsed = parse_url($url);
-	// Filter URLs with no domain
+	// Filter URLs with no query string
 	if ( empty( $parsed['query'] ) ) { return ''; }
 	$query_string = $parsed['query'];
 	return $query_string;
@@ -561,9 +561,6 @@ function spamshield_load_languages() {
 
 function spamshield_first_action() {
 
-	// Run Security Module before spamshield_start_session() & before headers sent
-	spamshield_security_module();
-
 	spamshield_start_session();
 	// All all commands after this
 	
@@ -625,39 +622,6 @@ function spamshield_first_action() {
 		}
 	}
 
-function spamshield_security_module() {
-	// Security Module - Added 1.4
-	// Protect against query-string based SQL Injection attacks and XSS/XST exploits executed through vulnerable request methods
-
-	// Best defense is to do this in .htaccess file and use mod_security.
-	// This method is adapted for WordPress.
-	// We're using die(), not wp_die() to get attackers out of WordPress as quickly as possible.
-	
-	if ( !is_user_logged_in() ) {
-		// Block restricted REQUEST_METHOD's to Prevent XSS and XST attacks
-		if ( !empty( $_SERVER['REQUEST_METHOD'] ) ) { $wpss_request_method = $_SERVER['REQUEST_METHOD']; } else { $wpss_request_method = getenv('REQUEST_METHOD'); }
-		if ( empty( $wpss_request_method ) ) { $wpss_request_method = ''; }
-		if ( preg_match( "~^(TRACE|TRACK|DEBUG|DELETE)$~", $wpss_request_method ) ) {
-			//$args = array( 'response' => '405' );
-			//wp_die( 'ERROR: 405 Method Not Allowed', '', $args );
-			header('HTTP/1.1 405 Method Not Allowed');
-			die('ERROR: 405 Method Not Allowed');
-			}
-		// Block SQL Injections and Exploits
-		if ( !empty( $_SERVER['QUERY_STRING'] ) ) { $wpss_query_string = $_SERVER['QUERY_STRING']; } else { $wpss_query_string = getenv('QUERY_STRING'); }
-		if ( empty( $wpss_query_string ) ) { $wpss_query_string = ''; }
-		// Login Page Redirect Check
-		if ( !empty( $_GET['redirect_to'] ) ) { $wpss_get_redirect_to = trim( $_GET['redirect_to'] ); } else { $wpss_get_redirect_to = ''; }
-		if ( spamshield_is_login_page() && preg_match( "~^https?(\:|%3a)~i", $wpss_get_redirect_to ) ) { $wpss_login_page_redir = true; } else { $wpss_login_page_redir = false; }
-		if ( empty( $wpss_login_page_redir ) && preg_match( "~(\.\.(\/|%2f)|boot\.ini|tag\=|(ftp|https?)(\:|%3a)|mosconfig_[a-z_]{1,21}(\=|%3d)|base64_encode.*\(.*\)|[\[\]\(\)\{\}\<\>\|\"\';\?\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d|%0|%a|%b|%c|%d|%e|%f|127\.0|globals|encode|localhost|loopback|request|select|insert|union|declare)~i", $wpss_query_string ) ) {
-			//$args = array( 'response' => '403' );
-			//wp_die( 'ERROR: 403 Forbidden', '', $args );
-			header('HTTP/1.1 403 Forbidden');
-			die('ERROR: 403 Forbidden');
-			}
-		}
-	}
-	
 function spamshield_check_cache_status() {
 	// TEST FOR CACHING
 	$wpss_active_plugins = get_option( 'active_plugins' );
@@ -2880,8 +2844,7 @@ function spamshield_exploit_url_chk( $urls = NULL ) {
 			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
 			break;
 			}
-		//elseif ( preg_match( "~(\=|%3d)(?:ftp|https?)%3a%2f%2f~i", $url ) || preg_match( "~%3c(a\++href%3d|script)~i", $url ) ) {
-		elseif ( !empty( $query_string ) && preg_match( "~(\.\.(\/|%2f)|boot\.ini|tag\=|(ftp|https?)(\:|%3a)|mosconfig_[a-z_]{1,21}(\=|%3d)|base64_encode.*\(.*\)|[\[\]\(\)\{\}\<\>\|\"\';\?\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d|%0|%a|%b|%c|%d|%e|%f|127\.0|globals|encode|localhost|loopback|request|select|insert|union|declare)~i", $query_string ) ) { // Check Query String
+		elseif ( !empty( $query_string ) && preg_match( "~(\.\.(\/|%2f)|boot\.ini|(ftp|https?)(\:|%3a)|mosconfig_[a-z_]{1,21}(\=|%3d)|base64_encode.*\(.*\)|[\[\]\(\)\{\}\<\>\|\"\';\?\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d|%0|%a|%b|%c|%d|%e|%f|127\.0|globals|encode|localhost|loopback|request|select|insert|union|declare)~i", $query_string ) ) { // Check Query String
 			// Dangerous Exploit URLs - XSS, SQL injection, or other
 			// Test Query String - This covers a number of SQL Injection and other exploits
 			$blacklist_status = true;
@@ -2890,7 +2853,7 @@ function spamshield_exploit_url_chk( $urls = NULL ) {
 			}			
 		elseif ( preg_match( "~([\[\]\(\)\{\}\<\>\|\"\';\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d)~i", $url ) ) { // Check Query String
 			// Dangerous Exploit URLs - XSS, SQL injection, or other
-			// Test URL - no reason these would occur in a normal URL - they're not legal in a URL, but we've seen them in spam URL submissions
+			// Test URL - no reason these would occur in a normal URL - they're not legal in a URL, but we've seen them in a lot of spam URL submissions
 			$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
 			break;
@@ -6009,9 +5972,7 @@ if (!class_exists('wpSpamShield')) {
 			// The JS file is really a dynamically generated script that uses both server-side and client-side code so it requires the PHP functionality.
 			// "But couldn't that be done by..." Stop right there...No, it cannot.
 
-			//if ( ( is_admin() && !is_user_logged_in() ) || ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) {
 			if ( ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) {
-				// Seems weird at first glance...written like this so code is included on Registration Page as well!!
 
 				// Following was in JS, but since this is immediately before that code is executed, placed here
 				// May be issue with caching though, but minor
