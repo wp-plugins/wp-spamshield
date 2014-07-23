@@ -1,4 +1,4 @@
-=== WP-SpamShield Anti-Spam ===
+﻿=== WP-SpamShield Anti-Spam ===
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
 Tags: antispam, anti-spam, block spam, comment, comment spam, comments, contact, contact form, form, forms, javascript, login, multisite, register, registration, security, signup, spam, spam filter, user registration spam, trackback
@@ -61,7 +61,7 @@ Even so, it's important to know that the particular JS and cookies solution used
 
 The trackback validation contains a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is spam, without fail. This alone eliminates more than 99.99% of trackback spam. Trackback spammers don't send spam out from the same server where their clients' websites reside.
 
-As of Version 1.2 the plugin also includes powerful protection from user registration spam. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up on your site's login page any more.
+> As of Version 1.2 the plugin also includes powerful protection from user registration spam. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up on your site's login page any more.
 
 The bottom line, is that this plugin just plain works, and is a **powerful weapon against spam**.
 
