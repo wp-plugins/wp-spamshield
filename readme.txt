@@ -44,6 +44,9 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 18. No cost, no hidden fees. **Free** for **both Commercial and Personal** use.
 19. A truly plug and play replacement and upgrade for WP-SpamFree. (A far more advanced fork of WP-SpamFree with dramatically improved page load speed, security, and spam blocking power, by its original author.) It will import your old data from WP-SpamFree automatically upon installation and activation, and features you were using on your site previously such as contact forms and spam stats will continue to work without any changes to pages, posts, or theme.
 
+= More Info / Documentation =
+For more info and full documentation, visit the [WP-SpamShield homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/).
+
 = Background =
 Before I developed this plugin, our team and clients experienced the same frustration you do with comment spam on your WordPress blog. Every blog we manage had comment moderation enabled and various other anti-spam plugins installed, but we still had a ton of comments tagged as spam in the spam queue that we had to sort through. This wasted a lot of valuable time, and we all know, time is money. We needed a solution.
 
@@ -66,9 +69,6 @@ The bottom line, is that this plugin just plain works, and is a **powerful weapo
 
 > #### **WordPress Blogging Without Spam**
 > How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by giving it a good rating!
-
-= More Info / Documentation =
-For more info and full documentation, visit the [WP-SpamShield homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/).
 
 == Installation ==
 
