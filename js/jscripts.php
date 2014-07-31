@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.4.3
+Version: 1.4.4
 */
 
 // Security Sanitization - BEGIN
@@ -139,10 +139,16 @@ if ( defined( 'WPSS_HASH' ) && !empty( $_SESSION )  ) {
 
 // STANDARD FUNCTIONS - BEGIN
 function spamshield_microtime_js() {
-	$mtime = microtime();
-	$mtime = explode(' ',$mtime); 
-   	$mtime = $mtime[1]+$mtime[0];
+	$mtime = microtime( true );
 	return $mtime;
+	}
+function spamshield_timer_js( $start = NULL, $end = NULL, $show_seconds = false, $precision = 8 ) {
+	if ( empty( $start ) || empty( $end ) ) { $start = 0; $end = 0; }
+	// $precision will default to 8 but can be set to anything - 1,2,3,5,etc.
+	$total_time = $end - $start;
+	$total_time_for = number_format( $total_time, $precision );
+	if ( !empty( $show_seconds ) ) { $total_time_for .= ' seconds'; }
+	return $total_time_for;
 	}
 function spamshield_get_url_js() {
 	if ( !empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] != 'off' ) { $url = 'https://'; } else { $url = 'http://'; }
@@ -184,6 +190,6 @@ commentValidation();
 
 // Uncomment to use:
 $wpss_js_end_time = spamshield_microtime_js();
-$wpss_js_total_time = substr(($wpss_js_end_time - $wpss_js_start_time),0,8). " seconds";
+$wpss_js_total_time = spamshield_timer_js( $wpss_js_start_time, $wpss_js_end_time, true, 6 );
 echo "// Generated in: ".$wpss_js_total_time."\n";
 ?>
