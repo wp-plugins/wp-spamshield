@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2014-07-13 16:54-0800\n"
+"PO-Revision-Date: 2014-07-31 17:16-0800\n"
 "Last-Translator: Christoph Krzikalla <wordpress@krzikalla.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_c\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.6\n"
+"X-Generator: Poedit 1.6.7\n"
 "Language: de_DE\n"
 "X-Poedit-SearchPath-0: wp-spamshield\n"
 
@@ -28,11 +28,15 @@ msgstr "Dokumentation"
 msgid "spam blocked by WP-SpamShield"
 msgstr "Spam durch WP-SpamShield blockiert"
 
-#: wp-spamshield.php:867
+#: wp-spamshield.php:955
+msgid "Spam"
+msgstr "Spam"
+
+#: wp-spamshield.php:965
 msgid "WP-SpamShield Counter"
 msgstr "WP-SpamShield Zähler"
 
-#: wp-spamshield.php:870
+#: wp-spamshield.php:969
 msgid "Show how much spam is being blocked by WP-SpamShield."
 msgstr "Zeige, wie viel Spam durch WP-SpamShield blockiert wurde."
 

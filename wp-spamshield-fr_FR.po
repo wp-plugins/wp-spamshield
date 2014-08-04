@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2014-07-31 17:15-0800\n"
-"Last-Translator: Borisa Djuraskovic <borisad@webhostinghub.com>\n"
+"PO-Revision-Date: 2014-08-04 04:32-0800\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,20 +13,20 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.6.7\n"
-"Language: sr_RS\n"
+"Language: fr_FR\n"
 "X-Poedit-SearchPath-0: wp-spamshield\n"
 
 #: wp-spamshield.php:190 wp-spamshield.php:2039 wp-spamshield.php:5473
 msgid "Your message was sent successfully. Thank you."
-msgstr "Vaša poruka je uspešno poslata. Hvala."
+msgstr "Votre message a bien été envoyé. Merci."
 
 #: wp-spamshield.php:484
 msgid "Documentation"
-msgstr "Dokumentacija"
+msgstr "Documentation"
 
 #: wp-spamshield.php:625 wp-spamshield.php:701
 msgid "spam blocked by WP-SpamShield"
-msgstr "WP-SpamShield blokirao je spam"
+msgstr "spam bloqué par WP-SpamShield"
 
 #: wp-spamshield.php:955
 msgid "Spam"
@@ -34,31 +34,30 @@ msgstr "Spam"
 
 #: wp-spamshield.php:965
 msgid "WP-SpamShield Counter"
-msgstr "WP-SpamShield Brojač"
+msgstr "Compteur WP-SpamShield"
 
 #: wp-spamshield.php:969
 msgid "Show how much spam is being blocked by WP-SpamShield."
-msgstr "Prikaži koliko je spam-ova blokirao WP-SpamShield."
+msgstr "Afficher combien de spams sont bloqués par WP-SpamShield."
 
 #: wp-spamshield.php:1540
 msgid ""
 "Currently you have JavaScript disabled. In order to post comments, please "
 "make sure JavaScript and Cookies are enabled, and reload the page."
 msgstr ""
-"Trenutno vam je JavaScript deaktiviran. Da biste objavili komentare, "
-"proverite da li su JavaScript i kolačići aktivirani i ponovo učitajte "
-"stranicu."
+"JavaScript est actuellement désactivé. Afin de pouvoir poster un "
+"commentaire, s'il vous plaît contrôlez que les Cookies et JavaScript sont "
+"activés puis rechargez la page."
 
 #: wp-spamshield.php:1541 wp-spamshield.php:2189 wp-spamshield.php:4252
 msgid ""
 "Click here for instructions on how to enable JavaScript in your browser."
 msgstr ""
-"Kliknite ovde za instrukcije kako da aktivirate  JavaScript u svom "
-"pretraživaču."
+"Cliquez ici pour savoir comment activer JavaScript dans votre navigateur."
 
 #: wp-spamshield.php:1798
 msgid "Website Contact"
-msgstr "Web site kontakt"
+msgstr "Contact"
 
 #: wp-spamshield.php:1864
 msgid ""
@@ -66,10 +65,10 @@ msgid ""
 "requests, and SEO outsourcing requests will be automatically deleted, and "
 "are not an acceptable use of this contact form."
 msgstr ""
-"Izgleda da je ova poruka spam. Imajte u vidu da će svi zahtevi za link, svi "
-"zahtevi za razmene linkova i zahtevi koji potiču od nekog drugog izvora, "
-"osim SEO, biti automatski obrisani. Smatraju se neprihvatljivi za upotrebu "
-"ovog oblika kontakta. "
+"Ce message a l'air d'être du spam. S'il vous plaît notez que les demandes de "
+"liens, les demandes d'échanges de liens et les demandes de délégation de SEO "
+"seront automatiquement détruites et ne sont pas une utilisation possible de "
+"ce formulaire de contact."
 
 #: wp-spamshield.php:1869 wp-spamshield.php:1882
 msgid ""
@@ -77,22 +76,22 @@ msgid ""
 "requests, and SEO outsourcing/offshoring spam will be automatically deleted, "
 "and are not an acceptable use of this contact form."
 msgstr ""
-"Izgleda da je ova poruka spam. Imajte u vidu da će svi zahtevi za link, svi "
-"zahtevi za razmene linkova i zahtevi koji potiču od nekog drugog izvora, "
-"osim SEO, biti automatski obrisani. Smatraju se neprihvatljivim za upotrebu "
-"ovog oblika kontakta. "
+"Ce message a l'air d'être du spam. S'il vous plaît notez que les demandes de "
+"liens, les demandes d'échanges de liens et les demandes de délégation de SEO "
+"seront automatiquement détruites et ne sont pas une utilisation possible de "
+"ce formulaire de contact."
 
 #: wp-spamshield.php:1889
 msgid "At least one required field was left blank."
-msgstr "Najmanje jedno obavezno polje nije popunjeno."
+msgstr "Au moins un champ a été laissé vide."
 
 #: wp-spamshield.php:1909
 msgid "Please enter a valid phone number."
-msgstr "Molimo vas da unesete važeći telefonski broj."
+msgstr "Entrez un numéro de téléphone valide, s'il vous plaît."
 
 #: wp-spamshield.php:1916
 msgid "Message too short. Please enter a complete message."
-msgstr "Poruka je prekratka. Unesite kompletnu poruku."
+msgstr "Ce message est trop court. Entrez un message plus long."
 
 #: wp-spamshield.php:1927
 msgid ""
@@ -101,129 +100,136 @@ msgid ""
 "submissions will be automatically deleted, and are not an acceptable use of "
 "this contact form."
 msgstr ""
-"Izgleda da je ova poruka spam. Imajte u vidu da će svi zahtevi za link, svi "
-"zahtevi za razmene linkova i zahtevi koji potiču od nekog drugog izvora, "
-"osim SEO, biti automatski obrisani. Smatraju se neprihvatljivim za upotrebu "
-"ovog formulara kontakta. "
+"Ce message a l'air d'être du spam. S'il vous plaît notez que les demandes de "
+"liens, les demandes d'échanges de liens, les demandes de délégation de SEO "
+"et le remplissage automatique de formulaire seront automatiquement détruites "
+"et ne sont pas une utilisation possible de ce formulaire de contact."
 
 #: wp-spamshield.php:1950 wp-spamshield.php:2176
 msgid "Message"
-msgstr "Poruka"
+msgstr "Message"
 
 #: wp-spamshield.php:1958 wp-spamshield.php:2114
 msgid "Phone"
-msgstr "Telefon"
+msgstr "Téléphone"
 
 #: wp-spamshield.php:1961 wp-spamshield.php:2123
 msgid "Company"
-msgstr "Kompanija"
+msgstr "Entreprise"
 
 #: wp-spamshield.php:1974
 msgid "Website Generating This Email"
-msgstr "Web site koji generiše ovaj mail"
+msgstr "Site générant cet email"
 
 #: wp-spamshield.php:1975 wp-spamshield.php:4153
 msgid "Referrer"
-msgstr "Referer"
+msgstr "Referrer"
 
 #: wp-spamshield.php:1976
 msgid "User-Agent (Browser/OS)"
-msgstr "Korisnički agent (Pretraživač/OS)"
+msgstr "User-Agent (Navigateur/Système d'exploitation)"
 
 #: wp-spamshield.php:1977
 msgid "IP Address"
-msgstr "IP adresaServer"
+msgstr "Adresse IP"
 
 #: wp-spamshield.php:1978
 msgid "Server"
-msgstr "Server"
+msgstr "Serveur"
 
 #: wp-spamshield.php:1979 wp-spamshield.php:4174
 msgid "IP Address Lookup"
-msgstr "Pretraži IP adresu"
+msgstr "Recherche d'adresse IP"
 
 #: wp-spamshield.php:1983 wp-spamshield.php:4127
 msgid "Additional Technical Data Added by WP-SpamShield"
-msgstr "Dodatni tehnički podaci koje je dodao WP-SpamShield"
+msgstr "Informations techniques additionnelles ajoutées par WP-SpamShield"
 
 #: wp-spamshield.php:2044
 msgid "Currently you have JavaScript disabled."
-msgstr "Trenutno vam je JavaScript deaktiviran"
+msgstr "JavaScript est actuellement désactivé."
 
 #: wp-spamshield.php:2071
 msgid "Please return to the contact form and fill out all required fields."
 msgstr ""
-"Molimo vas, vratite se na obrazac kontakta i popunite sva obavezna polja."
+"S'il vous plaît remplissez l'ensemble des champs requis du formulaire de "
+"contact."
 
 #: wp-spamshield.php:2073
 msgid "Please make sure JavaScript and Cookies are enabled in your browser."
 msgstr ""
-"Proverite da li su vam JavaScript i kolačići aktivirani u pretraživaču."
+"S'il vous plaît, contrôlez que les Cookies et JavaScript sont activés dans "
+"votre navigateur."
 
 #: wp-spamshield.php:2076
 msgid "Please make sure Images and Cookies are enabled in your browser."
-msgstr "Proverite da li su vam slike i kolačići aktivirani u pretraživaču."
+msgstr ""
+"S'il vous plaît, contrôlez que les Cookies et les images sont activés dans "
+"votre navigateur."
 
 #: wp-spamshield.php:2079
 msgid "Please make sure Cookies are enabled in your browser."
-msgstr "Proverite da li su vam kolačići aktivirani u pretraživaču."
+msgstr ""
+"S'il vous plaît, contrôlez que les Cookies sont activés dans votre "
+"navigateur."
 
 #: wp-spamshield.php:2174
 msgid "Subject"
-msgstr "Tema"
+msgstr "Sujet"
 
 #: wp-spamshield.php:2188
 msgid ""
 "Currently you have JavaScript disabled. In order to use this contact form, "
 "please make sure JavaScript and Cookies are enabled, and reload the page."
 msgstr ""
-"Trenutno vam je JavaScript deaktiviran. Da biste popunili ovaj obrazac o "
-"kontaktu, proverite da li su vam JavaScript i kolačići aktivirani i ponovo "
-"učitajte stranicu."
+"JavaScript est actuellement désactivé. Afin de pouvoir utiliser ce "
+"formulaire de contact, s'il vous plaît contrôlez que les Cookies et "
+"JavaScript sont activés puis recherchez la page."
 
 #: wp-spamshield.php:2192
 msgid "Send Message"
-msgstr "Pošalji poruku"
+msgstr "Envoyer le message"
 
 #: wp-spamshield.php:2294
 msgid ""
 "Your location has been identified as part of a reported spam network. "
 "Contact form has been disabled to prevent spam."
 msgstr ""
-"Vaša lokacija identifikovana je kao deo prijavljene spam mreže. Obrazac za "
-"kontakte je deaktiviran da bismo sprečili spam."
+"Votre adresse a été identifiée comme faisant partie d'un réseau de spam. Le "
+"formulaire de contact a donc été désactivé."
 
 #: wp-spamshield.php:3008
 msgid "PHP detects that cookies appear to be enabled."
-msgstr "PHP otkriva da su kolačići, verovatno, aktivirani."
+msgstr "PHP détecte que les Cookies sont activés."
 
 #: wp-spamshield.php:3011
 msgid "PHP detects that cookies appear to be disabled."
-msgstr "PHP otkriva da su kolačići, verovatno, deaktivirani."
+msgstr "PHP détecte que les Cookies sont désactivés."
 
 #: wp-spamshield.php:3011
 msgid "However, JavaScript detects that cookies are enabled."
-msgstr "Ipak, JavaScript otkriva da su kolačići aktivirani."
+msgstr "Toutefois, JavaScript détecte que les Cookies sont activés."
 
 #: wp-spamshield.php:3011
 msgid "JavaScript also detects that cookies are disabled."
-msgstr "JavaScript takođe otkriva da su kolačići deaktivirani."
+msgstr "JavaScript détecte aussi que les Cookies sont désactivés."
 
 #: wp-spamshield.php:3015
 msgid ""
 "Sorry, there was an error. Please be sure JavaScript and Cookies are enabled "
 "in your browser and try again."
 msgstr ""
-"Žao nam je, došlo je do greške. Proverite da li su JavaScript i kolačići "
-"aktivirani u vašem pretraživaču i pokušajte ponovo."
+"Désolé, une erreur s'est produite. S'il vous plaît, contrôler que JavaScript "
+"et les Cookies sont activés des votre navigateur et essayez à nouveau."
 
 #: wp-spamshield.php:3017 wp-spamshield.php:3030
 msgid "JavaScript and Cookies are required in order to post a comment."
-msgstr "Da biste objavili komentar, potrebni su vam JavaScript i kolačići."
+msgstr ""
+"Les Cookies et JavaScript sont requis afin de pouvoir poster un commentaire."
 
 #: wp-spamshield.php:3018
 msgid "Status: JavaScript is currently disabled."
-msgstr "Status: JavaScript je trenutno deaktiviran."
+msgstr "Statut: JavaScript est actuellement désactivé."
 
 #: wp-spamshield.php:3019
 msgid ""
@@ -231,9 +237,10 @@ msgid ""
 "please hit the back button on your browser, and try posting your comment "
 "again. (You may need to reload the page.)"
 msgstr ""
-"Proverite da li su vam JavaScript i kolačići aktivirani u pretraživaču. "
-"Zatim, kliknite na taster “Nazad” na svom pretraživaču i pokušajte da ponovo "
-"postavite komentar. (Možda ćete morati ponovo da učitate stranicu.) "
+"S'il vous plaît, contrôlez que JavaScript et les Cookies sont activés dans "
+"votre navigateur. Ensuite, cliquez sur le bouton retour de votre navigateur "
+"et essayez de poster votre commentaire à nouveau. (Vous devrez peut-être "
+"recharger la page)."
 
 #: wp-spamshield.php:3022
 msgid ""
@@ -243,27 +250,28 @@ msgid ""
 "conflict or misconfiguration). Please contact the author of this site, and "
 "let them know they need to look into it."
 msgstr ""
-"Ako ste greškom primili ovu poruku (na primer, JavaScript i kolačići su "
-"aktivirani, a vi ste već nekoliko puta pokušali da objavite komentar), "
-"najverovatnije je došlo do tehničkog problema (možda zbog sukoba plugin-a "
-"ili neodgovarajuće konfiguracije). Molimo vas da se obratite autoru ovog "
-"site-a i da mu kažete šta treba da pogleda."
+"S'il vous semble que vous avez reçu ce message par erreur (par exemple si "
+"JavaScript et les Cookies sont en faite activés et que vous avez essayé de "
+"poster plusieurs fois), il y se peut surement qu'il y ait un problème "
+"technique (cela peut être un conflit avec un plugin ou une erreur de "
+"configuration). S'il vous plaît contactez l'auteur de ce site et avertissez "
+"les qu'il doit examiner le problème."
 
 #: wp-spamshield.php:3027
 msgid ""
 "Sorry, there was an error. Please enable Images and Cookies in your browser "
 "and try again."
 msgstr ""
-"Žao nam je, došlo je do greške. Aktivirajte slike i kolačiće u svom "
-"pretraživaču i pokušajte ponovo. "
+"Désolé, une erreur s'est produite. S'il vous plaît, activez les Cookies et "
+"les images dans votre navigateur et essayez à nouveau."
 
 #: wp-spamshield.php:3029
 msgid ""
 "Images and Cookies are required in order to post a comment.<br/>You appear "
 "to have at least one of these disabled."
 msgstr ""
-"Da biste objavili komentar, potrebne su vam slike i kolačići.<br/> Čini se "
-"da je nešto od ta dva kod vas deaktivirano."
+"Les images et Cookies sont requis afin de poster un commentaire.<br />. Il "
+"semble qu'au moins un des deux soit désactivé."
 
 #: wp-spamshield.php:3032
 msgid ""
@@ -272,55 +280,59 @@ msgid ""
 "please alert the author of this site, and let them know they need to look "
 "into it."
 msgstr ""
-"Ako ste greškom primili ovu poruku (na primer, slike i kolačići su "
-"aktivirani, a vi ste već nekoliko puta pokušali da objavite komentar), "
-"obavestite o tome autora ovog site-a i skrenite mu pažnju na to."
+"S'il vous semble que vous avez reçu ce message par erreur (par exemple si "
+"les images et les Cookies sont en faite activés et que vous avez essayé de "
+"poster plusieurs fois), s'il vous plaît contactez l'auteur de ce site et "
+"avertissez les qu'il doit examiner le problème."
 
 #: wp-spamshield.php:3057
 msgid ""
 "Comments have been temporarily disabled to prevent spam. Please try again "
 "later."
 msgstr ""
-"Komentari su trenutno deaktivirani u cilju sprečavanja spam-ova. Molimo vas, "
-"pokušajte kasnije."
+"Les commentaires sont temporairement désactivés afin de se prémunir du spam. "
+"S'il vous plaît essayez plus tard."
 
 #: wp-spamshield.php:3059
 msgid "Your comment appears to be spam. We don't really appreciate spam here."
-msgstr "Izgleda da je vaš komentar spam. Ovde nećemo spam-ove."
+msgstr ""
+"Votre commentaire semble être du spam. Nous n'apprécions pas vraiment le "
+"spam ici."
 
 #: wp-spamshield.php:3060
 msgid "Please go back and try to say something useful."
-msgstr "Molimo vas, vratite se i pokušajte da kažete nešto korisno."
+msgstr "S'il vous plaît réessayez et dite quelque chose d'utile."
 
 #: wp-spamshield.php:3064
 msgid ""
 "If you are a logged in user, and you are seeing this message repeatedly, "
 "then you may need to check your registered user information for spam data."
 msgstr ""
-"Ako ste prijavljeni kao korisnik i neprekidno dobijate ovu poruku, možda "
-"treba da proverite svoje podatke o korisniku i da vidite ima li u njima "
-"podataka o spam-u."
+"Si vous êtes un utilisateur enregistré et que vous voyez ce message "
+"fréquemment, vous devriez contrôler vos informations d'utilisateur pour le "
+"spam."
 
 #: wp-spamshield.php:3082
 msgid "Your comment was too short. Please try to say something useful."
 msgstr ""
-"Komentar vam je prekratak. Molimo vas, pokušajte da kažete nešto korisno."
+"Votre message est trop court. S'il vous plaît essayez de dire quelque chose "
+"d'utile."
 
 #: wp-spamshield.php:3095
 msgid ""
 "Your location has been identified as part of a reported spam network. "
 "Comments have been disabled to prevent spam."
 msgstr ""
-"Vaša lokacija identifikovana je kao deo prijavljene spam mreže. Komentari su "
-"deaktivirani da bismo sprečili spam-ove."
+"Votre adresse a été identifiée comme faisant partie d'un réseau de spam. Les "
+"commentaires ont donc été désactivés."
 
 #: wp-spamshield.php:3111
 msgid ""
 "Your comment has been blocked because the website owner has set their spam "
 "filter to not allow comments from users behind proxies."
 msgstr ""
-"Vaš komentar je blokiran jer je vlasnik web site-a podesio spam filter tako "
-"da ne dozvoljava komentare od korisnika iza proksija. "
+"Votre commentaire a été bloqué car l'auteur de ce site interdit les "
+"commentaires venant d'utilisateurs de proxies."
 
 #: wp-spamshield.php:3111
 msgid ""
@@ -328,80 +340,84 @@ msgid ""
 "been blocked, please contact the site owner and ask them to modify this "
 "setting."
 msgstr ""
-"Ako redovno postavljate komentare ili ako mislite da vaš komentar nije "
-"trebalo da bude blokiran, obratite se vlasniku site-a i zatražite da promeni "
-"svoje postavke."
+"Si vous est un commentateur régulier ou qu'il vous semble que votre "
+"commentaire ne devrait pas avoir été bloqué, s'il vous plaît contactez "
+"l'auteur de ce site et demandez-lui de modifier ce réglage."
 
 #: wp-spamshield.php:3127
 msgid ""
 "Your comment has been blocked based on the website owner's blacklist "
 "settings."
-msgstr "Vaš komentar je blokiran zbog postavki crne liste vlasnika site-a. "
+msgstr ""
+"Votre commentaire a été bloqué en raison de la liste noire de l'auteur du "
+"site."
 
 #: wp-spamshield.php:3127
 msgid ""
 "If you feel this is in error, please contact the site owner by some other "
 "method."
 msgstr ""
-"Ako smatrate da je to greška, obratite se vlasniku site-a na neki drugi "
-"način."
+"S'il vous semble que c'est une erreur, s'il vous plaît contactez l'auteur de "
+"ce site d'une autre manière."
 
 #: wp-spamshield.php:4050 wp-spamshield.php:4060
 msgid "Blacklist the IP Address:"
-msgstr "IP adrese na crnoj listi:"
+msgstr "Ajouter l'adresse IP à la liste noire:"
 
 #: wp-spamshield.php:4150
 msgid "Page Referrer Check."
-msgstr "Proveri referera stranice"
+msgstr "Contrôle de la page référante."
 
 #: wp-spamshield.php:4155
 msgid "User-Agent"
-msgstr "Korisnik - Agent"
+msgstr "User-Agent"
 
 #: wp-spamshield.php:4176
 msgid "This data is helpful if you need to submit a spam sample."
-msgstr "Ovi podaci su korisni ako treba da podnesete uzorak spam-a."
+msgstr ""
+"Ces données sont utiles si vous souhaitez envoyer un échantillon de spam."
 
 #: wp-spamshield.php:4236 wp-spamshield.php:4313 wp-spamshield.php:4342
 #: wp-spamshield.php:4367 wp-spamshield.php:4508
 msgid "First Name"
-msgstr "Ime"
+msgstr "Prénom"
 
 #: wp-spamshield.php:4237 wp-spamshield.php:4314 wp-spamshield.php:4343
 #: wp-spamshield.php:4368 wp-spamshield.php:4509
 msgid "Last Name"
-msgstr "Prezime"
+msgstr "Nom"
 
 #: wp-spamshield.php:4238 wp-spamshield.php:4312 wp-spamshield.php:4341
 #: wp-spamshield.php:4369 wp-spamshield.php:4510
 msgid "Display Name"
-msgstr "Prikaži ime"
+msgstr "Nom affiché"
 
 #: wp-spamshield.php:4251
 msgid ""
 "Currently you have JavaScript disabled. In order to register, please make "
 "sure JavaScript and Cookies are enabled, and reload the page."
 msgstr ""
-"Trenutno vam je JavaScript deaktiviran. Da biste se registrovali, proverite "
-"da li su JavaScript i kolačići aktivirani i ponovo učitajte stranicu."
+"JavaScript est actuellement désactivé. Afin de pouvoir s'enregistrer, s'il "
+"vous plaît contrôlez que les Cookies et JavaScript sont activés puis "
+"recherchez la page."
 
 #: wp-spamshield.php:4315
 msgid "User ID"
-msgstr "ID korisnika"
+msgstr "ID utilisateur"
 
 #: wp-spamshield.php:4380
 #, php-format
 msgid "Please enter your %s"
-msgstr "Molimo vas da unesete svoj %s"
+msgstr "S'il vous plaît entrez votre %s"
 
 #: wp-spamshield.php:4431
 msgid ""
 "JavaScript and Cookies are required in order to register. Please be sure "
 "JavaScript and Cookies are enabled in your browser, and reload the page."
 msgstr ""
-"Da biste se registrovali, potrebni su vam JavaScript i kolačići. Proverite "
-"da li su JavaScript i kolačići aktivirani u vašem pretraživaču i ponovo "
-"učitajte stranicu."
+"JavaScript et les Cookies sont requis afin de pouvoir s'enregistrer. S'il "
+"vous plaît contrôlez que les Cookies et JavaScript sont activés dans votre "
+"navigateur, puis recherchez la page."
 
 #: wp-spamshield.php:4449
 #, php-format
@@ -409,17 +425,18 @@ msgid ""
 "\"%1$s\" appears to be spam. Please enter a different value in the <strong> "
 "%2$s </strong> field."
 msgstr ""
-"Izgleda da je \"%1$s\" spam. Unesite drugu vrednost u <strong> %2$s </"
-"strong> polje."
+"« %1$s » semble être du spam. S'il vous plaît entrez une valeur différente "
+"dans le champ <strong> %2$s </strong>."
 
 #: wp-spamshield.php:4605
 msgid "No comment spam attempts have been detected yet."
-msgstr "Još nisu otkriveni spam komentari."
+msgstr ""
+"Aucun tentative de spam des commentaires n'a été détectée actuellement."
 
 #: wp-spamshield.php:4608
 #, php-format
 msgid "has blocked <strong> %s </strong> spam comments."
-msgstr "je blokirao <strong> %s </strong> spam komentare."
+msgstr "a bloqué <strong> %s </strong> spams dans les commentaires."
 
 #: wp-spamshield.php:4623 wp-spamshield.php:4904
 #, php-format
@@ -427,12 +444,12 @@ msgid ""
 "That's <strong> %s </strong> spam comments a day that you don't have to "
 "worry about."
 msgstr ""
-"To je <strong> %s </strong> spam komentara dnevno o kojima ne morate da "
-"brinete."
+"Cela fait <strong> %s </strong> spams chaque jour dont vous n'avez pas à "
+"vous soucier."
 
 #: wp-spamshield.php:4610
 msgid "Average spam blocked daily"
-msgstr "Prosečan broj blokiranih spam-ova."
+msgstr "Moyenne de spam bloqué quotidiennement"
 
 #: wp-spamshield.php:4755
 msgid ""
@@ -442,155 +459,157 @@ msgid ""
 "continue to work without you having to do anything else. You can safely "
 "remove the outdated WP-SpamFree plugin."
 msgstr ""
-"Uspešno ste nadogradili WP-SpamFree na WP-SpamShield.  Sada ćete imati veću "
-"bezbednost, brže učitavanje stranice i moćniji spam blokator. Sva vaša stara "
-"podešavanja su uvezena i vaši obrasci kontakata nastaviće da funkcionišu, "
-"tako da vi ne morate ništa više da radite. Bezbedno možete ukloniti "
-"zastareli WP-SpamFree plugin."
+"Vous avez mis à jour avec succès de WP-SpamFree à WP-SpamShield. Vous allez "
+"pouvoir profitez maintenant d'une sécurité, une vitesse de chargement et un "
+"filtrage du spam amélioré. Tous vos anciens paramètres ont été importés et "
+"vos formulaires de contact vont continuer à fonctionner sans que vous n'ayez "
+"à faire quelque chose de plus. Vous pouvez supprimer en toute sécurité le "
+"plugin WP-SpamFree."
 
 #: wp-spamshield.php:4861
 msgid "Installed Correctly"
-msgstr "Pravilno instaliran"
+msgstr "Installé correctement"
 
 #: wp-spamshield.php:4869
 msgid "Not Installed Correctly"
-msgstr "Nije instaliran pravilno"
+msgstr "Pas installé correctement"
 
 #: wp-spamshield.php:4874
 msgid "Plugin Spam settings saved."
-msgstr "Sačuvane plugin spam postavke"
+msgstr "Les paramètres Spam du plugin ont été sauvés."
 
 #: wp-spamshield.php:4877
 msgid "Plugin Contact Form settings saved."
-msgstr "Sačuvane postavke za plugin spam kontakt formular."
+msgstr "Les paramètres du formulaire de contact du plugin ont été sauvés."
 
 #: wp-spamshield.php:4885
 msgid "IP Address added to Comment Blacklist."
-msgstr "IP adresa dodata na crnu listu komentara."
+msgstr "L'adresse IP a été ajoutée à la liste noire des commentaires."
 
 #: wp-spamshield.php:4888
 msgid "Invalid IP Address - not added to Comment Blacklist."
-msgstr "Nevažeća IP adresa - nije dodata na crnu listu komentara."
+msgstr ""
+"Adresse IP invalide, n'a pas été ajoutée à la liste noire des commentaires."
 
 #: wp-spamshield.php:4908
 msgid "Installation Status"
-msgstr "Status instalacije"
+msgstr "Statut d'installation"
 
 #: wp-spamshield.php:4901
 #, php-format
 msgid "WP-SpamShield has blocked <strong> %s </strong> spam comments!"
-msgstr "WP-SpamShield je blokirao <strong> %s </strong> spam komentare! "
+msgstr "WP-SpamShield a bloqué <strong> %s </strong> spams!"
 
 #: wp-spamshield.php:5130
 msgid "Quick Navigation - Contents"
-msgstr "Brza navigacija - Sadržaj"
+msgstr "Navigation rapide"
 
 #: wp-spamshield.php:5137 wp-spamshield.php:5169
 msgid "General Settings"
-msgstr "Opšte postavke"
+msgstr "Paramètres généraux"
 
 #: wp-spamshield.php:5138 wp-spamshield.php:5297
 msgid "Contact Form Settings"
-msgstr "Postavke formulara za kontakt"
+msgstr "Paramètres du formulaire de contact"
 
 #: wp-spamshield.php:5135
 msgid "Installation Instructions"
-msgstr "Uputstva za instalaciju"
+msgstr "Instructions d'installation"
 
 #: wp-spamshield.php:5136
 msgid "Displaying Spam Stats on Your Blog"
-msgstr "Prikazivanje spam statistike na vašem blogu"
+msgstr "Afficher les statistiques de Spam sur votre blog."
 
 #: wp-spamshield.php:5137
 msgid "Adding a Contact Form to Your Blog"
-msgstr "Dodavanje formulara za kontakt na vaš blog "
+msgstr "Ajouter un formulaire de contact à votre blog."
 
 #: wp-spamshield.php:5138
 msgid "Configuration Information"
-msgstr "Podaci o konfiguraciji"
+msgstr "Informations de configuration"
 
 #: wp-spamshield.php:5139
 msgid "Known Plugin Conflicts"
-msgstr "Poznata sukobljavanja plugin-a "
+msgstr "Conflits connus avec d'autres plugins"
 
 #: wp-spamshield.php:5140
 msgid "Troubleshooting Guide / Support"
-msgstr "Vodič za rešavanje problema/Podrška"
+msgstr "Support / Guide de résolution des problèmes"
 
 #: wp-spamshield.php:5141 wp-spamshield.php:5498 wp-spamshield.php:5520
 msgid "Let Others Know About WP-SpamShield"
-msgstr "Neka i drugi saznaju za WP-SpamShield"
+msgstr "Faite savoir à vos amis à propos de WP-SpamShield"
 
 #: wp-spamshield.php:5142 wp-spamshield.php:5514
 msgid "Download Plugin"
-msgstr "Preuzmite plugin"
+msgstr "Télécharger le plugin"
 
 #: wp-spamshield.php:5150
 msgid "Happy with WP-SpamShield?"
-msgstr "Da li ste zadovoljni kako radi WP-SpamShield?"
+msgstr "Heureux avec WP-SpamShield?"
 
 #: wp-spamshield.php:5150
 msgid "Let others know by giving it a good rating on WordPress.org!"
-msgstr ""
-"Recite i drugima koliko ste zadovoljni tako što ćete ga oceniti na WordPress."
-"org!"
+msgstr "Faite savoir aux autres en donnant une bonne note sur WordPress.org!"
 
 #: wp-spamshield.php:5154 wp-spamshield.php:5516
 msgid "Plugin Homepage"
-msgstr "Početna stranica za plugin"
+msgstr "Accueil du plugin"
 
 #: wp-spamshield.php:5155
 msgid "Tech Support"
-msgstr "Tehnička podrška"
+msgstr "Support technique"
 
 #: wp-spamshield.php:5155
 msgid "WP-SpamShield Support"
-msgstr "WP-SpamShield podrška"
+msgstr "Support WP-SpamShield"
 
 #: wp-spamshield.php:5156
 msgid "Follow on Twitter"
-msgstr "Pratite nas na Twitter-u"
+msgstr "Suivre sur Twitter"
 
 #: wp-spamshield.php:5157
 msgid "Let Others Know"
-msgstr "Recite drugima"
+msgstr "Faite savoir aux autres"
 
 #: wp-spamshield.php:5184
 msgid "Blocked Comment Logging Mode"
-msgstr "Režim za prijavljivanje blokiranih komentara"
+msgstr "Enregistrer les commentaires bloqués"
 
 #: wp-spamshield.php:5184
 msgid ""
 "Temporary diagnostic mode that logs blocked comment submissions for 7 days, "
 "then turns off automatically."
 msgstr ""
-"Privremeni režim dijagnostike prijavljuje blokirane podneske komentara za 7 "
-"dana, a zatim se automatski isključuje."
+"Mode temporaire de diagnostique qui enregistre les commentaires bloqués "
+"durant 7 jours, puis se désactive automatiquement."
 
 #: wp-spamshield.php:5184
 msgid "Log is cleared each time this feature is turned on."
-msgstr "Dnevnik se briše svaki put kad je ova funkcija uključena."
+msgstr ""
+"Les enregistrements sont effacés à chaque fois que cette fonction est "
+"activée."
 
 #: wp-spamshield.php:5184
 msgid ""
 "May use slightly higher server resources, so for best performance, only use "
 "when necessary. (Most websites won't notice any difference.)"
 msgstr ""
-"Može koristiti nešto veće resurse servera, ako želite najbolje performanse, "
-"koristite ih samo kada je neophodno. (Većina web site-ova neće primetiti "
-"razliku.)"
+"Il se peut que cette fonction utilise un peu plus de ressources serveur. "
+"Pour de meilleures performances, n'utilisez uniquement lorsque nécessaire. "
+"(Différence peu remarquable sur la majorité des sites)."
 
 #: wp-spamshield.php:5232
 msgid "Download Comment Log File"
-msgstr "Preuzmi datoteku dnevnika komentara"
+msgstr "Télécharger le fichier des commentaires enregistrés"
 
 #: wp-spamshield.php:5232
 msgid "Right-click, and select \"Save Link As\""
-msgstr "Desni klik i odaberite \"Sačuvaj link kao\""
+msgstr "Clic droit et sélectionnez « Enregistrer le lien sous… »"
 
 #: wp-spamshield.php:5237
 msgid "Log All Comments"
-msgstr "Prijavite sve komentare"
+msgstr "Enregistrer tous les commentaires"
 
 #: wp-spamshield.php:5237
 msgid ""
@@ -601,20 +620,20 @@ msgid ""
 "<br/>If you plan on submitting spam samples to us for analysis, it's helpful "
 "for you to turn this on, otherwise it's not necessary."
 msgstr ""
-"Zahteva aktiviranje režima prijavljivanja blokiranih komentara. Umesto da "
-"samo prijavi blokirane komentare, sačuvaće u dnevniku sve komentare dok god "
-"je aktiviran režim prijavljivanja. Time se obezbeđuju tehnički podaci za "
-"podnošenje komentara koje obezbeđuje WordPress istovremeno nam pomažući da "
-"unapredimo plugin. <br/> Ako planirate da podnesete uzorke spam-ova na "
-"analizu, pomoći će vam uključenje ove opcije. U suprotnom, nije neophodna. "
+"Requiert que le mode « Enregistrer les commentaires bloqués » soit activé. "
+"Au lieu d'uniquement enregistrer les commentaires bloqués, ce mode permet de "
+"capturer l'ensemble des commentaires. Permet d'obtenir plus d'informations "
+"techniques que ce qu'offre WordPress et nous permet d'améliorer le plugin."
+"<br />Si vous souhaitez envoyer des échantillons de spams pour analyse, "
+"activez ce mode, sinon ce n'est pas nécessaire."
 
 #: wp-spamshield.php:5238
 msgid "For more about this, see the documentation."
-msgstr "Za više podataka o ovome, pogledajte dokumentaciju."
+msgstr "Pour en savoir plus, consultez la documentation."
 
 #: wp-spamshield.php:5244
 msgid "Enhanced Comment Blacklist"
-msgstr "Unapređena crna lista komentara"
+msgstr "Liste noire pour les commentaires améliorée"
 
 #: wp-spamshield.php:5244
 msgid ""
@@ -624,15 +643,16 @@ msgid ""
 "click.<br/>(Useful if you receive repetitive human spam or harassing "
 "comments from a particular commenter.)"
 msgstr ""
-"Unapređuje crnu listu WordPress komentara - tako što ih kompletno blokira, "
-"umesto da pošalje komentare na prepravku. Takođe, dodaje link mail-ovima sa "
-"obaveštenjima o komentarima koji će vam omogućiti da stavite IP komentatora "
-"na crnu listu jednim klikom. <br/> (Korisno ako stalno dobijate spam-ove ili "
-"uvredljive komentare od određene osobe.) "
+"Améliore la liste noire pour les commentaires de WordPress. Au lieu de "
+"simplement envoyer les commentaire en modération, ils seront complètement "
+"bloqués. Ce mode ajoute un lien dans la notification par email qui vous "
+"permettra d'ajouter à la liste noir l'IP du commentateur d'un seul clic. "
+"<br />(Utile si vous recevez du spam humain répétitif ou des commentaires "
+"harcelant d'un commentateur particulier)."
 
 #: wp-spamshield.php:5253
 msgid "Your current WordPress Comment Blacklist"
-msgstr "Vaša trenutna crna lista WordPress komentara "
+msgstr "Votre liste noire pour les commentaire actuelle"
 
 #: wp-spamshield.php:5253
 msgid ""
@@ -641,223 +661,208 @@ msgid ""
 "word or IP per line. It is not case-sensitive and will match included words, "
 "so \"press\" on your blacklist will block \"WordPress\" in a comment."
 msgstr ""
-"Kad se u sadržaju komentara nađu sledeće reči, ime, URL, mail ili IP, "
-"komentar će biti potpuno blokiran, a ne samo označen kao spam. Po jedna reč "
-"ili IP u svakom redu. Nije osetljiv na velika i mala slova i naći će "
-"podudarnost čak i ako se podudara samo deo reči. Npr, \"press\" na vašoj "
-"crnoj listi blokiraće \"WordPress\" u komentaru."
+"Lorsqu’un commentaire contient l’un de ces mots dans son contenu, nom, "
+"adresse web, adresse de messagerie, ou IP, il sera complètement bloqués et "
+"pas uniquement marqué comme spam. Un seul mot ou IP par ligne. Il reconnaît "
+"l’intérieur des mots, donc « press » suffira pour reconnaître « WordPress »."
 
 #: wp-spamshield.php:5256
 msgid "You can update this list here."
-msgstr "Ovde možete ažurirati listu."
+msgstr "Vous pouvez mettre à jour cette liste ici."
 
 #: wp-spamshield.php:5256
 msgid "You can also update it on the WordPress Discussion Settings page."
-msgstr "Možete je ažurirati i na stranici za postavke WordPress diskusije. "
+msgstr ""
+"Vous pouvez aussi la mettre à jour sur la page de Discussion de WordPress."
 
 #: wp-spamshield.php:5260
 msgid "Disable trackbacks."
-msgstr "Deaktiviraj trackback."
+msgstr "Désactiver les trackbacks."
 
 #: wp-spamshield.php:5260
 msgid "Use if trackback spam is excessive. (Not recommended)"
-msgstr "Koristite ako je trackback spam preteran. (Ne preporučuje se.)"
+msgstr "Utilisez si le spam par trackback est excessif. (Non recommandé)."
 
 #: wp-spamshield.php:5266
 msgid "Disable pingbacks."
-msgstr "Deaktiviraj pingback."
+msgstr "Désactiver les pingbacks."
 
 #: wp-spamshield.php:5266
 msgid ""
 "Use if pingback spam is excessive. Disadvantage is reduction of "
 "communication between blogs. (Not recommended)"
 msgstr ""
-"Koristite ako je pingback spam preteran. Negativna strana je redukcija "
-"komunikacije među blog-ovima. (Ne preporučuje se.)"
+"Utilisez si le spam par pingback est excessif. Réduit la communication entre "
+"les blogs. (Non recommandé)."
 
 #: wp-spamshield.php:5272
 msgid "Allow users behind proxy servers to comment?"
-msgstr "Dozvoli korisnicima iza proksi servera da komentarišu?"
+msgstr "Autoriser les utilisateurs d'un serveur proxy à commenter?"
 
 #: wp-spamshield.php:5272
 msgid ""
 "Many human spammers hide behind proxies, so you can uncheck this option for "
 "extra protection. (For highest user compatibility, leave it checked.)"
 msgstr ""
-"Mnogi ljudi koji šalju spam-ove kriju se iza proksija, tako da možete "
-"deaktivirati ovu opciju zbog dodatne zaštite. Za najvišu kompatibilnost "
-"korisnika, ostavite štikliranu ovu opciju.)"
+"Beaucoup de spammeurs humains se cachent derrière des proxies, vous pouvez "
+"désactiver cette option pour une protection supplémentaire. (Pour une plus "
+"grande compatibilité, activez cette option)."
 
 #: wp-spamshield.php:5277
 msgid "Hide extra technical data in comment notifications."
-msgstr "Sakrij dodatne tehničke podatke u obaveštenjima o komentarima."
+msgstr ""
+"Cacher les détails techniques supplémentaires dans les notifications de "
+"commentaire."
 
 #: wp-spamshield.php:5277
 msgid ""
 "This data is helpful if you need to submit a spam sample. If you dislike "
 "seeing the extra info, you can use this option."
 msgstr ""
-"Ovi podaci korisni su ako treba da podnesete uzorak spam-a. Ako ne želite da "
-"vidite dodatne informacije, možete iskoristiti ovu opciju."
+"Ces données sont utiles si vous souhaitez envoyer un échantillon de spam. Si "
+"vous n'aimez pas voir ces informations supplémentaires, vous pouvez utiliser "
+"cette option."
 
 #: wp-spamshield.php:5282
 msgid "M2 - Use two methods to set cookies."
-msgstr "M2 - Koristite dva metoda da biste podesili kolačiće."
+msgstr "M2 - Utiliser deux méthodes pour envoyer les cookies."
 
 #: wp-spamshield.php:5282
 msgid ""
 "This adds a secondary non-JavaScript method to set cookies in addition to "
 "the standard JavaScript method."
 msgstr ""
-"Ovako dodajete još jedan ne-JavaScript metod da biste podesili kolačiće sa "
-"standardnom JavaScript metodom."
+"Ce mode ajoute une deuxième méthode, sans JavaScript, pour envoyer les "
+"cookies, en plus de la méthode standard à l'aide du Javascript."
 
 #: wp-spamshield.php:5288
 msgid "Help promote WP-SpamShield?"
-msgstr "Želite li da pomognete da se promoviše WP-SpamShield?"
+msgstr "Aidez à promouvoir WP-SpamShield?"
 
 #: wp-spamshield.php:5288
 msgid ""
 "This places a small link under the comments and contact form, letting others "
 "know what's blocking spam on your blog."
 msgstr ""
-"Ovim postavljate mali link ispod komentara i formulara za kontakt i drugima "
-"dajete do znanja šta se na vašem blogu smatra spam-om."
+"Ajoute un petit lien en-dessous des commentaires et du formulaire de "
+"contact. Permet de faire savoir aux autres qui est-ce qui bloque les spams "
+"sur votre blog."
 
 #: wp-spamshield.php:5302 wp-spamshield.php:5494 wp-spamshield.php:5508
 #: wp-spamshield.php:5535
 msgid "BACK TO TOP"
-msgstr "NAZAD NA POČETAK"
+msgstr "Retour en haut"
 
 #: wp-spamshield.php:5318
 msgid "Include \"Website\" field."
-msgstr "Uključi polje \"Web site\" "
+msgstr "Ajouter le champ « Site web »"
 
 #: wp-spamshield.php:5324
 msgid "Require \"Website\" field."
-msgstr "Obavezno polje  \"Web site\" "
+msgstr "Rendre obligatoire le champ « Site web »"
 
 #: wp-spamshield.php:5330
 msgid "Include \"Phone\" field."
-msgstr "Uključi polje \"Telefon\""
+msgstr "Ajouter le champ « Téléphone »"
 
 #: wp-spamshield.php:5336
 msgid "Require \"Phone\" field."
-msgstr "Obavezno polje \"Telefon\""
+msgstr "Rendre obligatoire le champ « Téléphone »"
 
 #: wp-spamshield.php:5342
 msgid "Include \"Company\" field."
-msgstr "Uključi polje \"Firma \""
+msgstr "Ajouter le champ « Entreprise »"
 
 #: wp-spamshield.php:5348
 msgid "Require \"Company\" field."
-msgstr "Obavezno polje \"Firma \""
+msgstr "Rendre obligatoire le champ « Entreprise »"
 
 #: wp-spamshield.php:5353
 msgid "Include drop-down menu select field."
-msgstr "Uključi biranje polja u opadajućem meniju."
+msgstr "Ajouter un menu déroulant."
 
 #: wp-spamshield.php:5359
 msgid "Require drop-down menu select field."
-msgstr "Obavezno polje za biranje u opadajućem meniju."
+msgstr "Rendre obligatoire le menu déroulant"
 
 #: wp-spamshield.php:5366
 msgid "Title of drop-down select menu. (Menu won't be shown if empty.)"
-msgstr "Naziv opadajućeg izbornog menija (Neće biti prikazan ako je prazan.)"
+msgstr "Titre du menu déroulant. (Le menu ne s'affichera pas si laissé vide)."
 
 #: wp-spamshield.php:5373
 msgid "Drop-down select menu item 1. (Menu won't be shown if empty.)"
-msgstr ""
-"Odaberite 1. stavku opadajućeg menija (Meni neće biti prikazan ako je "
-"prazan.)"
+msgstr "Premier élément. (Le menu ne s'affichera pas si laissé vide)."
 
 #: wp-spamshield.php:5380
 msgid "Drop-down select menu item 2. (Menu won't be shown if empty.)"
-msgstr ""
-"Odaberite 2. stavku opadajućeg menija (Meni neće biti prikazan ako je "
-"prazan.)"
+msgstr "Deuxième élément. (Le menu ne s'affichera pas si laissé vide)."
 
 #: wp-spamshield.php:5387
 msgid "Drop-down select menu item 3. (Leave blank if not using.)"
-msgstr ""
-"Odaberite 3. stavku opadajućeg menija (Ostavite prazno polje ako ga ne "
-"koristite.)"
+msgstr "Troisième élément. (Laisser vide si inutile)."
 
 #: wp-spamshield.php:5394
 msgid "Drop-down select menu item 4. (Leave blank if not using.)"
-msgstr ""
-"Odaberite 4. stavku opadajućeg menija (Ostavite prazno polje ako ga ne "
-"koristite.)"
+msgstr "Quatrième élément. (Laisser vide si inutile)."
 
 #: wp-spamshield.php:5401
 msgid "Drop-down select menu item 5. (Leave blank if not using.)"
-msgstr ""
-"Odaberite 5. stavku opadajućeg menija (Ostavite prazno polje ako ga ne "
-"koristite.)"
+msgstr "Cinquième élément. (Laisser vide si inutile)."
 
 #: wp-spamshield.php:5408
 msgid "Drop-down select menu item 6. (Leave blank if not using.)"
-msgstr ""
-"Odaberite 6. stavku opadajućeg menija (Ostavite prazno polje ako ga ne "
-"koristite.)"
+msgstr "Sixième élément. (Laisser vide si inutile)."
 
 #: wp-spamshield.php:5415
 msgid "Drop-down select menu item 7. (Leave blank if not using.)"
-msgstr ""
-"Odaberite 7. stavku opadajućeg menija (Ostavite prazno polje ako ga ne "
-"koristite.)"
+msgstr "Septième élément. (Laisser vide si inutile)."
 
 #: wp-spamshield.php:5422
 msgid "Drop-down select menu item 8. (Leave blank if not using.)"
-msgstr ""
-"Odaberite 8. stavku opadajućeg menija (Ostavite prazno polje ako ga ne "
-"koristite.)"
+msgstr "Huitième élément. (Laisser vide si inutile)."
 
 #: wp-spamshield.php:5429
 msgid "Drop-down select menu item 9. (Leave blank if not using.)"
-msgstr ""
-"Odaberite 9. stavku opadajućeg menija (Ostavite prazno polje ako ga ne "
-"koristite.)"
+msgstr "Neuvième élément. (Laisser vide si inutile)."
 
 #: wp-spamshield.php:5436
 msgid "Drop-down select menu item 10. (Leave blank if not using.)"
-msgstr ""
-"Odaberite 10. stavku opadajućeg menija (Ostavite prazno polje ako ga ne "
-"koristite.)"
+msgstr "Dixième élément. (Laisser vide si inutile)."
 
 #: wp-spamshield.php:5443
 #, php-format
 msgid "\"Message\" field width. (Minimum %s)"
-msgstr "širina polja \"Poruka\" (Minimalna %s)"
+msgstr "Largeur du champ « Message ». (minimum %s)"
 
 #: wp-spamshield.php:5450
 #, php-format
 msgid "\"Message\" field height. (Minimum %1$s, Default %2$s)"
-msgstr "visina polja \"Poruka\"(Minimalna %1$s, Podrazumevana %2$s)"
+msgstr "Hauteur du champ « Message ». (minimum %1$s, par défaut %2$s)"
 
 #: wp-spamshield.php:5457
 #, php-format
 msgid "Minimum message length (# of characters). (Minimum %1$s, Default %2$s)"
 msgstr ""
-"Najmanja dužina poruke (# u karakterima)(Minimalna %1$s, Podrazumevana %2$s)"
+"Longueur minimum du message (nombre de caractères). (minimum %1$s, par "
+"défaut %2$s)"
 
 #: wp-spamshield.php:5464
 msgid "Optional: Enter alternate form recipient. Default is blog admin email."
 msgstr ""
-"Opciono: Unesite alternativnu primaoca obrasca. Uobičajeno je da to bude "
-"mail administratora bloga."
+"Optionnel: Entrez un destinataire différent. Par défaut l'adresse email de "
+"l'administrateur du blog."
 
 #: wp-spamshield.php:5472
 msgid ""
 "<strong>Enter message to be displayed upon successful contact form "
 "submission.</strong><br/>Can be plain text, HTML, or an ad, etc."
 msgstr ""
-"<strong>Unesite poruku koja će se prikazivati nakon uspešnog podnošenja "
-"obrasca kontakta.</strong><br/>Može biti samo tekst, HTML ili reklama, itd."
+"<strong>Entrez le message à afficher si l'envoi par le formulaire de contact "
+"est un succès.</strong><br/>Peut contenir du texte, du HTML, une pub, etc…"
 
 #: wp-spamshield.php:5479
 msgid "Include user technical data in email."
-msgstr "Obuhvati tehničke podatke korisnika u mail-u."
+msgstr "Inclure les données techniques de l'utilisateur dans l'email."
 
 #: wp-spamshield.php:5479
 msgid ""
@@ -868,13 +873,12 @@ msgid ""
 "or threatening comments. You can use the IP address provided to identify or "
 "block trolls from your site with whatever method you prefer."
 msgstr ""
-"Ovim unosite dodatne tehničke podatke na kraj mail-a sa formularom za "
-"kontakt osobe koja podnosi obrazac. <br />IPodaci obuhvataju: "
-"<strong>Pretraživač/Agenta korisnika</strong>, <strong>Referer</strong>, "
-"<strong>IP Adresu</strong>, <strong>Server</strong>, itd.<br /> Ovo je veoma "
-"korisno kad se suočavate sa uvredljivim ili pretećim komentarima. Možete "
-"iskoristiti date IP adrese da biste identifikovali ili blokirali trol-ove sa "
-"vašeg site-a kojom god metodom želite."
+"Ce mode ajoute des informations techniques à propos de l'expéditeur à la fin "
+"des emails venant du formulaire de contact.<br />Contient: "
+"<strong>Navigateur / User-Agent</strong>, <strong>Referrer</strong>, "
+"<strong>Adresse IP</strong>, <strong>Serveur</strong>, etc…<br />Utile pour "
+"lutter contre les commentaires abusifs ou menaçants. Vous pouvez ajouter "
+"l'adresse IP jointe pour identifier ou bloquer les trolls de votre site."
 
 #: wp-spamshield.php:5500
 msgid ""
@@ -882,141 +886,142 @@ msgid ""
 "comment spam?</strong> If you're happy with WP-SpamShield, there's a few "
 "things you can do to let others know:"
 msgstr ""
-"<strong>Kakav je osećaj pisati blog bez bombardovanja automatizovanih spam "
-"komentara?</strong> Ako ste zadovoljni kako funkcioniše WP-SpamShield, evo "
-"šta možete uraditi da biste obavestili ostale:"
+"<strong>Comment vous sentez-vous face à votre blog bombardé de spam?</"
+"strong> Si vous êtes heureux avec WP-SpamShield, il y a quelques petites "
+"choses que vous pouvez faire pour faire savoir aux autres:"
 
 #: wp-spamshield.php:5504
 msgid "Give WP-SpamShield a good rating on WordPress.org."
-msgstr "Ocenite WP-SpamShield visokom ocenom na WordPress.org."
+msgstr "Donnez à WP-SpamShield une bonne note sur WordPresse.org."
 
 #: wp-spamshield.php:5505
 msgid "Place a graphic link on your site."
-msgstr "Stavite grafički link na svoj site."
+msgstr "Placez un lien sur votre site."
 
 #: wp-spamshield.php:5505
 msgid "Let others know how they can help end blog spam."
-msgstr "Recite drugima kako mogu da okončaju spam-ovanje blogova."
+msgstr ""
+"Faite savoir aux autre comment ils peuvent mettre fin au spam sur les blogs."
 
 #: wp-spamshield.php:5515
 msgid "Latest Version"
-msgstr "Poslednja verzija"
+msgstr "Dernière version"
 
 #: wp-spamshield.php:5515
 msgid "Download Now"
-msgstr "Preuzmite sada"
+msgstr "Télécharger maintenant"
 
 #: wp-spamshield.php:5517
 msgid "WP-SpamShield Release Announcement Blog Post"
-msgstr "WP-SpamShield predstavlja Objavu Blog Post-a "
+msgstr "Communiqué de mise à jour de WP-SpamShield"
 
 #: wp-spamshield.php:5518
 msgid "WordPress.org Page"
-msgstr "Stranica WordPress.org"
+msgstr "Page WordPress.org"
 
 #: wp-spamshield.php:5519
 msgid "Tech Support / Questions"
-msgstr "Tehnička podrška/Pitanja"
+msgstr "Questions / Support technique"
 
 #: wp-spamshield.php:5519
 msgid "WP-SpamShield Support Page"
-msgstr "WP-SpamShield Stranica za podršku"
+msgstr "Page de support WP-SpamShield"
 
 #: wp-spamshield.php:5520
 msgid "End Blog Spam"
-msgstr "Okončaj spam blog-a"
+msgstr "Mettez fin au spam"
 
 #: wp-spamshield.php:5572
 msgid ""
 "Plugin deactivated. WordPress Version %s required. Please upgrade WordPress "
 "to the latest version."
 msgstr ""
-"Plugin deaktiviran. Potrebna je % WordPress verzija. Molimo vas, nadogradite "
-"WordPress na poslednju verziju."
+"Plugin désactivé. La version %s de WordPress est requise. Mettez, s'il vous "
+"plaît, votre WordPress à jour,"
 
 #: wp-spamshield.php:5580
 msgid "SPAM BLOCKED"
-msgstr "Blokiranih Spamova"
+msgstr "SPAM BLOQUÉ"
 
 #: wp-spamshield.php:5581
 msgid "BY WP-SPAMSHIELD"
-msgstr "od WP-SpamShield"
+msgstr "PAR WP-SPAMSHIELD"
 
 #: wp-spamshield.php:5582
 msgid "Spam Plugin for WordPress"
-msgstr "Spam Plugin za WordPress"
+msgstr "Plugin spam pour WordPress"
 
 #: wp-spamshield.php:5583 wp-spamshield.php:5586 wp-spamshield.php:5591
 msgid "WordPress Anti-Spam Plugin"
-msgstr "WordPress Anti-Spam Plugin"
+msgstr "Plugin WordPress Anti-Spam"
 
 #: wp-spamshield.php:5584 wp-spamshield.php:5589
 msgid "WordPress Spam Filter"
-msgstr "WordPress Spam Filter"
+msgstr "Filtrage de spam WordPress"
 
 #: wp-spamshield.php:5585 wp-spamshield.php:5625
 msgid "WordPress Anti-Spam"
-msgstr "WordPress Anti-Spam"
+msgstr "Anti-Spam WordPress"
 
 #: wp-spamshield.php:5586 wp-spamshield.php:5587 wp-spamshield.php:5588
 msgid "Spam Blocked by WP-SpamShield"
-msgstr "Spam blokirao WP-SpamShield"
+msgstr "Spam bloqué par WP-SpamShield"
 
 #: wp-spamshield.php:5587
 msgid "WordPress Spam Plugin"
-msgstr "WordPress Spam Plugin"
+msgstr "Plugin Spam WordPress "
 
 #: wp-spamshield.php:5588
 msgid "WordPress Spam Blocker"
-msgstr "WordPress Spam Blocker"
+msgstr "bloqueur de spam WordPress"
 
 #: wp-spamshield.php:5589 wp-spamshield.php:5590
 msgid "Protected by WP-SpamShield"
-msgstr "Zaštićeno od strane WP-SpamShield-a"
+msgstr "Protégé par WP-SpamShield"
 
 #: wp-spamshield.php:5590 wp-spamshield.php:5592
 msgid "WordPress Anti Spam Plugin"
-msgstr "WordPress Anti Spam Plugin"
+msgstr "Plugin WordPress Anti-Spam"
 
 #: wp-spamshield.php:5599
 msgid "WP-SpamShield Contact Form for WordPress"
-msgstr "WP-SpamShield kontakt formular za WordPress"
+msgstr "Formulaire de contact pour WordPress WP-SpamShield"
 
 #: wp-spamshield.php:5600 wp-spamshield.php:5606
 msgid "Contact Form"
-msgstr "Kontakt formular"
+msgstr "Formulaire de contact"
 
 #: wp-spamshield.php:5606 wp-spamshield.php:5608
 msgid "Contact Form Powered by WP-SpamShield"
-msgstr "Kontakt formular obezbedio WP-SpamShield"
+msgstr "Formulaire de contact par WP-SpamShield"
 
 #: wp-spamshield.php:5607
 msgid "Powered by WP-SpamShield Contact Form"
-msgstr "Obezbedio WP-SpamShield kontakt formular"
+msgstr "Formulaire de contact par WP-SpamShield"
 
 #: wp-spamshield.php:5607
 msgid "WP-SpamShield Contact Form"
-msgstr "WP-SpamShield kontakt formular"
+msgstr "Formulaire de contact WP-SpamShield"
 
 #: wp-spamshield.php:5619
 msgid "WP-SpamShield WordPress Anti-Spam Plugin"
-msgstr "WP-SpamShield WordPress Anti-Spam Plugin"
+msgstr "WP-SpamShield Plugin WordPress Anti-Spam "
 
 #: wp-spamshield.php:5625 wp-spamshield.php:5626
 msgid "WordPress Anti-Spam by WP-SpamShield"
-msgstr "WordPress Anti-Spam od WP-SpamShield-a"
+msgstr "WordPress Anti Spam par WP-SpamShield"
 
 #: wp-spamshield.php:5627
 msgid "WordPress Anti Spam by WP-SpamShield"
-msgstr "WordPress Anti-Spam od WP-SpamShield-a"
+msgstr "WordPress Anti Spam par WP-SpamShield"
 
 #: wp-spamshield.php:5627
 msgid "WordPress Anti Spam"
-msgstr "WordPress Anti Spam"
+msgstr "Anti Spam WordPress"
 
 #: wp-spamshield.php:5628
 msgid "Comments Protected by WP-SpamShield Anti-Spam"
-msgstr "Komentari zaštićeni WP-SpamShield Anti-Spam-om"
+msgstr "Commentaires protégés par WP-SpamShield Anti-Spam"
 
 #: wp-spamshield.php:5628
 msgid "WP-SpamShield Anti-Spam"
@@ -1024,47 +1029,47 @@ msgstr "WP-SpamShield Anti-Spam"
 
 #: wp-spamshield.php:5629
 msgid "Comments Protected by WP-SpamShield Spam Plugin"
-msgstr "Komentari zaštićeni WP-SpamShield Spam Plugin-om"
+msgstr "Commentaires protégés par le plugin WP-SpamShield Anti-Spam"
 
 #: wp-spamshield.php:5629
 msgid "WP-SpamShield Spam Plugin"
-msgstr "WP-SpamShield Spam Plugin"
+msgstr "Plugin WP-SpamShield Spam"
 
 #: wp-spamshield.php:5630
 msgid "Comments Protected by WP-SpamShield Spam Filter"
-msgstr "Komentari zaštićeni WP-SpamShield Spam Filterom"
+msgstr "Commentaires protégés par le filtre spam WP-SpamShield"
 
 #: wp-spamshield.php:5630
 msgid "WP-SpamShield Spam Filter"
-msgstr "WP-SpamShield Spam Filter"
+msgstr "Filtre spam WP-SpamShield"
 
 #: wp-spamshield.php:5631
 msgid "Comments Protected by WP-SpamShield Spam Blocker"
-msgstr "Komentari zaštićeni WP-SpamShield Spam Blocker-om"
+msgstr "Commentaires protégés par le bloqueur spam WP-SpamShield"
 
 #: wp-spamshield.php:5631
 msgid "WP-SpamShield Spam Blocker"
-msgstr "WP-SpamShield Spam Blocker"
+msgstr "Bloqueur de spam WP-SpamShield"
 
 #: wp-spamshield.php:5632
 msgid "Comments Protected by WP-SpamShield for WordPress"
-msgstr "Komentari zaštićeni WP-SpamShield-om za WordPress "
+msgstr "Commentaires protégés par WP-SpamShield pour WordPress"
 
 #: wp-spamshield.php:5632
 msgid "WP-SpamShield for WordPress"
-msgstr "WP-SpamShield za WordPress"
+msgstr "WP-SpamShield pour WordPress"
 
 #: wp-spamshield.php:5633
 msgid "Spam Blocking by WP-SpamShield"
-msgstr "WP-SpamShield blokira spam-ove"
+msgstr "Filtrage du spam par WP-SpamShield"
 
 #: wp-spamshield.php:5633
 msgid "Spam Blocking"
-msgstr "Blokiranje spam-ova"
+msgstr "Filtrage du spam"
 
 #: wp-spamshield.php:5634
 msgid "Anti-Spam by WP-SpamShield"
-msgstr "Anti-Spam od WP-SpamShield-a"
+msgstr "Anti-Spam par WP-SpamShield"
 
 #: wp-spamshield.php:5634
 msgid "Anti-Spam"
@@ -1072,8 +1077,8 @@ msgstr "Anti-Spam"
 
 #: wp-spamshield.php:5635
 msgid "Comment Spam Blocking by WP-SpamShield"
-msgstr "Spam komentare blokira WP-SpamShield"
+msgstr "Filtrage du spam par WP-SpamShield"
 
 #: wp-spamshield.php:5635
 msgid "Comment Spam Blocking"
-msgstr "Blokiranje spam komentara"
+msgstr "Filtrage du spam des commentaires"
