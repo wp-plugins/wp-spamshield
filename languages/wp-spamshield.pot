@@ -27,11 +27,15 @@ msgstr ""
 msgid "spam blocked by WP-SpamShield"
 msgstr ""
 
-#: wp-spamshield.php:867
+#: wp-spamshield.php:955
+msgid "Spam"
+msgstr ""
+
+#: wp-spamshield.php:965
 msgid "WP-SpamShield Counter"
 msgstr ""
 
-#: wp-spamshield.php:870
+#: wp-spamshield.php:969
 msgid "Show how much spam is being blocked by WP-SpamShield."
 msgstr ""
 

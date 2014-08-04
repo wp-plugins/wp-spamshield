@@ -17,7 +17,7 @@ A powerful, user-friendly, all-in-one anti-spam plugin that eliminates comment s
 Comment spam has been a huge problem for bloggers since the inception of blogs, and it just doesn't seem to go away. The worst kind, and most prolific, is automated spam that comes from bots. Well, finally there is an anti-spam plugin for WordPress that provides an effective solution, without CAPTCHA's, challenge questions, or other inconvenience to site visitors. **WP-SpamShield eliminates automated blog comment spam from bots, including trackback and pingback spam.**
 
 = New Features =
-* Internationalization and localization available. Currently includes German (de_DE) and Serbian (sr_RS) translations. Ready for translation into other languages. Added in Version 1.3.
+* Internationalization and localization available. Currently includes French (fr_FR), German (de_DE), and Serbian (sr_RS) translations. Ready for translation into other languages. Added in Version 1.3.
 * Stops User Registration Spam now! Added in Version 1.2.
 * Shortcodes for easy contact form implementation.
 * Over 10x faster! Tested and verified with benchmarking software.
@@ -72,6 +72,7 @@ The bottom line, is that this plugin just plain works, and is a **powerful weapo
 
 = Languages Available =
 
+* French (fr_FR)
 * German (de_DE)
 * Serbian (sr_RS)
 
@@ -181,10 +182,20 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.4.5 =
+*released 08/04/14*
+
+* Made further improvements to speed in processing comments and blocking spam. (Users likely won't see a noticeable difference for a single comment being processed...after all, we're dealing in milliseconds here, but these speed improvements in v1.4.4 and v1.4.5 will improve overall scalability.)
+* Added French Translation (fr_FR). Thank you to Clément for doing the French translation.
+* Updated the Serbian Translation (sr_RS).
+* Fixed a bug in the proxy detection.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.4.4 =
 *released 07/30/14*
 
-* Improved speed in processing comments and blocking spam. Optimized the order of the filters so the fastest ones fire first, leading to even better speed and lower server load.
+* Improved speed in processing comments and blocking spam. Optimized the order of the filters so the fastest ones fire first, leading to even better speed and lower server load, which in turn improves scalability.
 * Added Serbian Translation (sr_RS). Thank you to Borisa Djuraskovic of Web Hosting Hub for doing the Serbian translation.
 * Improved some of the filters in the spam blocking algorithm.
 * Updated the spam filters.
@@ -461,8 +472,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.4.4 =
-Added Serbian Translation (sr_RS), speed improvements for processing comments, and improved/updated the spam filters. Please see Changelog for more details.
+= 1.4.5 =
+Made further speed improvements, added French Translation (fr_FR), updated the Serbian Translation (sr_RS), and improved/updated the spam filters. Please see Changelog for more details.
 
 == Other Notes ==
 
