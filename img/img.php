@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic IMG File
-Version: 1.4.5
+Version: 1.4.6
 */
 
 // Security Sanitization - BEGIN
@@ -27,7 +27,7 @@ if( empty($wpss_session_test) && !headers_sent() ) {
 	}
 
 $wpss_server_ip_nodot = preg_replace( "~\.~", "", spamshield_get_server_addr_img() );
-if ( !defined( 'WPSS_HASH_ALT' ) ) { $wpss_alt_prefix = hash( 'md5', $wpss_server_ip_nodot ); define( 'WPSS_HASH_ALT', $wpss_alt_prefix ); }
+if ( !defined( 'WPSS_HASH_ALT' ) ) { $wpss_alt_prefix = spamshield_md5_img( $wpss_server_ip_nodot ); define( 'WPSS_HASH_ALT', $wpss_alt_prefix ); }
 if ( !defined( 'WPSS_SITE_URL' ) && !empty( $_SESSION['wpss_site_url_'.WPSS_HASH_ALT] ) ) {
 	$wpss_site_url 		= $_SESSION['wpss_site_url_'.WPSS_HASH_ALT];
 	$wpss_plugin_url	= $_SESSION['wpss_plugin_url_'.WPSS_HASH_ALT];
@@ -35,7 +35,7 @@ if ( !defined( 'WPSS_SITE_URL' ) && !empty( $_SESSION['wpss_site_url_'.WPSS_HASH
 	}
 
 if ( defined( 'WPSS_SITE_URL' ) && !defined( 'WPSS_HASH' ) ) { 
-	$wpss_hash_prefix = hash( 'md5', WPSS_SITE_URL ); define( 'WPSS_HASH', $wpss_hash_prefix ); 
+	$wpss_hash_prefix = spamshield_md5_img( WPSS_SITE_URL ); define( 'WPSS_HASH', $wpss_hash_prefix ); 
 	}
 elseif ( !empty( $_SESSION ) && !empty( $_COOKIE ) && !defined( 'WPSS_HASH' ) ) {
 	//$wpss_cookies = $_COOKIE;
@@ -135,7 +135,12 @@ if ( defined( 'WPSS_HASH' ) && !empty( $_SESSION )  ) {
 	}
 
 // STANDARD FUNCTIONS - BEGIN
-
+function spamshield_md5_img( $string ) {
+	// Use this function instead of hash for compatibility
+	// BUT hash is faster than md5, so use it whenever possible
+	if ( function_exists( 'hash' ) ) { $hash = hash( 'md5', $string ); } else { $hash = md5( $string );	}
+	return $hash;
+	}
 function spamshield_get_url_img() {
 	if ( !empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] != 'off' ) { $url = 'https://'; } else { $url = 'http://'; }
 	$url .= $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
@@ -152,8 +157,8 @@ $wpss_session_id = @session_id();
 //$wpss_server_ip_nodot = preg_replace( "~\.~", "", spamshield_get_server_addr_img() );
 $wpss_ck_key_phrase 	= 'wpss_ckkey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
 $wpss_ck_val_phrase 	= 'wpss_ckval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
-$wpss_ck_key 			= hash( 'md5', $wpss_ck_key_phrase );
-$wpss_ck_val 			= hash( 'md5', $wpss_ck_val_phrase );
+$wpss_ck_key 			= spamshield_md5_img( $wpss_ck_key_phrase );
+$wpss_ck_val 			= spamshield_md5_img( $wpss_ck_val_phrase );
 // SET COOKIE VALUES - END
 
 // Last thing before headers sent

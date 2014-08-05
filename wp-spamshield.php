@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.4.5
+Version: 1.4.6
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,8 +42,8 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.4.5' );
-define( 'WPSS_REQUIRED_WP_VERSION', '3.0' );
+define( 'WPSS_VERSION', '1.4.6' );
+define( 'WPSS_REQUIRED_WP_VERSION', '3.2' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
 * Constants prefixed with 'RSMP_' are shared with other RSM Plugins for efficiency.
@@ -97,11 +97,11 @@ if ( !defined( 'WPSS_PLUGIN_JS_PATH' ) ) 		{ define( 'WPSS_PLUGIN_JS_PATH', WPSS
 if ( !defined( 'WPSS_PLUGIN_LANG_PATH' ) ) 		{ define( 'WPSS_PLUGIN_LANG_PATH', WPSS_PLUGIN_PATH . '/languages' ); }
 if ( !defined( 'RSMP_HASH_ALT' ) ) {
 	$wpss_server_ip_nodot = preg_replace( "~\.~", "", spamshield_get_server_addr() );
-	$wpss_alt_prefix = hash( 'md5', $wpss_server_ip_nodot );
+	$wpss_alt_prefix = spamshield_md5( $wpss_server_ip_nodot );
 	define( 'RSMP_HASH_ALT', $wpss_alt_prefix );
 	}
 if ( !defined( 'RSMP_HASH' ) ) {
-	if ( defined( 'COOKIEHASH' ) ) { $wpss_hash_prefix = COOKIEHASH; } else { $wpss_hash_prefix = hash( 'md5', RSMP_SITE_URL ); }
+	if ( defined( 'COOKIEHASH' ) ) { $wpss_hash_prefix = COOKIEHASH; } else { $wpss_hash_prefix = spamshield_md5( RSMP_SITE_URL ); }
 	define( 'RSMP_HASH', $wpss_hash_prefix );
 	}
 if ( !defined( 'RSMP_SERVER_ADDR' ) ) 			{ define( 'RSMP_SERVER_ADDR', spamshield_get_server_addr() ); }
@@ -268,15 +268,15 @@ function spamshield_preg_quote( $string ) {
 	return $regex_string;
 	}
 
+function spamshield_md5( $string ) {
+	// Use this function instead of hash for compatibility
+	// BUT hash is faster than md5, so use it whenever possible
+	if ( function_exists( 'hash' ) ) { $hash = hash( 'md5', $string ); } else { $hash = md5( $string );	}
+	return $hash;
+	}
+
 function spamshield_microtime() {
-	if ( version_compare( RSMP_PHP_VERSION, '5.0', '>=' ) ) {
-		$mtime = microtime( true );
-		}
-	else {
-		$mtime = microtime();
-		$mtime = explode(' ',$mtime); 
-		$mtime = $mtime[1]+$mtime[0];
-		}
+	$mtime = microtime( true );
 	return $mtime;
 	}
 
@@ -1064,13 +1064,13 @@ function spamshield_get_key_values() {
 	//CK
 	$wpss_ck_key_phrase 	= 'wpss_ckkey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
 	$wpss_ck_val_phrase 	= 'wpss_ckval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
-	$wpss_ck_key 			= hash( 'md5', $wpss_ck_key_phrase );
-	$wpss_ck_val 			= hash( 'md5', $wpss_ck_val_phrase );
+	$wpss_ck_key 			= spamshield_md5( $wpss_ck_key_phrase );
+	$wpss_ck_val 			= spamshield_md5( $wpss_ck_val_phrase );
 	//JS
 	$wpss_js_key_phrase 	= 'wpss_jskey_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
 	$wpss_js_val_phrase 	= 'wpss_jsval_'.$wpss_server_ip_nodot.'_'.$wpss_session_id;
-	$wpss_js_key 			= hash( 'md5', $wpss_js_key_phrase );
-	$wpss_js_val 			= hash( 'md5', $wpss_js_val_phrase );
+	$wpss_js_key 			= spamshield_md5( $wpss_js_key_phrase );
+	$wpss_js_val 			= spamshield_md5( $wpss_js_val_phrase );
 	// Set Cookie & JS Values - END
 	$wpss_key_values = array(
 		'wpss_ck_key'	=> $wpss_ck_key,
@@ -2685,9 +2685,9 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
 		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
 		// SEO Spammers
-		"alkyonedigital.com", "agenciade.serviciosdeseo.com", "arihantwebtech.com", "click4pardeep.com", "dreamforweb.com", "hhmla.ca", "hyperwebmarketing.org", "imediasolutions.biz", "listnappend.com", "quickcontent.net", 
-		"ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "rubyseo.com", "searchmediapromotion.in", "semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", "seooptimizationtipz.com", "seoservicesnewyork.org", 
-		"seosorcery.in", "serviciosdeseo.com", "triveniinfotech.com", "webpromotioner.com", 
+		"alkyonedigital.com", "agenciade.serviciosdeseo.com", "arihantwebtech.com", "click4pardeep.com", "cyber-seo.com", "dreamforweb.com", "hhmla.ca", "hyperwebmarketing.org", "imediasolutions.biz", "listnappend.com", 
+		"quickcontent.net", "ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "rubyseo.com", "searchmediapromotion.in", "semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", "seooptimizationtipz.com", 
+		"seoservicesnewyork.org", "seosorcery.in", "serviciosdeseo.com", "sowedane-consultants.com", "triveniinfotech.com", "webpromotioner.com", 
 		// Misc Internet Marketing Spammers
 		"ezadblaster.com", "hit4hit.org", "keywordadvertisingedge.com", "keywordspy.com", "socialadsblaster.com", 
 		// WebDev Spammers
