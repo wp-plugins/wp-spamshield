@@ -188,7 +188,7 @@ If you have any further questions, please submit them on the [support page](http
 * Added additional security checks.
 * Improved some of the user registration and comment spam filters.
 * Fixed a few minor bugs.
-* Updated the spam filters.
+* Updated spam filters.
 
 = 1.4.6 =
 *released 08/05/14*
