@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.4.6
+Version: 1.4.7
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.4.6' );
+define( 'WPSS_VERSION', '1.4.7' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.2' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -1187,8 +1187,9 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 	$wpss_log_comment_type_display 			= strtoupper($wpss_log_comment_type);
 	$wpss_log_comment_type_ucwords			= ucwords($wpss_log_comment_type);
 	$wpss_log_comment_type_ucwords_ref_disp	= preg_replace("~\sform~i", "", $wpss_log_comment_type_ucwords);
-	
-	$wpss_user_logged_in		= false;
+
+	$wpss_display_name = ''; $wpss_user_firstname = ''; $wpss_user_lastname = ''; $wpss_user_email = ''; $wpss_user_url = ''; $wpss_user_login = ''; $wpss_user_id = '';
+	$wpss_user_logged_in 		= false;
 	if ( is_user_logged_in() ) {
 		global $current_user;  
 		get_currentuserinfo();
@@ -1201,6 +1202,7 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 		$wpss_user_id	 		= $current_user->ID;
 		$wpss_user_logged_in	= true;
 		}
+
 	$spamshield_options = get_option('spamshield_options');
 	spamshield_update_session_data($spamshield_options);
 
@@ -1447,7 +1449,7 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			} else { $wpss_http_referer = ''; }	
 		$wpss_log_comment_data .= "-------------------------------------------------------------------------------------\n";
 		if ( $wpss_user_logged_in != false ) {
-			$wpss_log_comment_data .= "User ID: 		['".$wpss_user_ID."']\n";
+			$wpss_log_comment_data .= "User ID: 		['".$wpss_user_id."']\n";
 			}
 		$wpss_log_comment_data .= "IP Address: 		['".$ip."'] ['http://whatismyipaddress.com/ip/".$ip."']\n";
 		$wpss_log_comment_data .= "Reverse DNS: 		['".$reverse_dns."']\n";
@@ -2689,7 +2691,7 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		"quickcontent.net", "ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "rubyseo.com", "searchmediapromotion.in", "semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", "seooptimizationtipz.com", 
 		"seoservicesnewyork.org", "seosorcery.in", "serviciosdeseo.com", "sowedane-consultants.com", "triveniinfotech.com", "webpromotioner.com", 
 		// Misc Internet Marketing Spammers
-		"ezadblaster.com", "hit4hit.org", "keywordadvertisingedge.com", "keywordspy.com", "socialadsblaster.com", 
+		"ezadblaster.com", "hit4hit.org", "keywordadvertisingedge.com", "keywordspy.com", "socialadsblaster.com", "worldtechbuzz.com", 
 		// WebDev Spammers
 		"manektech.com", "retailon.co", "retailon.net", "rizecorp.com", "rizedigital.com", "webdesigncompany.org", 
 		// Hack/Exploit
@@ -3190,6 +3192,9 @@ function spamshield_check_comment_type($commentdata) {
 	// Add New Tests for Logging - END
 	
 	// User Authorization - BEGIN
+
+	/* Don't use elseif() for these tests - stacking $spamshield_error_code_addendum results */
+
 	$spamshield_error_code_addendum = '';
 	// 1) is_admin() - If in Admin, don't test so user can respond directly to comments through admin
 	if ( is_admin() ) {
@@ -3203,7 +3208,8 @@ function spamshield_check_comment_type($commentdata) {
 			$spamshield_error_code_addendum .= ' 2-MODCOM';
 			}
 
-	if ( is_user_logged_in() ) {
+	if ( current_user_can('publish_posts') ) {
+		// Added Author Requirement - current_user_can('publish_posts') - v 1.4.7
 		global $current_user;  
 		get_currentuserinfo();
 		$wpss_display_name 				= $current_user->display_name;
@@ -3212,32 +3218,35 @@ function spamshield_check_comment_type($commentdata) {
 		$wpss_user_email				= $current_user->user_email;
 		$wpss_user_url					= $current_user->user_url;
 		$wpss_user_login 				= $current_user->user_login;
-		$wpss_user_ID	 				= $current_user->ID;
+		$wpss_user_id	 				= $current_user->ID;
 
 		if ( !empty( $wpss_user_email ) ) {
-			$wpss_user_email_parts			= explode( '@', $wpss_user_email );
+			$wpss_user_email_parts				= explode( '@', $wpss_user_email );
 			if ( !empty( $wpss_user_email_parts[1] ) ) {
-			$wpss_user_email_domain			= $wpss_user_email_parts[1];
+			$wpss_user_email_domain				= $wpss_user_email_parts[1];
 			}
-			else { $wpss_user_email_domain 	= ''; }
-			$wpss_user_email_domain_no_www	= preg_replace( "~^(ww[w0-9]|m)\.~i", "", $wpss_user_email_domain );
+			else { $wpss_user_email_domain 		= ''; }
+			$wpss_user_email_domain_no_w3		= preg_replace( "~^(ww[w0-9]|m)\.~i", "", $wpss_user_email_domain );
+			$wpss_user_email_domain_no_w3_regex	= spamshield_preg_quote( $wpss_user_email_domain_no_w3 );
 			}
 		if ( !empty( $wpss_user_url ) ) {
-			$wpss_user_domain				= spamshield_get_domain( $wpss_user_url );
-			$wpss_user_domain_no_www 		= preg_replace( "~^(ww[w0-9]|m)\.~i", "", $wpss_user_domain );
+			$wpss_user_domain					= spamshield_get_domain( $wpss_user_url );
+			$wpss_user_domain_no_w3 			= preg_replace( "~^(ww[w0-9]|m)\.~i", "", $wpss_user_domain );
+			$wpss_user_domain_no_w3_regex		= spamshield_preg_quote( $wpss_user_domain_no_w3 );
 			}
-		$wpss_server_domain_no_www 			= preg_replace( "~^(ww[w0-9]|m)\.~i", "", RSMP_SERVER_NAME );
-		
-		// 3) If user is logged in and email is from same domain as website, don't test
-		if ( !empty( $wpss_user_email_domain_no_www ) && preg_match( "~(^|\.)$wpss_user_email_domain_no_www$~i", $wpss_server_domain_no_www ) ) {
+		$wpss_server_domain_no_w3 				= preg_replace( "~^(ww[w0-9]|m)\.~i", "", RSMP_SERVER_NAME );
+
+		// 3) If user is logged in, Author, and email is from same domain as website, don't test
+		if ( !empty( $wpss_user_email_domain_no_w3 ) && preg_match( "~(^|\.)$wpss_user_email_domain_no_w3_regex$~i", $wpss_server_domain_no_w3 ) ) {
 			$bypass_tests = true;
-			$spamshield_error_code_addendum .= ' 3-EMAILDOM';
+			$spamshield_error_code_addendum .= ' 3-AEMLDOM';
 			}
-		// 4) If user is logged in and url is same domain as website, don't test
-		if ( !empty( $wpss_user_domain_no_www ) && preg_match( "~(^|\.)$wpss_user_domain_no_www$~i", $wpss_server_domain_no_www ) ) {
+		// 4) If user is logged in, Author, and url is same domain as website, don't test
+		if ( !empty( $wpss_user_domain_no_w3 ) && preg_match( "~(^|\.)$wpss_user_domain_no_w3_regex$~i", $wpss_server_domain_no_w3 ) ) {
 			$bypass_tests = true;
-			$spamshield_error_code_addendum .= ' 4-USERDOM';
+			$spamshield_error_code_addendum .= ' 4-AURLDOM';
 			}
+
 		}
 
 	if ( $bypass_tests != false ) {
@@ -4932,12 +4941,11 @@ function spamshield_register_form_addendum() {
 ';
 		}
 
-	echo "\n\t".'<script type=\'text/javascript\'>'."\n\t".'// <![CDATA['."\n\t".WPSS_REF2XJS.'=escape(document[\'referrer\']);'."\n\t".'document.write("<input type=\'hidden\' name=\''.WPSS_REF2XJS.'\' value=\'"+'.WPSS_REF2XJS.'+"\'>");'."\n\t".'// ]]>'."\n\t".'</script>'."\n\t";
+	echo "\n\t".'<script type=\'text/javascript\'>'."\n\t".'// <![CDATA['."\n\t".WPSS_REF2XJS.'=escape(document[\'referrer\']);'."\n\t".'hf3N=\''.$wpss_js_key.'\';'."\n\t".'hf3V=\''.$wpss_js_val.'\';'."\n\t".'document.write("<input type=\'hidden\' name=\''.WPSS_REF2XJS.'\' value=\'"+'.WPSS_REF2XJS.'+"\'><input type=\'hidden\' name=\'"+hf3N+"\' value=\'"+hf3V+"\'>");'."\n\t".'// ]]>'."\n\t".'</script>'."\n\t";
 	echo '<noscript><input type="hidden" name="JSONST" value="NS3"></noscript>'."\n\t";
 	$wpss_js_disabled_msg 	= __( 'Currently you have JavaScript disabled. In order to register, please make sure JavaScript and Cookies are enabled, and reload the page.', WPSS_PLUGIN_NAME );
 	$wpss_js_enable_msg 	= __( 'Click here for instructions on how to enable JavaScript in your browser.', WPSS_PLUGIN_NAME );
 	echo '<noscript><p><strong>'.$wpss_js_disabled_msg.'</strong> <a href="http://enable-javascript.com/" rel="nofollow external" >'.$wpss_js_enable_msg.'</a><br /><br /></p></noscript>'."\n\t";
-	echo '<input type="hidden" name="'.$wpss_js_key.'" value="'.$wpss_js_val .'" />'."\n";
 
 	// If need to add anything else to registration area, start here
 	}
@@ -5056,7 +5064,7 @@ function spamshield_check_new_user( $errors, $user_login, $user_email ) {
 		);
 	$user_data = array();
 	foreach( $new_fields as $k => $v ) {
-		$user_data[$k] = trim( wp_unslash( $_POST[$k] ) );
+		if ( isset( $_POST[$k] ) ) { $user_data[$k] = trim( wp_unslash( $_POST[$k] ) ); } else { $user_data[$k] = ''; }
 		}
 
 	// Check New Fields for Blanks
@@ -5189,52 +5197,57 @@ function spamshield_check_new_user( $errors, $user_login, $user_email ) {
 	}
 
 function spamshield_user_register( $user_id ) {
-	$spamshield_options 	= get_option('spamshield_options');
-	$new_fields = array(
-		'first_name' 	=> __( 'First Name', WPSS_PLUGIN_NAME ),
-		'last_name' 	=> __( 'Last Name', WPSS_PLUGIN_NAME ),
-		'display_name' 	=> __( 'Display Name', WPSS_PLUGIN_NAME ),
-		);
-    $user_data = array();
-	foreach( $new_fields as $k => $v ) {
-		$user_data[$k] = wp_unslash( $_POST[$k] );
-		}
-    if ( !empty($user_data) ) {
-        $user_data['ID'] = $user_id;
-        wp_update_user( $user_data );
-		}
+	if ( spamshield_is_login_page() ) {
+		$spamshield_options 	= get_option('spamshield_options');
+		$new_fields = array(
+			'first_name' 	=> __( 'First Name', WPSS_PLUGIN_NAME ),
+			'last_name' 	=> __( 'Last Name', WPSS_PLUGIN_NAME ),
+			'display_name' 	=> __( 'Display Name', WPSS_PLUGIN_NAME ),
+			);
+		$user_data = array();
+		foreach( $new_fields as $k => $v ) {
+			if ( isset( $_POST[$k] ) ) { $user_data[$k] = trim( wp_unslash( $_POST[$k] ) ); } else { $user_data[$k] = ''; }
+			}
+		if ( !empty($user_data) ) {
+			$user_data['ID'] = $user_id;
+			wp_update_user( $user_data );
+			}
 
-	$user_info = get_userdata( $user_id );
-	$wpss_display_name 			= $user_info->display_name;
-	$wpss_user_firstname 		= $user_info->user_firstname;
-	$wpss_user_lastname 		= $user_info->user_lastname;
-	$wpss_user_email			= $user_info->user_email;
-	$wpss_user_url				= $user_info->user_url;
-	$wpss_user_login 			= $user_info->user_login;
-	
-	$wpss_comment_author 		= $wpss_display_name;
-	$wpss_comment_author_email	= $wpss_user_email;
-	$wpss_comment_author_url 	= $wpss_user_url;
+		$wpss_display_name = ''; $wpss_user_firstname = ''; $wpss_user_lastname = ''; $wpss_user_email = ''; $wpss_user_url = ''; $wpss_user_login = '';
+
+		$user_info = get_userdata( $user_id );
 		
-	$register_author_data = array(
-		'display_name' 			=> $wpss_display_name,
-		'user_firstname' 		=> $wpss_user_firstname,
-		'user_lastname' 		=> $wpss_user_lastname,
-		'user_email' 			=> $wpss_user_email,
-		'user_url' 				=> $wpss_user_url,
-		'user_login' 			=> $wpss_user_login,
-		'ID' 					=> $user_id,
-		'comment_author'		=> $wpss_display_name,
-		'comment_author_email'	=> $wpss_user_email,
-		'comment_author_url'	=> $wpss_user_url,
-		);
+		if ( isset( $user_info->display_name ) ) 	{ $wpss_display_name	= $user_info->display_name; }
+		if ( isset( $user_info->user_firstname ) ) 	{ $wpss_user_firstname	= $user_info->user_firstname; }
+		if ( isset( $user_info->user_lastname ) ) 	{ $wpss_user_lastname	= $user_info->user_lastname; }
+		if ( isset( $user_info->user_email ) ) 		{ $wpss_user_email		= $user_info->user_email; }
+		if ( isset( $user_info->user_url ) ) 		{ $wpss_user_url		= $user_info->user_url; }
+		if ( isset( $user_info->user_login ) ) 		{ $wpss_user_login		= $user_info->user_login; }
+		
+		$wpss_comment_author 		= $wpss_display_name;
+		$wpss_comment_author_email	= $wpss_user_email;
+		$wpss_comment_author_url 	= $wpss_user_url;
+			
+		$register_author_data = array(
+			'display_name' 			=> $wpss_display_name,
+			'user_firstname' 		=> $wpss_user_firstname,
+			'user_lastname' 		=> $wpss_user_lastname,
+			'user_email' 			=> $wpss_user_email,
+			'user_url' 				=> $wpss_user_url,
+			'user_login' 			=> $wpss_user_login,
+			'ID' 					=> $user_id,
+			'comment_author'		=> $wpss_display_name,
+			'comment_author_email'	=> $wpss_user_email,
+			'comment_author_url'	=> $wpss_user_url,
+			);
 
-	$spamshield_error_code = 'No Error';
-	
-	spamshield_update_sess_accept_status( $register_author_data, 'a', 'Line: '.__LINE__ );
+		$spamshield_error_code = 'No Error';
+		
+		spamshield_update_sess_accept_status( $register_author_data, 'a', 'Line: '.__LINE__ );
 
-	if ( !empty( $spamshield_options['comment_logging'] ) && !empty( $spamshield_options['comment_logging_all'] ) ) {
-		spamshield_log_data( $register_author_data, $spamshield_error_code, 'register' );
+		if ( !empty( $spamshield_options['comment_logging'] ) && !empty( $spamshield_options['comment_logging_all'] ) ) {
+			spamshield_log_data( $register_author_data, $spamshield_error_code, 'register' );
+			}
 		}
 	}
 
@@ -6286,34 +6299,36 @@ if (!class_exists('wpSpamShield')) {
 			}
 		
 		function spamshield_check_version() {
-			// Make sure user has minimum required WordPress version, in order to prevent issues
-			if ( version_compare( RSMP_WP_VERSION, WPSS_REQUIRED_WP_VERSION, '<' ) ) {
-				deactivate_plugins( WPSS_PLUGIN_BASENAME );
-				$notice_text = sprintf( __( 'Plugin deactivated. WordPress Version %s required. Please upgrade WordPress to the latest version.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_WP_VERSION );
-				$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
-				update_option( 'spamshield_admin_notices', $new_admin_notice );
-				add_action( 'admin_notices', 'spamshield_admin_notices' );
-				return false;
-				}
-			// Security Check - See if (extremely) old version of plugin still active
-			$old_version = 'wp-spamfree/wp-spamfree.php';
-			$old_version_active = spamshield_is_plugin_active( $old_version );
-			if ( !empty( $old_version_active ) ) {
-				// Not safe to keep old version active due to unpatched security hole(s), broken PHP, and lack of maintenance
-				// For security reasons, deactivate old version
-				deactivate_plugins( $old_version );
-				// Clean up database
-				delete_option('wp_spamfree_version'); delete_option('spamfree_count'); delete_option('spamfree_options');
-				// Good to go!
-				// Since WP-SpamShield takes over 100% of old version's responsibilities, there is no loss of functionality, only improvements.
-				// Site speed will improve and server load will now drop dramatically.
-				}
-			// Compatibility Checks
-			spamshield_admin_jp_fix();
-			// Check for pending admin notices
-			$admin_notices = get_option('spamshield_admin_notices');
-			if ( !empty( $admin_notices ) ) {
-				add_action( 'admin_notices', 'spamshield_admin_notices' );
+			if ( current_user_can('manage_options') ) {
+				// Make sure user has minimum required WordPress version, in order to prevent issues
+				if ( version_compare( RSMP_WP_VERSION, WPSS_REQUIRED_WP_VERSION, '<' ) ) {
+					deactivate_plugins( WPSS_PLUGIN_BASENAME );
+					$notice_text = sprintf( __( 'Plugin deactivated. WordPress Version %s required. Please upgrade WordPress to the latest version.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_WP_VERSION );
+					$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
+					update_option( 'spamshield_admin_notices', $new_admin_notice );
+					add_action( 'admin_notices', 'spamshield_admin_notices' );
+					return false;
+					}
+				// Security Check - See if (extremely) old version of plugin still active
+				$old_version = 'wp-spamfree/wp-spamfree.php';
+				$old_version_active = spamshield_is_plugin_active( $old_version );
+				if ( !empty( $old_version_active ) ) {
+					// Not safe to keep old version active due to unpatched security hole(s), broken PHP, and lack of maintenance
+					// For security reasons, deactivate old version
+					deactivate_plugins( $old_version );
+					// Clean up database
+					delete_option('wp_spamfree_version'); delete_option('spamfree_count'); delete_option('spamfree_options');
+					// Good to go!
+					// Since WP-SpamShield takes over 100% of old version's responsibilities, there is no loss of functionality, only improvements.
+					// Site speed will improve and server load will now drop dramatically.
+					}
+				// Compatibility Checks
+				spamshield_admin_jp_fix();
+				// Check for pending admin notices
+				$admin_notices = get_option('spamshield_admin_notices');
+				if ( !empty( $admin_notices ) ) {
+					add_action( 'admin_notices', 'spamshield_admin_notices' );
+					}
 				}
 			}
 

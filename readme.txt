@@ -182,6 +182,14 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.4.7 =
+*released 08/12/14*
+
+* Added additional security checks.
+* Improved some of the user registration and comment spam filters.
+* Fixed a few minor bugs.
+* Updated the spam filters.
+
 = 1.4.6 =
 *released 08/05/14*
 
@@ -478,8 +486,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.4.6 =
-Added compatibility fix for certain server configurations where necessary PHP functions are not enabled, and updated spam filters. Please see Changelog for more details.
+= 1.4.7 =
+Added additional security checks, improved some of the user registration and comment spam filters, fixed a few minor bugs, and updated the spam filters. Please see Changelog for more details.
 
 == Other Notes ==
 
