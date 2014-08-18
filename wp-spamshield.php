@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.4.7
+Version: 1.4.8
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.4.7' );
+define( 'WPSS_VERSION', '1.4.8' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.2' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -500,8 +500,8 @@ function spamshield_get_regex_phrase( $input, $custom_delim = NULL, $flag = "N" 
 		$regex_flag = $flag_regex_arr[$flag];
 		$regex_phrase_pre_arr = array();
 		foreach( $input as $i => $val ) {
-			$val_reg_pre = spamshield_preg_quote($val);
 			if ( $flag == "rgx_str" || $flag == "authorkw" || $flag == "atxtwrap" ) { $val_reg_pre = $val; } // Variable must come in prepped for regex (preg_quoted)
+			else { $val_reg_pre = spamshield_preg_quote($val); }
 			$regex_phrase_pre_arr[] = $val_reg_pre;
 			}
 		$regex_phrase_pre_str 	= implode( "|", $regex_phrase_pre_arr );
@@ -512,9 +512,9 @@ function spamshield_get_regex_phrase( $input, $custom_delim = NULL, $flag = "N" 
 	elseif ( is_string( $input ) ) {
 		$val = $input;
 		$regex_flag = $flag_regex_arr[$flag];
-		$val_reg_pre = spamshield_preg_quote($val);
 		if ( $flag == "rgx_str" || $flag == "authorkw" || $flag == "atxtwrap" ) { $val_reg_pre = $val; } // Variable must come in prepped for regex (preg_quoted)
-		$regex_phrase_str 		= preg_replace( "~X~", $val_reg_pre, $regex_flag );
+		else { $val_reg_pre = spamshield_preg_quote($val); }
+		$regex_phrase_str 	= preg_replace( "~X~", $val_reg_pre, $regex_flag );
 		if ( !empty( $custom_delim ) ) {  $delim = $custom_delim; } else { $delim = "~"; }
 		$regex_phrase = $delim.$regex_phrase_str.$delim."iu"; // UTF-8 enabled
 		}
@@ -2119,7 +2119,6 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				$contact_response_status_message_addendum .= '&bull; ' . __( 'At least one required field was left blank.', WPSS_PLUGIN_NAME ) . '<br />&nbsp;<br />';
 				}
 
-			//if ( !is_email($wpss_contact_email) || spamshield_email_blacklist_chk($wpss_contact_email) ) {
 			if ( !is_email($wpss_contact_email) ) {
 				$invalid_value=1;
 				$bad_email=1;
@@ -2127,12 +2126,9 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				$contact_response_status_message_addendum .= '&bull; ' . __( 'Please enter a valid email address.' ) . '<br />&nbsp;<br />';
 				}
 			
-			$wpss_contact_phone_zerofake1 = str_replace( '000-000-0000', '', $wpss_contact_phone );
-			$wpss_contact_phone_zerofake2 = str_replace( '(000) 000-0000', '', $wpss_contact_phone );
-			$wpss_contact_phone_zero = str_replace( '0', '', $wpss_contact_phone );
-			$wpss_contact_phone_na1 = str_replace( 'N/A', '', $wpss_contact_phone );
-			$wpss_contact_phone_na2 = str_replace( 'NA', '', $wpss_contact_phone );
-			if ( !empty( $form_include_phone ) && !empty( $form_require_phone ) && ( empty( $wpss_contact_phone_zerofake1 ) || empty( $wpss_contact_phone_zerofake2 ) || empty( $wpss_contact_phone_zero ) || empty( $wpss_contact_phone_na1 ) || empty( $wpss_contact_phone_na2 ) ) ) {
+			// TO DO: RE-WORK THIS SECTION
+			$wpss_contact_phone_zero = str_replace( array( ' ', '0', '-', '(', ')', '+', 'N/A', 'NA', 'n/a', 'na' ), '', $wpss_contact_phone );
+			if ( !empty( $form_require_phone ) && !empty( $form_include_phone ) && empty( $wpss_contact_phone_zero ) ) {
 				$invalid_value=1;
 				$bad_phone=1;
 				$spamshield_error_code .= ' CF-INVAL-PHONE';
@@ -2634,7 +2630,10 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 	// Email Blacklist Check
 	$blacklisted_emails = array(
 		// The whole email address
+		// Misc Spammers
 		"12345@yahoo.com", "a@a.com", "asdf@yahoo.com", "fuck@you.com", "test@test.com", 
+		// Internet Marketing Spammers
+		"fredrickparker49@gmail.com", 
 		);
 	if ( !empty( $get_eml_list_arr ) ) { return $blacklisted_emails; }
 	$blacklisted_email_prefixes = array(
@@ -2661,17 +2660,31 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 	$blacklisted_domains = spamshield_domain_blacklist_chk('',true);
 
 	$regex_phrase_arr = array();
-	$regex_phrase_arr[] = spamshield_get_regex_phrase($blacklisted_emails,'','email_addr');
-	$regex_phrase_arr[] = spamshield_get_regex_phrase($blacklisted_email_prefixes,'','email_prefix');
-	$regex_phrase_arr[] = spamshield_get_regex_phrase($blacklisted_email_strings,'','red_str');
-	$regex_phrase_arr[] = spamshield_get_regex_phrase($blacklisted_email_strings_rgx,'','rgx_str');
-	$regex_phrase_arr[] = spamshield_get_regex_phrase($blacklisted_domains,'','email_domain');
-	
-	foreach( $regex_phrase_arr as $i => $regex_phrase ) {
-		if ( preg_match( $regex_phrase, $email ) ) { $blacklist_status = true; }
-		//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
+	foreach( $blacklisted_emails as $i => $blacklisted_email ) {
+		$regex_phrase_arr[] = spamshield_get_regex_phrase($blacklisted_email,'','email_addr');
 		}
-	
+	foreach( $blacklisted_email_prefixes as $i => $blacklisted_email_prefix ) {
+		$regex_phrase_arr[] = spamshield_get_regex_phrase($blacklisted_email_prefix,'','email_prefix');
+		}
+	foreach( $blacklisted_email_strings as $i => $blacklisted_email_string ) {
+		$regex_phrase_arr[] = spamshield_get_regex_phrase($blacklisted_email_string,'','red_str');
+		}
+	foreach( $blacklisted_email_strings_rgx as $i => $blacklisted_email_string_rgx ) {
+		$regex_phrase_arr[] = spamshield_get_regex_phrase($blacklisted_email_string_rgx,'','rgx_str');
+		}
+	foreach( $blacklisted_domains as $i => $blacklisted_domain ) {
+		$regex_phrase_arr[] = spamshield_get_regex_phrase($blacklisted_domain,'','email_domain');
+		}
+
+	foreach( $regex_phrase_arr as $i => $regex_phrase ) {
+		if ( preg_match( $regex_phrase, $email ) ) {
+			//$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
+			//break;
+			return true;
+			}
+		}
+
 	return $blacklist_status;
 	}
 
@@ -2680,20 +2693,24 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 	$blacklisted_domains = array(
 		// THE Master List - Documented spammers - 10 per line
 		// General Spammers
-		"canadianwarmbloods.com", "crackfacebookaccount.com", "droa.com", "empirecompanyusa.com", "entiver.com", "entiveracademy.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", "globaldata4u.com", 
-		"howtohypnotizesomeoneforbeginners.com", "hypnosisforbeginners.com", "incaltaminte-mopiel.ro", "kleinkredit100.de", "lili-marlene-dortmund.de", "pattybeni.com", "probemosjuntos.com", "rxiied.com", "ryansheavenlyroofing.blogspot.com", "spencediamonds.com", 
-		"superbsocial.net", "votreserrurierparis.fr", "wellnessmn.net", 
+		"agentbutler.com", "businesscardsutah.com", "canadianwarmbloods.com", "crackfacebookaccount.com", "droa.com", "eagle-condor.org", "empirecompanyusa.com", "entiver.com", "entiveracademy.com", "fat-milf.com", 
+		"friendlybuilders.co.uk", "fuckyou.com", "futurestradingsecrets.com", "globaldata4u.com", "howtohypnotizesomeoneforbeginners.com", "hypnosisforbeginners.com", "incaltaminte-mopiel.ro", "kleinkredit100.de", "lili-marlene-dortmund.de", "optionstradingroom.com", 
+		"own-property.com", "pattybeni.com", "probemosjuntos.com", "rxiied.com", "ryansheavenlyroofing.blogspot.com", "spencediamonds.com", "stepforwardlawncare.com", "superbsocial.net", "ventureplan.com", "votreserrurierparis.fr", 
+		"wellnessmn.net", 
 		// Payday Loan Spammmers
 		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
 		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
 		// SEO Spammers
 		"alkyonedigital.com", "agenciade.serviciosdeseo.com", "arihantwebtech.com", "click4pardeep.com", "cyber-seo.com", "dreamforweb.com", "hhmla.ca", "hyperwebmarketing.org", "imediasolutions.biz", "listnappend.com", 
-		"quickcontent.net", "ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "rubyseo.com", "searchmediapromotion.in", "semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", "seooptimizationtipz.com", 
-		"seoservicesnewyork.org", "seosorcery.in", "serviciosdeseo.com", "sowedane-consultants.com", "triveniinfotech.com", "webpromotioner.com", 
+		"quickcontent.net", "quillquintessential.com", "ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "rubyseo.com", "searchmediapromotion.in", "semmiami.com", "seo-services-new-york.weebly.com", "seoindia.co.in", 
+		"seooptimizationtipz.com", "seosailor.com", "seoservicesnewyork.org", "seosorcery.in", "seoutahcounty.com", "serviciosdeseo.com", "sowedane-consultants.com", "triveniinfotech.com", "webpromotioner.com", 
 		// Misc Internet Marketing Spammers
-		"ezadblaster.com", "hit4hit.org", "keywordadvertisingedge.com", "keywordspy.com", "socialadsblaster.com", "worldtechbuzz.com", 
+		"360webmarketing.com", "360webmarketing.net", "bpdominator.com", "cl-dominator.com", "ezadblaster.com", "hit4hit.org", "keywordadvertisingedge.com", "keywordspy.com", "onlineadprofessionals.com", "onlineadpros.com", 
+		"socialadsblaster.com", "worldtechbuzz.com", "writing-web-content.com", 
 		// WebDev Spammers
-		"manektech.com", "retailon.co", "retailon.net", "rizecorp.com", "rizedigital.com", "webdesigncompany.org", 
+		"manektech.com", "retailon.co", "retailon.net", "rizecorp.com", "rizedigital.com", "webdesigncompany.org", "websiteitup.com", 
+		// Logo Design / Graphic Design Spammers
+		"24hrdesign.com", "logodesigntucson.com", "logodesignutah.com", 
 		// Hack/Exploit
 		"viralurl.com", "vur.me", 
 		// Add more here
@@ -2711,15 +2728,25 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		// Misc
 		"~^((ww[w0-9]|m)\.)?whereto(buy|get)cannabisoil~i", 
 		);
-	foreach( $regex_phrases_other_checks as $i => $regex_phrase_chk ) {
-		if ( preg_match( $regex_phrase_chk, $domain ) ) { return true; }
+	foreach( $regex_phrases_other_checks as $i => $regex_check_phrase ) {
+		if ( preg_match( $regex_check_phrase, $domain ) ) { 
+			//$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'$regex_check_phrase:'.$regex_check_phrase.' Line: '.__LINE__ );
+			return true; 
+			}
 		}
 	// Final Check - The Blacklist...takes longest once blacklist is populated, so put last
-	$regex_phrase = spamshield_get_regex_phrase($blacklisted_domains,'','domain');
-	//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
-	//spamshield_append_log_data( "\n".'$domain:'.$domain.' Line: '.__LINE__ );
-	if ( preg_match( $regex_phrase, $domain ) ) { $blacklist_status = true; }
-	// When $regex_phrase exceeds a certain size, switch this to run smaller groups or run each domain individually - see spamshield_anchortxt_blacklist_chk() - The blacklist
+
+	foreach( $blacklisted_domains as $i => $blacklisted_domain ) {
+		$regex_check_phrase = spamshield_get_regex_phrase( $blacklisted_domain, '', 'domain' );
+		if ( preg_match( $regex_check_phrase, $domain ) ) {
+			//$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'$regex_check_phrase:'.$regex_check_phrase.' Line: '.__LINE__ );
+			//break;
+			return true;
+			}
+		}
+
 	return $blacklist_status;
 	}
 
@@ -2748,7 +2775,10 @@ function spamshield_urlshort_blacklist_chk( $url = NULL, $email_domain = NULL ) 
 	// Shortened URL check begins
 	$regex_phrase = spamshield_get_regex_phrase($url_shorteners,'','domain');
 		// Consider adding regex for 2-letter domains with 2-letter extensions ( "aa.xx" )
-	if ( $email_domain != $domain && preg_match( $regex_phrase, $domain ) ) { $blacklist_status = true; }
+	if ( $email_domain != $domain && preg_match( $regex_phrase, $domain ) ) { 
+		//$blacklist_status = true;
+		return true;
+		}
 	return $blacklist_status;
 	}
 
@@ -2759,7 +2789,10 @@ function spamshield_long_url_chk( $url = NULL ) {
 	if ( empty( $url ) ) { return false; }
 	$url_lim = 140;
 	$url_len = spamshield_strlen($url);
-	if ( $url_len > $url_lim ) { $blacklist_status = true; }
+	if ( $url_len > $url_lim ) { 
+		//$blacklist_status = true;
+		return true;
+		}
 	return $blacklist_status;
 	}
 
@@ -2784,7 +2817,11 @@ function spamshield_social_media_url_chk( $url = NULL ) {
 	$regex_phrase = spamshield_get_regex_phrase($social_media_domains,'','domain');
 	//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
 	//spamshield_append_log_data( "\n".'$domain:'.$domain.' Line: '.__LINE__ );
-	if ( preg_match( $regex_phrase, $domain ) ) { $blacklist_status = true; } // When $regex_phrase exceeds a certain size, switch this to run smaller groups or run each domain individually
+	if ( preg_match( $regex_phrase, $domain ) ) {
+		//$blacklist_status = true;
+		return true;
+		}
+	// When $regex_phrase exceeds a certain size, switch this to run smaller groups or run each domain individually
 	return $blacklist_status;
 	}
 
@@ -2811,13 +2848,22 @@ function spamshield_misc_spam_url_chk( $url = NULL ) {
 		"~spence-?diamonds?~i",
 		"~seo-?services?-?(new-?york|ny)~i",
 		);
-	foreach( $regex_phrases_other_checks as $i => $regex_phrase_chk ) {
-		if ( preg_match( $regex_phrase_chk, $url ) ) { return true; }
+	foreach( $regex_phrases_other_checks as $i => $regex_check_phrase ) {
+		if ( preg_match( $regex_check_phrase, $url ) ) {
+			//$blacklist_status = true;
+			//spamshield_append_log_data( "\n".'$regex_check_phrase:'.$regex_check_phrase.' Line: '.__LINE__ );
+			return true;
+			}
 		}
 	$regex_phrase = spamshield_get_regex_phrase($spam_domains,'','domain');
 	//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
 	//spamshield_append_log_data( "\n".'$domain:'.$domain.' Line: '.__LINE__ );
-	if ( preg_match( $regex_phrase, $domain ) ) { $blacklist_status = true; } // When $regex_phrase exceeds a certain size, switch this to run smaller groups or run each domain individually
+	if ( preg_match( $regex_phrase, $domain ) ) {
+		//$blacklist_status = true;
+		//spamshield_append_log_data( "\n".'$regex_phrase:'.$regex_phrase.' Line: '.__LINE__ );
+		return true;
+		}
+	// When $regex_phrase exceeds a certain size, switch this to run smaller groups or run each domain individually
 	return $blacklist_status;
 	}
 
@@ -2831,9 +2877,10 @@ function spamshield_link_blacklist_chk( $haystack = NULL, $type = 'domain' ) {
 	//spamshield_append_log_data( "\n".'$extracted_domains: "'.implode( '|', $extracted_domains ).'" Line: '.__LINE__ );
 	foreach( $extracted_domains as $d => $domain ) {
 		if ( spamshield_domain_blacklist_chk( $domain ) ) {
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'$domain: '.$domain.' Line: '.__LINE__ );
-			break;
+			//break;
+			return true;
 			}
 		}
 	return $blacklist_status;
@@ -2856,9 +2903,10 @@ function spamshield_at_link_spam_url_chk( $urls = NULL ) {
 		if ( spamshield_urlshort_blacklist_chk( $url ) || spamshield_long_url_chk( $url ) || spamshield_social_media_url_chk( $url ) || spamshield_misc_spam_url_chk( $url ) ) {
 		//if ( spamshield_urlshort_blacklist_chk( $url ) || spamshield_long_url_chk( $url ) || spamshield_misc_spam_url_chk( $url ) ) {
 			// Shortened URLs, Long URLs, Social Media, Other common spam URLs
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'$domain: '.$domain.' Line: '.__LINE__ );
-			break;
+			//break;
+			return true;
 			}
 		}
 	return $blacklist_status;
@@ -2875,9 +2923,10 @@ function spamshield_cf_link_spam_url_chk( $haystack = NULL, $email = NULL ) {
 	//spamshield_append_log_data( "\n".'$extracted_urls: "'.implode( '|', $extracted_urls ).'" Line: '.__LINE__ );
 	foreach( $extracted_urls as $u => $url ) {
 		if ( spamshield_urlshort_blacklist_chk( $url, $email_domain ) ) {
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
-			break;
+			//break;
+			return true;
 			}
 		}
 	return $blacklist_status;
@@ -2900,33 +2949,37 @@ function spamshield_exploit_url_chk( $urls = NULL ) {
 		//spamshield_append_log_data( "\n".'Begin $url check - '.$u.': '.$url.' Line: '.__LINE__ );
 		if ( preg_match( "~/phpinfo\.php\?~i", $url ) ) {
 			// phpinfo.php Redirect - Used in XSS
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
-			break;
+			//break;
+			return true;
 			}
 		elseif ( preg_match( "~^(https?\:/+)?([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/?~i", $url ) ) {
 			// IP Address URLs
 			// Normal people (and Trackbacks/Pingbacks) don't post IP addresses as their website address in a comment, DUH
 			// Dangerous because users have no idea what website they are clicking through to
 			// Likely a Phishing site or XSS
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
-			break;
+			//break;
+			return true;
 			}
 		elseif ( !empty( $query_string ) && preg_match( "~(\.\.(\/|%2f)|boot\.ini|(ftp|https?)(\:|%3a)|mosconfig_[a-z_]{1,21}(\=|%3d)|base64_encode.*\(.*\)|[\[\]\(\)\{\}\<\>\|\"\';\?\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d|%0|%a|%b|%c|%d|%e|%f|127\.0|globals|encode|localhost|loopback|request|select|insert|union|declare)~i", $query_string ) ) { // Check Query String
 			// Dangerous Exploit URLs - XSS, SQL injection, or other
 			// Test Query String - This covers a number of SQL Injection and other exploits
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
-			break;
+			//break;
+			return true;
 			}			
 		elseif ( preg_match( "~([\[\]\(\)\{\}\<\>\|\"\';\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d)~i", $url ) ) { // Check Query String
 			// Dangerous Exploit URLs - XSS, SQL injection, or other
 			// Test URL - no reason these would occur in a normal URL - they're not legal in a URL, but we've seen them in a lot of spam URL submissions
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'$url: '.$url.' Line: '.__LINE__ );
-			break;
-			}			
+			//break;
+			return true;
+			}
 		}
 	return $blacklist_status;
 	}
@@ -2938,8 +2991,8 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 	// Script creates all the necessary alphanumeric and linguistic variations to effectively test.
 	// $haystack_type can be 'author' (default) or 'content'
 	$wpss_cl_active	= spamshield_is_plugin_active( 'commentluv/commentluv.php' ); // Check if active for compatibility with CommentLuv
-	$blacklist_keyphrases = spamshield_get_anchortxt_blacklist();
-	$blacklist_keyphrases_lite = array( 
+	$blacklisted_keyphrases = spamshield_get_anchortxt_blacklist();
+	$blacklisted_keyphrases_lite = array( 
 		// Use this for content link anchor text, not author names
 		"accident lawyer", "accutane", "acomplia", "adipex", "air jordan", "alprostadil", "amature movie", "amature video", "attorney", "avanafil", "bankruptcy", "bestiality", "betting", "bisexual", 
 		"blackjack", "blow job", "build link", "build muscle", "buy pill", "call girl", "cambogia", "cannabis", "cash advance", "casinos", "celebrity movie", "celebrity video", "cellulite", "celulit", 
@@ -2962,11 +3015,11 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 		"zithromax", "zoekmachine optimalisatie", 
 		);
 	if ( $haystack_type == 'author' && ( !empty( $wpss_cl_active ) || empty( $url ) ) ) {
-		$blacklist_keyphrases = $blacklist_keyphrases_lite;
+		$blacklisted_keyphrases = $blacklisted_keyphrases_lite;
 		}
 	if ( !empty( $get_list_arr ) ) {
-		if ( $haystack_type == 'content' ) { return $blacklist_keyphrases_lite; }
-		else { return $blacklist_keyphrases; }
+		if ( $haystack_type == 'content' ) { return $blacklisted_keyphrases_lite; }
+		else { return $blacklisted_keyphrases; }
 		}
 	// Goes after array
 	$blacklist_status = false;
@@ -2974,48 +3027,45 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 	if ( $haystack_type == 'author' ) {
 		// Check 1: Testing for URLs in author name
 		if ( preg_match( "~^https?~i", $haystack ) ) {
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'Check 1 - Line: '.__LINE__ );
-			return $blacklist_status;
+			return true;
 			}
 		// Check 2: Testing for max # words in author name, more than 7 is fail
 		$author_words = spamshield_count_words( $haystack );
 		$word_max = 7; // Default
 		If ( !empty( $wpss_cl_active ) ) { $word_max = 10; } /* CL active */
 		if ( $author_words > $word_max ) {
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'Check 2 - Line: '.__LINE__ );
-			return $blacklist_status;
+			return true;
 			}
 		// Check 3: Testing for Odd Characters in author name
 		$odd_char_regex = "~[\@\*]+~"; // Default
 		If ( !empty( $wpss_cl_active ) ) { $odd_char_regex = "~(\@{2,}|\*)+~"; } /* CL active */
 		if ( preg_match( $odd_char_regex, $haystack ) ) {
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'Check 3 - Line: '.__LINE__ );
-			return $blacklist_status;
+			return true;
 			}
 		/*
 		// Check 4: Testing for *author name* surrounded by asterisks
-		if ( preg_match( "~^\*(.*)\*$~", $haystack ) ) {
-			$blacklist_status = true;
-			return $blacklist_status;
-			}
 		*/
 		// Check 5: Testing for numbers and cash references ('1000','$5000', etc) in author name 
 		if ( empty( $wpss_cl_active ) && preg_match( "~(^|[\s\.])(\$([0-9]+)([0-9,\.]+)?|([0-9]+)([0-9,\.]{3,})|([0-9]{3,}))($|[\s])~", $haystack ) ) {
-			$blacklist_status = true;
+			//$blacklist_status = true;
 			//spamshield_append_log_data( "\n".'Check 5 - Line: '.__LINE__ );
-			return $blacklist_status;
+			return true;
 			}
 		// Final Check: The Blacklist
-		foreach( $blacklist_keyphrases as $i => $blacklist_keyphrase ) {
-			$blacklist_keyphrase_rgx = spamshield_regexify( $blacklist_keyphrase );
-			$regex_check_phrase = spamshield_get_regex_phrase( $blacklist_keyphrase_rgx, '', 'authorkw' );
+		foreach( $blacklisted_keyphrases as $i => $blacklisted_keyphrase ) {
+			$blacklisted_keyphrase_rgx = spamshield_regexify( $blacklisted_keyphrase );
+			$regex_check_phrase = spamshield_get_regex_phrase( $blacklisted_keyphrase_rgx, '', 'authorkw' );
 			if ( preg_match( $regex_check_phrase, $haystack ) ) {
-				$blacklist_status = true;
+				//$blacklist_status = true;
 				//spamshield_append_log_data( "\n".'$regex_check_phrase:'.$regex_check_phrase.' Line: '.__LINE__ );
-				break;
+				//break;
+				return true;
 				}
 			}
 		}
@@ -3027,14 +3077,15 @@ function spamshield_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = f
 		$anchor_text_phrases = spamshield_parse_links( $haystack, 'anchor_text' );
 		//spamshield_append_log_data( "\n".'$anchor_text_phrases: "'.implode( '|', $anchor_text_phrases ).'" Line: '.__LINE__ );
 		foreach( $anchor_text_phrases as $a => $anchor_text_phrase ) {
-			foreach( $blacklist_keyphrases_lite as $i => $blacklist_keyphrase ) {
-				$blacklist_keyphrase_rgx = spamshield_regexify( $blacklist_keyphrase );
-				//$regex_check_phrase = spamshield_get_regex_phrase( $blacklist_keyphrase_rgx, '', 'atxtwrap' );
-				$regex_check_phrase = spamshield_get_regex_phrase( $blacklist_keyphrase_rgx, '', 'authorkw' );
+			foreach( $blacklisted_keyphrases_lite as $i => $blacklisted_keyphrase ) {
+				$blacklisted_keyphrase_rgx = spamshield_regexify( $blacklisted_keyphrase );
+				//$regex_check_phrase = spamshield_get_regex_phrase( $blacklisted_keyphrase_rgx, '', 'atxtwrap' );
+				$regex_check_phrase = spamshield_get_regex_phrase( $blacklisted_keyphrase_rgx, '', 'authorkw' );
 				if ( preg_match( $regex_check_phrase, $anchor_text_phrase ) ) {
-					$blacklist_status = true;
+					//$blacklist_status = true;
 					//spamshield_append_log_data( "\n".'$regex_check_phrase:'.$regex_check_phrase.' Line: '.__LINE__ );
-					break 2;
+					//break 2;
+					return true;
 					}
 				}
 			}
@@ -3104,7 +3155,6 @@ function spamshield_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL
 	
 	// Bad Robot!
 	$banned_servers = array(
-		//"REVD0000" => "~(^|\.)007guard\.com$~i", // For testing internally on 127.0.0.1
 		"REVD1023" => "~(^|\.)keywordspy\.com$~i",
 		"REVD1024" => "~(^|\.)clients\.your-server\.de$~i",
 		"REVD1025" => "~^rover-host\.com$~i",
