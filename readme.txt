@@ -183,6 +183,13 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.4.9 =
+*released 08/24/14*
+
+* Modified the blocked spam error message for certain human spam comment submissions.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.4.8 =
 *released 08/18/14*
 
@@ -494,8 +501,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.4.8 =
-Improved some of the filters in the spam blocking algorithm, improved/optimized some code, and updated the spam filters. Please see Changelog for more details.
+= 1.4.9 =
+Modified the blocked spam error message for certain human spam comment submissions, improved some of the filters in the spam blocking algorithm, and updated the spam filters.
 
 == Other Notes ==
 

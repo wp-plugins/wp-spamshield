@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.4.8
+Version: 1.4.9
 */
 
 // Security Sanitization - BEGIN
@@ -56,8 +56,11 @@ if ( defined( 'WPSS_HASH' ) && !empty( $_SESSION )  ) {
 	$key_total_page_hits	= 'wpss_page_hits_js_'.WPSS_HASH;
 	$key_ip_hist 			= 'wpss_jscripts_ip_history_'.WPSS_HASH;
 	$key_init_ip			= 'wpss_user_ip_init_'.WPSS_HASH;
+	$key_init_ua			= 'wpss_user_agent_init_'.WPSS_HASH;
 	$current_ip 			= $_SERVER['REMOTE_ADDR'];
+	$current_ua 			= spamshield_get_user_agent_js();
 	if ( empty( $_SESSION[$key_init_ip] ) ) { $_SESSION[$key_init_ip] = $current_ip; }
+	if ( empty( $_SESSION[$key_init_ua] ) ) { $_SESSION[$key_init_ua] = $current_ua; }
 	// IP History - Lets see if they change IP's
 	if ( empty( $_SESSION[$key_ip_hist] ) ) { $_SESSION[$key_ip_hist] = array(); $_SESSION[$key_ip_hist][] = $current_ip; }
 	if ( $current_ip != $_SESSION[$key_init_ip] ) { $_SESSION[$key_ip_hist][] = $current_ip; }
@@ -161,6 +164,10 @@ function spamshield_get_url_js() {
 	$url .= $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 	return $url;
 	}
+function spamshield_get_user_agent_js() {
+	if ( !empty( $_SERVER['HTTP_USER_AGENT'] ) ) { $user_agent = trim(addslashes(strip_tags($_SERVER['HTTP_USER_AGENT']))); } else { $user_agent = ''; }
+	return $user_agent;
+	}
 function spamshield_get_server_addr_js() {
 	if ( !empty( $_SERVER['SERVER_ADDR'] ) ) { $server_addr = $_SERVER['SERVER_ADDR']; } else { $server_addr = getenv('SERVER_ADDR'); }
 	return $server_addr;
@@ -181,8 +188,8 @@ $_SESSION['wpss_sess_status'] = 'on';
 
 if ( !empty( $current_ref ) && preg_match( "~([&\?])form\=response$~i", $current_ref ) && !empty( $_SESSION[$key_comment_auth] ) ) {
 	@setcookie( $key_comment_auth, $_SESSION[$key_comment_auth], 0, '/' );
-	if ( !empty( $_SESSION[$key_comment_auth] ) ) { @setcookie( $key_comment_email, $_SESSION[$key_comment_email], 0, '/' ); }
-	if ( !empty( $_SESSION[$key_comment_auth] ) ) { @setcookie( $key_comment_url, $_SESSION[$key_comment_url], 0, '/' ); }
+	if ( !empty( $_SESSION[$key_comment_email] ) )	{ @setcookie( $key_comment_email, $_SESSION[$key_comment_email], 0, '/' ); }
+	if ( !empty( $_SESSION[$key_comment_url] ) ) 	{ @setcookie( $key_comment_url, $_SESSION[$key_comment_url], 0, '/' ); }
 	}
 @setcookie( $wpss_ck_key, $wpss_ck_val, 0, '/' );
 header('Cache-Control: no-cache');

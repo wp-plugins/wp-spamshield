@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic IMG File
-Version: 1.4.8
+Version: 1.4.9
 */
 
 // Security Sanitization - BEGIN
