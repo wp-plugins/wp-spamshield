@@ -354,13 +354,13 @@ msgstr ""
 
 #: wp-spamshield.php:4608
 #, php-format
-msgid "has blocked <strong> %s </strong> spam comments."
+msgid "has blocked <strong> %s </strong> spam."
 msgstr ""
 
 #: wp-spamshield.php:4623 wp-spamshield.php:4904
 #, php-format
 msgid ""
-"That's <strong> %s </strong> spam comments a day that you don't have to "
+"That's <strong> %s </strong> spam a day that you don't have to "
 "worry about."
 msgstr ""
 
@@ -402,7 +402,7 @@ msgstr ""
 
 #: wp-spamshield.php:4901
 #, php-format
-msgid "WP-SpamShield has blocked <strong> %s </strong> spam comments!"
+msgid "WP-SpamShield has blocked <strong> %s </strong> spam!"
 msgstr ""
 
 #: wp-spamshield.php:5130
