@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.5
+Version: 1.5.1
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.5' );
+define( 'WPSS_VERSION', '1.5.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.2' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -449,7 +449,7 @@ function spamshield_remove_query( $url, $skip_wp_args = false ) {
 	foreach( $query_arr as $i => $query_arg ) {
 		$query_arg_arr = explode( '=', $query_arg );
 		$key = $query_arg_arr[0];
-		if ( !empty( $skip_wp_args ) && ( $key == 'p' || $key == 'page_id' ) ) { continue; }
+		if ( !empty( $skip_wp_args ) && ( $key == 'p' || $key == 'page_id' || $key == 'cpage' ) ) { continue; }
 		$remove_args[] = $key;
 		}
 	$clean_url = remove_query_arg( $remove_args, $url );
@@ -3282,7 +3282,7 @@ function spamshield_check_comment_type($commentdata) {
 	// Add New Tests for Logging - BEGIN
 	if ( !empty( $_POST['JSONST'] ) ) { $post_jsonst = $_POST['JSONST']; } else { $post_jsonst = ''; }
 	if ( !empty( $_POST[WPSS_REF2XJS] ) ) { $post_ref2xjs = $_POST[WPSS_REF2XJS]; } else { $post_ref2xjs = ''; }	
-	$post_ref2xjs_lc 		= strtolower($post_ref2xjs);
+	$post_ref2xjs_lc 	= strtolower($post_ref2xjs);
 	if ( !empty( $post_ref2xjs ) ) {
 		$ref2xJS = strtolower( addslashes( urldecode( $post_ref2xjs ) ) );
 		$ref2xJS = str_replace( '%3a', ':', $ref2xJS );
@@ -3324,13 +3324,13 @@ function spamshield_check_comment_type($commentdata) {
 		// Added Author Requirement - current_user_can('publish_posts') - v 1.4.7
 		global $current_user;  
 		get_currentuserinfo();
-		$wpss_display_name 				= $current_user->display_name;
-		$wpss_user_firstname 			= $current_user->user_firstname;
-		$wpss_user_lastname 			= $current_user->user_lastname;
-		$wpss_user_email				= $current_user->user_email;
-		$wpss_user_url					= $current_user->user_url;
-		$wpss_user_login 				= $current_user->user_login;
-		$wpss_user_id	 				= $current_user->ID;
+		$wpss_display_name 		= $current_user->display_name;
+		$wpss_user_firstname 	= $current_user->user_firstname;
+		$wpss_user_lastname 	= $current_user->user_lastname;
+		$wpss_user_email		= $current_user->user_email;
+		$wpss_user_url			= $current_user->user_url;
+		$wpss_user_login 		= $current_user->user_login;
+		$wpss_user_id	 		= $current_user->ID;
 
 		if ( !empty( $wpss_user_email ) ) {
 			$wpss_user_email_parts				= explode( '@', $wpss_user_email );
@@ -3363,7 +3363,7 @@ function spamshield_check_comment_type($commentdata) {
 
 	if ( $bypass_tests != false ) {
 		$wpss_error_code = 'No Error';
-		$wpss_error_code .= $wpss_error_code_addendum;
+		//$wpss_error_code .= $wpss_error_code_addendum;
 		}
 	// Timer End - Part 1
 	$wpss_end_time_part_1 = spamshield_microtime();
@@ -4625,23 +4625,36 @@ function spamshield_content_filter( $commentdata, $spamshield_options ) {
 		if ( !empty( $wpss_jp_active ) && $commentdata_referrer_lc == 'http://jetpack.wordpress.com/jetpack-comment/' ) {
 			$test_fail = false;
 			}
-		elseif ( strpos( $commentdata_referrer_lc, '?' ) !== false ) {
+		else {
 			$wpss_permalink_structure = get_option('permalink_structure');
 			//spamshield_append_log_data( "\n".'$wpss_permalink_structure:'.$wpss_permalink_structure.' Line: '.__LINE__ );
-			if ( !empty( $wpss_permalink_structure ) ) {
-				$referrer_no_query = spamshield_remove_query( $commentdata_referrer_lc );
+			if ( !empty( $wpss_permalink_structure ) ) { // Using Permalinks
+				if ( strpos( $commentdata_referrer_lc, '?' ) !== false ) { // URL has query string
+					$referrer_no_query = spamshield_remove_query( $commentdata_referrer_lc );
+					}
+				else { // URL does not have query string
+					$referrer_no_query = $commentdata_referrer_lc;
+					}
 				//spamshield_append_log_data( "\n".'$referrer_no_query:'.$referrer_no_query.' Line: '.__LINE__ );
+				$wpss_page_comments = get_option('page_comments');
+				//spamshield_append_log_data( "\n".'$wpss_page_comments:'.$wpss_page_comments.' Line: '.__LINE__ );
+				if ( !empty( $wpss_page_comments ) ) { // Breaking Comments Into Pages
+					$referrer_no_query = preg_replace( "~comment\-page\-[0-9]+/$~i", "", $referrer_no_query );
+					//spamshield_append_log_data( "\n".'$referrer_no_query:'.$referrer_no_query.' Line: '.__LINE__ );
+					}
 				if ( $referrer_no_query != $commentdata_comment_post_url_lc ) { $test_fail = true; }
 				}
-			else {
+			elseif ( strpos( $commentdata_referrer_lc, '?' ) !== false ) { // Not using Permalinks & URL has query string
 				$referrer_wp_query = spamshield_remove_query( $commentdata_referrer_lc, true );
 				//spamshield_append_log_data( "\n".'$referrer_wp_query:'.$referrer_wp_query.' Line: '.__LINE__ );
 				$post_url_wp_query = spamshield_remove_query( $commentdata_comment_post_url_lc, true );
 				//spamshield_append_log_data( "\n".'$post_url_wp_query:'.$post_url_wp_query.' Line: '.__LINE__ );
 				if ( $referrer_wp_query != $post_url_wp_query ) { $test_fail = true; }
 				}
+			else { // Not using Permalinks & URL does not have query string
+				$test_fail = true;
+				}
 			}
-		else { $test_fail = true; }
 		//spamshield_append_log_data( "\n".'$test_fail:'.$test_fail.' Line: '.__LINE__ );
 		if ( !empty( $test_fail ) ) {
 			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }

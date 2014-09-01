@@ -180,6 +180,11 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.5.1 =
+*released 09/01/14*
+
+* Fixed a bug that caused some legitimate comments to be rejected on comment sub-pages if the site was using both the option to use permalinks and the option to break comments into pages.
+
 = 1.5 =
 *released 08/31/14*
 
@@ -508,8 +513,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.5 =
-Added several efficient new trackback spam filters to further improve speed, minor update to dashboard spam counter text, improved human spam protection, and more.  Please see Changelog for details.
+= 1.5.1 =
+Fixed a bug that caused some legitimate comments to be rejected on comment sub-pages if the site was using both the option to use permalinks and the option to break comments into pages. Please see Changelog for details.
 
 == Other Notes ==
 
