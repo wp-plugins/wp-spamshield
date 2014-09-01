@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2014-07-31 17:15-0800\n"
+"PO-Revision-Date: 2014-08-31 02:11-0800\n"
 "Last-Translator: Borisa Djuraskovic <borisad@webhostinghub.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_c\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.7\n"
+"X-Generator: Poedit 1.6.9\n"
 "Language: sr_RS\n"
 "X-Poedit-SearchPath-0: wp-spamshield\n"
 
@@ -418,17 +418,14 @@ msgstr "Još nisu otkriveni spam komentari."
 
 #: wp-spamshield.php:4608
 #, php-format
-msgid "has blocked <strong> %s </strong> spam comments."
-msgstr "je blokirao <strong> %s </strong> spam komentare."
+msgid "has blocked <strong> %s </strong> spam."
+msgstr "je blokirao <strong> %s </strong> spam."
 
 #: wp-spamshield.php:4623 wp-spamshield.php:4904
 #, php-format
 msgid ""
-"That's <strong> %s </strong> spam comments a day that you don't have to "
-"worry about."
-msgstr ""
-"To je <strong> %s </strong> spam komentara dnevno o kojima ne morate da "
-"brinete."
+"That's <strong> %s </strong> spam a day that you don't have to worry about."
+msgstr "To je <strong> %s </strong> spam dnevno o kojima ne morate da brinete."
 
 #: wp-spamshield.php:4610
 msgid "Average spam blocked daily"
@@ -478,8 +475,8 @@ msgstr "Status instalacije"
 
 #: wp-spamshield.php:4901
 #, php-format
-msgid "WP-SpamShield has blocked <strong> %s </strong> spam comments!"
-msgstr "WP-SpamShield je blokirao <strong> %s </strong> spam komentare! "
+msgid "WP-SpamShield has blocked <strong> %s </strong> spam!"
+msgstr "WP-SpamShield je blokirao <strong> %s </strong> spam!"
 
 #: wp-spamshield.php:5130
 msgid "Quick Navigation - Contents"

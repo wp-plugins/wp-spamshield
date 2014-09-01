@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2014-07-31 17:16-0800\n"
+"PO-Revision-Date: 2014-08-31 02:07-0800\n"
 "Last-Translator: Christoph Krzikalla <wordpress@krzikalla.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_c\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.7\n"
+"X-Generator: Poedit 1.6.9\n"
 "Language: de_DE\n"
 "X-Poedit-SearchPath-0: wp-spamshield\n"
 
@@ -426,17 +426,16 @@ msgstr "Bisher keine Kommentar-Spam Versuche erkannt."
 
 #: wp-spamshield.php:4608
 #, php-format
-msgid "has blocked <strong> %s </strong> spam comments."
-msgstr "hat <strong> %s </strong> Spam-Kommentare blockiert."
+msgid "has blocked <strong> %s </strong> spam."
+msgstr "hat <strong> %s </strong> Spam blockiert."
 
 #: wp-spamshield.php:4623 wp-spamshield.php:4904
 #, php-format
 msgid ""
-"That's <strong> %s </strong> spam comments a day that you don't have to "
-"worry about."
+"That's <strong> %s </strong> spam a day that you don't have to worry about."
 msgstr ""
-"Das sind <strong> %s </strong> Spam-Kommentare pro Tag, um die du dich nicht "
-"kümmern musst."
+"Das sind <strong> %s </strong> Spam pro Tag, um die du dich nicht kümmern "
+"musst."
 
 #: wp-spamshield.php:4610
 msgid "Average spam blocked daily"
@@ -486,8 +485,8 @@ msgstr "Installationsstatus"
 
 #: wp-spamshield.php:4901
 #, php-format
-msgid "WP-SpamShield has blocked <strong> %s </strong> spam comments!"
-msgstr "WP-SpamShield hat <strong> %s </strong> Spam-Kommentare blockiert!"
+msgid "WP-SpamShield has blocked <strong> %s </strong> spam!"
+msgstr "WP-SpamShield hat <strong> %s </strong> Spam blockiert!"
 
 #: wp-spamshield.php:5130
 msgid "Quick Navigation - Contents"
