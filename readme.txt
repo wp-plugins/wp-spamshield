@@ -3,7 +3,7 @@ Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
 Tags: antispam, anti-spam, block spam, comment, comment spam, comments, contact, contact form, form, forms, javascript, login, multisite, register, registration, security, signup, spam, spam filter, user registration spam, trackback
 Requires at least: 3.2
-Tested up to: 3.9
+Tested up to: 4.0
 Stable tag: trunk
 License: GPLv2
 
