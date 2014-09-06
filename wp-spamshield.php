@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.5.1
+Version: 1.5.2
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,8 +42,8 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.5.1' );
-define( 'WPSS_REQUIRED_WP_VERSION', '3.2' );
+define( 'WPSS_VERSION', '1.5.2' );
+define( 'WPSS_REQUIRED_WP_VERSION', '3.5' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
 * Constants prefixed with 'RSMP_' are shared with other RSM Plugins for efficiency.
@@ -285,12 +285,8 @@ function spamshield_timer( $start = NULL, $end = NULL, $show_seconds = false, $p
 
 function spamshield_number_format( $number, $precision = 8 ) {
 	// $precision will default to 8 but can be set to anything - 1,2,3,4,5,etc.
-	if ( function_exists( 'number_format_i18n' ) ) { 
-		$number_for = number_format_i18n( $number, $precision );
-		} 
-	else { 
-		$number_for = number_format( $number, $precision );
-		}
+	if ( function_exists( 'number_format_i18n' ) ) { $number_for = number_format_i18n( $number, $precision ); } 
+	else { $number_for = number_format( $number, $precision ); }
 	return $number_for;
 	}
 
@@ -305,19 +301,15 @@ function spamshield_format_bytes( $size, $precision = 2 ) {
 function spamshield_date_diff($start, $end) {
 	$start_ts = strtotime($start);
 	$end_ts = strtotime($end);
-	$diff = ( $end_ts - $start_ts );
+	$diff = ($end_ts-$start_ts);
 	$start_array = explode('-', $start);
 	$start_year = $start_array[0];
 	$end_array = explode('-', $end);
 	$end_year = $end_array[0];
 	$years = $end_year-$start_year;
-	if (($years%4) == 0) {
-		$extra_days = ((($end_year-$start_year)/4)-1);
-		} else {
-		$extra_days = ((($end_year-$start_year)/4));
-		}
+	if (($years%4) == 0) { $extra_days = ((($end_year-$start_year)/4)-1); } else { $extra_days = ((($end_year-$start_year)/4)); }
 	$extra_days = round($extra_days);
-	return round($diff / 86400)+$extra_days;
+	return round($diff/86400)+$extra_days;
 	}
 
 function spamshield_scandir( $dir ) {
@@ -1362,12 +1354,12 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 		// IP / PROXY INFO - BEGIN
 		global $wpss_ip_proxy_info;
 		if ( empty( $wpss_ip_proxy_info ) ) {
-			//spamshield_exit_content_filter(( "\n".'$wpss_ip_proxy_info: EMPTY Line: '.__LINE__ );
+			//spamshield_append_log_data( "\n".'$wpss_ip_proxy_info: EMPTY Line: '.__LINE__ );
 			$wpss_ip_proxy_info 		= spamshield_ip_proxy_info();
 			}
-		else {
-			//spamshield_exit_content_filter(( "\n".'$wpss_ip_proxy_info: NOT EMPTY Line: '.__LINE__ );
-			}
+		//else {
+			//spamshield_append_log_data( "\n".'$wpss_ip_proxy_info: NOT EMPTY Line: '.__LINE__ );
+			//}
 		$ip_proxy_info					= $wpss_ip_proxy_info;
 		$ip 							= $ip_proxy_info['ip'];
 		$reverse_dns 					= $ip_proxy_info['reverse_dns'];
@@ -2649,8 +2641,11 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 		// The whole email address
 		// Misc Spammers
 		"12345@yahoo.com", "a@a.com", "asdf@yahoo.com", "fuck@you.com", "test@test.com", "raw_amine@hotmail.fr", "toxas1989@gmail.com", 
-		// Internet Marketing Spammers
+		// Misc Internet Marketing Spammers
 		"fredrickparker49@gmail.com", 
+		// SEO Spammers
+		// Web Dev Spammers
+		"abey.webworks@gmail.com", "abey.webworks2@gmail.com", 
 		);
 	if ( !empty( $get_eml_list_arr ) ) { return $blacklisted_emails; }
 	$blacklisted_email_prefixes = array(
@@ -2739,7 +2734,8 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		"keywordadvertisingedge.com", "keywordspy.com", "onlineadprofessionals.com", "onlineadpros.com", "phpdug.net", "pliggsubmit.com", "post-comments.com", "ravenposter.com", "scuttlesubmitter.com", "sepgenius.com", 
 		"socialadsblaster.com", "submitbookmark.com", "submit-trackback.com", "worldtechbuzz.com", "writing-web-content.com", "youtubecommentposterbot.com", "youtube-poster.com", 
 		// WebDev Spammers
-		"manektech.com", "retailon.co", "retailon.net", "rizecorp.com", "rizedigital.com", "webdesigncompany.org", "websiteitup.com", 
+		"cattechnologies.com", "cattechsoft.com", "manektech.com", "prudentlabs.in", "quadrantsystems.com", "retailon.co", "retailon.net", "rizecorp.com", "rizedigital.com", "socialobster.com", 
+		"webdesigncompany.org", "websiteitup.com", 
 		// Logo Design / Graphic Design Spammers
 		"24hrdesign.com", "logodesigntucson.com", "logodesignutah.com", 
 		// Hack/Exploit
@@ -2791,8 +2787,8 @@ function spamshield_urlshort_blacklist_chk( $url = NULL, $email_domain = NULL, $
 		// 15 per line
 		"›.ws", "014.me", "0rz.tw", "1url.com", "2.gp", "2tu.us", "66.re", "888.hn", "adcrun.ch", "adf.ly", "aka.gr", "amzn.to", "bc.vc", "bit.do", "bit.ly", 
 		"bitly.com", "blankrefer.com", "budurl.com", "buff.ly", "buzurl.com", "cli.gs", "cutt.us", "dft.ba", "dlvr.it", "fb.me", "filoops.info", "fur.ly", "goo.gl", "goxl.me", "hiderefer.com", 
-		"is.gd", "ity.im", "j.mp", "l.gg", "lemde.fr", "linkto.im", "moourl.com", "ow.ly", "po.st", "q.gs", "qr.net", "rdlnk.com", "scrnch.me", "smsh.me", "sn.im", 
-		"snipurl.com", "snurl.com", "su.pr", "t.co", "tiny.cc", "tinyurl.com", "tl.gd", "tota2.com", "twitthis.com", "u.to", "v.gd", "x.co", "y2u.be", "youtu.be", 
+		"is.gd", "ity.im", "j.mp", "jump2now.com", "l.gg", "lemde.fr", "linkto.im", "moourl.com", "ow.ly", "po.st", "q.gs", "qr.net", "rdlnk.com", "scrnch.me", "smsh.me", 
+		"sn.im", "snipurl.com", "snurl.com", "su.pr", "t.co", "tiny.cc", "tinyurl.com", "tl.gd", "tota2.com", "twitthis.com", "u.to", "v.gd", "x.co", "y2u.be", "youtu.be", 
 		// YOURLS user-created shorteners
 		"atho.me", "axr.be", "hgld.ru", "of.vg", "we.cx", 
 		);
@@ -3232,14 +3228,25 @@ function spamshield_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL
 	$banned_trackback_servers = array(
 		// ISP's Should not send trackbacks, ever
 		//"REVD2101" => "~^([0-9]{1,3}[\.\-]){4}broad\.[a-z]{2}\.[a-z]{2}\.dynamic\.163data\.com\.cn$~", 
-		"REVD2102" => "~^c\-([0-9]{1,3}[\.\-]){4}hsd[a-z]+\.[a-z]{2,}\.comcast\.net$~", 
-		"REVD2103" => "~\-dynamic\-([0-9]{1,3}[\.\-]){4}airtelbroadband\.in$~", 
+		"REVD2102" => "~^c\-([0-9]{1,3}[\.\-]){4}hsd[0-9]+\.[a-z]{2,}\.comcast\.net$~", 
+		//"REVD2103" => "~dynamic\-([0-9]{1,3}[\.\-]){4}airtelbroadband\.in$~", 
+		"REVD2103" => "~([0-9]{1,3}[\.\-]){4}[a-z]+broadband(\.[a-z]{2,3})?\.[a-z]{2,3}$~", 
+		"REVD2104" => "~^host([0-9]{1,3}[\.\-]){4}range[0-9]+\-[0-9]+\.btcentralplus\.com$~", 
+		"REVD2105" => "~^ip([0-9]{1,3}[\.\-]){4}[a-z]{2,}\.[a-z]{2,}\.cox\.net$~", 
+		"REVD2106" => "~^([0-9]{1,3}[\.\-]){4}([a-z]{3}\.)?broadband\.kyivstar\.net$~", 
+		"REVD2107" => "~^([0-9]{1,3}[\.\-]){2}broadband\.[a-z]{4,}(\.[a-z]{2,3})?\.[a-z]{2,3}$~", 
+		"REVD2108" => "~^abs\-static\-([0-9]{1,3}[\.\-]){4}aircel\.co\.in$~", 
+		"REVD2109" => "~^([0-9]{1,3}[\.\-]){4}res\.bhn\.net$~", 
+		"REVD2110" => "~^([0-9]{1,3}[\.\-]){4}static\-[a-z]+\.vsnl\.net\.in$~", 
 		);
 	
 	if ( $type == 'trackback' ) { $banned_servers = $banned_trackback_servers; }
 
-	if ( $type == 'trackback' && strpos( $rev_dns, '.dynamic.' ) !== false && strpos( $rev_dns, 'www.dynamic.co' ) === false ) {
+	if ( $type == 'trackback' && strpos( $rev_dns, '.dynamic.' ) !== false && strpos( $rev_dns, 'www.dynamic.' ) === false ) {
 		$wpss_error_code .= ' '.$pref.'REVD2000'; $blacklisted = true;
+		}
+	elseif ( $type == 'trackback' && strpos( $rev_dns, '.broadband.' ) !== false && strpos( $rev_dns, 'www.broadband.' ) === false ) {
+		$wpss_error_code .= ' '.$pref.'REVD2001'; $blacklisted = true;
 		}
 	elseif ( $type == 'trackback' && ( strpos( $rev_dns, '.dsl.dyn.' ) !== false || strpos( $rev_dns, '.dyn.dsl.' ) !== false ) ) {
 		$wpss_error_code .= ' '.$pref.'REVD2010'; $blacklisted = true;
@@ -4258,9 +4265,6 @@ function spamshield_content_filter( $commentdata, $spamshield_options ) {
 	// Content Filter aka The Algorithmic Layer
 	// Blocking the Obvious to Improve Human/Pingback/Trackback Defense
 	
-	// Note: Certain loops are unrolled because of a weird compatibility issue with certain servers. Works fine on most, but for some unforeseen reason, a few have issues.
-	// Switching to REGEX filters over time anyway so these will get removed.
-	
 	// Timer Start  - Content Filter
 	if ( empty( $commentdata['start_time_content_filter'] ) ) {
 		$wpss_start_time_content_filter = spamshield_microtime();
@@ -4380,12 +4384,12 @@ function spamshield_content_filter( $commentdata, $spamshield_options ) {
 	// IP / PROXY INFO - BEGIN
 	global $wpss_ip_proxy_info;
 	if ( empty( $wpss_ip_proxy_info ) ) {
-		//spamshield_exit_content_filter(( "\n".'$wpss_ip_proxy_info: EMPTY Line: '.__LINE__ );
+		//spamshield_append_log_data( "\n".'$wpss_ip_proxy_info: EMPTY Line: '.__LINE__ );
 		$wpss_ip_proxy_info 		= spamshield_ip_proxy_info();
 		}
-	else {
-		//spamshield_exit_content_filter(( "\n".'$wpss_ip_proxy_info: NOT EMPTY Line: '.__LINE__ );
-		}
+	//else {
+		//spamshield_append_log_data( "\n".'$wpss_ip_proxy_info: NOT EMPTY Line: '.__LINE__ );
+		//}
 	$ip_proxy_info					= $wpss_ip_proxy_info;
 	$ip 							= $ip_proxy_info['ip'];
 	$reverse_dns 					= $ip_proxy_info['reverse_dns'];
@@ -4988,12 +4992,12 @@ function spamshield_extra_notification_data( $text ) {
 	// IP / PROXY INFO - BEGIN
 	global $wpss_ip_proxy_info;
 	if ( empty( $wpss_ip_proxy_info ) ) {
-		//spamshield_exit_content_filter(( "\n".'$wpss_ip_proxy_info: EMPTY Line: '.__LINE__ );
+		//spamshield_append_log_data( "\n".'$wpss_ip_proxy_info: EMPTY Line: '.__LINE__ );
 		$wpss_ip_proxy_info 		= spamshield_ip_proxy_info();
 		}
-	else {
-		//spamshield_exit_content_filter(( "\n".'$wpss_ip_proxy_info: NOT EMPTY Line: '.__LINE__ );
-		}
+	//else {
+		//spamshield_append_log_data( "\n".'$wpss_ip_proxy_info: NOT EMPTY Line: '.__LINE__ );
+		//}
 	$ip_proxy_info					= $wpss_ip_proxy_info;
 	$ip 							= $ip_proxy_info['ip'];
 	$reverse_dns 					= $ip_proxy_info['reverse_dns'];
@@ -5585,7 +5589,7 @@ if (!class_exists('wpSpamShield')) {
 
 		function wpSpamShield() {
 			global $wpdb;
-			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 && RSMP_SERVER_ADDR != '127.0.0.1' && WPSS_DEBUG != true ) {
+			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 && RSMP_SERVER_ADDR != '127.0.0.1' && !WPSS_DEBUG && !WP_DEBUG ) {
 				error_reporting(0); // Prevents error display on production sites, but testing on 127.0.0.1 will display errors, or if debug mode turned on
 				}
 			register_activation_hook( __FILE__, array(&$this,'install_on_first_activation') );

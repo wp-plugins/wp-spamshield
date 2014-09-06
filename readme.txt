@@ -2,7 +2,7 @@
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
 Tags: antispam, anti-spam, block spam, comment, comment spam, comments, contact, contact form, form, forms, javascript, login, multisite, register, registration, security, signup, spam, spam filter, user registration spam, trackback
-Requires at least: 3.2
+Requires at least: 3.5
 Tested up to: 4.0
 Stable tag: trunk
 License: GPLv2
@@ -179,6 +179,13 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.5.2 =
+*released 09/05/14*
+
+* Improved some of the filters in the spam blocking algorithm.
+* Increased minimum required WordPress version to 3.5 (which is already almost 2 years old). It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.0) for security and functionality.
+* Updated the spam filters.
 
 = 1.5.1 =
 *released 09/01/14*
@@ -513,8 +520,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.5.1 =
-Fixed a bug that caused some legitimate comments to be rejected on comment sub-pages if the site was using both the option to use permalinks and the option to break comments into pages. Please see Changelog for details.
+= 1.5.2 =
+Improved some of the filters in the spam blocking algorithm, increased minimum required WordPress version to 3.5, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
