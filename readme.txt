@@ -21,7 +21,7 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 * Tech Support: [WP-SpamShield Support](http://www.redsandmarketing.com/plugins/wp-spamshield/support/)
 
 = New Features =
-* Internationalization and localization available. Currently includes French (fr_FR), German (de_DE), and Serbian (sr_RS) translations. Ready for translation into other languages. Added in Version 1.3.
+* Internationalization and localization available. Currently includes Dutch (nl_NL), French (fr_FR), German (de_DE), and Serbian (sr_RS) translations. Ready for translation into other languages. Added in Version 1.3.
 * Stops User Registration Spam now! Added in Version 1.2.
 * Shortcodes for easy contact form implementation.
 * Over 10x faster! Tested and verified with benchmarking software.
@@ -73,6 +73,7 @@ To further the development of this anti-spam plugin, I now study thousands and t
 
 = Languages Available =
 
+* Dutch (nl_NL)
 * French (fr_FR)
 * German (de_DE)
 * Serbian (sr_RS)
@@ -179,6 +180,13 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.5.3 =
+*released 09/09/14*
+
+* Added Dutch Translation (nl_NL). Thank you to Martin Teley for doing the Dutch translation.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
 
 = 1.5.2 =
 *released 09/05/14*
@@ -520,8 +528,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.5.2 =
-Improved some of the filters in the spam blocking algorithm, increased minimum required WordPress version to 3.5, and updated the spam filters. Please see Changelog for details.
+= 1.5.3 =
+Added Dutch Translation (nl_NL), and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
