@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2014-09-08 23:39-0800\n"
+"PO-Revision-Date: 2014-09-15 01:02-0800\n"
 "Last-Translator: Martin Teley <martin.teley@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -102,6 +102,13 @@ msgstr ""
 "requests en SEO outsourcing/offshoring spam en geautomatiseerd ingevulde "
 "contactformulieren automatisch verwijderd worden. Daarvoor is dit "
 "contactformulier niet bedoeld."
+
+#: wp-spamshield.php:2216
+msgid ""
+"Your message has been blocked based on the website owner's blacklist "
+"settings."
+msgstr ""
+"Uw bericht is geblokkeerd omdat u vermeld staat op de lokale blacklist."
 
 #: wp-spamshield.php:1950 wp-spamshield.php:2176
 msgid "Message"
