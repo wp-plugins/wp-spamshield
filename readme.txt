@@ -181,6 +181,15 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.5.4 =
+*released 09/15/14*
+
+* Added a new improved blacklist function for the Enhanced Comment Blacklist feature, so it no longer uses the built-in WordPress blacklist function - wp_blacklist_check() (which is very old and has some flaws). Enhanced Comment Blacklist feature now works on WP-SpamShield contact forms as well. Please see [documentation](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_configuration_enhanced_comment_blacklist) for more information.
+* Added "Blacklist the IP Address" link to contact form emails.
+* Added a fix to prevent network activation when used in multisite, and added network admin notice to explain. The plugin can be used in multisite just fine, but will need to be activated individually per site for now. Once we can get time to adapt the plugin to multisite more specifically, we can remove this restriction.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.5.3 =
 *released 09/09/14*
 
@@ -528,8 +537,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.5.3 =
-Added Dutch Translation (nl_NL), and improved/updated the spam filters. Please see Changelog for details.
+= 1.5.4 =
+Made several improvements to the Enhanced Comment Blacklist feature, added a fix for multisite, and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
