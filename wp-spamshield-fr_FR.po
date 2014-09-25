@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2014-09-15 01:03-0800\n"
+"PO-Revision-Date: 2014-09-23 20:54-0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -60,26 +60,28 @@ msgid "Website Contact"
 msgstr "Contact"
 
 #: wp-spamshield.php:1864
+msgid "Message appears to be spam. "
+msgstr "Ce message a l'air d'être du spam."
+
+#: wp-spamshield.php:1864
 msgid ""
-"Message appears to be spam. Please note that link requests, link exchange "
-"requests, and SEO outsourcing requests will be automatically deleted, and "
-"are not an acceptable use of this contact form."
+"Please note that link requests, link exchange requests, and SEO outsourcing "
+"requests will be automatically deleted, and are not an acceptable use of "
+"this contact form."
 msgstr ""
-"Ce message a l'air d'être du spam. S'il vous plaît notez que les demandes de "
-"liens, les demandes d'échanges de liens et les demandes de délégation de SEO "
-"seront automatiquement détruites et ne sont pas une utilisation possible de "
-"ce formulaire de contact."
+"S'il vous plaît notez que les demandes de liens, les demandes d'échanges de "
+"liens et les demandes de délégation de SEO seront automatiquement détruites "
+"et ne sont pas une utilisation possible de ce formulaire de contact."
 
 #: wp-spamshield.php:1869 wp-spamshield.php:1882
 msgid ""
-"Message appears to be spam. Please note that link requests, link exchange "
-"requests, and SEO outsourcing/offshoring spam will be automatically deleted, "
-"and are not an acceptable use of this contact form."
+"Please note that link requests, link exchange requests, and SEO outsourcing/"
+"offshoring spam will be automatically deleted, and are not an acceptable use "
+"of this contact form."
 msgstr ""
-"Ce message a l'air d'être du spam. S'il vous plaît notez que les demandes de "
-"liens, les demandes d'échanges de liens et les demandes de délégation de SEO "
-"seront automatiquement détruites et ne sont pas une utilisation possible de "
-"ce formulaire de contact."
+"S'il vous plaît notez que les demandes de liens, les demandes d'échanges de "
+"liens et les demandes de délégation de SEO seront automatiquement détruites "
+"et ne sont pas une utilisation possible de ce formulaire de contact."
 
 #: wp-spamshield.php:1889
 msgid "At least one required field was left blank."
@@ -95,15 +97,14 @@ msgstr "Ce message est trop court. Entrez un message plus long."
 
 #: wp-spamshield.php:1927
 msgid ""
-"Message appears to be spam. Please note that link requests, link exchange "
-"requests, SEO outsourcing/offshoring spam, and automated contact form "
-"submissions will be automatically deleted, and are not an acceptable use of "
-"this contact form."
+"Please note that link requests, link exchange requests, SEO outsourcing/"
+"offshoring spam, and automated contact form submissions will be "
+"automatically deleted, and are not an acceptable use of this contact form."
 msgstr ""
-"Ce message a l'air d'être du spam. S'il vous plaît notez que les demandes de "
-"liens, les demandes d'échanges de liens, les demandes de délégation de SEO "
-"et le remplissage automatique de formulaire seront automatiquement détruites "
-"et ne sont pas une utilisation possible de ce formulaire de contact."
+"S'il vous plaît notez que les demandes de liens, les demandes d'échanges de "
+"liens, les demandes de délégation de SEO et le remplissage automatique de "
+"formulaire seront automatiquement détruites et ne sont pas une utilisation "
+"possible de ce formulaire de contact."
 
 #: wp-spamshield.php:2216
 msgid ""
@@ -605,6 +606,14 @@ msgstr ""
 "Pour de meilleures performances, n'utilisez uniquement lorsque nécessaire. "
 "(Différence peu remarquable sur la majorité des sites)."
 
+#: wp-spamshield.php:6255
+msgid ""
+"The log file may not be writeable. You may need to manually correct the file "
+"permissions.<br/>Set the permission for the \"%1$s\" directory to \"%2$s\" "
+"and all files within it to \"%3$s\".</strong><br/>If that doesn't work, then "
+"please read the <a href=\"%4$s\" %5$s>FAQ</a> for this topic."
+msgstr ""
+
 #: wp-spamshield.php:5232
 msgid "Download Comment Log File"
 msgstr "Télécharger le fichier des commentaires enregistrés"
@@ -937,7 +946,12 @@ msgstr "Page de support WP-SpamShield"
 msgid "End Blog Spam"
 msgstr "Mettez fin au spam"
 
-#: wp-spamshield.php:5572
+#: wp-spamshield.php:6568
+msgid ""
+"Plugin deactivated. WP-SpamShield is not available for network activation."
+msgstr ""
+
+#: wp-spamshield.php:6584
 msgid ""
 "Plugin deactivated. WordPress Version %s required. Please upgrade WordPress "
 "to the latest version."

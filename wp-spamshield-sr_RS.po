@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2014-09-15 01:01-0800\n"
+"PO-Revision-Date: 2014-09-23 21:03-0800\n"
 "Last-Translator: Borisa Djuraskovic <borisad@webhostinghub.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -61,26 +61,28 @@ msgid "Website Contact"
 msgstr "Web site kontakt"
 
 #: wp-spamshield.php:1864
+msgid "Message appears to be spam."
+msgstr "Izgleda da je ova poruka spam."
+
+#: wp-spamshield.php:1864
 msgid ""
-"Message appears to be spam. Please note that link requests, link exchange "
-"requests, and SEO outsourcing requests will be automatically deleted, and "
-"are not an acceptable use of this contact form."
+"Please note that link requests, link exchange requests, and SEO outsourcing "
+"requests will be automatically deleted, and are not an acceptable use of "
+"this contact form."
 msgstr ""
-"Izgleda da je ova poruka spam. Imajte u vidu da će svi zahtevi za link, svi "
-"zahtevi za razmene linkova i zahtevi koji potiču od nekog drugog izvora, "
-"osim SEO, biti automatski obrisani. Smatraju se neprihvatljivi za upotrebu "
-"ovog oblika kontakta. "
+"Imajte u vidu da će svi zahtevi za link, svi zahtevi za razmene linkova i "
+"zahtevi koji potiču od nekog drugog izvora, osim SEO, biti automatski "
+"obrisani. Smatraju se neprihvatljivi za upotrebu ovog oblika kontakta. "
 
 #: wp-spamshield.php:1869 wp-spamshield.php:1882
 msgid ""
-"Message appears to be spam. Please note that link requests, link exchange "
-"requests, and SEO outsourcing/offshoring spam will be automatically deleted, "
-"and are not an acceptable use of this contact form."
+"Please note that link requests, link exchange requests, and SEO outsourcing/"
+"offshoring spam will be automatically deleted, and are not an acceptable use "
+"of this contact form."
 msgstr ""
-"Izgleda da je ova poruka spam. Imajte u vidu da će svi zahtevi za link, svi "
-"zahtevi za razmene linkova i zahtevi koji potiču od nekog drugog izvora, "
-"osim SEO, biti automatski obrisani. Smatraju se neprihvatljivim za upotrebu "
-"ovog oblika kontakta. "
+"Imajte u vidu da će svi zahtevi za link, svi zahtevi za razmene linkova i "
+"zahtevi koji potiču od nekog drugog izvora, osim SEO, biti automatski "
+"obrisani. Smatraju se neprihvatljivim za upotrebu ovog oblika kontakta. "
 
 #: wp-spamshield.php:1889
 msgid "At least one required field was left blank."
@@ -96,15 +98,13 @@ msgstr "Poruka je prekratka. Unesite kompletnu poruku."
 
 #: wp-spamshield.php:1927
 msgid ""
-"Message appears to be spam. Please note that link requests, link exchange "
-"requests, SEO outsourcing/offshoring spam, and automated contact form "
-"submissions will be automatically deleted, and are not an acceptable use of "
-"this contact form."
+"Please note that link requests, link exchange requests, SEO outsourcing/"
+"offshoring spam, and automated contact form submissions will be "
+"automatically deleted, and are not an acceptable use of this contact form."
 msgstr ""
-"Izgleda da je ova poruka spam. Imajte u vidu da će svi zahtevi za link, svi "
-"zahtevi za razmene linkova i zahtevi koji potiču od nekog drugog izvora, "
-"osim SEO, biti automatski obrisani. Smatraju se neprihvatljivim za upotrebu "
-"ovog formulara kontakta. "
+"Imajte u vidu da će svi zahtevi za link, svi zahtevi za razmene linkova i "
+"zahtevi koji potiču od nekog drugog izvora, osim SEO, biti automatski "
+"obrisani. Smatraju se neprihvatljivim za upotrebu ovog formulara kontakta. "
 
 #: wp-spamshield.php:2216
 msgid ""
@@ -583,6 +583,14 @@ msgstr ""
 "koristite ih samo kada je neophodno. (Većina web site-ova neće primetiti "
 "razliku.)"
 
+#: wp-spamshield.php:6255
+msgid ""
+"The log file may not be writeable. You may need to manually correct the file "
+"permissions.<br/>Set the permission for the \"%1$s\" directory to \"%2$s\" "
+"and all files within it to \"%3$s\".</strong><br/>If that doesn't work, then "
+"please read the <a href=\"%4$s\" %5$s>FAQ</a> for this topic."
+msgstr ""
+
 #: wp-spamshield.php:5232
 msgid "Download Comment Log File"
 msgstr "Preuzmi datoteku dnevnika komentara"
@@ -929,7 +937,12 @@ msgstr "WP-SpamShield Stranica za podršku"
 msgid "End Blog Spam"
 msgstr "Okončaj spam blog-a"
 
-#: wp-spamshield.php:5572
+#: wp-spamshield.php:6568
+msgid ""
+"Plugin deactivated. WP-SpamShield is not available for network activation."
+msgstr ""
+
+#: wp-spamshield.php:6584
 msgid ""
 "Plugin deactivated. WordPress Version %s required. Please upgrade WordPress "
 "to the latest version."
