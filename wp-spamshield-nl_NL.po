@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2014-09-23 21:02-0800\n"
+"PO-Revision-Date: 2014-10-23 03:30-0800\n"
 "Last-Translator: Martin Teley <martin.teley@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -391,7 +391,7 @@ msgstr "Achternaam"
 #: wp-spamshield.php:4238 wp-spamshield.php:4312 wp-spamshield.php:4341
 #: wp-spamshield.php:4369 wp-spamshield.php:4510
 msgid "Display Name"
-msgstr "Gebruikersnaam"
+msgstr "Schermnaam"
 
 #: wp-spamshield.php:4251
 msgid ""
