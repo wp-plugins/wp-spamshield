@@ -181,6 +181,13 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.5.6 =
+*released 10/23/14*
+
+* Fixed a bug that caused some legitimate comments to be rejected on comment sub-pages if the site was using the option to break comments into pages but not using permalinks.
+* Minor update to the Dutch Translation (nl_NL).
+* Updated the spam filters.
+
 = 1.5.5 =
 *released 09/24/14*
 
@@ -545,8 +552,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.5.5 =
-Made several minor code improvements, minor tweaks to the translation files and code, and improved/updated the spam filters. Please see Changelog for details.
+= 1.5.6 =
+Fixed a bug that caused some legitimate comments to be rejected under certain conditions, minor update to the Dutch Translation (nl_NL), and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
