@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.5.8
+Version: 1.5.9
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.5.8' );
+define( 'WPSS_VERSION', '1.5.9' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.5' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -2810,7 +2810,7 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false ) {
 	// Domain Blacklist Check
 	$blacklisted_domains = array(
-		// THE Master List (240) - Documented spammers - 10 per line
+		// THE Master List (241) - Documented spammers - 10 per line
 		// General Spammers (54)
 		"agentbutler.com", "avention.com", "binarysolutions.biz", "businesscardsutah.com", "canadianwarmbloods.com", "contentrunner.com", "crackfacebookaccount.com", "droa.com", "eagle-condor.org", "empirecompanyusa.com", 
 		"entiver.com", "entiveracademy.com", "explainermagic.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", "futurestradingsecrets.com", "ghalichiglam.com", "globaldata4u.com", "howtohypnotizesomeoneforbeginners.com", 
@@ -2833,13 +2833,13 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		"ezadblaster.com", "hazelnutfilms.com", "hit4hit.org", "intag.co", "keywordadvertisingedge.com", "keywordspy.com", "onlineadprofessionals.com", "onlineadpros.com", "phpdug.net", "pliggsubmit.com", 
 		"post-comments.com", "ravenposter.com", "scuttlesubmitter.com", "sepgenius.com", "socialadsblaster.com", "submitbookmark.com", "submit-trackback.com", "wordai.com", "worldtechbuzz.com", "writing-web-content.com", 
 		"youtubecommentposterbot.com", "youtube-poster.com", 
-		// WebDev Spammers (55)
-		"appschopper.com", "catamerica.com", "catbpo.com", "cattechnologies.biz", "cattechnologies.com", "cattechsoft.com", "cattinc.com", "creativeforever.in", "csschopper.com", "cssclever.com", 
-		"cssprecise.com", "darwinlogic.com", "darwinlogic.net", "designz23.com", "dreamsoftindia.com", "dreamsoftindia.net", "generalonlineservices.com", "idea2psd.com", "ifline.com", "immobilientechnologies.com", 
-		"iotwebsolutions.com", "magnoninternational.com", "manektech.com", "orangelab.in", "philwebservices.com", "prudentlabs.in", "quadrantsystems.com", "retailon.biz", "retailon.co", "retailon.co.in", 
-		"retailon.in", "retailon.info", "retailon.net", "retailon.org", "retailon.us", "ritwik.com", "rizecorp.com", "rizedigital.com", "rizedigital.com.au", "socialobster.com", 
-		"shootinginternet.com", "sparxtechnologies.com", "sparxitsolutions.com", "strapp.net", "techtic.com", "themefuse.com", "themindstudios.com", "varshyl.com", "varshylmobile.com", "varshyltech.com", 
-		"vipsha.com", "webdesigningfirm.net", "webdesigncompany.org", "websiteitup.com", "webgranth.com", 
+		// WebDev Spammers (56)
+		"accrinet.com", "appschopper.com", "catamerica.com", "catbpo.com", "cattechnologies.biz", "cattechnologies.com", "cattechsoft.com", "cattinc.com", "creativeforever.in", "csschopper.com", 
+		"cssclever.com", "cssprecise.com", "darwinlogic.com", "darwinlogic.net", "designz23.com", "dreamsoftindia.com", "dreamsoftindia.net", "generalonlineservices.com", "idea2psd.com", "ifline.com", 
+		"immobilientechnologies.com", "iotwebsolutions.com", "magnoninternational.com", "manektech.com", "orangelab.in", "philwebservices.com", "prudentlabs.in", "quadrantsystems.com", "retailon.biz", "retailon.co", 
+		"retailon.co.in", "retailon.in", "retailon.info", "retailon.net", "retailon.org", "retailon.us", "ritwik.com", "rizecorp.com", "rizedigital.com", "rizedigital.com.au", 
+		"socialobster.com", "shootinginternet.com", "sparxtechnologies.com", "sparxitsolutions.com", "strapp.net", "techtic.com", "themefuse.com", "themindstudios.com", "varshyl.com", "varshylmobile.com", 
+		"varshyltech.com", "vipsha.com", "webdesigningfirm.net", "webdesigncompany.org", "websiteitup.com", "webgranth.com", 
 		// Logo Design / Graphic Design Spammers (7)
 		"24hrdesign.com", "5starlogo.com", "artonius.hu", "logodesignsstudio.com", "logodesigntucson.com", "logodesignutah.com", "pixel2pixel.in", 
 		// Hack/Exploit (2)
@@ -3956,8 +3956,8 @@ function spamshield_trackback_content_filter( $commentdata, $spamshield_options 
 
 	// Testing if Bot Uses Faked User-Agent for WordPress version that doesn't exist yet
 	// Check History of WordPress User-Agents and Keep up to Date
-	// Current: 'The Incutio XML-RPC PHP Library -- WordPress/3.9.1'
-	if ( strpos( $commentdata_user_agent_lc, 'incutio xml-rpc -- wordpress/' ) !== false ) {
+	// Current: 'The Incutio XML-RPC PHP Library -- WordPress/4.0.1'
+	if ( empty( $local_pingback ) && strpos( $commentdata_user_agent_lc, 'incutio xml-rpc -- wordpress/' ) !== false ) {
 		$wp_ua_search_array = array( 'mu', 'wordpress-mu-' );
 		$commentdata_user_agent_lc_wp = str_replace ( $wp_ua_search_array, '', $commentdata_user_agent_lc);
 		$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc_wp );
@@ -3968,7 +3968,7 @@ function spamshield_trackback_content_filter( $commentdata, $spamshield_options 
 			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 			}
 		}
-	if ( strpos( $commentdata_user_agent_lc, 'the incutio xml-rpc php library -- wordpress/' ) !== false ) {
+	if ( empty( $local_pingback ) && strpos( $commentdata_user_agent_lc, 'the incutio xml-rpc php library -- wordpress/' ) !== false ) {
 		$wp_ua_search_array = array( 'mu', 'wordpress-mu-' );
 		$commentdata_user_agent_lc_wp = str_replace ( $wp_ua_search_array, '', $commentdata_user_agent_lc);
 		$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc_wp );
@@ -3978,7 +3978,7 @@ function spamshield_trackback_content_filter( $commentdata, $spamshield_options 
 			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 			}
 		}
-	if ( strpos( $commentdata_user_agent_lc, 'wordpress/' ) === 0 ) {
+	if ( empty( $local_pingback ) && strpos( $commentdata_user_agent_lc, 'wordpress/' ) === 0 ) {
 		$wp_ua_search_array = array( 'mu', 'wordpress-mu-' );
 		$commentdata_user_agent_lc_wp = str_replace ( $wp_ua_search_array, '', $commentdata_user_agent_lc);
 		$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc_wp );
@@ -4637,6 +4637,7 @@ function spamshield_content_filter( $commentdata, $spamshield_options ) {
 		}
 	
 	// TEST REFERRERS 3 - TO THE PAGE BEING COMMENTED ON
+	/* DISABLED IN V1.5.9
 	$test_fail = false;
 	if ( !empty( $commentdata_referrer_lc ) && $commentdata_referrer_lc != $commentdata_comment_post_url_lc && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
 		// If Comment Processor Referrer exists, make sure it matches page being commented on
@@ -4679,6 +4680,7 @@ function spamshield_content_filter( $commentdata, $spamshield_options ) {
 			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 			}
 		}
+	*/
 		
 	// Spam Network - BEGIN
 
