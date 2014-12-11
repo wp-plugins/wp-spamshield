@@ -163,7 +163,7 @@ This extra data will be extremely valuable in helping us improve the spam protec
 Use if trackback spam is excessive. It is recommended that you don't use this option unless you are experiencing an extreme spam attack.
 
 **Disable pingbacks.**
-Use if pingback spam is excessive. The disadvantage is a reduction of communication between blogs. When blogs ping each other, it's like saying "Hi, I just wrote about you" and disabling these pingbacks eliminates that ability. It is recommended that you don't use this option unless you are experiencing an extreme spam attack.
+Use if pingback spam is excessive. The disadvantage is a reduction of communication between blogs. When blogs ping each other, it's like saying "Hi, I just wrote about you", and disabling these pingbacks eliminates that ability. It is recommended that you don't use this option unless you are experiencing an extreme spam attack.
 
 **Help promote WP-SpamShield?**
 This places a small link under the comments and contact form, letting others know what's blocking spam on your blog. This plugin is provided for free, so this is much appreciated. It's a small way you can give back and let others know about WP-SpamShield.
@@ -180,6 +180,12 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.6 =
+*released 12/11/14*
+
+* Added a compatibility fix to prevent certain conflicting plugins from triggering duplicate emails to be sent by the contact form.
+* Updated the spam filters.
 
 = 1.5.9 =
 *released 11/23/14*
@@ -568,8 +574,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.5.9 =
-Improved and updated the spam filters. Please see Changelog for details.
+= 1.6 =
+Added a compatibility fix to the contact form, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

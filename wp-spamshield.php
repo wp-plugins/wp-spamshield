@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.5.9
+Version: 1.6
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.5.9' );
+define( 'WPSS_VERSION', '1.6' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.5' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -1877,6 +1877,9 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			
 			// PROCESSING CONTACT FORM - BEGIN
 			$wpss_contact_name = $wpss_contact_email = $wpss_contact_website = $wpss_contact_phone = $wpss_contact_company = $wpss_contact_drop_down_menu = $wpss_contact_subject = $wpss_contact_message = $wpss_raw_contact_message = '';
+			
+			$wpss_contact_time 					= spamshield_microtime(); // Added in v1.6
+			
 			if ( !empty( $_POST['wpss_contact_name'] ) ) {
 				$wpss_contact_name 				= sanitize_text_field($_POST['wpss_contact_name']);
 				}
@@ -1916,6 +1919,10 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			
 			$contact_form_author_data = array( 'comment_author' => $wpss_contact_name, 'comment_author_email' => $wpss_contact_email_lc, 'comment_author_url' => $wpss_contact_website_lc );
 
+			$wpss_contact_id_slug 			= $wpss_contact_email_lc.'_'.$ip.'_'.$wpss_contact_time; // Email/IP/Time
+			$wpss_contact_id_hash 			= spamshield_md5( $wpss_contact_id_slug );
+			$key_contact_status				= 'contact_status_'.$wpss_contact_id_hash;
+			
 			// Update Session Vars
 			$key_comment_auth 				= 'comment_author_'.RSMP_HASH;
 			$key_comment_email				= 'comment_author_email_'.RSMP_HASH;
@@ -1923,6 +1930,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			$_SESSION[$key_comment_auth] 	= $wpss_contact_name;
 			$_SESSION[$key_comment_email]	= $wpss_contact_email_lc;
 			$_SESSION[$key_comment_url] 	= $wpss_contact_website_lc;
+			$_SESSION[$key_contact_status] 	= 'INITIATED';
 			
 			// Add New Tests for Logging - BEGIN
 			if ( !empty( $post_ref2xjs ) ) {
@@ -2359,7 +2367,13 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 
 			if ( empty( $blank_field ) && empty( $invalid_value ) && empty( $message_short ) && empty( $message_spam ) && empty( $js_cookie_fail ) && empty( $server_blacklisted ) && empty( $user_blacklisted ) ) {  
 				// SEND MESSAGE
-				@wp_mail( $wpss_contact_form_to, $wpss_contact_form_subject, $wpss_contact_form_msg, $wpss_contact_form_msg_headers );								
+				
+				// Verify if Already Sent to Prevent Duplicates - Added in 1.6
+				if ( !empty( $_SESSION[$key_contact_status] ) && $_SESSION[$key_contact_status] != 'SENT' ) {
+					@wp_mail( $wpss_contact_form_to, $wpss_contact_form_subject, $wpss_contact_form_msg, $wpss_contact_form_msg_headers );
+					$_SESSION[$key_contact_status] = 'SENT';
+					}
+				
 				$contact_response_status = 'thank-you';
 				$wpss_error_code = 'No Error';
 				spamshield_update_sess_accept_status($contact_form_author_data,'a','Line: '.__LINE__);
@@ -2735,15 +2749,15 @@ function spamshield_bad_robot_blacklist_chk( $type = 'comment', $status = NULL, 
 function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = false, $get_pref_list_arr = false, $get_str_list_arr = false, $get_str_rgx_list_arr = false ) {
 	// Email Blacklist Check
 	$blacklisted_emails = array(
-		// THE Master List (15) - Documented spammers - 10 per line, use whole email address
+		// THE Master List (16) - Documented spammers - 10 per line, use whole email address
 		// Misc Spammers (8)
 		"12345@yahoo.com", "a@a.com", "asdf@yahoo.com", "fuck@you.com", "test@test.com", "domain.pri@gmail.com", "raw_amine@hotmail.fr", "toxas1989@gmail.com", 
 		// Misc Internet Marketing Spammers (2)
 		"fredrickparker49@gmail.com", "donnagabriel04@gmail.com", 
 		// SEO Spammers (2)
 		"kellymith4@gmail.com", "hannahandrew259@gmail.com", 
-		// Web Dev Spammers (3)
-		"abey.webworks@gmail.com", "abey.webworks2@gmail.com", "juliefitzwater@gmail.com", 
+		// Web Dev Spammers (4)
+		"abey.webworks@gmail.com", "abey.webworks2@gmail.com", "juliefitzwater@gmail.com", "mitulcromosys@gmail.com", 
 		);
 	if ( !empty( $get_eml_list_arr ) ) { return $blacklisted_emails; }
 	$blacklisted_email_prefixes = array(
@@ -2810,13 +2824,13 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false ) {
 	// Domain Blacklist Check
 	$blacklisted_domains = array(
-		// THE Master List (241) - Documented spammers - 10 per line
-		// General Spammers (54)
-		"agentbutler.com", "avention.com", "binarysolutions.biz", "businesscardsutah.com", "canadianwarmbloods.com", "contentrunner.com", "crackfacebookaccount.com", "droa.com", "eagle-condor.org", "empirecompanyusa.com", 
-		"entiver.com", "entiveracademy.com", "explainermagic.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", "futurestradingsecrets.com", "ghalichiglam.com", "globaldata4u.com", "howtohypnotizesomeoneforbeginners.com", 
-		"humin.com", "hypnosisforbeginners.com", "incaltaminte-mopiel.ro", "kleinkredit100.de", "lili-marlene-dortmund.de", "mjkmail.in", "mjkmanufacturing.com", "no-refresh.com", "onesource.com", "optionstradingroom.com", 
-		"own-property.com", "oysterr.com", "pattybeni.com", "probemosjuntos.com", "rxiied.com", "ryansheavenlyroofing.blogspot.com", "southrepublik.com", "spencediamonds.com", "stepforwardlawncare.com", "superbsocial.net", 
-		"veltecinfo.com", "ventureplan.com", "votreserrurierparis.fr", "wellnessmn.net", 
+		// THE Master List (257) - Documented spammers - 10 per line
+		// General Spammers (60)
+		"agentbutler.com", "avention.com", "binarysolutions.biz", "businesscardsutah.com", "canadianwarmbloods.com", "contentrunner.com", "crackfacebookaccount.com", "crosslinkmarketing.com", "davaomedical.com", "droa.com", 
+		"eagle-condor.org", "empirecompanyusa.com", "entiver.com", "entiveracademy.com", "expertory.com", "explainermagic.com", "explainmybusiness.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", 
+		"futurestradingsecrets.com", "ghalichiglam.com", "globaldata4u.com", "howtohypnotizesomeoneforbeginners.com", "humin.com", "hypnosisforbeginners.com", "incaltaminte-mopiel.ro", "kleinkredit100.de", "lili-marlene-dortmund.de", "mjkmail.in", 
+		"mjkmanufacturing.com", "no-refresh.com", "onesource.com", "optionstradingroom.com", "own-property.com", "oysterr.com", "pattybeni.com", "petermcdowell.com", "probemosjuntos.com", "rxiied.com", 
+		"ryansheavenlyroofing.blogspot.com", "southrepublik.com", "spencediamonds.com", "stepforwardlawncare.com", "superbsocial.net", "veltecinfo.com", "ventureplan.com", "votreserrurierparis.fr", "wellnessmn.net", "worddumpsterrental.com", 
 		// Payday Loan Spammmers (20)
 		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
 		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
@@ -2833,15 +2847,16 @@ function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false 
 		"ezadblaster.com", "hazelnutfilms.com", "hit4hit.org", "intag.co", "keywordadvertisingedge.com", "keywordspy.com", "onlineadprofessionals.com", "onlineadpros.com", "phpdug.net", "pliggsubmit.com", 
 		"post-comments.com", "ravenposter.com", "scuttlesubmitter.com", "sepgenius.com", "socialadsblaster.com", "submitbookmark.com", "submit-trackback.com", "wordai.com", "worldtechbuzz.com", "writing-web-content.com", 
 		"youtubecommentposterbot.com", "youtube-poster.com", 
-		// WebDev Spammers (56)
-		"accrinet.com", "appschopper.com", "catamerica.com", "catbpo.com", "cattechnologies.biz", "cattechnologies.com", "cattechsoft.com", "cattinc.com", "creativeforever.in", "csschopper.com", 
-		"cssclever.com", "cssprecise.com", "darwinlogic.com", "darwinlogic.net", "designz23.com", "dreamsoftindia.com", "dreamsoftindia.net", "generalonlineservices.com", "idea2psd.com", "ifline.com", 
-		"immobilientechnologies.com", "iotwebsolutions.com", "magnoninternational.com", "manektech.com", "orangelab.in", "philwebservices.com", "prudentlabs.in", "quadrantsystems.com", "retailon.biz", "retailon.co", 
-		"retailon.co.in", "retailon.in", "retailon.info", "retailon.net", "retailon.org", "retailon.us", "ritwik.com", "rizecorp.com", "rizedigital.com", "rizedigital.com.au", 
-		"socialobster.com", "shootinginternet.com", "sparxtechnologies.com", "sparxitsolutions.com", "strapp.net", "techtic.com", "themefuse.com", "themindstudios.com", "varshyl.com", "varshylmobile.com", 
-		"varshyltech.com", "vipsha.com", "webdesigningfirm.net", "webdesigncompany.org", "websiteitup.com", "webgranth.com", 
-		// Logo Design / Graphic Design Spammers (7)
-		"24hrdesign.com", "5starlogo.com", "artonius.hu", "logodesignsstudio.com", "logodesigntucson.com", "logodesignutah.com", "pixel2pixel.in", 
+		// WebDev Spammers (65)
+		"1ari.com", "accrinet.com", "appschopper.com", "arisalomon.com", "bosswebtech.com", "catamerica.com", "catbpo.com", "cattechnologies.biz", "cattechnologies.com", "cattechsoft.com", 
+		"cattinc.com", "cnelindia.com", "creativeforever.in", "cromosys.com", "csschopper.com", "cssclever.com", "cssprecise.com", "darwinlogic.com", "darwinlogic.net", "designz23.com", 
+		"dreamsoftindia.com", "dreamsoftindia.net", "generalonlineservices.com", "helloari.com", "helloarihosting.com", "hirewordpressexperts.com", "idea2psd.com", "ifline.com", "immobilientechnologies.com", "iotwebsolutions.com", 
+		"magnoninternational.com", "manektech.com", "orangelab.in", "performsites.com", "philwebservices.com", "prudentlabs.in", "quadrantsystems.com", "retailon.biz", "retailon.co", "retailon.co.in", 
+		"retailon.in", "retailon.info", "retailon.net", "retailon.org", "retailon.us", "ritwik.com", "rizecorp.com", "rizedigital.com", "rizedigital.com.au", "socialobster.com", 
+		"shootinginternet.com", "sparxtechnologies.com", "sparxitsolutions.com", "strapp.net", "techtic.com", "themefuse.com", "themindstudios.com", "varshyl.com", "varshylmobile.com", "varshyltech.com", 
+		"vipsha.com", "webdesigningfirm.net", "webdesigncompany.org", "websiteitup.com", "webgranth.com", 
+		// Logo Design / Graphic Design Spammers (8)
+		"24hrdesign.com", "5starlogo.com", "artonius.hu", "fivestarlogo.com", "logodesignsstudio.com", "logodesigntucson.com", "logodesignutah.com", "pixel2pixel.in", 
 		// Hack/Exploit (2)
 		"viralurl.com", "vur.me", 
 		// Add more here
