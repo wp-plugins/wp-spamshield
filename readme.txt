@@ -2,8 +2,8 @@
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
 Tags: antispam, anti-spam, block spam, comment, comment spam, comments, contact, contact form, form, forms, javascript, login, multisite, register, registration, security, signup, spam, spam filter, user registration spam, trackback
-Requires at least: 3.5
-Tested up to: 4.0
+Requires at least: 3.6
+Tested up to: 4.1
 Stable tag: trunk
 License: GPLv2
 
@@ -13,10 +13,11 @@ A powerful, user-friendly, all-in-one anti-spam plugin that eliminates comment s
 
 **An extremely powerful and user friendly WordPress anti-spam plugin that stops blog comment spam cold, including trackback and pingback spam.** See what it's like to run a WordPress site without spam! Includes spam-blocking contact form feature, and protection from user registration spam as well. WP-SpamShield is an all-in-one spam solution for WordPress.
 
-= A Powerful Weapon Against: Comment Spam, Trackback Spam, Contact Form Spam, and Registration Spam =
+= A Powerful Weapon Against: Comment Spam, Trackback Spam, Contact Form Spam, and Registration Spam - Without CAPTCHAS =
 Comment spam has been a huge problem for bloggers since the inception of blogs, and it just doesn't seem to go away. The worst kind, and most prolific, is automated spam that comes from bots. Well, finally there is an anti-spam plugin for WordPress that provides an effective solution, without CAPTCHA's, challenge questions, or other inconvenience to site visitors. **WP-SpamShield eliminates comment spam, trackback spam, contact form spam, and user registration spam.**
 
 = Documentation / Tech Support =
+If you need help or more info, start here:
 * Documentation: [Plugin Homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/)
 * Tech Support: [WP-SpamShield Support](http://www.redsandmarketing.com/plugins/wp-spamshield/support/)
 
@@ -180,6 +181,13 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.6.2 =
+*released 12/18/14*
+
+* Improved some of the filters in the spam blocking algorithm.
+* Increased minimum required WordPress version to 3.6. It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.1) for security and functionality.
+* Updated the spam filters.
 
 = 1.6.1 =
 *released 12/15/14*
@@ -579,8 +587,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.6.1 =
-Updated the spam filters. Please see Changelog for details.
+= 1.6.2 =
+Improved some of the filters in the spam blocking algorithm, increased minimum required WordPress version to 3.6, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
