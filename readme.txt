@@ -18,6 +18,7 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 
 = Documentation / Tech Support =
 If you need help or more info, start here:
+
 * Documentation: [Plugin Homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/)
 * Tech Support: [WP-SpamShield Support](http://www.redsandmarketing.com/plugins/wp-spamshield/support/)
 
