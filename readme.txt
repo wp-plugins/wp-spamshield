@@ -2,7 +2,7 @@
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
 Tags: antispam, anti-spam, block spam, comment, comment spam, comments, contact, contact form, form, forms, javascript, login, multisite, register, registration, security, signup, spam, spam filter, user registration spam, trackback
-Requires at least: 3.6
+Requires at least: 3.7
 Tested up to: 4.1
 Stable tag: trunk
 License: GPLv2
@@ -180,6 +180,17 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.6.5 =
+*released 01/04/15*
+
+* Upgraded the code for the spam counter widget. The previous widget code was written prior to WordPress 2.8 and needed to be upgraded. (In WordPress 2.8 a better, more efficient widget API was added. After that, the old code still worked with minor modifications.) In WordPress version 4.1 a couple issues started appearing. (At least that's when they were first reported.) When using the Customizer feature in the Dashboard, PHP errors related to undefined indexes would appear in logs. After upgrading to this version, any previously placed WP-SpamShield widgets will disappear from your site and will need to be re-inserted. One benefit of the upgraded code is that now multiple instances of the widget can be inserted.
+* Made various minor code improvements.
+* Increased minimum required WordPress version to 3.7. It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.1) for security and functionality.
+* Minor update to the translation files.
+* Added new filters to the spam blocking algorithm.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
 
 = 1.6.4 =
 *released 12/30/14*
@@ -596,8 +607,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.6.4 =
-Updated the spam filters. Please see Changelog for details.
+= 1.6.5 =
+Upgraded the code for the spam counter widget, increased required WordPress version to 3.7, improved/updated the spam filters, and various other updates. Please see Changelog for details.
 
 == Other Notes ==
 
