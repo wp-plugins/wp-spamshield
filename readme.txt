@@ -181,7 +181,6 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
-
 = 1.6.6 =
 *released 01/09/15*
 
