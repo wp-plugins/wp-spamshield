@@ -181,6 +181,11 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.6.6 =
+*released 01/09/15*
+
+* Updated the spam filters.
+
 = 1.6.5 =
 *released 01/04/15*
 
@@ -607,8 +612,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.6.5 =
-Upgraded the code for the spam counter widget, increased required WordPress version to 3.7, improved/updated the spam filters, and various other updates. Please see Changelog for details.
+= 1.6.6 =
+Updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

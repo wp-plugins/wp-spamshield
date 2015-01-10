@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.6.5
+Version: 1.6.6
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.6.5' );
+define( 'WPSS_VERSION', '1.6.6' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.7' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -2781,10 +2781,10 @@ function spamshield_bad_robot_blacklist_chk( $type = 'comment', $status = NULL, 
 function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = false, $get_pref_list_arr = false, $get_str_list_arr = false, $get_str_rgx_list_arr = false ) {
 	// Email Blacklist Check
 	$blacklisted_emails = array(
-		// THE Master List (59) - Documented spammers - 10 per line, use whole email address
-		// Misc Spammers (12)
-		"12345@yahoo.com", "a@a.com", "asdf@yahoo.com", "fuck@you.com", "test@test.com", "domain.pri@gmail.com", "johnscamardella@gmail.com", "megan.scussel@gmail.com", "monirjibon420@gmail.com", "raw_amine@hotmail.fr", 
-		"rossmcclelland7@gmail.com", "toxas1989@gmail.com", 
+		// THE Master List (61) - Documented spammers - 10 per line, use whole email address
+		// Misc Spammers (13)
+		"12345@yahoo.com", "a@a.com", "asdf@yahoo.com", "fuck@you.com", "test@test.com", "domain.pri@gmail.com", "erkn710@yahoo.com", "johnscamardella@gmail.com", "megan.scussel@gmail.com", "monirjibon420@gmail.com", 
+		"raw_amine@hotmail.fr", "rossmcclelland7@gmail.com", "toxas1989@gmail.com", 
 		// Misc Internet Marketing Spammers (2)
 		"fredrickparker49@gmail.com", "donnagabriel04@gmail.com", 
 		// SEO Spammers (41)
@@ -2793,8 +2793,8 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 		"prod8055@gmail.com", "ramsevakasociate@gmail.com", "rich.pop11@gmail.com", "salessuperseo@gmail.com", "seemaseoindiabizz1@gmail.com", "seematechseobiz@gmail.com", "seobestprise@gmail.com", "seocompany767@gmail.com", "seoenergy11@gmail.com", "seosolution85@gmail.com", 
 		"shivamsms92@gmail.com", "siterankening@gmail.com", "smoseoservicessite@gmail.com", "sudhir.webmaster@gmail.com", "supmondal6@gmail.com", "thechesterfieldcompany@gmail.com", "tulikawebdesign@gmail.com", "tvskyshoppers1@gmail.com", "webdesingningmarketing@gmail.com", "weblnoida@gmail.com", 
 		"web.neharoy@gmail.com", 
-		// Web Dev Spammers (4)
-		"abey.webworks@gmail.com", "abey.webworks2@gmail.com", "juliefitzwater@gmail.com", "mitulcromosys@gmail.com", 
+		// Web Dev Spammers (5)
+		"abey.webworks@gmail.com", "abey.webworks2@gmail.com", "chan.chawla@gmail.com", "juliefitzwater@gmail.com", "mitulcromosys@gmail.com", 
 		);
 	if ( !empty( $get_eml_list_arr ) ) { return $blacklisted_emails; }
 	$blacklisted_email_prefixes = array(
@@ -2862,44 +2862,45 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false ) {
 	// Domain Blacklist Check
 	$blacklisted_domains = array(
-		// THE Master List (326) - Documented spammers - 10 per line
-		// General Spammers (74)
-		"agentbutler.com", "avention.com", "binarysolutions.biz", "businesscardsutah.com", "canadianwarmbloods.com", "checkli.com", "checklistpal.com", "chicagob.com", "citrix.com", "contentrunner.com", 
-		"crackfacebookaccount.com", "crosslinkmarketing.com", "davaomedical.com", "droa.com", "eagle-condor.org", "empirecompanyusa.com", "entiver.com", "entiveracademy.com", "expertory.com", "explainermagic.com", 
-		"explainmybusiness.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", "futurestradingsecrets.com", "ghalichiglam.com", "globaldata4u.com", "howtohypnotizesomeoneforbeginners.com", "humin.com", "hypnosisforbeginners.com", 
-		"incaltaminte-mopiel.ro", "johnscamardella.com", "kleinkredit100.de", "latestdatabase.com", "lili-marlene-dortmund.de", "makemoneytoday.net", "marvinrussellphotographer.com", "mbrussellphotos.us", "meganwritesitdown.com", "mjkmail.in", 
-		"mjkmanufacturing.com", "no-refresh.com", "onesource.com", "optionstradingroom.com", "own-property.com", "oysterr.com", "pattybeni.com", "petermcdowell.com", "probemosjuntos.com", "reidymeister.com", "rxiied.com", 
-		"ryansheavenlyroofing.blogspot.com", "sharefile.com", "southrepublik.com", "spencediamonds.com", "stepforwardlawncare.com", "superbsocial.net", "thehomebusiness.com", "veltecinfo.com", "ventureplan.com", 
-		"votreserrurierparis.fr", "wellnessmn.net", "worddumpsterrental.com", "zhfp.net", 
+		// THE Master List (339) - Documented spammers - 10 per line
+		// General Spammers (75)
+		"agentbutler.com", "ar-kane.com", "avention.com", "binarysolutions.biz", "businesscardsutah.com", "canadianwarmbloods.com", "checkli.com", "checklistpal.com", "chicagob.com", "citrix.com", 
+		"contentrunner.com", "crackfacebookaccount.com", "crosslinkmarketing.com", "davaomedical.com", "droa.com", "eagle-condor.org", "empirecompanyusa.com", "entiver.com", "entiveracademy.com", "expertory.com", 
+		"explainermagic.com", "explainmybusiness.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", "futurestradingsecrets.com", "ghalichiglam.com", "globaldata4u.com", "howtohypnotizesomeoneforbeginners.com", "humin.com", 
+		"hypnosisforbeginners.com", "incaltaminte-mopiel.ro", "johnscamardella.com", "kleinkredit100.de", "latestdatabase.com", "lili-marlene-dortmund.de", "makemoneytoday.net", "marvinrussellphotographer.com", "mbrussellphotos.us", "meganwritesitdown.com", 
+		"mjkmail.in", "mjkmanufacturing.com", "no-refresh.com", "onesource.com", "optionstradingroom.com", "own-property.com", "oysterr.com", "pattybeni.com", "petermcdowell.com", "probemosjuntos.com", "reidymeister.com", 
+		"rxiied.com", "ryansheavenlyroofing.blogspot.com", "sharefile.com", "southrepublik.com", "spencediamonds.com", "stepforwardlawncare.com", "superbsocial.net", "thehomebusiness.com", "veltecinfo.com", 
+		"ventureplan.com", "votreserrurierparis.fr", "wellnessmn.net", "worddumpsterrental.com", "zhfp.net", 
 		// Payday Loan Spammmers (20)
 		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
 		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
-		// SEO Spammers (119)
+		// SEO Spammers (120)
 		"actualseomedia.com", "alkyonedigital.com", "agenciade.serviciosdeseo.com", "ardorcontent.com", "ardormediafactory.com", "ardorranking.com", "ardorseo.com", "arihantwebtech.com", "articlewritinghelp.com", "autobacklinkservice.com", 
 		"betterlinkadvertising.com", "bluebacklinks.com", "callumcontent.com", "captainmarketing.com", "chicagoseoconsultants.com", "cibol.net", "click4pardeep.com", "crestseo.net", "consultmarvinrussell.com", "cyber-seo.com", 
 		"digitalexits.com", "dougthomas.biz", "dreamforweb.com", "e-intelligence.in", "explodeseo.com", "explodeseo.devhub.com", "explodeseo.typepad.com", "explodeseo.us",	"explodeseo.webnode.com", "explodeseo.yolasite.com", 
 		"fabledesign.in", "fabletechnologies.com", "fabletechnologies.us", "fugenx.com", "gelfree.com", "gonextsolutions.com", "hhmla.ca", "hireitdevelopers.com", "hyperwebmarketing.org", "icls.net", 
-		"imediasolutions.biz", "increaseorganicsales.com", "increaseorganicsales.in", "increaseorganicsales.in", "internetsearchenginepros.com", "inventivewebtrack.com", "jameseo.com", "jasonberkowitz.com", "kremsoft.com", "listnappend.com", 
-		"marketraise.com", "marvinrussell.com", "marvinrussell.info", "marvinrussellconsultant.com", "marvrussell.com", "matthewabolinsseo.com", "multimediaconcepts.nl", "myseoauditor.com", "mysiteauditor.com", "mysmartseo.com", 
-		"ocean19.com", "ocean19.net", "ocseo.com", "optimalwebdesign.com.au", "optimisemysite.com", "optimizemysite.com", "orange-county-seo.com", "pcltechnology.com", "quickcontent.net", "quillquintessential.com", 
-		"ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "ranksonic.info", "rubyseo.com", "searchmediapromotion.in", "searchrankpros.org", "seobythehour.com", "semmiami.com", "sem-service.com", 
-		"seoexplode.com", "seoexplode.us", "seogroup.com", "seogroupie.com", "seoindia.co.in", "seooptimizationtipz.com", "seopagescore.com", "seoranksmart.com", "seoranksmart.net", "seosailor.com", 
-		"seoservicesnewyork.org", "seo-services-new-york.weebly.com", "seosorcery.in", "seotis.com", "seoutahcounty.com", "seowebbizz.com", "serviciosdeseo.com", "siteaudit1.com", "smart-seo-ranking.com", "socialeum.com", 
-		"sowedane-consultants.com", "stechseo.com", "sumitseo.com", "swellmarketing.net", "tallenzula.in", "technologus.com", "techseobiz.com", "theglobalitsolutions.com", "theoceanagency.net", "tiffany-howard.com", 
-		"triveniinfotech.com", "webmarketingsolutions.info", "webpromotioner.com", "webseostats.com", "webseomasters.com", "webseoxpert.com", "worldaweb.in", "wpromote.com", "zoomtraffics.com", 
+		"imediasolutions.biz", "increaseorganicsales.com", "increaseorganicsales.in", "increaseorganicsales.in", "internetmarketingexpertz.com", "internetsearchenginepros.com", "inventivewebtrack.com", "jameseo.com", "jasonberkowitz.com", "kremsoft.com", 
+		"listnappend.com", "marketraise.com", "marvinrussell.com", "marvinrussell.info", "marvinrussellconsultant.com", "marvrussell.com", "matthewabolinsseo.com", "multimediaconcepts.nl", "myseoauditor.com", "mysiteauditor.com", 
+		"mysmartseo.com", "ocean19.com", "ocean19.net", "ocseo.com", "optimalwebdesign.com.au", "optimisemysite.com", "optimizemysite.com", "orange-county-seo.com", "pcltechnology.com", "quickcontent.net", 
+		"quillquintessential.com", "ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "ranksonic.info", "rubyseo.com", "searchmediapromotion.in", "searchrankpros.org", "seobythehour.com", "semmiami.com", 
+		"sem-service.com", "seoexplode.com", "seoexplode.us", "seogroup.com", "seogroupie.com", "seoindia.co.in", "seooptimizationtipz.com", "seopagescore.com", "seoranksmart.com", "seoranksmart.net", 
+		"seosailor.com", "seoservicesnewyork.org", "seo-services-new-york.weebly.com", "seosorcery.in", "seotis.com", "seoutahcounty.com", "seowebbizz.com", "serviciosdeseo.com", "siteaudit1.com", "smart-seo-ranking.com", 
+		"socialeum.com", "sowedane-consultants.com", "stechseo.com", "sumitseo.com", "swellmarketing.net", "tallenzula.in", "technologus.com", "techseobiz.com", "theglobalitsolutions.com", "theoceanagency.net", 
+		"tiffany-howard.com", "triveniinfotech.com", "webmarketingsolutions.info", "webpromotioner.com", "webseostats.com", "webseomasters.com", "webseoxpert.com", "worldaweb.in", "wpromote.com", "zoomtraffics.com", 
 		// Misc Internet Marketing Spammers (33)
 		"360webmarketing.com", "360webmarketing.net", "adult-poster.com", "autopostersoftware.com", "awbgenius.com", "bettergraph.com", "bpdominator.com", "cl-dominator.com", "commentposter.com", "emailchopper.com", 
 		"ezadblaster.com", "hazelnutfilms.com", "hit4hit.org", "intag.co", "keywordadvertisingedge.com", "keywordspy.com", "krisreid.co", "onlineadprofessionals.com", "onlineadpros.com", "phpdug.net", 
 		"pliggsubmit.com", "post-comments.com", "ravenposter.com", "scuttlesubmitter.com", "sepgenius.com", "socialadsblaster.com", "submitbookmark.com", "submit-trackback.com", "wordai.com", "worldtechbuzz.com", 
 		"writing-web-content.com", "youtubecommentposterbot.com", "youtube-poster.com", 
-		// WebDev Spammers (69)
-		"1ari.com", "accrinet.com", "appschopper.com", "arisalomon.com", "bosswebtech.com", "catamerica.com", "catbpo.com", "cattechnologies.biz", "cattechnologies.com", "cattechsoft.com", 
-		"cattinc.com", "chicagoweb-design.com", "cnelindia.com", "creativeforever.in", "cromosys.com", "csschopper.com", "cssclever.com", "cssprecise.com", "darwinlogic.com", "darwinlogic.net", 
-		"designz23.com", "dreamsoftindia.com", "dreamsoftindia.net", "generalonlineservices.com", "helloari.com", "helloarihosting.com", "hirewordpressexperts.com", "idea2psd.com", "ifline.com", "immobilientechnologies.com", 
-		"iotwebsolutions.com", "magnoninternational.com", "manektech.com", "orangelab.in", "performsites.com", "philwebservices.com", "prudentlabs.in", "quadrantsystems.com", "retailon.biz", "retailon.co", 
-		"retailon.co.in", "retailon.in", "retailon.info", "retailon.net", "retailon.org", "retailon.us", "ritwik.com", "rizecorp.com", "rizedigital.com", "rizedigital.com.au", 
-		"socialobster.com", "shootinginternet.com", "sparxtechnologies.com", "sparxitsolutions.com", "strapp.net", "techtic.com", "themefuse.com", "themindstudios.com", "varshyl.com", "varshylmobile.com", 
-		"varshyltech.com", "vipsha.com", "webbizzhosting.com", "webbizzindia.com", "webbizzinfosolutions.com", "webdesigningfirm.net", "webdesigncompany.org", "websiteitup.com", "webgranth.com", 
+		// WebDev Spammers (80)
+		"1ari.com", "accrinet.com", "androidappsprogramming.com", "appschopper.com", "arisalomon.com", "bosswebtech.com", "catamerica.com", "catbpo.com", "cattechnologies.biz", "cattechnologies.com", 
+		"cattechsoft.com", "cattinc.com", "chicagoweb-design.com", "cnelindia.com", "creativeforever.in", "cromosys.com", "csschopper.com", "cssclever.com", "cssprecise.com", "darwinlogic.com", 
+		"darwinlogic.net", "designz23.com", "dreamsoftindia.com", "dreamsoftindia.net", "generalonlineservices.com", "helloari.com", "helloarihosting.com", "hirewordpressexperts.com", "idea2psd.com", "ifline.com", 
+		"immobilientechnologies.com", "iotwebsolutions.com", "iphoneappsprogramming.com", "iphoneappsstore.us", "magnoninternational.com", "manektech.com", "mobileappsprogramming.us", "orangelab.in", "palmphone.us", "palmphoneprogramming.com", 
+		"performsites.com", "philwebservices.com", "prudentlabs.in", "quadrantsystems.com", "retailon.biz", "retailon.co", "retailon.co.in", "retailon.in", "retailon.info", "retailon.net", 
+		"retailon.org", "retailon.us", "ritwik.com", "rizecorp.com", "rizedigital.com", "rizedigital.com.au", "socialobster.com", "shootinginternet.com", "softprodigy.com", "softprodigy.in", 
+		"softprodigy.net", "softprodigy.us", "softprodigymobile.com", "sparxtechnologies.com", "sparxitsolutions.com", "strapp.net", "techtic.com", "themefuse.com", "themindstudios.com", "varshyl.com", 
+		"varshylmobile.com", "varshyltech.com", "vipsha.com", "webbizzhosting.com", "webbizzindia.com", "webbizzinfosolutions.com", "webdesigningfirm.net", "webdesigncompany.org", "websiteitup.com", "webgranth.com", 
 		// Logo Design / Graphic Design Spammers (8)
 		"24hrdesign.com", "5starlogo.com", "artonius.hu", "fivestarlogo.com", "logodesignsstudio.com", "logodesigntucson.com", "logodesignutah.com", "pixel2pixel.in", 
 		// Hack/Exploit/Malware (3)
