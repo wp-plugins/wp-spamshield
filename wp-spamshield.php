@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.6.6
+Version: 1.6.7
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.6.6' );
+define( 'WPSS_VERSION', '1.6.7' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.7' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -5708,15 +5708,24 @@ function spamshield_admin_notices() {
 
 function spamshield_admin_jp_fix() {
 	// Fix Compatibility with JetPack if active
+	// The JP Comments module modifies WordPress' comment system core functionality, incapacitating MANY fine plugins...sorry guys, but this has to be deactivated
 	$wpss_jp_active	= spamshield_is_plugin_active( 'jetpack/jetpack.php' );
 	if ( !empty( $wpss_jp_active ) ) {
 		$jp_active_mods = get_option('jetpack_active_modules');
-		$jp_com_key = array_search( 'comments', $jp_active_mods, true );
-		if ( !empty( $jp_com_key ) ) {
-			unset( $jp_active_mods[$jp_com_key] );
+		if ( !empty( $jp_active_mods ) && is_array( $jp_active_mods ) ) {
+			$jp_com_key = array_search( 'comments', $jp_active_mods, true );
+			if ( !isset( $jp_com_key ) || !is_int( $jp_com_key ) ) { $jp_com_key = 'Not found in array.'; }
 			}
-		// This JP module modifies WordPress' comment system core functionality, incapacitating MANY fine plugins...sorry guys, but this has to be deactivated
-		update_option( 'jetpack_active_modules', $jp_active_mods );
+		else {
+			$jp_com_key = 'Not array or empty array.';
+			return;
+			}
+		if ( isset( $jp_com_key ) && is_int( $jp_com_key ) ) {
+			$jp_num_active_mods = count( $jp_active_mods );
+			if ( empty( $jp_active_mods ) ) { $jp_num_active_mods = 0; }
+			if ( $jp_num_active_mods < 2 ) { $jp_active_mods = array(); } else { unset( $jp_active_mods[$jp_com_key] ); }
+			update_option( 'jetpack_active_modules', $jp_active_mods );
+			}
 		}
 	}
 

@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield - index.php
-Version: 1.6.6
+Version: 1.6.7
 */
 
 // This page keeps search engines, bots, and unwanted visitors from viewing your private plugin directory contents.
