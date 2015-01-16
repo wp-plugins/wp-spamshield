@@ -184,7 +184,7 @@ If you have any further questions, please submit them on the [support page](http
 = 1.6.8 =
 *released 01/16/15*
 
-* Updated the spam filters.
+* Updated the spam filters. 
 
 = 1.6.7 =
 *released 01/13/15*
