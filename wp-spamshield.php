@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.6.7
+Version: 1.6.8
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.6.7' );
+define( 'WPSS_VERSION', '1.6.8' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.7' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -1883,7 +1883,6 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 		if ( $form_message_width < 40 ) { $form_message_width = 40; }
 		if ( $form_message_height < 5 ) { $form_message_height = 5; } elseif ( empty( $form_message_height ) ) { $form_message_height = 10; }
 		if ( $form_message_min_length < 15 ) { $form_message_min_length = 15; } elseif ( empty( $form_message_min_length ) ) { $form_message_min_length = 25; }
-		//if ( $get_form == 'response' ) {
 		if ( $get_form == 'response' && ( $_SERVER['REQUEST_METHOD'] != 'POST' || empty($_POST) ) ) {
 			// REQUEST_METHOD not POST or empty $_POST - Not a legitimate contact form submission - likely a bot scraping the site
 			// Added in v 1.5.5 to conserve server resources
@@ -1893,7 +1892,6 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			$content_new = str_replace($content, $spamshield_contact_form_content, $content);
 			$content_shortcode = $spamshield_contact_form_content;
 			}
-		//elseif ( $get_form == 'response' && $_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST) ) {
 		elseif ( $get_form == 'response' ) {
 			// CONTACT FORM BACK END - BEGIN
 			$message_spam = $blank_field = $invalid_value = $bad_email = $bad_phone = $bad_company = $message_short = $js_cookie_fail = $contact_form_spam_loc = $contact_form_domain_spam_loc = $generic_spam_company = $free_email_address = 0;
@@ -2132,7 +2130,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				$contact_form_domain_spam_loc = 1;
 				// TO DO: Add more, switch to Regex
 				}
-			if ( !empty( $form_include_company ) && !empty( $wpss_contact_company_lc ) && preg_match( "~^(se(o|m)|(search\s+engine|internet)\s+(optimiz(ation|ing|er)|market(ing|er))|(se(o|m)|((search\s+engine|internet)\s+)?(optimiz(ation|ing|er)|market(ing|er))|web\s+(design(er|ing)?|develop(ment|er|ing))|(content\s+|copy\s*)?writ(er?|ing))s?\s+(company|firm|services?|freelanc(er?|ing))|(company|firm|services?|freelanc(er?|ing))\s+(se(o|m)|((search\s+engine|internet)\s+)?(optimiz(ation|ing|er)|market(ing|er))|web\s+(design(er|ing)?|develop(ment|er|ing))|(content\s+|copy\s*)?writ(er?|ing))s?)$~", $wpss_contact_company_lc ) ) {
+			if ( !empty( $form_include_company ) && !empty( $wpss_contact_company_lc ) && preg_match( "~^(se(o|m)|(search\s*engine|internet)\s*(optimiz(ation|ing|er)|market(ing|er))|(se(o|m)|((search\s*engine|internet)\s*)?(optimiz(ation|ing|er)|market(ing|er))|web\s*(design(er|ing)?|develop(ment|er|ing))|(content\s*|copy\s*)?writ(er?|ing))s?\s*(company|firm|services?|freelanc(er?|ing))|(company|firm|services?|freelanc(er?|ing))\s*(se(o|m)|((search\s*engine|internet)\s*)?(optimiz(ation|ing|er)|market(ing|er))|web\s*(design(er|ing)?|develop(ment|er|ing))|(content\s*|copy\s*)?writ(er?|ing))s?)$~", $wpss_contact_company_lc ) ) {
 				$generic_spam_company = 1;
 				}
 			if ( preg_match( "~\@(gmail|hotmail|outlook|yahoo)\.com$~", $wpss_contact_email_lc ) ) {
@@ -2781,20 +2779,20 @@ function spamshield_bad_robot_blacklist_chk( $type = 'comment', $status = NULL, 
 function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = false, $get_pref_list_arr = false, $get_str_list_arr = false, $get_str_rgx_list_arr = false ) {
 	// Email Blacklist Check
 	$blacklisted_emails = array(
-		// THE Master List (61) - Documented spammers - 10 per line, use whole email address
-		// Misc Spammers (13)
-		"12345@yahoo.com", "a@a.com", "asdf@yahoo.com", "fuck@you.com", "test@test.com", "domain.pri@gmail.com", "erkn710@yahoo.com", "johnscamardella@gmail.com", "megan.scussel@gmail.com", "monirjibon420@gmail.com", 
-		"raw_amine@hotmail.fr", "rossmcclelland7@gmail.com", "toxas1989@gmail.com", 
+		// THE Master List (64) - Documented spammers - 10 per line, use whole email address
+		// Misc Spammers (14)
+		"12345@yahoo.com", "a@a.com", "asdf@yahoo.com", "fuck@you.com", "test@test.com", "domain.pri@gmail.com", "erick.magana.sd@gmail.com", "erkn710@yahoo.com", "johnscamardella@gmail.com", "megan.scussel@gmail.com", 
+		"monirjibon420@gmail.com", "raw_amine@hotmail.fr", "rossmcclelland7@gmail.com", "toxas1989@gmail.com", 
 		// Misc Internet Marketing Spammers (2)
 		"fredrickparker49@gmail.com", "donnagabriel04@gmail.com", 
-		// SEO Spammers (41)
+		// SEO Spammers (42)
 		"amazingwebdesign01@gmail.com", "andy.roddick63@gmail.com", "anita.developer01@gmail.com", "ankitbusinessseo@gmail.com", "asher.rodrick@gmail.com", "brandingcompanyagency@gmail.com", "creativewebsolution4you@gmail.com", "digitalexits3@gmail.com", "enquiries.joomlawebhosting@gmail.com", "free.articles.pr.submissions@gmail.com", 
 		"hannahandrew259@gmail.com", "inventivewebtrack@gmail.com", "jackspencer89@hotmail.com", "jayseopropasal@gmail.com", "jennifer.bdmanager@gmail.com", "kellymith4@gmail.com", "kirtiseowebdesigner@gmail.com", "manjupandey882@gmail.com", "matthewabolinsseo@gmail.com", "onlineseobestranking@gmail.com", 
-		"prod8055@gmail.com", "ramsevakasociate@gmail.com", "rich.pop11@gmail.com", "salessuperseo@gmail.com", "seemaseoindiabizz1@gmail.com", "seematechseobiz@gmail.com", "seobestprise@gmail.com", "seocompany767@gmail.com", "seoenergy11@gmail.com", "seosolution85@gmail.com", 
-		"shivamsms92@gmail.com", "siterankening@gmail.com", "smoseoservicessite@gmail.com", "sudhir.webmaster@gmail.com", "supmondal6@gmail.com", "thechesterfieldcompany@gmail.com", "tulikawebdesign@gmail.com", "tvskyshoppers1@gmail.com", "webdesingningmarketing@gmail.com", "weblnoida@gmail.com", 
-		"web.neharoy@gmail.com", 
-		// Web Dev Spammers (5)
-		"abey.webworks@gmail.com", "abey.webworks2@gmail.com", "chan.chawla@gmail.com", "juliefitzwater@gmail.com", "mitulcromosys@gmail.com", 
+		"prod8055@gmail.com", "ramsevakasociate@gmail.com", "rich.pop11@gmail.com", "roberthansen778@gmail.com", "salessuperseo@gmail.com", "seemaseoindiabizz1@gmail.com", "seematechseobiz@gmail.com", "seobestprise@gmail.com", "seocompany767@gmail.com", "seoenergy11@gmail.com", 
+		"seosolution85@gmail.com", "shivamsms92@gmail.com", "siterankening@gmail.com", "smoseoservicessite@gmail.com", "sudhir.webmaster@gmail.com", "supmondal6@gmail.com", "thechesterfieldcompany@gmail.com", "tulikawebdesign@gmail.com", "tvskyshoppers1@gmail.com", "webdesingningmarketing@gmail.com", 
+		"weblnoida@gmail.com", "web.neharoy@gmail.com", 
+		// Web Dev Spammers (6)
+		"abey.webworks@gmail.com", "abey.webworks2@gmail.com", "chan.chawla@gmail.com", "juliefitzwater@gmail.com", "mike.internet1@gmail.com", "mitulcromosys@gmail.com", 
 		);
 	if ( !empty( $get_eml_list_arr ) ) { return $blacklisted_emails; }
 	$blacklisted_email_prefixes = array(
@@ -2862,18 +2860,20 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false ) {
 	// Domain Blacklist Check
 	$blacklisted_domains = array(
-		// THE Master List (339) - Documented spammers - 10 per line
-		// General Spammers (75)
+		// THE Master List (341) - Documented spammers - 10 per line
+		// General Spammers (76)
 		"agentbutler.com", "ar-kane.com", "avention.com", "binarysolutions.biz", "businesscardsutah.com", "canadianwarmbloods.com", "checkli.com", "checklistpal.com", "chicagob.com", "citrix.com", 
 		"contentrunner.com", "crackfacebookaccount.com", "crosslinkmarketing.com", "davaomedical.com", "droa.com", "eagle-condor.org", "empirecompanyusa.com", "entiver.com", "entiveracademy.com", "expertory.com", 
 		"explainermagic.com", "explainmybusiness.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", "futurestradingsecrets.com", "ghalichiglam.com", "globaldata4u.com", "howtohypnotizesomeoneforbeginners.com", "humin.com", 
 		"hypnosisforbeginners.com", "incaltaminte-mopiel.ro", "johnscamardella.com", "kleinkredit100.de", "latestdatabase.com", "lili-marlene-dortmund.de", "makemoneytoday.net", "marvinrussellphotographer.com", "mbrussellphotos.us", "meganwritesitdown.com", 
-		"mjkmail.in", "mjkmanufacturing.com", "no-refresh.com", "onesource.com", "optionstradingroom.com", "own-property.com", "oysterr.com", "pattybeni.com", "petermcdowell.com", "probemosjuntos.com", "reidymeister.com", 
-		"rxiied.com", "ryansheavenlyroofing.blogspot.com", "sharefile.com", "southrepublik.com", "spencediamonds.com", "stepforwardlawncare.com", "superbsocial.net", "thehomebusiness.com", "veltecinfo.com", 
-		"ventureplan.com", "votreserrurierparis.fr", "wellnessmn.net", "worddumpsterrental.com", "zhfp.net", 
+		"mjkmail.in", "mjkmanufacturing.com", "no-refresh.com", "onesource.com", "optionstradingroom.com", "own-property.com", "oysterr.com", "pattybeni.com", "pb-films.com", "petermcdowell.com", 
+		"probemosjuntos.com", "reidymeister.com", "rxiied.com", "ryansheavenlyroofing.blogspot.com", "sharefile.com", "southrepublik.com", "spencediamonds.com", "stepforwardlawncare.com", "superbsocial.net", "thehomebusiness.com", 
+		"veltecinfo.com", "ventureplan.com", "votreserrurierparis.fr", "wellnessmn.net", "worddumpsterrental.com", "zhfp.net", 
 		// Payday Loan Spammmers (20)
 		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
 		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
+		// Misc Financial Spammers (1)
+		"biz-lenders.com", 
 		// SEO Spammers (120)
 		"actualseomedia.com", "alkyonedigital.com", "agenciade.serviciosdeseo.com", "ardorcontent.com", "ardormediafactory.com", "ardorranking.com", "ardorseo.com", "arihantwebtech.com", "articlewritinghelp.com", "autobacklinkservice.com", 
 		"betterlinkadvertising.com", "bluebacklinks.com", "callumcontent.com", "captainmarketing.com", "chicagoseoconsultants.com", "cibol.net", "click4pardeep.com", "crestseo.net", "consultmarvinrussell.com", "cyber-seo.com", 

@@ -181,6 +181,11 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.6.8 =
+*released 01/16/15*
+
+* Updated the spam filters.
+
 = 1.6.7 =
 *released 01/13/15*
 
@@ -618,8 +623,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.6.7 =
-Minor improvement in the JetPack compatibility fix, and updated the spam filters. Please see Changelog for details.
+= 1.6.8 =
+Updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

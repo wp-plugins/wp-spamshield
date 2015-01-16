@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.6.7
+Version: 1.6.8
 */
 
 // Security Sanitization - BEGIN
