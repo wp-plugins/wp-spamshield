@@ -2,9 +2,9 @@
 /*
 Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
-Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that eliminates comment spam and registration spam. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
+Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature. [ <a href="http://www.redsandmarketing.com/plugins/wp-spamshield/">Plugin Documentation</a> | <a href="http://www.redsandmarketing.com/plugins/wp-spamshield/support/">Support</a> ]
 Author: Scott Allen
-Version: 1.6.8
+Version: 1.6.9
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.6.8' );
+define( 'WPSS_VERSION', '1.6.9' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.7' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -142,6 +142,8 @@ $spamshield_default = array (
 	'enhanced_comment_blacklist'		=> 0,
 	'allow_proxy_users'					=> 1,
 	'hide_extra_data'					=> 0,
+	'registration_shield_disable'		=> 0,
+	'registration_shield_level_1'		=> 0,
 	'form_include_website' 				=> 1,
 	'form_require_website' 				=> 0,
 	'form_include_phone' 				=> 1,
@@ -1332,6 +1334,8 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			'enhanced_comment_blacklist'			=> $spamshield_options['enhanced_comment_blacklist'],
 			'allow_proxy_users'						=> $spamshield_options['allow_proxy_users'],
 			'hide_extra_data'						=> $spamshield_options['hide_extra_data'],
+			'registration_shield_disable'			=> $spamshield_options['registration_shield_disable'],
+			'registration_shield_level_1'			=> $spamshield_options['registration_shield_level_1'],
 			'form_include_website' 					=> $spamshield_options['form_include_website'],
 			'form_require_website' 					=> $spamshield_options['form_require_website'],
 			'form_include_phone' 					=> $spamshield_options['form_include_phone'],
@@ -2778,22 +2782,7 @@ function spamshield_bad_robot_blacklist_chk( $type = 'comment', $status = NULL, 
 
 function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = false, $get_pref_list_arr = false, $get_str_list_arr = false, $get_str_rgx_list_arr = false ) {
 	// Email Blacklist Check
-	$blacklisted_emails = array(
-		// THE Master List (64) - Documented spammers - 10 per line, use whole email address
-		// Misc Spammers (14)
-		"12345@yahoo.com", "a@a.com", "asdf@yahoo.com", "fuck@you.com", "test@test.com", "domain.pri@gmail.com", "erick.magana.sd@gmail.com", "erkn710@yahoo.com", "johnscamardella@gmail.com", "megan.scussel@gmail.com", 
-		"monirjibon420@gmail.com", "raw_amine@hotmail.fr", "rossmcclelland7@gmail.com", "toxas1989@gmail.com", 
-		// Misc Internet Marketing Spammers (2)
-		"fredrickparker49@gmail.com", "donnagabriel04@gmail.com", 
-		// SEO Spammers (42)
-		"amazingwebdesign01@gmail.com", "andy.roddick63@gmail.com", "anita.developer01@gmail.com", "ankitbusinessseo@gmail.com", "asher.rodrick@gmail.com", "brandingcompanyagency@gmail.com", "creativewebsolution4you@gmail.com", "digitalexits3@gmail.com", "enquiries.joomlawebhosting@gmail.com", "free.articles.pr.submissions@gmail.com", 
-		"hannahandrew259@gmail.com", "inventivewebtrack@gmail.com", "jackspencer89@hotmail.com", "jayseopropasal@gmail.com", "jennifer.bdmanager@gmail.com", "kellymith4@gmail.com", "kirtiseowebdesigner@gmail.com", "manjupandey882@gmail.com", "matthewabolinsseo@gmail.com", "onlineseobestranking@gmail.com", 
-		"prod8055@gmail.com", "ramsevakasociate@gmail.com", "rich.pop11@gmail.com", "roberthansen778@gmail.com", "salessuperseo@gmail.com", "seemaseoindiabizz1@gmail.com", "seematechseobiz@gmail.com", "seobestprise@gmail.com", "seocompany767@gmail.com", "seoenergy11@gmail.com", 
-		"seosolution85@gmail.com", "shivamsms92@gmail.com", "siterankening@gmail.com", "smoseoservicessite@gmail.com", "sudhir.webmaster@gmail.com", "supmondal6@gmail.com", "thechesterfieldcompany@gmail.com", "tulikawebdesign@gmail.com", "tvskyshoppers1@gmail.com", "webdesingningmarketing@gmail.com", 
-		"weblnoida@gmail.com", "web.neharoy@gmail.com", 
-		// Web Dev Spammers (6)
-		"abey.webworks@gmail.com", "abey.webworks2@gmail.com", "chan.chawla@gmail.com", "juliefitzwater@gmail.com", "mike.internet1@gmail.com", "mitulcromosys@gmail.com", 
-		);
+	$blacklisted_emails = spamshield_get_email_blacklist();
 	if ( !empty( $get_eml_list_arr ) ) { return $blacklisted_emails; }
 	$blacklisted_email_prefixes = array(
 		// The beginning part of the email
@@ -2859,54 +2848,7 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 
 function spamshield_domain_blacklist_chk( $domain = NULL, $get_list_arr = false ) {
 	// Domain Blacklist Check
-	$blacklisted_domains = array(
-		// THE Master List (341) - Documented spammers - 10 per line
-		// General Spammers (76)
-		"agentbutler.com", "ar-kane.com", "avention.com", "binarysolutions.biz", "businesscardsutah.com", "canadianwarmbloods.com", "checkli.com", "checklistpal.com", "chicagob.com", "citrix.com", 
-		"contentrunner.com", "crackfacebookaccount.com", "crosslinkmarketing.com", "davaomedical.com", "droa.com", "eagle-condor.org", "empirecompanyusa.com", "entiver.com", "entiveracademy.com", "expertory.com", 
-		"explainermagic.com", "explainmybusiness.com", "fat-milf.com", "friendlybuilders.co.uk", "fuckyou.com", "futurestradingsecrets.com", "ghalichiglam.com", "globaldata4u.com", "howtohypnotizesomeoneforbeginners.com", "humin.com", 
-		"hypnosisforbeginners.com", "incaltaminte-mopiel.ro", "johnscamardella.com", "kleinkredit100.de", "latestdatabase.com", "lili-marlene-dortmund.de", "makemoneytoday.net", "marvinrussellphotographer.com", "mbrussellphotos.us", "meganwritesitdown.com", 
-		"mjkmail.in", "mjkmanufacturing.com", "no-refresh.com", "onesource.com", "optionstradingroom.com", "own-property.com", "oysterr.com", "pattybeni.com", "pb-films.com", "petermcdowell.com", 
-		"probemosjuntos.com", "reidymeister.com", "rxiied.com", "ryansheavenlyroofing.blogspot.com", "sharefile.com", "southrepublik.com", "spencediamonds.com", "stepforwardlawncare.com", "superbsocial.net", "thehomebusiness.com", 
-		"veltecinfo.com", "ventureplan.com", "votreserrurierparis.fr", "wellnessmn.net", "worddumpsterrental.com", "zhfp.net", 
-		// Payday Loan Spammmers (20)
-		"burnleytaskforce.org.uk", "ccls5280.org", "chrislonergan.co.uk", "getwicked.co.uk", "kickstartmediagroup.co.uk", "mpaydayloansa1.info", "neednotgreed.org.uk", "paydayloanscoolp.co.uk", "paydayloansguy.co.uk", "royalspicehastings.co.uk", 
-		"shorttermloans1.tripod.co.uk", "snakepaydayloans.co.uk", "solarsheild.co.uk", "transitionwestcliff.org.uk", "blyweertbeaufort.co.uk", "disctoprint.co.uk", "fish-instant-payday-loans.co.uk", "heritagenorth.co.uk", "standardsdownload.co.uk", "21joannapaydayloanscompany.joannaloans.co.uk", 
-		// Misc Financial Spammers (1)
-		"biz-lenders.com", 
-		// SEO Spammers (120)
-		"actualseomedia.com", "alkyonedigital.com", "agenciade.serviciosdeseo.com", "ardorcontent.com", "ardormediafactory.com", "ardorranking.com", "ardorseo.com", "arihantwebtech.com", "articlewritinghelp.com", "autobacklinkservice.com", 
-		"betterlinkadvertising.com", "bluebacklinks.com", "callumcontent.com", "captainmarketing.com", "chicagoseoconsultants.com", "cibol.net", "click4pardeep.com", "crestseo.net", "consultmarvinrussell.com", "cyber-seo.com", 
-		"digitalexits.com", "dougthomas.biz", "dreamforweb.com", "e-intelligence.in", "explodeseo.com", "explodeseo.devhub.com", "explodeseo.typepad.com", "explodeseo.us",	"explodeseo.webnode.com", "explodeseo.yolasite.com", 
-		"fabledesign.in", "fabletechnologies.com", "fabletechnologies.us", "fugenx.com", "gelfree.com", "gonextsolutions.com", "hhmla.ca", "hireitdevelopers.com", "hyperwebmarketing.org", "icls.net", 
-		"imediasolutions.biz", "increaseorganicsales.com", "increaseorganicsales.in", "increaseorganicsales.in", "internetmarketingexpertz.com", "internetsearchenginepros.com", "inventivewebtrack.com", "jameseo.com", "jasonberkowitz.com", "kremsoft.com", 
-		"listnappend.com", "marketraise.com", "marvinrussell.com", "marvinrussell.info", "marvinrussellconsultant.com", "marvrussell.com", "matthewabolinsseo.com", "multimediaconcepts.nl", "myseoauditor.com", "mysiteauditor.com", 
-		"mysmartseo.com", "ocean19.com", "ocean19.net", "ocseo.com", "optimalwebdesign.com.au", "optimisemysite.com", "optimizemysite.com", "orange-county-seo.com", "pcltechnology.com", "quickcontent.net", 
-		"quillquintessential.com", "ranksindia.com", "ranksindia.net", "ranksdigitalmedia.com", "ranksonic.info", "rubyseo.com", "searchmediapromotion.in", "searchrankpros.org", "seobythehour.com", "semmiami.com", 
-		"sem-service.com", "seoexplode.com", "seoexplode.us", "seogroup.com", "seogroupie.com", "seoindia.co.in", "seooptimizationtipz.com", "seopagescore.com", "seoranksmart.com", "seoranksmart.net", 
-		"seosailor.com", "seoservicesnewyork.org", "seo-services-new-york.weebly.com", "seosorcery.in", "seotis.com", "seoutahcounty.com", "seowebbizz.com", "serviciosdeseo.com", "siteaudit1.com", "smart-seo-ranking.com", 
-		"socialeum.com", "sowedane-consultants.com", "stechseo.com", "sumitseo.com", "swellmarketing.net", "tallenzula.in", "technologus.com", "techseobiz.com", "theglobalitsolutions.com", "theoceanagency.net", 
-		"tiffany-howard.com", "triveniinfotech.com", "webmarketingsolutions.info", "webpromotioner.com", "webseostats.com", "webseomasters.com", "webseoxpert.com", "worldaweb.in", "wpromote.com", "zoomtraffics.com", 
-		// Misc Internet Marketing Spammers (33)
-		"360webmarketing.com", "360webmarketing.net", "adult-poster.com", "autopostersoftware.com", "awbgenius.com", "bettergraph.com", "bpdominator.com", "cl-dominator.com", "commentposter.com", "emailchopper.com", 
-		"ezadblaster.com", "hazelnutfilms.com", "hit4hit.org", "intag.co", "keywordadvertisingedge.com", "keywordspy.com", "krisreid.co", "onlineadprofessionals.com", "onlineadpros.com", "phpdug.net", 
-		"pliggsubmit.com", "post-comments.com", "ravenposter.com", "scuttlesubmitter.com", "sepgenius.com", "socialadsblaster.com", "submitbookmark.com", "submit-trackback.com", "wordai.com", "worldtechbuzz.com", 
-		"writing-web-content.com", "youtubecommentposterbot.com", "youtube-poster.com", 
-		// WebDev Spammers (80)
-		"1ari.com", "accrinet.com", "androidappsprogramming.com", "appschopper.com", "arisalomon.com", "bosswebtech.com", "catamerica.com", "catbpo.com", "cattechnologies.biz", "cattechnologies.com", 
-		"cattechsoft.com", "cattinc.com", "chicagoweb-design.com", "cnelindia.com", "creativeforever.in", "cromosys.com", "csschopper.com", "cssclever.com", "cssprecise.com", "darwinlogic.com", 
-		"darwinlogic.net", "designz23.com", "dreamsoftindia.com", "dreamsoftindia.net", "generalonlineservices.com", "helloari.com", "helloarihosting.com", "hirewordpressexperts.com", "idea2psd.com", "ifline.com", 
-		"immobilientechnologies.com", "iotwebsolutions.com", "iphoneappsprogramming.com", "iphoneappsstore.us", "magnoninternational.com", "manektech.com", "mobileappsprogramming.us", "orangelab.in", "palmphone.us", "palmphoneprogramming.com", 
-		"performsites.com", "philwebservices.com", "prudentlabs.in", "quadrantsystems.com", "retailon.biz", "retailon.co", "retailon.co.in", "retailon.in", "retailon.info", "retailon.net", 
-		"retailon.org", "retailon.us", "ritwik.com", "rizecorp.com", "rizedigital.com", "rizedigital.com.au", "socialobster.com", "shootinginternet.com", "softprodigy.com", "softprodigy.in", 
-		"softprodigy.net", "softprodigy.us", "softprodigymobile.com", "sparxtechnologies.com", "sparxitsolutions.com", "strapp.net", "techtic.com", "themefuse.com", "themindstudios.com", "varshyl.com", 
-		"varshylmobile.com", "varshyltech.com", "vipsha.com", "webbizzhosting.com", "webbizzindia.com", "webbizzinfosolutions.com", "webdesigningfirm.net", "webdesigncompany.org", "websiteitup.com", "webgranth.com", 
-		// Logo Design / Graphic Design Spammers (8)
-		"24hrdesign.com", "5starlogo.com", "artonius.hu", "fivestarlogo.com", "logodesignsstudio.com", "logodesigntucson.com", "logodesignutah.com", "pixel2pixel.in", 
-		// Hack/Exploit/Malware (3)
-		"buycontenthere.com", "viralurl.com", "vur.me", 
-		// Add more here
-		);
+	$blacklisted_domains = spamshield_get_domain_blacklist();
 	if ( !empty( $get_list_arr ) ) { return $blacklisted_domains; }
 	// Goes after array
 	$blacklist_status = false;
@@ -3337,7 +3279,7 @@ function spamshield_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL
 		//"REVD2101" => "~^([0-9]{1,3}[\.\-]){4}broad\.[a-z]{2}\.[a-z]{2}\.dynamic\.163data\.com\.cn$~", 
 		"REVD2102" => "~^c\-([0-9]{1,3}[\.\-]){4}hsd[0-9]+\.[a-z]{2,}\.comcast\.net$~", 
 		//"REVD2103" => "~dynamic\-([0-9]{1,3}[\.\-]){4}airtelbroadband\.in$~", 
-		"REVD2103" => "~([0-9]{1,3}[\.\-]){4}[a-z]+broadband(\.[a-z]{2,3})?\.[a-z]{2,3}$~", 
+		"REVD2103" => "~([0-9]{1,3}[\.\-]){4}(static[\.\-])?[a-z]+broadband(\.[a-z]{2,3})?\.[a-z]{2,3}$~", 
 		"REVD2104" => "~^host([0-9]{1,3}[\.\-]){4}range[0-9]+\-[0-9]+\.btcentralplus\.com$~", 
 		"REVD2105" => "~^ip([0-9]{1,3}[\.\-]){4}[a-z]{2,}\.[a-z]{2,}\.cox\.net$~", 
 		"REVD2106" => "~^([0-9]{1,3}[\.\-]){4}([a-z]{3}\.)?broadband\.kyivstar\.net$~", 
@@ -3345,6 +3287,14 @@ function spamshield_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL
 		"REVD2108" => "~^abs\-static\-([0-9]{1,3}[\.\-]){4}aircel\.co\.in$~", 
 		"REVD2109" => "~^([0-9]{1,3}[\.\-]){4}res\.bhn\.net$~", 
 		"REVD2110" => "~^([0-9]{1,3}[\.\-]){4}static\-[a-z]+\.vsnl\.net\.in$~", 
+		"REVD2111" => "~^cpc([0-9]{1,3})\-([a-z]{4})([0-9]{1,3})\-([0-9]{1,3})\-([0-9]{1,3})\-cust([0-9]{1,3})\.([0-9]{1,3})\-([0-9]{1,3})\.cable\.virginm\.net$~", 
+		"REVD2112" => "~([0-9]{1,3}[\.\-]){4}lightspeed\.[a-z]{5,6}\.sbcglobal\.net$~", 
+		"REVD2113" => "~^(static\-)?([0-9]{1,3}[\.\-]){1,4}tataidc\.co\.in$~", 
+		"REVD2114" => "~([0-9]{1,3}[\.\-]){4}asianet\.co\.in$~", 
+		"REVD2115" => "~([0-9]{1,3}[\.\-]){4}ras\.beamtele\.(net|in)$~", 
+		"REVD2116" => "~([0-9]{1,3}[\.\-]){4}(bol|mtnl)\.net\.in$~", 
+		"REVD2117" => "~([0-9]{1,3}[\.\-]){4}reverse\.spectranet\.in$~", 
+		"REVD2118" => "~([0-9]{1,3}[\.\-]){4}vasaicable\.co\.in$~", 
 		);
 	
 	if ( $type == 'trackback' ) { $banned_servers = $banned_trackback_servers; }
@@ -5283,8 +5233,12 @@ function spamshield_check_if_spider() {
 
 function spamshield_register_form_addendum() {
 	
-	$spamshield_options = get_option('spamshield_options');
+	$spamshield_options = get_option('spamshield_options');	
 	spamshield_update_session_data($spamshield_options);
+
+	// Check if registration spam shield is disabled - Added in 1.6.9
+	if ( !empty( $spamshield_options['registration_shield_disable'] ) ) { return; }
+	
 	$wpss_key_values 	= spamshield_get_key_values();
 	$wpss_ck_key  		= $wpss_key_values['wpss_ck_key'];
 	$wpss_ck_val 		= $wpss_key_values['wpss_ck_val'];
@@ -5358,6 +5312,10 @@ if ( !function_exists('wp_new_user_notification') ) {
 	// WPSS Added
 
 	function spamshield_modify_signup_notification_admin( $text, $user_id, $user ) {
+	
+		// Check if registration spam shield is disabled - Added in 1.6.9
+		$spamshield_options = get_option('spamshield_options');	
+		if ( !empty( $spamshield_options['registration_shield_disable'] ) ) { return $text; }
 
 		$wpss_display_name 		= $user->display_name;
 		$wpss_user_firstname 	= $user->user_firstname;
@@ -5386,6 +5344,10 @@ if ( !function_exists('wp_new_user_notification') ) {
 		}
 
 	function spamshield_modify_signup_notification_user( $text, $user_id, $user ) {
+	
+		// Check if registration spam shield is disabled - Added in 1.6.9
+		$spamshield_options = get_option('spamshield_options');	
+		if ( !empty( $spamshield_options['registration_shield_disable'] ) ) { return $text; }
 
 		// Add three new fields
 		$wpss_display_name 		= $user->display_name;
@@ -5413,6 +5375,10 @@ if ( !function_exists('wp_new_user_notification') ) {
 function spamshield_check_new_user( $errors, $user_login, $user_email ) {
 	// Error checking for new user registration
 	$spamshield_options 	= get_option('spamshield_options');
+	
+	// Check if registration spam shield is disabled - Added in 1.6.9
+	if ( !empty( $spamshield_options['registration_shield_disable'] ) ) { return $errors; }
+	
 	$reg_filter_status		= $wpss_error_code= '';
 	$reg_jsck_error			= $reg_badrobot_error = false;
 	$ns_val					= 'NS3';
@@ -5570,6 +5536,10 @@ function spamshield_check_new_user( $errors, $user_login, $user_email ) {
 function spamshield_user_register( $user_id ) {
 	if ( spamshield_is_login_page() ) {
 		$spamshield_options 	= get_option('spamshield_options');
+		
+		// Check if registration spam shield is disabled - Added in 1.6.9
+		if ( !empty( $spamshield_options['registration_shield_disable'] ) ) { return; }
+		
 		$new_fields = array(
 			'first_name' 	=> __( 'First Name', WPSS_PLUGIN_NAME ),
 			'last_name' 	=> __( 'Last Name', WPSS_PLUGIN_NAME ),
@@ -5841,6 +5811,8 @@ if (!class_exists('wpSpamShield')) {
 						'enhanced_comment_blacklist'			=> $spamshield_default['enhanced_comment_blacklist'],
 						'allow_proxy_users'						=> $spamshield_default['allow_proxy_users'],
 						'hide_extra_data'						=> $spamshield_default['hide_extra_data'],
+						'registration_shield_disable'			=> $spamshield_default['registration_shield_disable'],
+						'registration_shield_level_1'			=> $spamshield_default['registration_shield_level_1'],
 						'form_include_website' 					=> $spamshield_default['form_include_website'],
 						'form_require_website' 					=> $spamshield_default['form_require_website'],
 						'form_include_phone' 					=> $spamshield_default['form_include_phone'],
@@ -5986,19 +5958,20 @@ if (!class_exists('wpSpamShield')) {
 				}
 
 			?>
-			<div style='width:600px;border-style:solid;border-width:1px;border-color:<?php echo $wp_installation_status_color; ?>;background-color:<?php echo $wp_installation_status_bg_color; ?>;padding:0px 15px 0px 15px;margin-top:15px;'>
+			<div style='width:602px;border-style:solid;border-width:1px;border-color:<?php echo $wp_installation_status_color; ?>;background-color:<?php echo $wp_installation_status_bg_color; ?>;padding:0px 15px 0px 15px;margin-top:15px;'>
 			<p><strong><?php echo "<img src='".WPSS_PLUGIN_IMG_URL."/".$wp_installation_status_image.".png' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' /> " . __( 'Installation Status', WPSS_PLUGIN_NAME ) . ": <span style='color:".$wp_installation_status_color.";'>".$wp_installation_status_msg_main."</span>"; ?></strong></p>
 			</div>
 			
 			<?php
 			if ($spamshield_count) {
-				echo "\n\t\t\t<br />\n\t\t\t<div style='width:600px;border-style:solid;border-width:1px;border-color:#000033;background-color:#CCCCFF;padding:0px 15px 0px 15px;'>\n\t\t\t<p><img src='".WPSS_PLUGIN_IMG_URL."/spam-protection-24.png' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' /> " . sprintf( __( 'WP-SpamShield has blocked <strong> %s </strong> spam!', WPSS_PLUGIN_NAME ), number_format($spamshield_count) ) . "</p>\n\t\t\t";
+				echo "\n\t\t\t<br />\n\t\t\t<div style='width:602px;border-style:solid;border-width:1px;border-color:#000033;background-color:#CCCCFF;padding:0px 15px 0px 15px;'>\n\t\t\t<p><img src='".WPSS_PLUGIN_IMG_URL."/spam-protection-24.png' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' /> " . sprintf( __( 'WP-SpamShield has blocked <strong> %s </strong> spam!', WPSS_PLUGIN_NAME ), number_format($spamshield_count) ) . "</p>\n\t\t\t";
 				if ( $avg_blocked_daily >= 2 ) {
 					echo "<p><img src='".WPSS_PLUGIN_IMG_URL."/spacer.gif' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' /> " . sprintf( __( 'That\'s <strong> %s </strong> spam a day that you don\'t have to worry about.', WPSS_PLUGIN_NAME ), $avg_blocked_daily ) . "</p>\n\t\t\t";
 					}
 				echo "</div>\n\t\t\t";
 				}
 			$spamshield_options = get_option('spamshield_options');
+			if ( !isset( $spamshield_options['registration_shield_disable'] ) ) { $spamshield_options['registration_shield_disable'] = 0; } // Added in 1.6.9
 			spamshield_update_session_data($spamshield_options);
 			
 			if ( empty( $spamshield_options['install_date'] ) ) {
@@ -6030,7 +6003,7 @@ if (!class_exists('wpSpamShield')) {
 					$valid_req_spamshield_options = array();
 					}
 				
-				$wpss_options_general_boolean = array ( 'block_all_trackbacks', 'block_all_pingbacks', 'comment_logging', 'comment_logging_all', 'enhanced_comment_blacklist', 'allow_proxy_users', 'hide_extra_data', 'promote_plugin_link' );
+				$wpss_options_general_boolean = array ( 'block_all_trackbacks', 'block_all_pingbacks', 'comment_logging', 'comment_logging_all', 'enhanced_comment_blacklist', 'allow_proxy_users', 'hide_extra_data', 'registration_shield_disable', 'registration_shield_level_1', 'promote_plugin_link' );
 				
 				$wpss_options_general_boolean_count = count( $wpss_options_general_boolean );
 				$i = 0;
@@ -6060,6 +6033,8 @@ if (!class_exists('wpSpamShield')) {
 						'enhanced_comment_blacklist'			=> $valid_req_spamshield_options['enhanced_comment_blacklist'],
 						'allow_proxy_users'						=> $valid_req_spamshield_options['allow_proxy_users'],
 						'hide_extra_data'						=> $valid_req_spamshield_options['hide_extra_data'],
+						'registration_shield_disable'			=> $valid_req_spamshield_options['registration_shield_disable'],
+						'registration_shield_level_1'			=> $valid_req_spamshield_options['registration_shield_level_1'],
 						'form_include_website' 					=> $spamshield_options['form_include_website'],
 						'form_require_website' 					=> $spamshield_options['form_require_website'],
 						'form_include_phone' 					=> $spamshield_options['form_include_phone'],
@@ -6169,6 +6144,8 @@ if (!class_exists('wpSpamShield')) {
 						'enhanced_comment_blacklist'			=> $spamshield_options['enhanced_comment_blacklist'],
 						'allow_proxy_users'						=> $spamshield_options['allow_proxy_users'],
 						'hide_extra_data'						=> $spamshield_options['hide_extra_data'],
+						'registration_shield_disable'			=> $spamshield_options['registration_shield_disable'],
+						'registration_shield_level_1'			=> $spamshield_options['registration_shield_level_1'],
 						'form_include_website' 					=> $valid_req_spamshield_options['form_include_website'],
 						'form_require_website' 					=> $valid_req_spamshield_options['form_require_website'],
 						'form_include_phone' 					=> $valid_req_spamshield_options['form_include_phone'],
@@ -6240,6 +6217,7 @@ if (!class_exists('wpSpamShield')) {
             <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
             </form>
 			</p>
+			<p><strong><a href="http://www.redsandmarketing.com/wp-spamshield-donate/" target="_blank" title="<?php echo __( 'WP-SpamShield is provided for free.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ); ?>" ><?php _e( 'Donate to WP-SpamShield', WPSS_PLUGIN_NAME ); ?></a></strong></p>
 			</div>
 			<p style="clear:both;">&nbsp;</p>
 			<p><a name="wpss_general_options"><strong><?php _e( 'General Settings', WPSS_PLUGIN_NAME ); ?></strong></a></p>
@@ -6373,6 +6351,11 @@ if (!class_exists('wpSpamShield')) {
 					<label for="hide_extra_data">
 						<input type="checkbox" id="hide_extra_data" name="hide_extra_data" <?php echo ($spamshield_options['hide_extra_data']==true?"checked=\"checked\"":"") ?> value="1" />
 						<strong><?php _e( 'Hide extra technical data in comment notifications.', WPSS_PLUGIN_NAME ); ?></strong><br /><?php _e( 'This data is helpful if you need to submit a spam sample. If you dislike seeing the extra info, you can use this option.', WPSS_PLUGIN_NAME ); ?><br/>&nbsp;</label>					
+					</li>
+					<li>
+					<label for="registration_shield_disable">
+						<input type="checkbox" id="registration_shield_disable" name="registration_shield_disable" <?php echo ($spamshield_options['registration_shield_disable']==true?"checked=\"checked\"":"") ?> value="1" />
+						<strong><?php _e( 'Disable Registration Spam Shield.', WPSS_PLUGIN_NAME ); ?></strong><br /><?php _e( 'This option will disable the anti-spam shield for the WordPress registration form only. While not recommended, this option is available if you need it. Anti-spam will still remain active for comments, pingbacks, trackbacks, and contact forms.', WPSS_PLUGIN_NAME ); ?><br/>&nbsp;</label>					
 					</li>
 					<li>
 					<label for="promote_plugin_link">
@@ -6604,7 +6587,55 @@ if (!class_exists('wpSpamShield')) {
             <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
             </form>
 			</p>
+  			<p><strong><a href="http://www.redsandmarketing.com/wp-spamshield-donate/" target="_blank" ><?php _e( 'Donate to WP-SpamShield', WPSS_PLUGIN_NAME ); ?></a></strong><br />
+			<?php echo __( 'WP-SpamShield is provided for free.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ); ?></p>
 			<p>&nbsp;</p>
+			
+			<?php
+			// Recommended Partners - BEGIN - Added in 1.6.9
+			if ( spamshield_is_lang_en_us() ) {
+			?>
+			
+			<div style='width:647px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;'><p><strong>Recommended Partners</strong></p>
+			<p>Each of these products or services are ones that we highly recommend, based on our experience and the experience of our clients. We do receive a commission if you purchase one of these, but these are all products and services we were already recommending because we believe in them. By purchasing from these providers, you get quality and you help support the further development of WP-SpamShield.</p></div>
+				
+
+			<div style="width:300px;height:300px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;clear:left;">
+			<p><strong><a href="http://bit.ly/RSM_Hostgator" target="_blank" >Hostgator Website Hosting</a></strong></p>
+			<p><strong>Affordable, high quality web hosting. Great for WordPress and a variety of web applications.</strong></p>
+			<p>Hostgator has variety of affordable plans, reliable service, and customer support. Even on shared hosting, you get fast servers that are well-configured. Hostgator provides great balance of value and quality, which is why we recommend them.</p>
+			<p><a href="http://bit.ly/RSM_Hostgator"target="_blank" >Click here to find out more. >></a></p>
+			</div>
+			
+			<div style="width:300px;height:300px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;">
+			<p><strong><a href="http://bit.ly/RSM_Level10" target="_blank" >Level10 Domains</a></strong></p>
+			<p><strong>Inexpensive web domains with an easy to use admin dashboard.</strong></p>
+			<p>Level10 Domains offers some of the best prices you'll find on web domain purchasing. The dashboard provides an easy way to manage your domains.</p>
+			<p><a href="http://bit.ly/RSM_Level10" target="_blank" >Click here to find out more. >></a></p>
+			</div>
+		
+			<div style="width:300px;height:300px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;clear:left;">
+			<p><strong><a href="http://bit.ly/RSM_Genesis" target="_blank" >Genesis WordPress Framework</a></strong></p>
+			<p><strong>Other themes and frameworks have nothing on Genesis. Optimized for site speed and SEO.</strong></p>
+
+			<p>Simply put, the Genesis framework is one of the best ways to design and build a WordPress site. Built-in SEO and optimized for speed. Create just about any kind of design with child themes.</p>
+			<p><a href="http://bit.ly/RSM_Genesis" target="_blank" >Click here to find out more. >></a></p>
+			</div>
+			
+			<div style="width:300px;height:300px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;">
+			<p><strong><a href="http://bit.ly/RSM_AIOSEOP" target="_blank" >All in One SEO Pack Pro</a></strong></p>
+			<p><strong>The best way to manage the code-related SEO for your WordPress site.</strong></p>
+			<p>Save time and effort optimizing the code of your WordPress site with All in One SEO Pack. One of the top rated, and most downloaded plugins on WordPress.org, this time-saving plugin is incredibly valuable. The pro version provides powerful features not available in the free version.</p>
+			<p><a href="http://bit.ly/RSM_AIOSEOP" target="_blank" >Click here to find out more. >></a></p>
+			</div>
+			
+			<p style="clear:both;">&nbsp;</p>
+			
+			<?php
+				}
+			// Recommended Partners - END - Added in 1.6.9
+			?>
+			
 			<p><em><?php 
 			echo 'Version '.WPSS_VERSION; 
 			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) === 0 ) {

@@ -11,7 +11,7 @@ A powerful, user-friendly, all-in-one anti-spam plugin that eliminates comment s
 
 == Description ==
 
-**An extremely powerful and user friendly WordPress anti-spam plugin that stops blog comment spam cold, including trackback and pingback spam.** See what it's like to run a WordPress site without spam! Includes spam-blocking contact form feature, and protection from user registration spam as well. WP-SpamShield is an all-in-one spam solution for WordPress.
+**An extremely powerful and user friendly WordPress anti-spam plugin that stops blog spam cold, including comment spam, trackback and pingback spam, contact form spam, and registration spam.** See what it's like to run a WordPress site without spam! Includes spam-blocking contact form feature. **WP-SpamShield is an all-in-one spam solution for WordPress.**
 
 = A Powerful Weapon Against: Comment Spam, Trackback Spam, Contact Form Spam, and Registration Spam - Without CAPTCHAS =
 Comment spam has been a huge problem for bloggers since the inception of blogs, and it just doesn't seem to go away. The worst kind, and most prolific, is automated spam that comes from bots. Well, finally there is an anti-spam plugin for WordPress that provides an effective solution, without CAPTCHA's, challenge questions, or other inconvenience to site visitors. **WP-SpamShield eliminates comment spam, trackback spam, contact form spam, and user registration spam.**
@@ -51,7 +51,7 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 = How It Works =
 Most of the spam hitting your blog originates from bots. Few bots can process JavaScript (JS). Few bots can process cookies. Fewer still, can handle both, especially if you use some clever combinations. In a nutshell, this plugin uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 99.99%+ of automated spam from ever getting to your site. Almost 100% of web site visitors will have these turned on by default, so this type of solution works silently in the background, with no inconveniences. There may be a few users (less than 2%) that have JavaScript and/or cookies turned off by default, but they will be prompted to simply turn those back on to post their comment. Overall, the few might be inconvenienced because they have JS and cookies turned off will be far fewer than the 100% who would be annoyed by CAPTCHA's, challenge questions, and other validation methods.
 
-Some would argue that using JS and cookies is too simplistic an approach. Developers commonly prefer using some type of community-based AI to fight bots by trying to figure out if a comment is spam. While that isn't a bad idea, when used alone this method falls short - many spam comments get through that could easily have been stopped, and there are many false positives where non-spam comments get flagged as spam. Others may argue that some spammers have programmed their bots to read JavaScript, etc. In reality, the percentage of bots with these capabilities is still extremely low - less than 1%, and even those that can read, can't fully process it. It's simply a numbers game. Statistics tell us that an effective solution would involve using a technology that few bots can handle, therefore eliminating their ability to spam your site. The important thing in fighting spam is that we create a solution that can reduce spam noticeably and improve the user experience, and a 99.99%+ reduction in spam would definitely make a difference for most bloggers and site visitors.
+Some would argue that using JS and cookies is too simplistic an approach. Some developers prefer using some type of cloud-based AI to fight bots by trying to figure out if a comment is spam. While that isn't a bad idea, when used alone this method falls short - many spam comments get through that could easily have been stopped, and there are many false positives where non-spam comments get flagged as spam. Others may argue that some spammers have programmed their bots to read JavaScript, etc. In reality, the percentage of bots with these capabilities is still extremely low - less than 1%, and even those that can read, can't fully process it. It's simply a numbers game. Statistics tell us that an effective solution would involve using a technology that few bots can handle, therefore eliminating their ability to spam your site. The important thing in fighting spam is that we create a solution that can reduce spam noticeably and improve the user experience, and a 99.99%+ reduction in spam would definitely make a difference for most bloggers and site visitors.
 
 It's important to know that the particular JS and cookies solution used in the WP-SpamShield anti-spam plugin has evolved quite a bit, and is no longer simple at all. There are two layers of protection, a JavaScript/Cookies Layer, and an Algorithmic Layer. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop 95% of the spam that the JavaScript Layer blocks. (I'm working to make this 100% for fully redundant protection.) This JavaScript Layer utilizes randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer is what eliminates trackback/pingback spam, and much human spam as well. And, it does all that without hindering legitimate comments and trackbacks.
 
@@ -181,10 +181,18 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.6.9 =
+*released 01/19/15*
+
+* Added option to disable registration anti-spam protection.
+* Made various code improvements.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.6.8 =
 *released 01/16/15*
 
-* Updated the spam filters. 
+* Updated the spam filters.
 
 = 1.6.7 =
 *released 01/13/15*
@@ -623,8 +631,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.6.8 =
-Updated the spam filters. Please see Changelog for details.
+= 1.6.9 =
+Added option to disable registration anti-spam protection, made various code improvements, and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
