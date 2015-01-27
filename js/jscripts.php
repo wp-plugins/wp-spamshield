@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.7
+Version: 1.7.1
 */
 
 // Security Sanitization - BEGIN
@@ -63,10 +63,13 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	$key_ip_hist 			= 'wpss_jscripts_ip_history_'.RSMP_HASH;
 	$key_init_ip			= 'wpss_user_ip_init_'.RSMP_HASH;
 	$key_init_ua			= 'wpss_user_agent_init_'.RSMP_HASH;
+	$key_init_mt			= 'wpss_time_init_'.RSMP_HASH;
 	$current_ip 			= $_SERVER['REMOTE_ADDR'];
 	$current_ua 			= spamshield_get_user_agent_js();
+	$current_mt 			= spamshield_microtime_js();
 	if ( empty( $_SESSION[$key_init_ip] ) ) { $_SESSION[$key_init_ip] = $current_ip; }
 	if ( empty( $_SESSION[$key_init_ua] ) ) { $_SESSION[$key_init_ua] = $current_ua; }
+	if ( empty( $_SESSION[$key_init_mt] ) ) { $_SESSION[$key_init_mt] = $current_mt; }
 	// IP History - Lets see if they change IP's
 	if ( empty( $_SESSION[$key_ip_hist] ) ) { $_SESSION[$key_ip_hist] = array(); $_SESSION[$key_ip_hist][] = $current_ip; }
 	if ( $current_ip != $_SESSION[$key_init_ip] ) { $_SESSION[$key_ip_hist][] = $current_ip; }

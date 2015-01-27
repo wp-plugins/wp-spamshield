@@ -181,6 +181,14 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.7.1 =
+*released 01/27/15*
+
+* Made various code improvements.
+* Updated the translation files.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.7 =
 *released 01/22/15*
 
@@ -636,8 +644,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.7 =
-Updated the spam filters. Please see Changelog for details.
+= 1.7.1 =
+Made various code improvements, updated the translation files, and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
