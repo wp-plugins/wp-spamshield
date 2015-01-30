@@ -181,6 +181,14 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.7.2 =
+*released 01/30/15*
+
+* Added compatibility for 2 additional caching plugins: Cachify and Gator Cache. As of this release, the following 12 cache plugins are supported (in order of popularity): WP Super Cache, W3 Total Cache, Quick Cache, Hyper Cache, WP Fastest Cache, DB Cache Reloaded Fix, Cachify, DB Cache Reloaded, Hyper Cache Extended, WP Fast Cache, Lite Cache, and Gator Cache.
+* Updated the Dutch (nl_NL) and  German (de_DE) translations.
+* Made various minor code improvements.
+* Updated the spam filters.
+
 = 1.7.1 =
 *released 01/27/15*
 
@@ -624,7 +632,7 @@ If you have any further questions, please submit them on the [support page](http
 = 1.0.1 =
 *released 03/26/14*
 
-* Improved compatibility with popular caching plugins. This version adds detection to see if caching is active or not, and if specific cache plugins are active, and makes adjustments accordingly.
+* Improved compatibility with popular caching plugins. This version adds detection to see if caching is active or not, and if specific cache plugins are active, and makes adjustments accordingly. As of this release, the following 10 cache plugins are supported (in order of popularity): WP Super Cache, W3 Total Cache, Quick Cache, Hyper Cache, WP Fastest Cache, DB Cache Reloaded Fix, DB Cache Reloaded, Hyper Cache Extended, WP Fast Cache,and Lite Cache.
 
 = 1.0 =
 *released 03/10/14* - Over 20 improvements from its predecessor WP-SpamFree...including:
@@ -644,8 +652,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.7.1 =
-Made various code improvements, updated the translation files, and improved/updated the spam filters. Please see Changelog for details.
+= 1.7.2 =
+Added compatibility for 2 additional caching plugins, updated Dutch and German translations, made various minor code improvements, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

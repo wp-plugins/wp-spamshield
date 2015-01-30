@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.7.1
+Version: 1.7.2
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.7.1' );
+define( 'WPSS_VERSION', '1.7.2' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.7' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -92,6 +92,7 @@ if ( !defined( 'RSMP_DEBUG_SERVER_NAME' ) ) 	{ define( 'RSMP_DEBUG_SERVER_NAME',
 if ( !defined( 'RSMP_DEBUG_SERVER_NAME_REV' ) ) { define( 'RSMP_DEBUG_SERVER_NAME_REV', strrev( RSMP_DEBUG_SERVER_NAME ) ); }
 if ( !defined( 'WPSS_HOME_LINK' ) ) 			{ define( 'WPSS_HOME_LINK', 'http://www.redsandmarketing.com/plugins/wp-spamshield/' ); }
 if ( !defined( 'WPSS_WP_LINK' ) ) 				{ define( 'WPSS_WP_LINK', 'http://wordpress.org/extend/plugins/wp-spamshield/' ); }
+if ( !defined( 'WPSS_WP_RATING_LINK' ) ) 		{ define( 'WPSS_WP_RATING_LINK', 'https://wordpress.org/support/view/plugin-reviews/wp-spamshield?rate=5#postform' ); }
 if ( !defined( 'RSMP_SERVER_SOFTWARE' ) ) 		{ define( 'RSMP_SERVER_SOFTWARE', $_SERVER['SERVER_SOFTWARE'] ); }
 if ( !defined( 'RSMP_PHP_UNAME' ) ) 			{ define( 'RSMP_PHP_UNAME', @php_uname() ); }
 if ( !defined( 'RSMP_PHP_VERSION' ) ) 			{ define( 'RSMP_PHP_VERSION', phpversion() ); }
@@ -115,18 +116,20 @@ if ( !defined( 'RSMP_USER_AGENT' ) ) {
 	$wpss_user_agent = 'WP-SpamShield/'.WPSS_VERSION.' (WordPress/'.RSMP_WP_VERSION.') PHP/'.RSMP_PHP_VERSION.' ('.RSMP_SERVER_SOFTWARE.')';
 	define( 'RSMP_USER_AGENT', $wpss_user_agent );
 	}
-// INCLUDE POPULAR CACHE PLUGINS HERE
+// INCLUDE POPULAR CACHE PLUGINS HERE (12)
 $popular_cache_plugins_default = array (
-	'w3-total-cache',
 	'wp-super-cache',
-	'db-cache-reloaded',
-	'db-cache-reloaded-fix',
+	'w3-total-cache',
+	'quick-cache',
 	'hyper-cache',
+	'wp-fastest-cache',
+	'db-cache-reloaded-fix',
+	'cachify',
+	'db-cache-reloaded',
 	'hyper-cache-extended',
 	'wp-fast-cache',
-	'wp-fastest-cache',
-	'quick-cache',
 	'lite-cache',
+	'gator-cache',
 	);
 if ( !defined( 'WPSS_POPULAR_CACHE_PLUGINS' ) ) {
 	// popular cache plugins - convert from array to constant
@@ -2160,7 +2163,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 			if ( !empty( $form_include_company ) && !empty( $wpss_contact_company_lc ) && preg_match( "~^(se(o|m)|(search\s*engine|internet)\s*(optimiz(ation|ing|er)|market(ing|er))|(se(o|m)|((search\s*engine|internet)\s*)?(optimiz(ation|ing|er)|market(ing|er))|web\s*(design(er|ing)?|develop(ment|er|ing))|(content\s*|copy\s*)?writ(er?|ing))s?\s*(company|firm|services?|freelanc(er?|ing))|(company|firm|services?|freelanc(er?|ing))\s*(se(o|m)|((search\s*engine|internet)\s*)?(optimiz(ation|ing|er)|market(ing|er))|web\s*(design(er|ing)?|develop(ment|er|ing))|(content\s*|copy\s*)?writ(er?|ing))s?)$~", $wpss_contact_company_lc ) ) {
 				$generic_spam_company = 1;
 				}
-			if ( preg_match( "~\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.com$~", $wpss_contact_email_lc ) ) {
+			if ( preg_match( "~\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com|(com?\.)?[a-z]{2})$~", $wpss_contact_email_lc ) ) {
 				$free_email_address = 1;
 				}
 
@@ -2821,8 +2824,8 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 	
 	$blacklisted_email_strings_rgx = array(
 		// Custom regex strings that occur in the email address
-		"spinfilel?namesdat", "\.((marketing|business|web)manager|seo(services?)?)[0-9]*\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com|(co\.)?[a-z]{2})", "^((marketing|business|web)manager|seo(services?)?)\..*\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com|(co\.)?[a-z]{2})", 
-		"\.((marketing|business|web)manager|seo(services?)?).*\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com|(co\.)?[a-z]{2})", 
+		"spinfilel?namesdat", "\.((marketing|business|web)manager|seo(services?)?)[0-9]*\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com|(com?\.)?[a-z]{2})", "^((marketing|business|web)manager|seo(services?)?)\..*\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com?|(co\.)?[a-z]{2})", 
+		"\.((marketing|business|web)manager|seo(services?)?).*\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com|(com?\.)?[a-z]{2})", 
 		);
 	if ( !empty( $get_str_rgx_list_arr ) ) { return $blacklisted_email_strings_rgx; }
 	
@@ -5694,9 +5697,9 @@ function spamshield_filter_plugin_meta( $links, $file ) {
 	if ( $file == WPSS_PLUGIN_BASENAME ){
 		// after other links
 		//$links[] = '<a href="options-general.php?page='.WPSS_PLUGIN_NAME.'">' . __('Settings') . '</a>';
-		$links[] = '<a href="http://www.redsandmarketing.com/plugins/wp-spamshield/">' . spamshield_doc_txt() . '</a>';
-		$links[] = '<a href="http://www.redsandmarketing.com/plugins/wp-spamshield/support/">' . __( 'Support', WPSS_PLUGIN_NAME ) . '</a>';
-		$links[] = '<a href="http://bit.ly/wp-spamshield-donate">' . __( 'Donate', WPSS_PLUGIN_NAME ) . '</a>';
+		$links[] = '<a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" target="_blank" rel="external" >' . spamshield_doc_txt() . '</a>';
+		$links[] = '<a href="http://www.redsandmarketing.com/plugins/wp-spamshield/support/" target="_blank" rel="external" >' . __( 'Support', WPSS_PLUGIN_NAME ) . '</a>';
+		$links[] = '<a href="http://bit.ly/wp-spamshield-donate" target="_blank" rel="external" >' . __( 'Donate', WPSS_PLUGIN_NAME ) . '</a>';
 		}
 	return $links;
 	}
@@ -6222,12 +6225,12 @@ if (!class_exists('wpSpamShield')) {
 			<ol style="list-style-type:decimal;padding-left:30px;">
 				<li><a href="#wpss_general_options"><?php _e( 'General Settings', WPSS_PLUGIN_NAME ); ?></a></li>
 				<li><a href="#wpss_contact_form_options"><?php _e( 'Contact Form Settings', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_installation_instructions"><?php _e( 'Installation Instructions', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_displaying_stats"><?php _e( 'Displaying Spam Stats on Your Blog', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_adding_contact_form"><?php _e( 'Adding a Contact Form to Your Blog', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_configuration"><?php _e( 'Configuration Information', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_known_conflicts"><?php _e( 'Known Plugin Conflicts', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_troubleshooting"><?php _e( 'Troubleshooting Guide / Support', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_installation_instructions" target="_blank" rel="external" ><?php _e( 'Installation Instructions', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_displaying_stats" target="_blank" rel="external" ><?php _e( 'Displaying Spam Stats on Your Blog', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_adding_contact_form" target="_blank" rel="external" ><?php _e( 'Adding a Contact Form to Your Blog', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_configuration" target="_blank" rel="external" ><?php _e( 'Configuration Information', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_known_conflicts" target="_blank" rel="external" ><?php _e( 'Known Plugin Conflicts', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_troubleshooting" target="_blank" rel="external" ><?php _e( 'Troubleshooting Guide / Support', WPSS_PLUGIN_NAME ); ?></a></li>
 				<li><a href="#wpss_let_others_know"><?php _e( 'Let Others Know About WP-SpamShield', WPSS_PLUGIN_NAME ); ?></a></li>
 				<li><a href="#wpss_download_plugin_documentation"><?php echo spamshield_doc_txt(); ?></a></li>
 			</ol>
@@ -6235,7 +6238,7 @@ if (!class_exists('wpSpamShield')) {
 			<div style="width:250px;height:<?php echo $wpss_info_box_height; ?>px;border-style:solid;border-width:1px;border-color:#000033;background-color:#CCCCFF;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;">
 			<p>
 			<?php if ( $spamshield_count > 100 ) { ?>
-			<strong><?php _e( 'Happy with WP-SpamShield?', WPSS_PLUGIN_NAME ); ?></strong><br /> <a href="<?php echo WPSS_WP_LINK; ?>" target="_blank" rel="external" ><?php _e( 'Let others know by giving it a good rating on WordPress.org!', WPSS_PLUGIN_NAME ); ?></a><br />
+			<strong><?php _e( 'Happy with WP-SpamShield?', WPSS_PLUGIN_NAME ); ?></strong><br /> <a href="<?php echo WPSS_WP_RATING_LINK; ?>" target="_blank" rel="external" ><?php _e( 'Let others know by giving it a good rating on WordPress.org!', WPSS_PLUGIN_NAME ); ?></a><br />
 			<img src='<?php echo WPSS_PLUGIN_IMG_URL; ?>/5-stars-rating.gif' alt='' width='99' height='19' style='border-style:none;padding-top:3px;padding-bottom:0px;' /><br /><br />
 			<?php } ?>
 			
@@ -6253,7 +6256,7 @@ if (!class_exists('wpSpamShield')) {
 			<?php 
 			// English only right now, until we get translations
 			if ( spamshield_is_lang_en_us() ) {
-				echo '<p><strong><a href="http://bit.ly/wp-spamshield-donate" target="_blank" title="' . __( 'WP-SpamShield is provided for free.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ) . '" >' . __( 'Donate to WP-SpamShield', WPSS_PLUGIN_NAME ) . '</a></strong></p>';
+				echo '<p><strong><a href="http://bit.ly/wp-spamshield-donate" title="' . __( 'WP-SpamShield is provided for free.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ) . '" target="_blank" rel="external" >' . __( 'Donate to WP-SpamShield', WPSS_PLUGIN_NAME ) . '</a></strong></p>';
 				}
 			?>
 			</div>
@@ -6599,13 +6602,13 @@ if (!class_exists('wpSpamShield')) {
   			<p><a name="wpss_let_others_know"><strong><?php _e( 'Let Others Know About WP-SpamShield', WPSS_PLUGIN_NAME ); ?></strong></a></p>
 			<p><?php _e( '<strong>How does it feel to blog without being bombarded by automated comment spam?</strong> If you\'re happy with WP-SpamShield, there\'s a few things you can do to let others know:', WPSS_PLUGIN_NAME ); ?></p>
 			<ul style="list-style-type:disc;padding-left:30px;">
-				<li><a href="http://www.redsandmarketing.com/blog/wp-spamshield-wordpress-plugin-released/#comments" target="_blank" ><?php _e( 'Leave a Comment' ); ?></a></li>
-				<li><a href="<?php echo WPSS_WP_LINK; ?>" target="_blank" ><?php _e( 'Give WP-SpamShield a good rating on WordPress.org.', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>end-blog-spam/" target="_blank" ><?php _e( 'Place a graphic link on your site.', WPSS_PLUGIN_NAME ); ?></a> <?php _e( 'Let others know how they can help end blog spam.', WPSS_PLUGIN_NAME ); ?> ( &lt/BLOGSPAM&gt; )</li>
+				<li><a href="http://www.redsandmarketing.com/blog/wp-spamshield-wordpress-plugin-released/#comments" target="_blank" rel="external" ><?php _e( 'Leave a Comment' ); ?></a></li>
+				<li><a href="<?php echo WPSS_WP_RATING_LINK; ?>" target="_blank" rel="external" ><?php _e( 'Give WP-SpamShield a good rating on WordPress.org.', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_LINK; ?>end-blog-spam/" target="_blank" rel="external" ><?php _e( 'Place a graphic link on your site.', WPSS_PLUGIN_NAME ); ?></a> <?php _e( 'Let others know how they can help end blog spam.', WPSS_PLUGIN_NAME ); ?> ( &lt/BLOGSPAM&gt; )</li>
 			</ul>
 			<p><div style="float:right;font-size:12px;">[ <a href="#wpss_top"><?php _e( 'BACK TO TOP', WPSS_PLUGIN_NAME ); ?></a> ]</div></p>
 			<p>&nbsp;</p>
-			<p><a href="<?php echo WPSS_HOME_LINK; ?>" target="_blank" rel="external" style="border-style:none;text-decoration:none;" ><img src="<?php echo WPSS_PLUGIN_IMG_URL; ?>/end-blog-spam-button-01-black.png" alt="End Blog Spam! WP-SpamShield Comment Spam Protection for WordPress" width="140" height="66" style="border-style:none;text-decoration:none;" /></a></p>
+			<p><a href="<?php echo WPSS_HOME_LINK; ?>" style="border-style:none;text-decoration:none;" target="_blank" rel="external" ><img src="<?php echo WPSS_PLUGIN_IMG_URL; ?>/end-blog-spam-button-01-black.png" alt="End Blog Spam! WP-SpamShield Comment Spam Protection for WordPress" width="140" height="66" style="border-style:none;text-decoration:none;" /></a></p>
 			<p><a name="wpss_download_plugin_documentation"><strong><?php echo spamshield_doc_txt(); ?></strong></a><br />
 			<?php echo __( 'Plugin Homepage', WPSS_PLUGIN_NAME ) . ' / ' . spamshield_doc_txt(); ?>: <a href="<?php echo WPSS_HOME_LINK; ?>" target="_blank" rel="external" >WP-SpamShield</a><br />
 			<?php _e( 'Leave a Comment' ); ?>: <a href="http://www.redsandmarketing.com/blog/wp-spamshield-wordpress-plugin-released/" target="_blank" rel="external" ><?php _e( 'WP-SpamShield Release Announcement Blog Post', WPSS_PLUGIN_NAME ); ?></a><br />
@@ -6628,7 +6631,7 @@ if (!class_exists('wpSpamShield')) {
 			<?php 
 			// English only right now, until we get translations
 			if ( spamshield_is_lang_en_us() ) {
-				echo '<p><strong><a href="http://bit.ly/wp-spamshield-donate" target="_blank" >' . __( 'Donate to WP-SpamShield', WPSS_PLUGIN_NAME ) . '</a></strong><br />' . __( 'WP-SpamShield is provided for free.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ) . '</p>';
+				echo '<p><strong><a href="http://bit.ly/wp-spamshield-donate" target="_blank" rel="external" >' . __( 'Donate to WP-SpamShield', WPSS_PLUGIN_NAME ) . '</a></strong><br />' . __( 'WP-SpamShield is provided for free.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ) . '</p>';
 				}
 			?>
 			
@@ -6644,32 +6647,32 @@ if (!class_exists('wpSpamShield')) {
 				
 
 			<div style="width:300px;height:300px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;clear:left;">
-			<p><strong><a href="http://bit.ly/RSM_Hostgator" target="_blank" >Hostgator Website Hosting</a></strong></p>
+			<p><strong><a href="http://bit.ly/RSM_Hostgator" target="_blank" rel="external" >Hostgator Website Hosting</a></strong></p>
 			<p><strong>Affordable, high quality web hosting. Great for WordPress and a variety of web applications.</strong></p>
 			<p>Hostgator has variety of affordable plans, reliable service, and customer support. Even on shared hosting, you get fast servers that are well-configured. Hostgator provides great balance of value and quality, which is why we recommend them.</p>
-			<p><a href="http://bit.ly/RSM_Hostgator"target="_blank" >Click here to find out more. >></a></p>
+			<p><a href="http://bit.ly/RSM_Hostgator"target="_blank" rel="external" >Click here to find out more. >></a></p>
 			</div>
 			
 			<div style="width:300px;height:300px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;">
-			<p><strong><a href="http://bit.ly/RSM_Level10" target="_blank" >Level10 Domains</a></strong></p>
+			<p><strong><a href="http://bit.ly/RSM_Level10" target="_blank" rel="external" >Level10 Domains</a></strong></p>
 			<p><strong>Inexpensive web domains with an easy to use admin dashboard.</strong></p>
 			<p>Level10 Domains offers some of the best prices you'll find on web domain purchasing. The dashboard provides an easy way to manage your domains.</p>
-			<p><a href="http://bit.ly/RSM_Level10" target="_blank" >Click here to find out more. >></a></p>
+			<p><a href="http://bit.ly/RSM_Level10" target="_blank" rel="external" >Click here to find out more. >></a></p>
 			</div>
 		
 			<div style="width:300px;height:300px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;clear:left;">
-			<p><strong><a href="http://bit.ly/RSM_Genesis" target="_blank" >Genesis WordPress Framework</a></strong></p>
+			<p><strong><a href="http://bit.ly/RSM_Genesis" target="_blank" rel="external" >Genesis WordPress Framework</a></strong></p>
 			<p><strong>Other themes and frameworks have nothing on Genesis. Optimized for site speed and SEO.</strong></p>
 
 			<p>Simply put, the Genesis framework is one of the best ways to design and build a WordPress site. Built-in SEO and optimized for speed. Create just about any kind of design with child themes.</p>
-			<p><a href="http://bit.ly/RSM_Genesis" target="_blank" >Click here to find out more. >></a></p>
+			<p><a href="http://bit.ly/RSM_Genesis" target="_blank" rel="external" >Click here to find out more. >></a></p>
 			</div>
 			
 			<div style="width:300px;height:300px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;">
-			<p><strong><a href="http://bit.ly/RSM_AIOSEOP" target="_blank" >All in One SEO Pack Pro</a></strong></p>
+			<p><strong><a href="http://bit.ly/RSM_AIOSEOP" target="_blank" rel="external" >All in One SEO Pack Pro</a></strong></p>
 			<p><strong>The best way to manage the code-related SEO for your WordPress site.</strong></p>
 			<p>Save time and effort optimizing the code of your WordPress site with All in One SEO Pack. One of the top rated, and most downloaded plugins on WordPress.org, this time-saving plugin is incredibly valuable. The pro version provides powerful features not available in the free version.</p>
-			<p><a href="http://bit.ly/RSM_AIOSEOP" target="_blank" >Click here to find out more. >></a></p>
+			<p><a href="http://bit.ly/RSM_AIOSEOP" target="_blank" rel="external" >Click here to find out more. >></a></p>
 			</div>
 			
 			<p style="clear:both;">&nbsp;</p>
