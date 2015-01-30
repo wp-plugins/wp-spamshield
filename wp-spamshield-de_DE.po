@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2015-01-23 09:13-0800\n"
+"PO-Revision-Date: 2015-01-28 14:45-0800\n"
 "Last-Translator: Christoph Krzikalla <wordpress@krzikalla.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -49,8 +49,8 @@ msgstr ""
 msgid ""
 "Click here for instructions on how to enable JavaScript in your browser."
 msgstr ""
-"Klicke hier für eine Anleitung, wie du JavaScript in deinem Browser "
-"aktivierst."
+"Klicke hier für eine Anleitung die dir zeigt, wie du JavaScript in deinem "
+"Browser aktivierst."
 
 #: wp-spamshield.php:1815 wp-spamshield.php:6775 wp-spamshield.php:6781
 msgid "Contact Form"
@@ -101,7 +101,7 @@ msgstr "Bitte trage eine gültige Telefonnummer ein."
 
 #: wp-spamshield.php:2254
 msgid "Please enter a valid company."
-msgstr ""
+msgstr "Bitte gebe einen gültigen Firmennamen ein."
 
 #: wp-spamshield.php:2261
 msgid "Message too short. Please enter a complete message."
@@ -113,7 +113,7 @@ msgid ""
 "offshoring spam, and automated contact form submissions will be "
 "automatically deleted, and are not an acceptable use of this contact form."
 msgstr ""
-"Bitte beachten Sie, dass Link-Anfragen, Link-Tausch-Anfragen, SEO-Outourcing "
+"Bitte beachte, dass Link-Anfragen, Link-Tausch-Anfragen, SEO-Outourcing "
 "Anfragen und automatisierte Formularanfragen automatisch gelöscht werden und "
 "von diesem Kontaktformular nicht akzeptiert werden."
 
@@ -130,8 +130,8 @@ msgid ""
 "If you feel this is in error, please contact the site owner by some other "
 "method."
 msgstr ""
-"Wenn du meinst, dass dies ein Fehler ist, kontaktiere bitte den Inhaber der "
-"Website auf eine andere Weise."
+"Wenn du anderer Ansicht bist, kontaktiere bitte den Inhaber der Website auf "
+"eine andere Weise."
 
 #: wp-spamshield.php:2303 wp-spamshield.php:2646
 msgid ""
@@ -183,11 +183,13 @@ msgstr "IP-Address Lookup"
 
 #: wp-spamshield.php:2370 wp-spamshield.php:5045
 msgid "Additional Technical Data Added by WP-SpamShield"
-msgstr "Zusätzliche Technische Informationen durch WP-SpamShield hinzugefügt"
+msgstr ""
+"Folgende zusätzliche technische Informationen wurden durch WP-SpamShield "
+"hinzugefügt"
 
 #: wp-spamshield.php:2435
 msgid "Currently you have JavaScript disabled."
-msgstr "Derzeit haben Sie JavaScript deaktiviert."
+msgstr "Derzeit hast du JavaScript deaktiviert."
 
 #: wp-spamshield.php:2454
 msgid "Please make sure JavaScript and Cookies are enabled in your browser."
@@ -395,7 +397,7 @@ msgid ""
 "JavaScript and Cookies are required in order to register. Please be sure "
 "JavaScript and Cookies are enabled in your browser, and reload the page."
 msgstr ""
-"Um sich zu registrieren sind JavaScript und Cookies erforderlich. Bitte "
+"Um dich zu registrieren sind JavaScript und Cookies erforderlich. Bitte "
 "beachte, dass JavaScript und Cookies in deinem Browser aktiviert sind, und "
 "lade die Seite neu."
 
@@ -436,7 +438,7 @@ msgstr ""
 
 #: wp-spamshield.php:5939
 msgid "Installed Correctly"
-msgstr "Korrekt Installiert"
+msgstr "Korrekt installiert"
 
 #: wp-spamshield.php:5947
 msgid "Not Installed Correctly"
@@ -465,14 +467,14 @@ msgstr "Installationsstatus"
 #: wp-spamshield.php:5977
 #, php-format
 msgid "WP-SpamShield has blocked <strong> %s </strong> spam!"
-msgstr "WP-SpamShield hat <strong> %s </strong> Spam blockiert!"
+msgstr "WP-SpamShield hat <strong> %s </strong> Spamversuche blockiert!"
 
 #: wp-spamshield.php:5979
 #, php-format
 msgid ""
 "That's <strong> %s </strong> spam a day that you don't have to worry about."
 msgstr ""
-"Das sind <strong> %s </strong> Spam pro Tag, um die du dich nicht kümmern "
+"Das sind <strong> %s </strong> Spams pro Tag, um die du dich nicht kümmern "
 "musst."
 
 #: wp-spamshield.php:6198
@@ -547,16 +549,18 @@ msgstr "Lass es andere wissen"
 
 #: wp-spamshield.php:6230 wp-spamshield.php:6601
 msgid "WP-SpamShield is provided for free."
-msgstr ""
+msgstr "WP-Spamshield ist kostenlos."
 
 #: wp-spamshield.php:6230 wp-spamshield.php:6601
 msgid ""
 "If you like the plugin, consider a donation to help further its development."
 msgstr ""
+"Wenn du dieses Plugin gut findest, dann würden wir uns über eine Spende "
+"freuen um es weiter zu entwickeln."
 
 #: wp-spamshield.php:6230 wp-spamshield.php:6600
 msgid "Donate to WP-SpamShield"
-msgstr "Spenden Sie für WP-SpamShield"
+msgstr "Spende für WP-SpamShield"
 
 #: wp-spamshield.php:6244
 msgid "Blocked Comment Logging Mode"
@@ -592,6 +596,12 @@ msgid ""
 "and all files within it to \"%3$s\".</strong><br/>If that doesn't work, then "
 "please read the <a href=\"%4$s\" %5$s>FAQ</a> for this topic."
 msgstr ""
+"Die Logdatei ist wahrscheinlich nicht beschreibbar. Möglicherweise musst du "
+"die Zugriffsberechtigungen manuell anpassen.</br>Setze die "
+"Zugriffsberechtigungen für das Verzeichnis \"%1$s\" auf  \"%2$s\" und alle "
+"Dateien darin auf  \"%3$s\".</strong></br>Sollte das nicht zum Erfolg "
+"führen, dann schaue dir bitte die <a href=\"%4$s\" %5$s>FAQ</a> zu diesem "
+"Thema an."
 
 #: wp-spamshield.php:6316
 msgid "Download Comment Log File"
@@ -694,7 +704,9 @@ msgstr ""
 
 #: wp-spamshield.php:6358
 msgid "Allow users behind proxy servers to comment?"
-msgstr "Erlaube Benutzern hinter Proxy-Servern zu kommentieren."
+msgstr ""
+"Erlaube Benutzern Kommentare zu hinterlassen, auch wenn sie sich hinter "
+"Proxy Servern befinden."
 
 #: wp-spamshield.php:6358
 msgid ""
@@ -720,7 +732,7 @@ msgstr ""
 
 #: wp-spamshield.php:6368
 msgid "Disable Registration Spam Shield."
-msgstr ""
+msgstr "Deaktiviere die Spam Shield Registrierung."
 
 #: wp-spamshield.php:6368
 msgid ""
@@ -729,10 +741,14 @@ msgid ""
 "Anti-spam will still remain active for comments, pingbacks, trackbacks, and "
 "contact forms."
 msgstr ""
+"Diese Option deaktiviert das Anti-Spam Shield ausschließlich für das "
+"WordPress Registrierungsfomular. Obwohl wir dir diese Option nicht "
+"empfehlen, kannst du sie bei Bedarf aktivieren. Anti-Spam bleibt weiterhin "
+"für Kommentare, Pingbacks, Trackbacks und Kontaktformulare aktiv."
 
 #: wp-spamshield.php:6373
 msgid "Help promote WP-SpamShield?"
-msgstr "WP-SpamShield fördern helfen."
+msgstr "Willst du WP-SpamShield fördern helfen?"
 
 #: wp-spamshield.php:6373
 msgid ""
@@ -881,7 +897,7 @@ msgid ""
 "comment spam?</strong> If you're happy with WP-SpamShield, there's a few "
 "things you can do to let others know:"
 msgstr ""
-"<strong>Wie ist es zu bloggen, ohne von automatisiertem Kommentar-Spam "
+"<strong>Wie findest du es, nicht mehr von automatisiertem Kommentar-Spam "
 "bombardiert zu werden?</strong> Wenn du mit WP-SpamShield zufrieden bist, "
 "gibt es ein paar Dinge, die du tun kannst, um andere darüber zu informieren:"
 
@@ -921,6 +937,8 @@ msgstr "Blog Spam beenden"
 msgid ""
 "Plugin deactivated. WP-SpamShield is not available for network activation."
 msgstr ""
+"Das Plugin ist deaktiviert. WP-Spamshield ist für eine Netzwerk-Aktivierung "
+"nicht verfügbar."
 
 #: wp-spamshield.php:6695
 #, php-format
@@ -937,7 +955,7 @@ msgstr "SPAM BLOCKIERT"
 
 #: wp-spamshield.php:6756
 msgid "BY WP-SPAMSHIELD"
-msgstr "DURCH WP-SPAMSHIELD"
+msgstr "MIT WP-SPAMSHIELD"
 
 #: wp-spamshield.php:6757
 msgid "Spam Plugin for WordPress"
@@ -985,7 +1003,7 @@ msgstr "Kontaktformular Präsentiert von WP-SpamShield"
 
 #: wp-spamshield.php:6782
 msgid "Powered by WP-SpamShield Contact Form"
-msgstr "Präsentiert vom WP-SpamShield Kontaktformular"
+msgstr "Vom WP-SpamShield Kontaktformular unterstützt."
 
 #: wp-spamshield.php:6782
 msgid "WP-SpamShield Contact Form"
@@ -1009,7 +1027,7 @@ msgstr "Wordpress Anti-Spam"
 
 #: wp-spamshield.php:6809
 msgid "Comments Protected by WP-SpamShield Anti-Spam"
-msgstr "Kommentare geschützt durch WP-SpamShield Anti-Spam"
+msgstr "Kommentare werden durch WP-SpamShield Anti-Spam geschützt"
 
 #: wp-spamshield.php:6809
 msgid "WP-SpamShield Anti-Spam"
@@ -1017,7 +1035,7 @@ msgstr "WP-SpamShield Anti-Spam"
 
 #: wp-spamshield.php:6810
 msgid "Comments Protected by WP-SpamShield Spam Plugin"
-msgstr "Kommentare geschützt durch WP-SpamShield Spam-Plugin"
+msgstr "Kommentare werden durch das WP-SpamShield Anti-Spam geschützt"
 
 #: wp-spamshield.php:6810
 msgid "WP-SpamShield Spam Plugin"
@@ -1025,7 +1043,7 @@ msgstr "WP-SpamShield Spam-Plugin"
 
 #: wp-spamshield.php:6811
 msgid "Comments Protected by WP-SpamShield Spam Filter"
-msgstr "Kommentare geschützt durch WP-SpamShield Spam-Filter"
+msgstr "Kommentare werden durch den WP-SpamShield Spam Filter geschützt"
 
 #: wp-spamshield.php:6811
 msgid "WP-SpamShield Spam Filter"
@@ -1033,7 +1051,7 @@ msgstr "WP-SpamShield Spam-Filter"
 
 #: wp-spamshield.php:6812
 msgid "Comments Protected by WP-SpamShield Spam Blocker"
-msgstr "Kommentare geschützt durch WP-SpamShield Spam-Blocker"
+msgstr "Kommentare werden durch den WP-SpamShield Spam Blocker geschützt"
 
 #: wp-spamshield.php:6812
 msgid "WP-SpamShield Spam Blocker"
@@ -1041,7 +1059,7 @@ msgstr "WP-SpamShield Spam-Blocker"
 
 #: wp-spamshield.php:6813
 msgid "Comments Protected by WP-SpamShield for WordPress"
-msgstr "Kommentare geschützt durch WP-SpamShield für Wordpress"
+msgstr "Kommentare werden durch WP-SpamShield für Wordpress geschützt"
 
 #: wp-spamshield.php:6813
 msgid "WP-SpamShield for WordPress"

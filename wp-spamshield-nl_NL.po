@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 02:19-0800\n"
-"PO-Revision-Date: 2015-01-27 11:38-0800\n"
+"PO-Revision-Date: 2015-01-28 11:06+0100\n"
 "Last-Translator: Martin Teley <martin.teley@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_c\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.7.1\n"
+"X-Generator: Poedit 1.6.9\n"
 "Language: nl_NL\n"
 "X-Poedit-SearchPath-0: wp-spamshield\n"
 
@@ -101,7 +101,7 @@ msgstr "Vul a.u.b. een correct telefoonnummer in."
 
 #: wp-spamshield.php:2254
 msgid "Please enter a valid company."
-msgstr ""
+msgstr "Vul a.u.b. een geldig bedrijf in."
 
 #: wp-spamshield.php:2261
 msgid "Message too short. Please enter a complete message."
@@ -544,12 +544,14 @@ msgstr "Laat anderen weten"
 
 #: wp-spamshield.php:6230 wp-spamshield.php:6601
 msgid "WP-SpamShield is provided for free."
-msgstr ""
+msgstr "WP-SpamShield is geheel gratis."
 
 #: wp-spamshield.php:6230 wp-spamshield.php:6601
 msgid ""
 "If you like the plugin, consider a donation to help further its development."
 msgstr ""
+"Wanneer u deze plugin waardeert, kunt u een donatie overwegen om verdere "
+"ontwikkeling te ondersteunen."
 
 #: wp-spamshield.php:6230 wp-spamshield.php:6600
 msgid "Donate to WP-SpamShield"
@@ -589,6 +591,11 @@ msgid ""
 "and all files within it to \"%3$s\".</strong><br/>If that doesn't work, then "
 "please read the <a href=\"%4$s\" %5$s>FAQ</a> for this topic."
 msgstr ""
+"Het logboek is niet beschrijfbaar. Het kan zijn dat u handmatig de "
+"bestandsrechten aan moet passen.<br/>Stel de rechten voor de \"%1$s\" map in "
+"op \"%2$s\" en alle bestanden in deze map op \"%3$s\".</strong><br/>Wanneer "
+"dit het probleem niet verhelpt, kunt u de <a href=\"%4$s\" %5$s>FAQ</a> over "
+"dit onderwerp raadplegen."
 
 #: wp-spamshield.php:6316
 msgid "Download Comment Log File"
@@ -714,7 +721,7 @@ msgstr ""
 
 #: wp-spamshield.php:6368
 msgid "Disable Registration Spam Shield."
-msgstr ""
+msgstr "Deactiveer Registratie Spam Shield."
 
 #: wp-spamshield.php:6368
 msgid ""
@@ -723,6 +730,10 @@ msgid ""
 "Anti-spam will still remain active for comments, pingbacks, trackbacks, and "
 "contact forms."
 msgstr ""
+"Deze optie deactiveert de spam beveiliging voor de WordPress registratie. "
+"Hoewel dit niet aanbevolen is, is deze optie beschikbaar voor degenen die "
+"dit nodig hebben. Uw website blijft beschermd tegen spam in reacties, "
+"pingbacks, trackbacks en contactformulieren."
 
 #: wp-spamshield.php:6373
 msgid "Help promote WP-SpamShield?"
@@ -929,6 +940,8 @@ msgstr "Stop Spam"
 msgid ""
 "Plugin deactivated. WP-SpamShield is not available for network activation."
 msgstr ""
+"Plugin gedeactiveerd. WP-SpamShield is niet beschikbaar voor netwerk "
+"activatie."
 
 #: wp-spamshield.php:6695
 msgid ""
