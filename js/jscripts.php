@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.7.1
+Version: 1.7.3
 */
 
 // Security Sanitization - BEGIN
@@ -64,12 +64,15 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	$key_init_ip			= 'wpss_user_ip_init_'.RSMP_HASH;
 	$key_init_ua			= 'wpss_user_agent_init_'.RSMP_HASH;
 	$key_init_mt			= 'wpss_time_init_'.RSMP_HASH;
+	$key_init_dt			= 'wpss_timestamp_init_'.RSMP_HASH;
 	$current_ip 			= $_SERVER['REMOTE_ADDR'];
 	$current_ua 			= spamshield_get_user_agent_js();
-	$current_mt 			= spamshield_microtime_js();
+	$current_mt 			= spamshield_microtime_js(); // Site entry time - microtime
+	$current_dt 			= time(); // Site entry time - timestamp
 	if ( empty( $_SESSION[$key_init_ip] ) ) { $_SESSION[$key_init_ip] = $current_ip; }
 	if ( empty( $_SESSION[$key_init_ua] ) ) { $_SESSION[$key_init_ua] = $current_ua; }
 	if ( empty( $_SESSION[$key_init_mt] ) ) { $_SESSION[$key_init_mt] = $current_mt; }
+	if ( empty( $_SESSION[$key_init_dt] ) ) { $_SESSION[$key_init_dt] = $current_dt; }
 	// IP History - Lets see if they change IP's
 	if ( empty( $_SESSION[$key_ip_hist] ) ) { $_SESSION[$key_ip_hist] = array(); $_SESSION[$key_ip_hist][] = $current_ip; }
 	if ( $current_ip != $_SESSION[$key_init_ip] ) { $_SESSION[$key_ip_hist][] = $current_ip; }
@@ -217,9 +220,9 @@ header('Cache-Control: no-cache');
 header('Pragma: no-cache');
 header('Content-Type: application/x-javascript');
 echo "
-function GetCookie(e){var t=document.cookie.indexOf(e+'=');var n=t+e.length+1;if(!t&&e!=document.cookie.substring(0,e.length)){return null}if(t==-1)return null;var r=document.cookie.indexOf(';',n);if(r==-1)r=document.cookie.length;return unescape(document.cookie.substring(n,r))}function SetCookie(e,t,n,r,i,s){var o=new Date;o.setTime(o.getTime());if(n){n=n*1e3*60*60*24}var u=new Date(o.getTime()+n);document.cookie=e+'='+escape(t)+(n?';expires='+u.toGMTString():'')+(r?';path='+r:'')+(i?';domain='+i:'')+(s?';secure':'')}function DeleteCookie(e,t,n){if(getCookie(e))document.cookie=e+'='+(t?';path='+t:'')+(n?';domain='+n:'')+';expires=Thu, 01-Jan-1970 00:00:01 GMT'}
-function commentValidation(){SetCookie('".$wpss_ck_key ."','".$wpss_ck_val ."','','/');SetCookie('SJECT14','CKON14','','/');}
-commentValidation();
+function wpssGetCookie(e){var t=document.cookie.indexOf(e+'=');var n=t+e.length+1;if(!t&&e!=document.cookie.substring(0,e.length)){return null}if(t==-1)return null;var r=document.cookie.indexOf(';',n);if(r==-1)r=document.cookie.length;return unescape(document.cookie.substring(n,r))}function wpssSetCookie(e,t,n,r,i,s){var o=new Date;o.setTime(o.getTime());if(n){n=n*1e3*60*60*24}var u=new Date(o.getTime()+n);document.cookie=e+'='+escape(t)+(n?';expires='+u.toGMTString():'')+(r?';path='+r:'')+(i?';domain='+i:'')+(s?';secure':'')}function wpssDeleteCookie(e,t,n){if(wpssGetCookie(e))document.cookie=e+'='+(t?';path='+t:'')+(n?';domain='+n:'')+';expires=Thu, 01-Jan-1970 00:00:01 GMT'}
+function wpssCommentVal(){wpssSetCookie('".$wpss_ck_key ."','".$wpss_ck_val ."','','/');wpssSetCookie('SJECT15','CKON15','','/');}
+wpssCommentVal();
 ";
 
 // Uncomment to use:

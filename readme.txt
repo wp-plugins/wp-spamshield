@@ -36,7 +36,7 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 6. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked comments and contact form submissions for 7 days, then turns off automatically. If you want to see what's been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
 7. No false positives due to the method of spam blocking, which leads to fewer frustrated readers, and less work for you. (If a comment gets blocked, a legit user has a chance to try again.)
 8. You won't have to waste valuable time sifting through a spam queue any more, because there won't be much there, if anything.
-9. Powerful trackback and pingback spam protection and validation to ensure that only legitimate ones get through. 
+9. Powerful trackback and pingback spam protection and validation to ensure that only legitimate ones get through.
 10. Easy to install - truly plug and play. Just upload and activate. (Installation Status on the plugin admin page to let you know if plugin is installed correctly.)
 11. The beauty of this plugin is the methods of blocking spam. It takes a different approach than most and stops spam at the door.
 12. Extremely low overhead and won't slow down your blog (very light database access), unlike some other anti-spam plugins.
@@ -46,7 +46,8 @@ Comment spam has been a huge problem for bloggers since the inception of blogs, 
 16. Works in WordPress Multisite as well. (See the related [FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_3) for details.)
 17. Enhanced Comment Blacklist option. Instead of just sending comments to moderation as with WordPress's default Comment Blacklist functionality, with this turned on, anything that matches a string in the blacklist will be **completely blocked**. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.
 18. No cost, no hidden fees. **Free** for **both Commercial and Personal** use.
-19. A truly plug and play replacement and upgrade for WP-SpamFree. (A far more advanced fork of WP-SpamFree with dramatically improved page load speed, security, and spam blocking power, by its original author.) It will import your old data from WP-SpamFree automatically upon installation and activation, and features you were using on your site previously such as contact forms and spam stats will continue to work without any changes to pages, posts, or theme.
+19. This plugin is legal to use in Germany and the EU, and does not violate European privacy laws. It does not use any type of cloud-based service, data is not transmitted from your server to any other server, and all anti-spam processing happens directly on your website's server.
+20. A truly plug and play replacement and upgrade for WP-SpamFree. (A far more advanced fork of WP-SpamFree with dramatically improved page load speed, security, and spam blocking power, by its original author.) It will import your old data from WP-SpamFree automatically upon installation and activation, and features you were using on your site previously such as contact forms and spam stats will continue to work without any changes to pages, posts, or theme.
 
 = How It Works =
 Most of the spam hitting your blog originates from bots. Few bots can process JavaScript (JS). Few bots can process cookies. Fewer still, can handle both, especially if you use some clever combinations. In a nutshell, this plugin uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 99.99%+ of automated spam from ever getting to your site. Almost 100% of web site visitors will have these turned on by default, so this type of solution works silently in the background, with no inconveniences. There may be a few users (less than 2%) that have JavaScript and/or cookies turned off by default, but they will be prompted to simply turn those back on to post their comment. Overall, the few might be inconvenienced because they have JS and cookies turned off will be far fewer than the 100% who would be annoyed by CAPTCHA's, challenge questions, and other validation methods.
@@ -180,6 +181,15 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the [support page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.7.3 =
+*released 02/03/15*
+
+* Improved the Yahoo fix for the contact forms (implemented in 1.4.3) and restored "Reply-To" functionality. In version 1.4.3, I had to modify how the plugin handles the email address of the contact form submitter, in order to fix an issue with contact form submissions for users with `@yahoo.com` email addresses not getting sent. (See info on 1.4.3 update.) The contact form emails will still come from an email address that looks like `wpspamshield [dot] noreply [at] yourdomain [dot] com`. The difference now is that the "Reply-To" field is set to the contact form submitter's email address, so you can just click "Reply" in your email app, like you could before version 1.4.3. This should still avoid any spam problems with properly configured SPF records on your domain (and Yahoo's DMARC policy), while allowing contact form submissions from `@yahoo.com` email addresses. 
+* Updated the French (fr_FR) translation.
+* Made various code improvements.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
 
 = 1.7.2 =
 *released 01/30/15*
@@ -652,8 +662,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.7.2 =
-Added compatibility for 2 additional caching plugins, updated Dutch and German translations, made various minor code improvements, and updated the spam filters. Please see Changelog for details.
+= 1.7.3 =
+Improved the Yahoo email compatibility fix for contact forms (from 1.4.3), updated French translation, made various code improvements, and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

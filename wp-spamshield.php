@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.7.2
+Version: 1.7.3
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.7.2' );
+define( 'WPSS_VERSION', '1.7.3' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.7' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -328,8 +328,8 @@ function spamshield_get_query_string($url) {
 	$parsed = parse_url($url);
 	// Filter URLs with no query string
 	if ( empty( $parsed['query'] ) ) { return ''; }
-	$query_string = $parsed['query'];
-	return $query_string;
+	$query_str = $parsed['query'];
+	return $query_str;
 	}
 
 function spamshield_get_email_domain($email) {
@@ -415,10 +415,8 @@ function spamshield_get_server_name() {
 
 function spamshield_get_query_arr($url) {
 	// Get array of variables from query string
-	$parsed = parse_url($url);
-	$query = $parsed['query'];
-	// TEST: $query = spamshield_get_query_string($url); // REPLACE TWO PREV LINES - Note 1.4
-	if ( !empty( $query ) ) { $query_arr = explode( '&', $query ); } else { $query_arr = ''; }
+	$query_str = spamshield_get_query_string($url); // 1.7.3 - Validates better
+	if ( !empty( $query_str ) ) { $query_arr = explode( '&', $query_str ); } else { $query_arr = ''; }
 	return $query_arr;
 	}
 
@@ -634,9 +632,6 @@ function spamshield_first_action() {
 		}
 	if ( empty( $_SESSION['wpss_user_agent_init_'.RSMP_HASH] ) ) {
 		$_SESSION['wpss_user_agent_init_'.RSMP_HASH]= spamshield_get_user_agent();
-		}
-	if ( empty( $_SESSION['wpss_time_init_'.RSMP_HASH] ) ) {
-		$_SESSION['wpss_time_init_'.RSMP_HASH]		= spamshield_microtime();
 		}
 
 	$_SESSION['wpss_version_'.RSMP_HASH] 			= WPSS_VERSION;
@@ -1168,6 +1163,7 @@ function spamshield_get_log_session_data() {
 	$key_ip_hist 			= 'wpss_jscripts_ip_history_'.RSMP_HASH;
 	$key_init_ip			= 'wpss_user_ip_init_'.RSMP_HASH;
 	$key_init_mt			= 'wpss_time_init_'.RSMP_HASH;
+	$key_init_dt			= 'wpss_timestamp_init_'.RSMP_HASH;
 	$key_first_ref			= 'wpss_referer_init_'.RSMP_HASH;
 	$key_auth_hist 			= 'wpss_author_history_'.RSMP_HASH;
 	$key_comment_auth 		= 'comment_author_'.RSMP_HASH;
@@ -1210,6 +1206,7 @@ function spamshield_get_log_session_data() {
 	if ( !empty( $_SESSION[$key_ip_hist] ) ) { $wpss_ip_history = implode(', ', $_SESSION[$key_ip_hist]); }
 	else { $wpss_ip_history = $noda; }
 	if ( !empty( $_SESSION[$key_init_mt] ) ) { $wpss_time_init = $_SESSION[$key_init_mt]; } else { $wpss_time_init = $noda; }
+	if ( !empty( $_SESSION[$key_init_dt] ) ) { $wpss_timestamp_init = $_SESSION[$key_init_dt]; } else { $wpss_timestamp_init = $noda; }
 	if ( !empty( $_SESSION[$key_first_ref] ) ) { $wpss_referer_init = $_SESSION[$key_first_ref]; } else { $wpss_referer_init = $noda; }
 	if ( !empty( $_SESSION[$key_auth_hist] ) ) { $wpss_author_history = implode(', ', $_SESSION[$key_auth_hist]); }
 	elseif ( !empty( $_COOKIE[$key_comment_auth] ) ) { $wpss_author_history = $_COOKIE[$key_comment_auth]; }
@@ -1241,6 +1238,7 @@ function spamshield_get_log_session_data() {
 		'wpss_user_ip_init'				=> $wpss_user_ip_init,
 		'wpss_ip_history'				=> $wpss_ip_history,
 		'wpss_time_init'				=> $wpss_time_init,
+		'wpss_timestamp_init'			=> $wpss_timestamp_init,
 		'wpss_referer_init'				=> $wpss_referer_init,
 		'wpss_author_history'			=> $wpss_author_history,
 		'wpss_author_email_history'		=> $wpss_author_email_history,
@@ -1296,6 +1294,7 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 	$wpss_user_ip_init 				= $wpss_log_session_data['wpss_user_ip_init'];
 	$wpss_ip_history 				= $wpss_log_session_data['wpss_ip_history'];
 	$wpss_time_init 				= $wpss_log_session_data['wpss_time_init'];
+	$wpss_timestamp_init 			= $wpss_log_session_data['wpss_timestamp_init'];
 	$wpss_referer_init 				= $wpss_log_session_data['wpss_referer_init'];
 	$wpss_author_history 			= $wpss_log_session_data['wpss_author_history'];
 	$wpss_author_email_history 		= $wpss_log_session_data['wpss_author_email_history'];
@@ -1314,6 +1313,10 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 		$wpss_time_on_site			= spamshield_timer( $wpss_time_init, $wpss_time_end, true, 2 );
 		}
 	else { $wpss_time_on_site 		= $noda; }
+	if ( $wpss_timestamp_init != $noda ) {
+		$wpss_site_entry_time		= get_date_from_gmt( @date( 'Y-m-d H:i:s', $wpss_timestamp_init ), 'Y-m-d (D) H:i:s e' ); // Added 1.7.3
+		}
+	else { $wpss_site_entry_time 	= $noda; }
 	
 	$comment_logging 				= $spamshield_options['comment_logging'];
 	$comment_logging_start_date 	= $spamshield_options['comment_logging_start_date'];
@@ -1393,7 +1396,7 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 		}
 	else {
 		// LOG DATA
-		$wpss_log_datum = date("Y-m-d (D) H:i:s",$get_current_time_display);
+		$wpss_log_datum = @date('Y-m-d (D) H:i:s',$get_current_time_display);
 		$wpss_log_comment_data = "*************************************************************************************\n";
 		$wpss_log_comment_data .= "-------------------------------------------------------------------------------------\n";
 		$wpss_log_comment_data .= ":: ".$wpss_log_comment_type_display." BEGIN ::"."\n";
@@ -1581,6 +1584,7 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			$wpss_log_comment_data .= "Original IP: 		['".$wpss_user_ip_init."']\n";
 			$wpss_log_comment_data .= "IP History: 		['".$wpss_ip_history."']\n";
 			$wpss_log_comment_data .= "Time on Site: 		['".$wpss_time_on_site."']\n";
+			$wpss_log_comment_data .= "Site Entry Time: 	['".$wpss_site_entry_time."']\n"; // Added 1.7.3
 			$wpss_log_comment_data .= "Original Referrer: 	['".$wpss_referer_init."']\n";
 			$wpss_log_comment_data .= "Author History:		['".$wpss_author_history."']\n";
 			$wpss_log_comment_data .= "Email History:		['".$wpss_author_email_history."']\n";
@@ -1784,7 +1788,7 @@ function spamshield_get_author_data() {
 
 function spamshield_update_sess_accept_status( $commentdata, $status = NULL, $line = NULL ) {
 	$get_current_time_display = current_time( 'timestamp', 0 );
-	$wpss_datum = date("Y-m-d (D) H:i:s",$get_current_time_display);
+	$wpss_datum 			= @date('Y-m-d (D) H:i:s',$get_current_time_display);
 	$key_comment_acc 		= 'wpss_comments_accepted_'.RSMP_HASH;
 	$key_comment_den 		= 'wpss_comments_denied_'.RSMP_HASH;
 	$key_comment_stat_curr	= 'wpss_comments_status_current_'.RSMP_HASH;
@@ -1997,8 +2001,6 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 		
 			if ( $post_jsonst == 'NS2' ) { $wpss_jsonst = $post_jsonst; } else { $wpss_jsonst = '[None]'; }
 			
-			//$commentdata['javascript_page_referrer']	= $wpss_javascript_page_referrer;
-			//$commentdata['jsonst']					= $wpss_jsonst;
 			$contact_form_author_data['javascript_page_referrer']	= $wpss_javascript_page_referrer;
 			$contact_form_author_data['jsonst']						= $wpss_jsonst;
 			// Add New Tests for Logging - END
@@ -2015,7 +2017,7 @@ function spamshield_contact_form( $content, $shortcode_check = NULL ) {
 				}
 			$wpss_contact_form_to_name 			= $wpss_contact_form_to;
 			$wpss_contact_form_subject 			= '[' . __( 'Website Contact', WPSS_PLUGIN_NAME ) . '] '.$wpss_contact_subject;
-			$wpss_contact_form_msg_headers 		= "From: $wpss_contact_sender_name <$wpss_contact_sender_email>" . "\r\n" . "Reply-To: $wpss_contact_sender_email" . "\r\n" . "Content-Type: text/plain\r\n";
+			$wpss_contact_form_msg_headers 		= "From: $wpss_contact_sender_name <$wpss_contact_sender_email>" . "\r\n" . "Reply-To: $wpss_contact_name <$wpss_contact_email_lc>" . "\r\n" . "Content-Type: text/plain\r\n"; // 1.7.3
 			$wpss_contact_form_blog				= RSMP_SITE_URL;
 			// Another option: "Content-Type: text/html"
 
@@ -2818,14 +2820,14 @@ function spamshield_email_blacklist_chk( $email = NULL, $get_eml_list_arr = fals
 
 	$blacklisted_email_strings = array(
 		// Red-flagged strings that occur anywhere in the email address
-		".seo@gmail.com", ".seo@googlemail.com", 
+		".seo@gmail.com", ".seo@googlemail.com", ".bizapps@gmail.com", ".bizapps@googlemail.com", 
 		);
 	if ( !empty( $get_str_list_arr ) ) { return $blacklisted_email_strings; }
 	
 	$blacklisted_email_strings_rgx = array(
 		// Custom regex strings that occur in the email address
 		"spinfilel?namesdat", "\.((marketing|business|web)manager|seo(services?)?)[0-9]*\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com|(com?\.)?[a-z]{2})", "^((marketing|business|web)manager|seo(services?)?)\..*\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com?|(co\.)?[a-z]{2})", 
-		"\.((marketing|business|web)manager|seo(services?)?).*\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com|(com?\.)?[a-z]{2})", 
+		"\.((marketing|business|web)manager|seo(services?)?).*\@(gmail|googlemail|hotmail|outlook|yahoo|mail|gmx|inbox|myway)\.(com|(com?\.)?[a-z]{2})", "^name\-[0-9]{5}\@(gmail|googlemail)\.com$", 
 		);
 	if ( !empty( $get_str_rgx_list_arr ) ) { return $blacklisted_email_strings_rgx; }
 	
@@ -3088,7 +3090,7 @@ function spamshield_exploit_url_chk( $urls = NULL ) {
 		$urls 		= $urls_arr;
 		}
 	foreach( $urls as $u => $url ) {
-		$query_string = spamshield_get_query_string($url);
+		$query_str = spamshield_get_query_string($url);
 		if ( preg_match( "~/phpinfo\.php\?~i", $url ) ) {
 			// phpinfo.php Redirect - Used in XSS
 			return true;
@@ -3100,7 +3102,7 @@ function spamshield_exploit_url_chk( $urls = NULL ) {
 			// Likely a Phishing site or XSS
 			return true;
 			}
-		elseif ( !empty( $query_string ) && preg_match( "~(\.\.(\/|%2f)|boot\.ini|(ftp|https?)(\:|%3a)|mosconfig_[a-z_]{1,21}(\=|%3d)|base64_encode.*\(.*\)|[\[\]\(\)\{\}\<\>\|\"\';\?\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d|%0|%a|%b|%c|%d|%e|%f|127\.0|globals|encode|localhost|loopback|request|select|insert|union|declare)~i", $query_string ) ) { // Check Query String
+		elseif ( !empty( $query_str ) && preg_match( "~(\.\.(\/|%2f)|boot\.ini|(ftp|https?)(\:|%3a)|mosconfig_[a-z_]{1,21}(\=|%3d)|base64_encode.*\(.*\)|[\[\]\(\)\{\}\<\>\|\"\';\?\*\$]|%22|%24|%27|%2a|%3b|%3c|%3e|%3f|%5b|%5d|%7b|%7c|%7d|%0|%a|%b|%c|%d|%e|%f|127\.0|globals|encode|localhost|loopback|request|select|insert|union|declare)~i", $query_str ) ) { // Check Query String
 			// Dangerous Exploit URLs - XSS, SQL injection, or other
 			// Test Query String - This covers a number of SQL Injection and other exploits
 			return true;
@@ -3634,13 +3636,13 @@ function spamshield_denied_post_js_cookie($approved) {
 	$error_txt = spamshield_error_txt();
 	spamshield_ak_accuracy_fix();
 	//spamshield_update_sess_accept_status($commentdata,'r','Line: '.__LINE__);
-	if ( !empty( $_COOKIE['SJECT14'] ) ) {
-		$spamshield_jsck_error_ck_test = $_COOKIE['SJECT14']; // Default value is 'CKON14'
+	if ( !empty( $_COOKIE['SJECT15'] ) ) {
+		$spamshield_jsck_error_ck_test = $_COOKIE['SJECT15']; // Default value is 'CKON15'
 		}
 	else {
 		$spamshield_jsck_error_ck_test = '';
 		}
-	if ( $spamshield_jsck_error_ck_test == 'CKON14' ) {
+	if ( $spamshield_jsck_error_ck_test == 'CKON15' ) {
 		$spamshield_jsck_error_ck_status = __( 'PHP detects that cookies appear to be enabled.', WPSS_PLUGIN_NAME );
 		}
 	else {
@@ -3653,7 +3655,7 @@ function spamshield_denied_post_js_cookie($approved) {
 	$spamshield_jsck_error_message_detailed .= '<noscript>' . __( 'Status: JavaScript is currently disabled.', WPSS_PLUGIN_NAME ) . '<br /><br /></noscript>'."\n";
 	$spamshield_jsck_error_message_detailed .= '<strong>' . __( 'Please be sure JavaScript and Cookies are enabled in your browser. Then, please hit the back button on your browser, and try posting your comment again. (You may need to reload the page.)', WPSS_PLUGIN_NAME ) . '</strong><br /><br />'."\n";
 	$spamshield_jsck_error_message_detailed .= '<br /><hr noshade />'."\n";
-	if ( $spamshield_jsck_error_ck_test == 'CKON14' ) {
+	if ( $spamshield_jsck_error_ck_test == 'CKON15' ) {
 		$spamshield_jsck_error_message_detailed .= __( 'If you feel you have received this message in error (for example if JavaScript and Cookies are in fact enabled and you have tried to post several times), there is most likely a technical problem (could be a plugin conflict or misconfiguration). Please contact the author of this site, and let them know they need to look into it.', WPSS_PLUGIN_NAME ) . '<br />'."\n";
 		$spamshield_jsck_error_message_detailed .= '<hr noshade /><br />'."\n";
 		}
@@ -4142,8 +4144,8 @@ function spamshield_trackback_content_filter( $commentdata, $spamshield_options 
 		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 		}
 	// Check to see if keyword phrases in url match Comment Author - spammers do this to get links with desired keyword anchor text.
-	$Domains = array('.ac','.academy','.actor','.ad','.ae','.aero','.af','.ag','.agency','.ai','.al','.am','.an','.ao','.aq','.ar','.archi','.arpa','.as','.asia','.at','.au','.aw','.ax','.axa','.az','.ba','.bar','.bargains','.bb','.bd','.be','.berlin','.best','.bf','.bg','.bh','.bi','.bid','.bike','.biz','.bj','.bl','.black','.blue','.bm','.bn','.bo','.boutique','.bq','.br','.bs','.bt','.build','.builders','.buzz','.bv','.bw','.by','.bz','.ca','.cab','.camera','.camp','.cards','.careers','.cat','.catering','.cc','.cd','.center','.ceo','.cf','.cg','.ch','.cheap','.christmas','.ci','.ck','.cl','.cleaning','.clothing','.club','.cm','.cn','.co','.codes','.coffee','.cologne','.com','.community','.company','.computer','.construction','.contractors','.cooking','.cool','.coop','.country','.cr','.cruises','.cu','.cv','.cw','.cx','.cy','.cz','.dance','.dating','.de','.democrat','.diamonds','.directory','.dj','.dk','.dm','.do','.domains','.dz','.ec','.edu','.education','.ee','.eg','.eh','.email','.enterprises','.equipment','.er','.es','.estate','.et','.eu','.events','.expert','.exposed','.farm','.fi','.fish','.fishing','.fj','.fk','.flights','.florist','.fm','.fo','.foundation','.fr','.futbol','.ga','.gallery','.gb','.gd','.ge','.gf','.gg','.gh','.gi','.gift','.gl','.glass','.gm','.gn','.gov','.gp','.gq','.gr','.graphics','.gs','.gt','.gu','.guitars','.guru','.gw','.gy','.haus','.hk','.hm','.hn','.holdings','.holiday','.horse','.house','.hr','.ht','.hu','.id','.ie','.il','.im','.immobilien','.in','.industries','.info','.institute','.int','.international','.io','.iq','.ir','.is','.it','.je','.jetzt','.jm','.jo','.jobs','.jp','.kaufen','.ke','.kg','.kh','.ki','.kim','.kitchen','.kiwi','.km','.kn','.koeln','.kp','.kr','.kred','.kw','.ky','.kz','.la','.land','.lb','.lc','.li','.lighting','.limo','.link','.lk','.london','.lr','.ls','.lt','.lu','.luxury','.lv','.ly','.ma','.management','.mango','.marketing','.mc','.md','.me','.meet','.menu','.mf','.mg','.mh','.miami','.mil','.mk','.ml','.mm','.mn','.mo','.mobi','.moda','.moe','.monash','.mp','.mq','.mr','.ms','.mt','.mu','.museum','.mv','.mw','.mx','.my','.mz','.na','.nagoya','.name','.nc','.ne','.net','.neustar','.nf','.ng','.ni','.ninja','.nl','.no','.np','.nr','.nu','.nyc','.nz','.okinawa','.om','.onl','.org','.pa','.partners','.parts','.pe','.pf','.pg','.ph','.photo','.photography','.photos','.pics','.pink','.pk','.pl','.plumbing','.pm','.pn','.post','.pr','.pro','.productions','.properties','.ps','.pt','.pub','.pw','.py','.qa','.qpon','.re','.recipes','.red','.ren','.rentals','.repair','.report','.rest','.reviews','.rich','.ro','.rodeo','.rs','.ru','.ruhr','.rw','.ryukyu','.sa','.saarland','.sb','.sc','.sd','.se','.sexy','.sg','.sh','.shiksha','.shoes','.si','.singles','.sj','.sk','.sl','.sm','.sn','.so','.social','.sohu','.solar','.solutions','.sr','.ss','.st','.su','.supplies','.supply','.support','.sv','.sx','.sy','.systems','.sz','.tattoo','.tc','.td','.technology','.tel','.tf','.tg','.th','.tienda','.tips','.tj','.tk','.tl','.tm','.tn','.to','.today','.tokyo','.tools','.tp','.tr','.trade','.training','.travel','.tt','.tv','.tw','.tz','.ua','.ug','.uk','.um','.uno','.us','.uy','.uz','.va','.vacations','.vc','.ve','.vegas','.ventures','.vg','.vi','.viajes','.villas','.vision','.vn','.vodka','.vote','.voting','.voto','.voyage','.vu','.wang','.watch','.webcam','.wed','.wf','.wien','.wiki','.works','.ws','.xxx','.xyz','.ye','.yokohama','.yt','.za','.zm','.zone','.zw');
-	// from http://www.iana.org/domains/root/db/
+	$Domains = array('.abogado','.ac','.academy','.accountants','.active','.actor','.ad','.adult','.ae','.aero','.af','.ag','.agency','.ai','.airforce','.al','.allfinanz','.alsace','.am','.amsterdam','.an','.android','.ao','.aq','.aquarelle','.ar','.archi','.army','.arpa','.as','.asia','.associates','.at','.attorney','.au','.auction','.audio','.autos','.aw','.ax','.axa','.az','.ba','.band','.bank','.bar','.barclaycard','.barclays','.bargains','.bayern','.bb','.bd','.be','.beer','.berlin','.best','.bf','.bg','.bh','.bi','.bid','.bike','.bio','.biz','.bj','.bl','.black','.blackfriday','.bloomberg','.blue','.bm','.bmw','.bn','.bnpparibas','.bo','.boo','.boutique','.bq','.br','.brussels','.bs','.bt','.budapest','.build','.builders','.buzz','.bv','.bw','.by','.bz','.bzh','.ca','.cab','.cal','.camera','.camp','.cancerresearch','.capetown','.capital','.caravan','.cards','.care','.career','.careers','.cartier','.casa','.cash','.cat','.catering','.cc','.cd','.center','.ceo','.cern','.cf','.cg','.ch','.channel','.cheap','.christmas','.chrome','.church','.ci','.citic','.city','.ck','.cl','.claims','.cleaning','.click','.clinic','.clothing','.club','.cm','.cn','.co','.coach','.codes','.coffee','.college','.cologne','.com','.community','.company','.computer','.condos','.construction','.consulting','.contractors','.cooking','.cool','.coop','.country','.cr','.credit','.creditcard','.cricket','.crs','.cruises','.cu','.cuisinella','.cv','.cw','.cx','.cy','.cymru','.cz','.dabur','.dad','.dance','.dating','.day','.dclk','.de','.deals','.degree','.delivery','.democrat','.dental','.dentist','.desi','.design','.dev','.diamonds','.diet','.digital','.direct','.directory','.discount','.dj','.dk','.dm','.dnp','.do','.docs','.domains','.doosan','.durban','.dvag','.dz','.eat','.ec','.edu','.education','.ee','.eg','.eh','.email','.emerck','.energy','.engineer','.engineering','.enterprises','.equipment','.er','.es','.esq','.estate','.et','.eu','.eurovision','.eus','.events','.everbank','.exchange','.expert','.exposed','.fail','.farm','.fashion','.feedback','.fi','.finance','.financial','.firmdale','.fish','.fishing','.fit','.fitness','.fj','.fk','.flights','.florist','.flowers','.flsmidth','.fly','.fm','.fo','.foo','.forsale','.foundation','.fr','.frl','.frogans','.fund','.furniture','.futbol','.ga','.gal','.gallery','.garden','.gb','.gbiz','.gd','.ge','.gent','.gf','.gg','.ggee','.gh','.gi','.gift','.gifts','.gives','.gl','.glass','.gle','.global','.globo','.gm','.gmail','.gmo','.gmx','.gn','.goog','.google','.gop','.gov','.gp','.gq','.gr','.graphics','.gratis','.green','.gripe','.gs','.gt','.gu','.guide','.guitars','.guru','.gw','.gy','.hamburg','.hangout','.haus','.healthcare','.help','.here','.hermes','.hiphop','.hiv','.hk','.hm','.hn','.holdings','.holiday','.homes','.horse','.host','.hosting','.house','.how','.hr','.ht','.hu','.ibm','.id','.ie','.ifm','.il','.im','.immo','.immobilien','.in','.industries','.info','.ing','.ink','.institute','.insure','.int','.international','.investments','.io','.iq','.ir','.irish','.is','.it','.iwc','.je','.jetzt','.jm','.jo','.jobs','.joburg','.jp','.juegos','.kaufen','.kddi','.ke','.kg','.kh','.ki','.kim','.kitchen','.kiwi','.km','.kn','.koeln','.kp','.kr','.krd','.kred','.kw','.ky','.kyoto','.kz','.la','.lacaixa','.land','.lat','.latrobe','.lawyer','.lb','.lc','.lds','.lease','.legal','.lgbt','.li','.lidl','.life','.lighting','.limo','.link','.lk','.loans','.london','.lotte','.lotto','.lr','.ls','.lt','.ltda','.lu','.luxe','.luxury','.lv','.ly','.ma','.madrid','.maison','.management','.mango','.market','.marketing','.marriott','.mc','.md','.me','.media','.meet','.melbourne','.meme','.memorial','.menu','.mf','.mg','.mh','.miami','.mil','.mini','.mk','.ml','.mm','.mn','.mo','.mobi','.moda','.moe','.monash','.money','.mormon','.mortgage','.moscow','.motorcycles','.mov','.mp','.mq','.mr','.ms','.mt','.mu','.museum','.mv','.mw','.mx','.my','.mz','.na','.nagoya','.name','.navy','.nc','.ne','.net','.network','.neustar','.new','.nexus','.nf','.ng','.ngo','.nhk','.ni','.ninja','.nl','.no','.np','.nr','.nra','.nrw','.nu','.nyc','.nz','.okinawa','.om','.one','.ong','.onl','.ooo','.org','.organic','.osaka','.otsuka','.ovh','.pa','.paris','.partners','.parts','.party','.pe','.pf','.pg','.ph','.pharmacy','.photo','.photography','.photos','.physio','.pics','.pictures','.pink','.pizza','.pk','.pl','.place','.plumbing','.pm','.pn','.pohl','.poker','.porn','.post','.pr','.praxi','.press','.pro','.prod','.productions','.prof','.properties','.property','.ps','.pt','.pub','.pw','.py','.qa','.qpon','.quebec','.re','.realtor','.recipes','.red','.rehab','.reise','.reisen','.reit','.ren','.rentals','.repair','.report','.republican','.rest','.restaurant','.reviews','.rich','.rio','.rip','.ro','.rocks','.rodeo','.rs','.rsvp','.ru','.ruhr','.rw','.ryukyu','.sa','.saarland','.sale','.samsung','.sarl','.sb','.sc','.sca','.scb','.schmidt','.schule','.schwarz','.science','.scot','.sd','.se','.services','.sew','.sexy','.sg','.sh','.shiksha','.shoes','.shriram','.si','.singles','.sj','.sk','.sky','.sl','.sm','.sn','.so','.social','.software','.sohu','.solar','.solutions','.soy','.space','.spiegel','.sr','.ss','.st','.su','.supplies','.supply','.support','.surf','.surgery','.suzuki','.sv','.sx','.sy','.sydney','.systems','.sz','.taipei','.tatar','.tattoo','.tax','.tc','.td','.technology','.tel','.temasek','.tf','.tg','.th','.tienda','.tips','.tires','.tirol','.tj','.tk','.tl','.tm','.tn','.to','.today','.tokyo','.tools','.top','.town','.toys','.tp','.tr','.trade','.training','.travel','.trust','.tt','.tui','.tv','.tw','.tz','.ua','.ug','.uk','.um','.university','.uno','.uol','.us','.uy','.uz','.va','.vacations','.vc','.ve','.vegas','.ventures','.versicherung','.vet','.vg','.vi','.viajes','.video','.villas','.vision','.vlaanderen','.vn','.vodka','.vote','.voting','.voto','.voyage','.vu','.wales','.wang','.watch','.webcam','.website','.wed','.wedding','.wf','.whoswho','.wien','.wiki','.williamhill','.wme','.work','.works','.world','.ws','.wtc','.wtf','.xxx','.xyz','.yachts','.yandex','.ye','.yoga','.yokohama','.youtube','.yt','.za','.zip','.zm','.zone','.zuerich','.zw');
+	// from http://www.iana.org/domains/root/db/ - Updated in 1.7.3
 	$ConversionSeparator = '-';
 	$ConversionSeparators = array('-','_');
 	$FilterElementsPrefix = array('http://www.','http://','https://www.','https://');
