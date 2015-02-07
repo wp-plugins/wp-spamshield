@@ -182,6 +182,17 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.7.4 =
+*released 02/06/15*
+
+* Added WP-Spamshield Whitelist, a feature that allows you to whitelist specific email addresses that you would like to let bypass spam filters in the comments and contact forms.
+* Added option to allow keywords in comment author "Name" fields.  This option is useful for sites with users that go by pseudonyms, or for sites that simply want to allow business names and keywords to be used in the comment "Name" field.
+* Made some improvements to the UI of the settings page.
+* Improved some of the error messages to make them more helpful.
+* Made various code improvements.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.7.3 =
 *released 02/03/15*
 
@@ -662,8 +673,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.7.3 =
-Improved the Yahoo email compatibility fix for contact forms (from 1.4.3), updated French translation, made various code improvements, and improved/updated the spam filters. Please see Changelog for details.
+= 1.7.4 =
+Added two new features, made UI improvements, improved some error messages, made various code improvements, and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

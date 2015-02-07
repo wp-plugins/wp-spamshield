@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.7.3
+Version: 1.7.4
 */
 
 // Security Sanitization - BEGIN
@@ -52,6 +52,7 @@ elseif ( !empty( $_SESSION ) && !empty( $_COOKIE ) && !defined( 'RSMP_HASH' ) ) 
 
 $wpss_lang_ck_key = 'UBR_LANG';
 $wpss_lang_ck_val = 'default';
+
 // SESSION CHECK AND FUNCTIONS - END
 
 if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
@@ -65,6 +66,7 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	$key_init_ua			= 'wpss_user_agent_init_'.RSMP_HASH;
 	$key_init_mt			= 'wpss_time_init_'.RSMP_HASH;
 	$key_init_dt			= 'wpss_timestamp_init_'.RSMP_HASH;
+	$ck_key_init_dt			= 'NCS_INENTIM'; //Initial Entry Time
 	$current_ip 			= $_SERVER['REMOTE_ADDR'];
 	$current_ua 			= spamshield_get_user_agent_js();
 	$current_mt 			= spamshield_microtime_js(); // Site entry time - microtime
@@ -73,6 +75,8 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	if ( empty( $_SESSION[$key_init_ua] ) ) { $_SESSION[$key_init_ua] = $current_ua; }
 	if ( empty( $_SESSION[$key_init_mt] ) ) { $_SESSION[$key_init_mt] = $current_mt; }
 	if ( empty( $_SESSION[$key_init_dt] ) ) { $_SESSION[$key_init_dt] = $current_dt; }
+	// Set Cookie
+	if ( empty( $_COOKIE[$ck_key_init_dt] ) ) { @setcookie( $ck_key_init_dt, $current_dt, time()+60*60, '/' ); } // 1 hour
 	// IP History - Lets see if they change IP's
 	if ( empty( $_SESSION[$key_ip_hist] ) ) { $_SESSION[$key_ip_hist] = array(); $_SESSION[$key_ip_hist][] = $current_ip; }
 	if ( $current_ip != $_SESSION[$key_init_ip] ) { $_SESSION[$key_ip_hist][] = $current_ip; }
