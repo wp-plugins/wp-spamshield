@@ -1168,7 +1168,6 @@ function spamshield_append_log_data( $str = NULL, $rsds_only = false ) {
 		}
 	}
 
-
 function spamshield_get_log_session_data() {
 	$noda 					= '[No Data]';
 	$key_total_page_hits	= 'wpss_page_hits_js_'.RSMP_HASH;
@@ -6775,14 +6774,13 @@ if (!class_exists('wpSpamShield')) {
 			<p><a href="http://bit.ly/RSM_AIOSEOP" target="_blank" rel="external" >Click here to find out more. >></a></p>
 			</div>
 			
-			<p style="clear:both;">&nbsp;</p>
-			
 			<?php
 				}
 			// Recommended Partners - END - Added in 1.6.9
 			?>
 			
-			<p><em><?php 
+			<p style="clear:both;">&nbsp;</p>
+			<p style="clear:both;"><em><?php 
 			echo 'Version '.WPSS_VERSION; 
 			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) === 0 ) {
 				$wpss_proc_data = get_option( 'spamshield_procdat' );
@@ -6794,8 +6792,8 @@ if (!class_exists('wpSpamShield')) {
 				echo "<br />\n".'Avg WPSS Proc Time: '.$wpss_proc_data_avg2_wpss_proc_time_disp.' seconds';
 				}
 			?></em></p>
-			<p><div style="float:right;font-size:12px;">[ <a href="#wpss_top"><?php _e( 'BACK TO TOP', WPSS_PLUGIN_NAME ); ?></a> ]</div></p>
-			<p>&nbsp;</p>
+
+			<p><div style="float:right;clear:both;font-size:12px;">[ <a href="#wpss_top"><?php _e( 'BACK TO TOP', WPSS_PLUGIN_NAME ); ?></a> ]</div></p>
 			<p>&nbsp;</p>
 			</div>
 			<?php
