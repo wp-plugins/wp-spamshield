@@ -4,13 +4,13 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.7.4
+Version: 1.7.5
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
 */
 
-/*  Copyright 2014    Scott Allen  (email : wpspamshield [at] redsandmarketing [dot] com)
+/*  Copyright 2014-2015 Scott Allen (email : wpspamshield [at] redsandmarketing [dot] com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.7.4' );
+define( 'WPSS_VERSION', '1.7.5' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.7' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
@@ -143,7 +143,7 @@ $spamshield_default = array (
 	'comment_logging_start_date'		=> 0,
 	'comment_logging_all'				=> 0,
 	'enhanced_comment_blacklist'		=> 0,
-	'enable_whitelist'					=> 0, // Add 'enable_whitelist' to rest of plugin
+	'enable_whitelist'					=> 0,
 	'allow_proxy_users'					=> 1,
 	'hide_extra_data'					=> 0,
 	'registration_shield_disable'		=> 0,
@@ -3983,14 +3983,10 @@ function spamshield_trackback_content_filter( $commentdata, $spamshield_options 
 		$wpss_error_code .= ' TUA1002';
 		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 		}
-	if ( !empty( $commentdata_user_agent_lc ) && $commentdata_user_agent_lc_word_count < 3 ) {
-		if ( strpos( $commentdata_user_agent_lc, 'movabletype' ) === false && $commentdata_comment_type == 'trackback' ) {
-			// Another test for altered UA's.
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; } // Was 2, changed to 1 - V1.0.0.0
-			$wpss_error_code .= ' TUA1003';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		}
+
+	// TUA1003 - Another test for altered UA's.
+	// DEPRECATED - Removed 1.7.5
+
 	if ( strpos( $commentdata_user_agent_lc, 'libwww' ) !== false 
 		|| strpos( $commentdata_user_agent_lc, 'nutch' ) === 0
 		|| strpos( $commentdata_user_agent_lc, 'larbin' ) === 0
@@ -4033,54 +4029,19 @@ function spamshield_trackback_content_filter( $commentdata, $spamshield_options 
 		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 		}
 
-	if ( $commentdata_comment_type == 'trackback' && strpos( $commentdata_user_agent_lc, 'wordpress' ) !== false ) {
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T3000-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
+	// T3000-1 - WordPress UA for a Trackback
+	// DEPRECATED - Removed 1.7.5
 
+	// T1001-1, T1002-1, T1003-1
 	// Testing if Bot Uses Faked User-Agent for WordPress version that doesn't exist yet
 	// Check History of WordPress User-Agents and Keep up to Date
 	// Current: 'The Incutio XML-RPC PHP Library -- WordPress/4.0.1'
-	if ( empty( $local_pingback ) && strpos( $commentdata_user_agent_lc, 'incutio xml-rpc -- wordpress/' ) !== false ) {
-		$wp_ua_search_array = array( 'mu', 'wordpress-mu-' );
-		$commentdata_user_agent_lc_wp = str_replace ( $wp_ua_search_array, '', $commentdata_user_agent_lc);
-		$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc_wp );
-		// Changed to version_compare in 1.0.1.0
-		if ( version_compare( $commentdata_user_agent_lc_explode[1], WPSS_MAX_WP_VERSION, '>' ) && $commentdata_user_agent_lc_explode[1] !='MU' ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$wpss_error_code .= ' T1001-1';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		}
-	if ( empty( $local_pingback ) && strpos( $commentdata_user_agent_lc, 'the incutio xml-rpc php library -- wordpress/' ) !== false ) {
-		$wp_ua_search_array = array( 'mu', 'wordpress-mu-' );
-		$commentdata_user_agent_lc_wp = str_replace ( $wp_ua_search_array, '', $commentdata_user_agent_lc);
-		$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc_wp );
-		if ( version_compare( $commentdata_user_agent_lc_explode[1], WPSS_MAX_WP_VERSION, '>' ) && $commentdata_user_agent_lc_explode[1] !='MU' ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$wpss_error_code .= ' T1002-1';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		}
-	if ( empty( $local_pingback ) && strpos( $commentdata_user_agent_lc, 'wordpress/' ) === 0 ) {
-		$wp_ua_search_array = array( 'mu', 'wordpress-mu-' );
-		$commentdata_user_agent_lc_wp = str_replace ( $wp_ua_search_array, '', $commentdata_user_agent_lc);
-		$commentdata_user_agent_lc_explode = explode( '/', $commentdata_user_agent_lc_wp );
-		if ( version_compare( $commentdata_user_agent_lc_explode[1], WPSS_MAX_WP_VERSION, '>' ) && $commentdata_user_agent_lc_explode[1] !='MU' ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$wpss_error_code .= ' T1003-1';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		}
-	if ( empty( $local_pingback ) && $commentdata_comment_author_deslashed == $commentdata_comment_author_lc_deslashed && preg_match( "~([a-z0-9\s\-_\.']+)~i", $commentdata_comment_author_lc_deslashed ) ) {
-		// Check to see if Comment Author is lowercase. Normal blog ping Authors are properly capitalized. No brainer.
-		// Added second test to only run when using standard alphabet.
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T1010-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
+	// DEPRECATED - Removed 1.7.5
 
+	// T1010-1
+	// Check to see if Comment Author is lowercase. Normal blog ping Authors are properly capitalized. No brainer.
+	// DEPRECATED - Removed 1.7.5
+	
 	// IP / PROXY INFO - BEGIN
 	global $wpss_ip_proxy_info;
 	if ( empty( $wpss_ip_proxy_info ) ) {
@@ -4122,163 +4083,9 @@ function spamshield_trackback_content_filter( $commentdata, $spamshield_options 
 		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 		}
 
-	// MISC
-	if ( $commentdata_comment_content == '[...] read more [...]' ) {
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T1020-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	$replace_apostrophes						= array('’','`','&acute;','&grave;','&#39;','&#96;','&#101;','&#145;','&#146;','&#158;','&#180;','&#207;','&#208;','&#8216;','&#8217;');
-	$commentdata_comment_content_lc_norm_apost 	= str_replace($replace_apostrophes,"'",$commentdata_comment_content_lc_deslashed);
-	$SplogTrackbackPhrase1 						= 'an interesting post today.here\'s a quick excerpt';
-	$SplogTrackbackPhrase1a 					= 'an interesting post today.here&#8217;s a quick excerpt';
-	$SplogTrackbackPhrase2 						= 'an interesting post today. here\'s a quick excerpt';
-	$SplogTrackbackPhrase2a 					= 'an interesting post today. here&#8217;s a quick excerpt';
-	$SplogTrackbackPhrase3 						= 'an interesting post today onhere\'s a quick excerpt';
-	$SplogTrackbackPhrase3a						= 'an interesting post today onhere&#8217;s a quick excerpt';
-	$SplogTrackbackPhrase4 						= 'read the rest of this great post here';
-	$SplogTrackbackPhrase5 						= 'here to see the original:';
-	$SplogTrackbackPhrase20a 					= 'an interesting post today on';
-	$SplogTrackbackPhrase20b 					= 'here\'s a quick excerpt';
-	$SplogTrackbackPhrase20c 					= 'here&#8217;s a quick excerpt';
-	if ( strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase1 ) !== false || strpos( $commentdata_comment_content_lc_deslashed, $SplogTrackbackPhrase1a ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase2 ) !== false || strpos( $commentdata_comment_content_lc_deslashed, $SplogTrackbackPhrase2a ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase3 ) !== false || strpos( $commentdata_comment_content_lc_deslashed, $SplogTrackbackPhrase3a ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase4 ) !== false || strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase5 ) !== false || ( strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase20a ) !== false && ( strpos( $commentdata_comment_content_lc_norm_apost, $SplogTrackbackPhrase20b ) !== false || strpos( $commentdata_comment_content_lc_deslashed, $SplogTrackbackPhrase20c ) !== false ) ) ) {
-		// Check to see if common patterns exist in comment content.
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T2002-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_strong ) !== false ) {
-		// Check to see if Comment Author is repeated in content, enclosed in <strong> tags.
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T2003-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_a1 ) !== false || strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_a2 ) !== false ) {
-		// Check to see if Comment Author is repeated in content, enclosed in <a> tags.
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T2004-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_strong_dot1 ) !== false ) {
-		// Check to see if Phrase... in bold is in content
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T2005-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_strong_dot2 ) !== false ) {
-		// Check to see if Phrase... in bold is in content
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T2006-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_strong_dot3 ) !== false ) {
-		// Check to see if Phrase... in bold is in content
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T2007-1-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	if ( strpos( $commentdata_comment_content_lc_deslashed, $commentdata_comment_author_lc_spam_strong_dot4 ) !== false ) {
-		// Check to see if Phrase... in bold is in content
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T2007-2-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	if ( preg_match( "~<strong>(.*)?\[trackback\](.*)?</strong>~i", $commentdata_comment_content_lc_deslashed ) ) {
-		// Check to see if Phrase... in bold is in content
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' T2010-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	// Check to see if keyword phrases in url match Comment Author - spammers do this to get links with desired keyword anchor text.
-	$Domains = array('.abogado','.ac','.academy','.accountants','.active','.actor','.ad','.adult','.ae','.aero','.af','.ag','.agency','.ai','.airforce','.al','.allfinanz','.alsace','.am','.amsterdam','.an','.android','.ao','.aq','.aquarelle','.ar','.archi','.army','.arpa','.as','.asia','.associates','.at','.attorney','.au','.auction','.audio','.autos','.aw','.ax','.axa','.az','.ba','.band','.bank','.bar','.barclaycard','.barclays','.bargains','.bayern','.bb','.bd','.be','.beer','.berlin','.best','.bf','.bg','.bh','.bi','.bid','.bike','.bio','.biz','.bj','.bl','.black','.blackfriday','.bloomberg','.blue','.bm','.bmw','.bn','.bnpparibas','.bo','.boo','.boutique','.bq','.br','.brussels','.bs','.bt','.budapest','.build','.builders','.buzz','.bv','.bw','.by','.bz','.bzh','.ca','.cab','.cal','.camera','.camp','.cancerresearch','.capetown','.capital','.caravan','.cards','.care','.career','.careers','.cartier','.casa','.cash','.cat','.catering','.cc','.cd','.center','.ceo','.cern','.cf','.cg','.ch','.channel','.cheap','.christmas','.chrome','.church','.ci','.citic','.city','.ck','.cl','.claims','.cleaning','.click','.clinic','.clothing','.club','.cm','.cn','.co','.coach','.codes','.coffee','.college','.cologne','.com','.community','.company','.computer','.condos','.construction','.consulting','.contractors','.cooking','.cool','.coop','.country','.cr','.credit','.creditcard','.cricket','.crs','.cruises','.cu','.cuisinella','.cv','.cw','.cx','.cy','.cymru','.cz','.dabur','.dad','.dance','.dating','.day','.dclk','.de','.deals','.degree','.delivery','.democrat','.dental','.dentist','.desi','.design','.dev','.diamonds','.diet','.digital','.direct','.directory','.discount','.dj','.dk','.dm','.dnp','.do','.docs','.domains','.doosan','.durban','.dvag','.dz','.eat','.ec','.edu','.education','.ee','.eg','.eh','.email','.emerck','.energy','.engineer','.engineering','.enterprises','.equipment','.er','.es','.esq','.estate','.et','.eu','.eurovision','.eus','.events','.everbank','.exchange','.expert','.exposed','.fail','.farm','.fashion','.feedback','.fi','.finance','.financial','.firmdale','.fish','.fishing','.fit','.fitness','.fj','.fk','.flights','.florist','.flowers','.flsmidth','.fly','.fm','.fo','.foo','.forsale','.foundation','.fr','.frl','.frogans','.fund','.furniture','.futbol','.ga','.gal','.gallery','.garden','.gb','.gbiz','.gd','.ge','.gent','.gf','.gg','.ggee','.gh','.gi','.gift','.gifts','.gives','.gl','.glass','.gle','.global','.globo','.gm','.gmail','.gmo','.gmx','.gn','.goog','.google','.gop','.gov','.gp','.gq','.gr','.graphics','.gratis','.green','.gripe','.gs','.gt','.gu','.guide','.guitars','.guru','.gw','.gy','.hamburg','.hangout','.haus','.healthcare','.help','.here','.hermes','.hiphop','.hiv','.hk','.hm','.hn','.holdings','.holiday','.homes','.horse','.host','.hosting','.house','.how','.hr','.ht','.hu','.ibm','.id','.ie','.ifm','.il','.im','.immo','.immobilien','.in','.industries','.info','.ing','.ink','.institute','.insure','.int','.international','.investments','.io','.iq','.ir','.irish','.is','.it','.iwc','.je','.jetzt','.jm','.jo','.jobs','.joburg','.jp','.juegos','.kaufen','.kddi','.ke','.kg','.kh','.ki','.kim','.kitchen','.kiwi','.km','.kn','.koeln','.kp','.kr','.krd','.kred','.kw','.ky','.kyoto','.kz','.la','.lacaixa','.land','.lat','.latrobe','.lawyer','.lb','.lc','.lds','.lease','.legal','.lgbt','.li','.lidl','.life','.lighting','.limo','.link','.lk','.loans','.london','.lotte','.lotto','.lr','.ls','.lt','.ltda','.lu','.luxe','.luxury','.lv','.ly','.ma','.madrid','.maison','.management','.mango','.market','.marketing','.marriott','.mc','.md','.me','.media','.meet','.melbourne','.meme','.memorial','.menu','.mf','.mg','.mh','.miami','.mil','.mini','.mk','.ml','.mm','.mn','.mo','.mobi','.moda','.moe','.monash','.money','.mormon','.mortgage','.moscow','.motorcycles','.mov','.mp','.mq','.mr','.ms','.mt','.mu','.museum','.mv','.mw','.mx','.my','.mz','.na','.nagoya','.name','.navy','.nc','.ne','.net','.network','.neustar','.new','.nexus','.nf','.ng','.ngo','.nhk','.ni','.ninja','.nl','.no','.np','.nr','.nra','.nrw','.nu','.nyc','.nz','.okinawa','.om','.one','.ong','.onl','.ooo','.org','.organic','.osaka','.otsuka','.ovh','.pa','.paris','.partners','.parts','.party','.pe','.pf','.pg','.ph','.pharmacy','.photo','.photography','.photos','.physio','.pics','.pictures','.pink','.pizza','.pk','.pl','.place','.plumbing','.pm','.pn','.pohl','.poker','.porn','.post','.pr','.praxi','.press','.pro','.prod','.productions','.prof','.properties','.property','.ps','.pt','.pub','.pw','.py','.qa','.qpon','.quebec','.re','.realtor','.recipes','.red','.rehab','.reise','.reisen','.reit','.ren','.rentals','.repair','.report','.republican','.rest','.restaurant','.reviews','.rich','.rio','.rip','.ro','.rocks','.rodeo','.rs','.rsvp','.ru','.ruhr','.rw','.ryukyu','.sa','.saarland','.sale','.samsung','.sarl','.sb','.sc','.sca','.scb','.schmidt','.schule','.schwarz','.science','.scot','.sd','.se','.services','.sew','.sexy','.sg','.sh','.shiksha','.shoes','.shriram','.si','.singles','.sj','.sk','.sky','.sl','.sm','.sn','.so','.social','.software','.sohu','.solar','.solutions','.soy','.space','.spiegel','.sr','.ss','.st','.su','.supplies','.supply','.support','.surf','.surgery','.suzuki','.sv','.sx','.sy','.sydney','.systems','.sz','.taipei','.tatar','.tattoo','.tax','.tc','.td','.technology','.tel','.temasek','.tf','.tg','.th','.tienda','.tips','.tires','.tirol','.tj','.tk','.tl','.tm','.tn','.to','.today','.tokyo','.tools','.top','.town','.toys','.tp','.tr','.trade','.training','.travel','.trust','.tt','.tui','.tv','.tw','.tz','.ua','.ug','.uk','.um','.university','.uno','.uol','.us','.uy','.uz','.va','.vacations','.vc','.ve','.vegas','.ventures','.versicherung','.vet','.vg','.vi','.viajes','.video','.villas','.vision','.vlaanderen','.vn','.vodka','.vote','.voting','.voto','.voyage','.vu','.wales','.wang','.watch','.webcam','.website','.wed','.wedding','.wf','.whoswho','.wien','.wiki','.williamhill','.wme','.work','.works','.world','.ws','.wtc','.wtf','.xxx','.xyz','.yachts','.yandex','.ye','.yoga','.yokohama','.youtube','.yt','.za','.zip','.zm','.zone','.zuerich','.zw');
-	// from http://www.iana.org/domains/root/db/ - Updated in 1.7.3
-	$ConversionSeparator = '-';
-	$ConversionSeparators = array('-','_');
-	$FilterElementsPrefix = array('http://www.','http://','https://www.','https://');
-	$FilterElementsPage = array('.php','.asp','.aspx','.mspx','.cfm','.jsp','.shtml','.html','.htm','.pl','.py');
-	$FilterElementsNum = array('1','2','3','4','5','6','7','8','9','0');
-	$FilterElementsSlash = array('////','///','//');
-	$TempPhrase1 = str_replace($FilterElementsPrefix,'',$commentdata_comment_author_url_lc);
-	$TempPhrase2 = str_replace($FilterElementsPage,'',$TempPhrase1);
-	$TempPhrase3 = str_replace($Domains,'',$TempPhrase2);
-	$TempPhrase4 = str_replace($FilterElementsNum,'',$TempPhrase3);
-	$TempPhrase5 = str_replace($FilterElementsSlash,'/',$TempPhrase4);
-	$TempPhrase6 = strtolower(str_replace($ConversionSeparators,' ',$TempPhrase5));
-	$KeywordURLPhrases = explode('/',$TempPhrase6);
-	$KeywordURLPhrasesCount = count($KeywordURLPhrases);
-	$KeywordCommentAuthorPhrasePunct = array(':',';','+','-','!','.',',','[',']','@','#','$','%','^','&','*','(',')','/','\\','|','=','_');
-	$KeywordCommentAuthorTempPhrase = str_replace($KeywordCommentAuthorPhrasePunct,'',$commentdata_comment_author_lc_deslashed);
-	$KeywordCommentAuthorPhrase1 = str_replace(' ','',$KeywordCommentAuthorTempPhrase);
-	$KeywordCommentAuthorPhrase2 = str_replace(' ','-',$KeywordCommentAuthorTempPhrase);
-	$KeywordCommentAuthorPhrase3 = str_replace(' ','_',$KeywordCommentAuthorTempPhrase);
-	$KeywordCommentAuthorPhraseURLVariation = $FilterElementsPage;
-	$KeywordCommentAuthorPhraseURLVariation[] = '/';
-	$KeywordCommentAuthorPhraseURLVariationCount = count($KeywordCommentAuthorPhraseURLVariation);
-	// Start with url and convert to text phrase for matching against author.
-	$i = 0;
-	while ( $i < $KeywordURLPhrasesCount ) {
-		if ( $KeywordURLPhrases[$i] == $commentdata_comment_author_lc_deslashed ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$wpss_error_code .= ' T3001-1';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		if ( $KeywordURLPhrases[$i] == $commentdata_comment_content_lc_deslashed ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$wpss_error_code .= ' T3002-1';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		$i++;
-		}
-	// Reverse check to see if keyword phrases in url match Comment Author. Start with author and convert to url phrases.
-	$i = 0;
-	while ( $i < $KeywordCommentAuthorPhraseURLVariationCount ) {
-		$KeywordCommentAuthorPhrase1Version = '/'.$KeywordCommentAuthorPhrase1.$KeywordCommentAuthorPhraseURLVariation[$i];
-		$KeywordCommentAuthorPhrase2Version = '/'.$KeywordCommentAuthorPhrase2.$KeywordCommentAuthorPhraseURLVariation[$i];
-		$KeywordCommentAuthorPhrase3Version = '/'.$KeywordCommentAuthorPhrase3.$KeywordCommentAuthorPhraseURLVariation[$i];
-		$KeywordCommentAuthorPhrase1SubStrCount = spamshield_substr_count($commentdata_comment_author_url_lc, $KeywordCommentAuthorPhrase1Version);
-		$KeywordCommentAuthorPhrase2SubStrCount = spamshield_substr_count($commentdata_comment_author_url_lc, $KeywordCommentAuthorPhrase2Version);
-		$KeywordCommentAuthorPhrase3SubStrCount = spamshield_substr_count($commentdata_comment_author_url_lc, $KeywordCommentAuthorPhrase3Version);
-		if ( $KeywordCommentAuthorPhrase1SubStrCount >= 1 ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$wpss_error_code .= ' T3003-1-1';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		elseif ( $KeywordCommentAuthorPhrase2SubStrCount >= 1 ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$wpss_error_code .= ' T3003-2-1';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		elseif ( $KeywordCommentAuthorPhrase3SubStrCount >= 1 ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$wpss_error_code .= ' T3003-3-1';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		$i++;
-		}
+	// MISC - T1020-1, T2003-1, T2003-1, T2004-1, T2005-1, T2006-1, T2007-1-1, T2007-2-1, T2010-1, T3001-1, T3002-1, T3003-1-1, T3003-2-1, T3003-3-1, T9000 Variants
+	// DEPRECATED - Removed 1.7.5
 
-	// Test Comment Author 
-	// Words in Comment Author Repeated in Content		
-	$RepeatedTermsFilters = array('.','-',':');
-	$RepeatedTermsTempPhrase = str_replace($RepeatedTermsFilters,'',$commentdata_comment_author_lc_deslashed);
-	$RepeatedTermsTempPhrase = preg_replace("~\s+~", " ", $RepeatedTermsTempPhrase);
-	$RepeatedTermsTest = explode(' ',$RepeatedTermsTempPhrase);
-	$RepeatedTermsTestCount = count($RepeatedTermsTest);
-	$RepeatedTermsInContentCount = 0;
-	$i = 0;
-	while ( $i < $RepeatedTermsTestCount ) {
-		$RepeatedTermsInContentCount = 0;
-		if ( !empty( $RepeatedTermsTest[$i] ) ) {
-			$RepeatedTermsInContentCount = spamshield_substr_count( $commentdata_comment_content_lc_deslashed, $RepeatedTermsTest[$i] );
-			}
-		$RepeatedTermsInContentStrLength = spamshield_strlen($RepeatedTermsTest[$i]);
-		if ( $RepeatedTermsInContentCount >= 6 && $RepeatedTermsInContentStrLength >= 4 ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$wpss_error_code .= ' T9000-'.$i.'-1';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		$i++;
-		}
-	
 	// Blacklisted Domains Check
 	if ( spamshield_domain_blacklist_chk( $commentdata_comment_author_url_domain_lc ) ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
@@ -4508,16 +4315,8 @@ function spamshield_content_filter( $commentdata, $spamshield_options ) {
 	$ip_proxy_chrome_compression	= $ip_proxy_info['ip_proxy_chrome_compression'];
 	// IP / PROXY INFO - END
 	
-	// Post Type Filter
-	/*
+	// Post Type Filter - INVALTY
 	// Removed V 1.1.7 - Found Exception
-	if ( $commentdata_comment_post_type != 'post' ) {
-		// Prevents Trackback, Pingback, and Automated Spam on 'Page' Post Type
-		// Invalid types: 'page', 'attachment', 'revision', 'nav_menu_item'
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' INVALTY';
-		}
-	*/
 
 	// Simple Filters
 	
@@ -4539,7 +4338,7 @@ function spamshield_content_filter( $commentdata, $spamshield_options ) {
 		}
 
 	// Authors Only - Non-Trackback
-	//Removed Filters 300-423 and replaced with Regex
+	// Removed Filters 300-423 and replaced with Regex
 
 	// Author Blacklist Check - Invalid Author Names - Stopping Human Spam
 	if ( $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' && spamshield_anchortxt_blacklist_chk( $commentdata_comment_author_lc_deslashed, '', 'author', $commentdata_comment_author_url_lc ) ) {
@@ -4722,50 +4521,7 @@ function spamshield_content_filter( $commentdata, $spamshield_options ) {
 		}
 	
 	// TEST REFERRERS 3 - TO THE PAGE BEING COMMENTED ON
-	/* DISABLED IN V1.5.9
-	$test_fail = false;
-	if ( !empty( $commentdata_referrer_lc ) && $commentdata_referrer_lc != $commentdata_comment_post_url_lc && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
-		// If Comment Processor Referrer exists, make sure it matches page being commented on
-		// Test if JetPack Active - Added Compatibility Fix in 1.3.5
-		$wpss_jp_active	= spamshield_is_plugin_active( 'jetpack/jetpack.php' );
-		// Start Comment Processor Referrer Tests
-		if ( !empty( $wpss_jp_active ) && $commentdata_referrer_lc == 'http://jetpack.wordpress.com/jetpack-comment/' ) {
-			$test_fail = false;
-			}
-		else {
-			$wpss_permalink_structure = get_option('permalink_structure');
-			if ( !empty( $wpss_permalink_structure ) ) { // Using Permalinks
-				if ( strpos( $commentdata_referrer_lc, '?' ) !== false ) { // URL has query string
-					$referrer_no_query = spamshield_remove_query( $commentdata_referrer_lc );
-					}
-				else { // URL does not have query string
-					$referrer_no_query = $commentdata_referrer_lc;
-					}
-				$wpss_page_comments = get_option('page_comments');
-				if ( !empty( $wpss_page_comments ) ) { // Breaking Comments Into Pages
-					$referrer_no_query = preg_replace( "~comment\-page\-[0-9]+/$~i", "", $referrer_no_query );
-					}
-				//if ( $referrer_no_query != $commentdata_comment_post_url_lc ) { $test_fail = true; }
-				if ( $referrer_no_query != $commentdata_comment_post_url_lc ) { 
-					$test_fail = true; 
-					}
-				}
-			elseif ( strpos( $commentdata_referrer_lc, '?' ) !== false ) { // Not using Permalinks & URL has query string
-				$referrer_wp_query = spamshield_remove_query( $commentdata_referrer_lc, true );
-				$post_url_wp_query = spamshield_remove_query( $commentdata_comment_post_url_lc, true );
-				if ( $referrer_wp_query != $post_url_wp_query ) { $test_fail = true; }
-				}
-			else { // Not using Permalinks & URL does not have query string
-				$test_fail = true;
-				}
-			}
-		if ( !empty( $test_fail ) ) {
-			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-			$wpss_error_code .= ' REF-3-1031';
-			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-			}
-		}
-	*/
+	// DISABLED IN V1.5.9
 		
 	// Spam Network - BEGIN
 
@@ -4867,17 +4623,7 @@ function spamshield_content_filter( $commentdata, $spamshield_options ) {
 			$i++;
 			}
 		// HAL1005
-		// After testing port to CF and R
-		/*
-		//if ( preg_match( "~^[a-z]{2}(-[A-Z]{2})?$~", $user_http_accept_language ) ) { MSIE FAILS
-		if ( $user_http_accept_language == 'en' ) {
-			if ( ( strpos( $commentdata_user_agent_lc, 'Opera' ) === 0 && strpos( $commentdata_user_agent_lc, 'Linux' ) === false ) || strpos( $commentdata_user_agent_lc, 'Opera' ) !== 0 ) {
-				// Opera on Linux is only UA that exhibits this behavior. All others are bots.
-				$content_filter_status = '1';
-				$wpss_error_code .= ' HAL1005';
-				}
-			}
-		*/
+		// NOT IMPLEMENTED
 
 		//Test PROXY STATUS if option
 		//Google Chrome Compression Proxy Bypass
@@ -4929,7 +4675,7 @@ function spamshield_content_filter( $commentdata, $spamshield_options ) {
 		}
 	if ( strpos( $commentdata_comment_content_lc_deslashed, 'blastogranitic atremata antiviral unteacherlike choruser coccygalgia corynebacterium reason' ) !== false ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' 5002';
+		$wpss_error_code .= ' 5002'; // DEPRECATE
 		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 		}
 	// "Hey this is off topic but.." Then why are you commenting? Common phrase in spam
@@ -6826,7 +6572,6 @@ if (!class_exists('wpSpamShield')) {
 					add_action( 'admin_notices', 'spamshield_admin_notices' );
 					}
 				// Make sure user has minimum required WordPress version, in order to prevent issues
-				//if ( version_compare( RSMP_WP_VERSION, WPSS_REQUIRED_WP_VERSION, '<' ) ) {
 				$wpss_wp_version = RSMP_WP_VERSION;
 				if ( !empty( $wpss_wp_version ) && version_compare( $wpss_wp_version, WPSS_REQUIRED_WP_VERSION, '<' ) ) {
 					deactivate_plugins( WPSS_PLUGIN_BASENAME );
