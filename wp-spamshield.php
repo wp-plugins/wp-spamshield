@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.7.5
+Version: 1.7.6
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -42,7 +42,7 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.7.5' );
+define( 'WPSS_VERSION', '1.7.6' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.7' );
 define( 'WPSS_MAX_WP_VERSION', '5.0' );
 /** Setting important URL and PATH constants so the plugin can find things
