@@ -185,7 +185,7 @@ If you have any further questions, please submit them on the [support page](http
 = 1.7.7 =
 *released 02/21/15*
 
-* Added an uninstall function (uninstall.php file) to remove all WP-SpamShield data from the WordPress database when the plugin is deleted through the dashboard.
+* Added an uninstall function that completely uninstalls the plugin and removes all options, data, and traces of its existence when it is deleted through the dashboard.
 * Added a fix to prevent certain rare situations from triggering duplicate emails to be sent by the contact form.
 * Added a fix to ensure contact form is implemented properly, and strictly enforce not being used in widgets or sidebars. Please see the [contact form documentation](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_adding_contact_form) for more info and usage instructions.
 * Made various code improvements.
