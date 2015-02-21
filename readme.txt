@@ -182,6 +182,16 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.7.7 =
+*released 02/21/15*
+
+* Added an uninstall function (uninstall.php file) to remove all WP-SpamShield data from the WordPress database when the plugin is deleted through the dashboard.
+* Added a fix to prevent certain rare situations from triggering duplicate emails to be sent by the contact form.
+* Added a fix to ensure contact form is implemented properly, and strictly enforce not being used in widgets or sidebars. Please see the [contact form documentation](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_adding_contact_form) for more info and usage instructions.
+* Made various code improvements.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.7.6 =
 *released 02/15/15*
 
@@ -684,8 +694,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.7.6 =
-Updated the spam filters. Please see Changelog for details.
+= 1.7.7 =
+Added an uninstall function to clean up data upon deleting, made a couple fixes to the contact form, made various code improvements, and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
