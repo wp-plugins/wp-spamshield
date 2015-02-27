@@ -182,6 +182,15 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.7.8 =
+*released 02/27/15*
+
+* Updated the Dutch (nl_NL) and  German (de_DE) translations.
+* Made various code improvements.
+* Added new filters to the spam blocking algorithm.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.7.7 =
 *released 02/21/15*
 
@@ -694,8 +703,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.7.7 =
-Added an uninstall function to clean up data upon deleting, made a couple fixes to the contact form, made various code improvements, and improved/updated the spam filters. Please see Changelog for details.
+= 1.7.8 =
+Updated Dutch and German translations, made various code improvements, added new filters to the spam blocking algorithm, and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

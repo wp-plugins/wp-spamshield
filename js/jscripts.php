@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.7.5
+Version: 1.7.8
 */
 
 // Security Sanitization - BEGIN
@@ -86,7 +86,7 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	if ( empty( $_SESSION[$key_pages_hist] ) ) { $_SESSION[$key_pages_hist] = array(); }
 	if ( empty( $_SESSION[$key_hits_per_page] ) ) { $_SESSION[$key_hits_per_page] = array(); }
 	if ( !empty( $_SERVER['HTTP_REFERER'] ) ) {
-		$current_ref 	= $_SERVER['HTTP_REFERER'];
+		$current_ref 	= trim(strip_tags($_SERVER['HTTP_REFERER']));
 		$key_first_ref	= 'wpss_referer_init_'.RSMP_HASH;
 		$key_last_ref	= 'wpss_jscripts_referer_last_'.RSMP_HASH;
 		if ( !array_key_exists( $current_ref, $_SESSION[$key_pages_hist] ) ) {
