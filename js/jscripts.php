@@ -1,12 +1,12 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.7.8
+Version: 1.7.9
 */
 
 // Security Sanitization - BEGIN
 $id='';
-if ( !empty( $_GET ) || preg_match ( "~\?~", $_SERVER['REQUEST_URI'] ) ) {
+if ( !empty( $_GET ) || strpos( $_SERVER['REQUEST_URI'], '?' ) !== FALSE ) {
 	header('HTTP/1.1 403 Forbidden');
 	die('ERROR: This resource will not function with a query string. Remove the query string from the URL and try again.');
 	}
@@ -183,11 +183,6 @@ function spamshield_timer_js( $start = NULL, $end = NULL, $show_seconds = false,
 	$total_time_for = number_format( $total_time, $precision );
 	if ( !empty( $show_seconds ) ) { $total_time_for .= ' seconds'; }
 	return $total_time_for;
-	}
-function spamshield_get_url_js() {
-	if ( !empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] != 'off' ) { $url = 'https://'; } else { $url = 'http://'; }
-	$url .= $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-	return $url;
 	}
 function spamshield_get_user_agent_js() {
 	if ( !empty( $_SERVER['HTTP_USER_AGENT'] ) ) { $user_agent = trim(addslashes(strip_tags($_SERVER['HTTP_USER_AGENT']))); } else { $user_agent = ''; }
