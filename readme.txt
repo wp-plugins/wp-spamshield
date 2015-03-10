@@ -182,6 +182,16 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.8 =
+*released 03/09/15*
+
+* Made some improvements to the spam blocking algorithm.
+* Made a number of various code and performance improvements.
+* Improved some of the error messages.
+* Fixed a couple bugs introduced in 1.7.9, including a bug in the contact form that incorrectly detected spam servers, and a compatibility issue with the new registration anti-spam feature and certain multisite configurations. This feature was rolled back while we look into the compatibility issues.
+* Made a few improvements to the blocked comment logging functionality.
+* Updated the spam filters.
+
 = 1.7.9 =
 *released 03/06/15*
 
@@ -714,8 +724,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.7.9 =
-Improved registration spam protection, removed some unnecessary technical info from notification emails, added new filters to the spam blocking algorithm, and improved/updated the spam filters. Please see Changelog for details.
+= 1.8 =
+Made some improvements to the spam blocking algorithm, improved some error messages, made a number of various code improvements, fixed a couple bugs, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
