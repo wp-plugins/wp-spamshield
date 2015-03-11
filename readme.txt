@@ -182,6 +182,13 @@ If you have any further questions, please submit them on the [support page](http
 
 == Changelog ==
 
+= 1.8.1 =
+*released 03/11/15*
+
+* Updated the French (fr_FR) translation.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.8 =
 *released 03/09/15*
 
@@ -724,8 +731,8 @@ Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
 For a complete list of changes to the plugin, view the [Version History](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8 =
-Made some improvements to the spam blocking algorithm, improved some error messages, made a number of various code improvements, fixed a couple bugs, and updated the spam filters. Please see Changelog for details.
+= 1.8.1 =
+Updated the French (fr_FR) translation and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
