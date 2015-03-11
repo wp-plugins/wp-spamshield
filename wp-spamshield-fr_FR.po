@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 10:00-0800\n"
-"PO-Revision-Date: 2015-03-08 20:00-0800\n"
+"PO-Revision-Date: 2015-03-10 20:00-0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -233,7 +233,7 @@ msgstr "« %1$s » semble être du spam. S'il vous plaît entrez une valeur diff
 
 #: wp-spamshield.php:3677
 msgid "Please go back and check all parts of your comment submission (including name, email, website, and comment content)."
-msgstr ""
+msgstr "Veuillez revenir en arrière et vérifier toutes les éléments de votre commentaire (y compris le nom, l'email, le site web et le contenu du commentaire)."
 
 #: wp-spamshield.php:3677
 msgid "Please go back and try to say something useful."
@@ -245,11 +245,11 @@ msgstr "Si vous êtes un utilisateur enregistré et que vous voyez ce message fr
 
 #: wp-spamshield.php:3699
 msgid "Your comment was too short. Please go back and try your comment again."
-msgstr ""
+msgstr "Votre commentaire est trop court. S'il vous plaît revenez en arrière et essayez à nouveau."
 
 #: wp-spamshield.php:3699
 msgid "Your comment was too long. Please go back and try your comment again."
-msgstr ""
+msgstr "Votre commentaire est trop long. S'il vous plaît revenez en arrière et essayez à nouveau."
 
 #: wp-spamshield.php:3728
 msgid "Your comment has been blocked because the website owner has set their spam filter to not allow comments from users behind proxies."
@@ -524,19 +524,21 @@ msgstr "Vous pouvez aussi la mettre à jour sur la page de Discussion de WordPre
 
 #: wp-spamshield.php:6346
 msgid "Enable WP-SpamShield Whitelist"
-msgstr ""
+msgstr "Activez la liste blanche WP-SpamShield"
 
 #: wp-spamshield.php:6346
 msgid "Enables WP-SpamShield's Whitelist - for comments and contact form submissions. When a comment or contact form is submitted from an e-mail address on the whitelist, it will bypass spam filters and be allowed through.<br/>(Useful if you have specific users that you want to let bypass the filters.)"
 msgstr ""
+"Active la liste blanche WP-SpamShield - pour les commentaires et messages du formulaire de contact. Lorsqu'un commentaire ou message du formulaire de contact est envoyé depuis une adresse de messagerie sur la liste blanche, il contournera les filtres anti-spam.<br>(Utile si vous avez des utilisateurs spécifiques que vous souhaitez laisser "
+"contourner les filtres)."
 
 #: wp-spamshield.php:6356
 msgid "Your current WP-SpamShield Whitelist"
-msgstr ""
+msgstr "Votre liste blanche WP-SpamShield actuelle"
 
 #: wp-spamshield.php:6356
 msgid "One email address per line. Each entry must be a valid and complete email address, like <em>user@yourwebsite.com</em>. It is not case-sensitive and will only make exact matches, not partial matches."
-msgstr ""
+msgstr "Une adresse email par ligne. Chaque entrée doit être une adresse email valide et complète, comme <em>exemple@votresite.com</em>. Ce n'est pas sensible à la casse et ne fera que rendre les correspondances exactes, et non les correspondances partielles."
 
 #: wp-spamshield.php:6346
 msgid "Disable trackbacks."
@@ -580,7 +582,7 @@ msgstr "Cette option permet de désactiver le bouclier anti-spam pour le formula
 
 #: wp-spamshield.php:6373
 msgid "Allow Keywords in Comment Author Names."
-msgstr ""
+msgstr "Autoriser les mots-clés dans les commentaire des noms d'auteurs."
 
 #: wp-spamshield.php:6373
 #, php-format
@@ -588,6 +590,8 @@ msgid ""
 "This will allow some keywords to be used in comment author names. By default, WP-SpamShield blocks many common spam keywords from being used in the comment \"%1$s\" field. This option is useful for sites with users that use pseudonyms, or for sites that simply want to allow business names and keywords to be used in the comment \"%2$s\" field. "
 "This option is not recommended, as it can potentially allow more human spam, but it is available if you choose. Your site will still be protected against all automated comment spam."
 msgstr ""
+"Ceci autorise ces mots-clés a être utilisés dans les commentaires des noms d'auteurs. Par défaut, WP-SpamShield bloque l'utilisation de la majorité des mots-clés de spam dans les commentaires du champ \"%1$s\". Cette option est utile pour les sites comportant des utilisateurs avec des pseudonymes, ou pour les sites qui souhaitent autoriser les "
+"mots-clés et les noms de marques dans les champs de commentaires \"%2$s\". Cette option n'est pas recommandée. Elle peut potentiellement permettre plus de spam humain. Elle est toutefois disponible si vous le souhaitez. Votre site restera protéger contre le spam automatique."
 
 #: wp-spamshield.php:6373
 msgid "Help promote WP-SpamShield?"
