@@ -7,16 +7,21 @@ Tested up to: 4.1
 Stable tag: trunk
 License: GPLv2
 
-A powerful, user-friendly, all-in-one anti-spam plugin that eliminates comment spam & registration spam. Includes spam-blocking contact form.
+An extremely powerful WordPress anti-spam plugin that eliminates comment spam, trackback spam, contact form spam & registration spam.
 
 == Description ==
 
-**An extremely powerful and user friendly WordPress anti-spam plugin that stops blog spam cold, including comment spam, trackback and pingback spam, contact form spam, and registration spam.** See what it's like to run a WordPress site without spam! Includes spam-blocking contact form feature. **WP-SpamShield is an all-in-one spam solution for WordPress.**
+An extremely powerful and user friendly WordPress anti-spam plugin that stops blog spam cold, including:
 
-= A Powerful Weapon Against: Comment Spam, Trackback Spam, Contact Form Spam, and Registration Spam - Without CAPTCHAS =
-WP-SpamShield eliminates *comment spam*, *trackback spam & pingback spam*, *contact form spam*, and *user registration spam*. **No CAPTCHA's, challenge questions or other inconvenience to site visitors** - it works silently in the background.
+* Comment spam
+* Trackback and pingback spam
+* Contact form spam
+* Registration spam
 
-The bottom line, is that this plugin just plain works, and is a **powerful weapon against spam**.
+See what it's like to run a WordPress site without spam! WP-SpamShield is an all-in-one spam solution for WordPress.
+
+= A Powerful Weapon Against WordPress Spam - Without CAPTCHAS =
+No CAPTCHA's, challenge questions or other inconvenience to site visitors - it works silently in the background.
 
 = Documentation / Tech Support =
 * Documentation: [Plugin Homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/)
@@ -25,7 +30,7 @@ The bottom line, is that this plugin just plain works, and is a **powerful weapo
 = How It Works =
 Most of the spam hitting your blog originates from bots, but quite a bit comes from humans too. This plugin works like a firewall to ensure that your commenters are in fact, human, and that those humans aren't spamming you.
 
-There are two layers of protection that work together to *block both automated and human spam*: a JavaScript/Cookies Layer, and an Algorithmic Layer. The first layer uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 100% of automated spam from ever getting to your site. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop almost all of the spam that the JavaScript Layer blocks, and provides close to a fully redundant backstop. This JavaScript Layer utilizes multiple randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer consists of over 100 advanced filters, and eliminates *trackback spam* and *most human spam as well*. And, it does all that without hindering legitimate comments and trackbacks.
+There are two layers of protection that work together to *block both automated and human spam*: a **JavaScript/Cookies Layer**, and an **Algorithmic Layer**. The first layer uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 100% of automated spam from ever getting to your site. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop almost all of the spam that the JavaScript Layer blocks, and provides close to a fully redundant backstop. This JavaScript Layer utilizes multiple randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer consists of over 100 advanced filters, and eliminates *trackback spam* and *most human spam as well*. And, it does all that without hindering legitimate comments and trackbacks.
 
 This type of solution works silently in the background, with no inconveniences. You won't have to waste valuable time sifting through a spam queue any more, because there won't be anything there.
 
