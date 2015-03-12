@@ -11,16 +11,9 @@ An extremely powerful WordPress anti-spam plugin that eliminates comment spam, t
 
 == Description ==
 
-An extremely powerful and user friendly WordPress anti-spam plugin that stops blog spam cold, including:
+An extremely powerful and user-friendly WordPress anti-spam plugin that eliminates comment spam, trackback spam, contact form spam & registration spam.
 
-* Comment spam
-* Trackback and pingback spam
-* Contact form spam
-* Registration spam
-
-See what it's like to run a WordPress site without spam! WP-SpamShield is an all-in-one spam solution for WordPress.
-
-= A Powerful Weapon Against WordPress Spam - Without CAPTCHAS =
+= An All-in-one Spam Solution for WordPress - Without CAPTCHAS =
 No CAPTCHA's, challenge questions or other inconvenience to site visitors - it works silently in the background.
 
 = Documentation / Tech Support =
