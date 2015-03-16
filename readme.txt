@@ -73,6 +73,10 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 * German (de_DE)
 * Serbian (sr_RS)
 
+= Requirements = 
+WordPress 3.8+
+PHP 5.3+
+
 > #### **WordPress Blogging Without Spam**
 > How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by giving it a good rating!
 
