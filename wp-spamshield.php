@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.8.1
+Version: 1.8.2
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -40,8 +40,9 @@ if ( !function_exists( 'add_action' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.8.1' );
-define( 'WPSS_REQUIRED_WP_VERSION', '3.7' );
+define( 'WPSS_VERSION', '1.8.2' );
+define( 'WPSS_REQUIRED_WP_VERSION', '3.8' );
+define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /** Setting important URL and PATH constants so the plugin can find things
 * Constants prefixed with 'RSMP_' are shared with other RSM Plugins for efficiency.
 **/
@@ -61,12 +62,14 @@ if ( !defined( 'WPSS_PLUGIN_NAME' ) ) 			{ define( 'WPSS_PLUGIN_NAME', trim( dir
 if ( !defined( 'WPSS_PLUGIN_URL' ) ) 			{ define( 'WPSS_PLUGIN_URL', untrailingslashit( plugin_dir_url( __FILE__ ) ) ); }
 if ( !defined( 'WPSS_PLUGIN_FILE_URL' ) ) 		{ define( 'WPSS_PLUGIN_FILE_URL',  WPSS_PLUGIN_URL.'/'.WPSS_PLUGIN_FILE_BASENAME ); }
 if ( !defined( 'WPSS_PLUGIN_COUNTER_URL' ) ) 	{ define( 'WPSS_PLUGIN_COUNTER_URL', WPSS_PLUGIN_URL . '/counter' ); }
+if ( !defined( 'WPSS_PLUGIN_CSS_URL' ) ) 		{ define( 'WPSS_PLUGIN_CSS_URL', WPSS_PLUGIN_URL . '/css' );	}
 if ( !defined( 'WPSS_PLUGIN_DATA_URL' ) ) 		{ define( 'WPSS_PLUGIN_DATA_URL', WPSS_PLUGIN_URL . '/data' ); }
 if ( !defined( 'WPSS_PLUGIN_IMG_URL' ) ) 		{ define( 'WPSS_PLUGIN_IMG_URL', WPSS_PLUGIN_URL . '/img' ); }
 if ( !defined( 'WPSS_PLUGIN_JS_URL' ) ) 		{ define( 'WPSS_PLUGIN_JS_URL', WPSS_PLUGIN_URL . '/js' );	}
 if ( !defined( 'WPSS_PLUGIN_PATH' ) ) 			{ define( 'WPSS_PLUGIN_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) ); }
 if ( !defined( 'WPSS_PLUGIN_FILE_PATH' ) ) 		{ define( 'WPSS_PLUGIN_FILE_PATH', WPSS_PLUGIN_PATH.'/'.WPSS_PLUGIN_FILE_BASENAME ); }
 if ( !defined( 'WPSS_PLUGIN_COUNTER_PATH' ) ) 	{ define( 'WPSS_PLUGIN_COUNTER_PATH', WPSS_PLUGIN_PATH . '/counter' ); }
+if ( !defined( 'WPSS_PLUGIN_CSS_PATH' ) ) 		{ define( 'WPSS_PLUGIN_CSS_PATH', WPSS_PLUGIN_PATH . '/css' ); }
 if ( !defined( 'WPSS_PLUGIN_DATA_PATH' ) ) 		{ define( 'WPSS_PLUGIN_DATA_PATH', WPSS_PLUGIN_PATH . '/data' ); }
 if ( !defined( 'WPSS_PLUGIN_IMG_PATH' ) ) 		{ define( 'WPSS_PLUGIN_IMG_PATH', WPSS_PLUGIN_PATH . '/img' ); }
 if ( !defined( 'WPSS_PLUGIN_INCL_PATH' ) ) 		{ define( 'WPSS_PLUGIN_INCL_PATH', WPSS_PLUGIN_PATH . '/includes' ); }
@@ -90,9 +93,10 @@ if ( !defined( 'RSMP_SERVER_NAME_REV' ) ) 		{ define( 'RSMP_SERVER_NAME_REV', st
 if ( !defined( 'WPSS_REF2XJS' ) ) 				{ define( 'WPSS_REF2XJS', 'ref2xJS' ); }
 if ( !defined( 'RSMP_DEBUG_SERVER_NAME' ) ) 	{ define( 'RSMP_DEBUG_SERVER_NAME', '.redsandmarketing.com' ); }
 if ( !defined( 'RSMP_DEBUG_SERVER_NAME_REV' ) ) { define( 'RSMP_DEBUG_SERVER_NAME_REV', strrev( RSMP_DEBUG_SERVER_NAME ) ); }
-if ( !defined( 'WPSS_HOME_LINK' ) ) 			{ define( 'WPSS_HOME_LINK', 'http://www.redsandmarketing.com/plugins/wp-spamshield/' ); }
-if ( !defined( 'WPSS_WP_LINK' ) ) 				{ define( 'WPSS_WP_LINK', 'http://wordpress.org/extend/plugins/wp-spamshield/' ); }
-if ( !defined( 'WPSS_WP_RATING_LINK' ) ) 		{ define( 'WPSS_WP_RATING_LINK', 'http://bit.ly/wp-spamshield-rate' ); }
+if ( !defined( 'RSMP_RSM_URL' ) ) 				{ define( 'RSMP_RSM_URL', 'http://www.redsandmarketing.com/' ); }
+if ( !defined( 'WPSS_HOME_URL' ) ) 				{ define( 'WPSS_HOME_URL', RSMP_RSM_URL.'plugins/wp-spamshield/' ); }
+if ( !defined( 'WPSS_WP_URL' ) ) 				{ define( 'WPSS_WP_URL', 'http://wordpress.org/extend/plugins/wp-spamshield/' ); }
+if ( !defined( 'WPSS_WP_RATING_URL' ) ) 		{ define( 'WPSS_WP_RATING_URL', 'http://bit.ly/wp-spamshield-rate' ); }
 if ( !defined( 'RSMP_SERVER_SOFTWARE' ) ) 		{ define( 'RSMP_SERVER_SOFTWARE', $_SERVER['SERVER_SOFTWARE'] ); }
 if ( !defined( 'RSMP_PHP_UNAME' ) ) 			{ define( 'RSMP_PHP_UNAME', @php_uname() ); }
 if ( !defined( 'RSMP_PHP_VERSION' ) ) 			{ define( 'RSMP_PHP_VERSION', phpversion() ); }
@@ -266,17 +270,23 @@ function spamshield_microtime() {
 	return $mtime;
 	}
 
-function spamshield_timer( $start = NULL, $end = NULL, $show_seconds = FALSE, $precision = 8 ) {
+function spamshield_timer( $start = NULL, $end = NULL, $show_seconds = FALSE, $precision = 8, $no_format = FALSE ) {
+	// $precision will default to 8 but can be set to anything - 1,2,3,4,5,6,etc.
+	// Use $no_format when clean numbers are needed for calculations. International formatting throws a wrench into things.
 	if ( empty( $start ) || empty( $end ) ) { $start = $end = 0; }
-	// $precision will default to 8 but can be set to anything - 1,2,3,4,5,etc.
 	$total_time = $end - $start;
-	$total_time_for = spamshield_number_format( $total_time, $precision );
-	if ( !empty( $show_seconds ) ) { $total_time_for .= ' seconds'; }
+	if ( empty( $no_format ) ) {
+		$total_time_for = spamshield_number_format( $total_time, $precision );
+		if ( !empty( $show_seconds ) ) { $total_time_for .= ' seconds'; }
+		}
+	else { 
+		$total_time_for = number_format( $total_time, $precision );
+		}
 	return $total_time_for;
 	}
 
-function spamshield_number_format( $number, $precision = 8 ) {
-	// $precision will default to 8 but can be set to anything - 1,2,3,4,5,etc.
+function spamshield_number_format( $number, $precision = NULL ) {
+	// $precision will default to NULL but can be set to anything - 1,2,3,4,5,6,etc.
 	if ( function_exists( 'number_format_i18n' ) ) { $number_for = number_format_i18n( $number, $precision ); } 
 	else { $number_for = number_format( $number, $precision ); }
 	return $number_for;
@@ -862,13 +872,13 @@ function spamshield_counter( $counter_option = 0 ) {
 	$counter_option_min = 1;
 	$counter_spam_blocked_msg = __( 'spam blocked by WP-SpamShield', WPSS_PLUGIN_NAME );
 	if ( empty ( $counter_option ) || $counter_option > $counter_option_max || $counter_option < $counter_option_min ) {
-		$spamshield_count = number_format( spamshield_count() );
-		echo '<a href="'.WPSS_HOME_LINK.'" style="text-decoration:none;" rel="external" title="'.spamshield_promo_text(11).'" >'.$spamshield_count.' '.$counter_spam_blocked_msg.'</a>';
+		$spamshield_count = spamshield_number_format( spamshield_count() );
+		echo '<a href="'.WPSS_HOME_URL.'" style="text-decoration:none;" rel="external" title="'.spamshield_promo_text(11).'" >'.$spamshield_count.' '.$counter_spam_blocked_msg.'</a>';
 		return;
 		}
 	// Display Counter
 	/* Implementation: <?php if ( function_exists('spamshield_counter') ) { spamshield_counter(1); } ?> */
-	$spamshield_count = number_format( spamshield_count() );
+	$spamshield_count = spamshield_number_format( spamshield_count() );
 	$counter_div_height = array('0','66','66','66','106','61','67','66','66','106');
 	$counter_count_padding_top = array('0','11','11','11','79','14','17','11','11','79');
 	?>
@@ -889,7 +899,7 @@ function spamshield_counter( $counter_option = 0 ) {
 				else {
 					$spamshield_counter_title_text = spamshield_promo_text(3);
 					}
-				echo '<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_LINK.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
+				echo '<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
 				echo '<span style="color:#ffffff;font-size:20px;line-height:80%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'; 
 				echo '<span style="color:#ffffff;font-size:14px;line-height:20%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.spamshield_promo_text(0).'</span><br />'; 
 				echo '<span style="color:#ffffff;font-size:9px;line-height:30%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.spamshield_promo_text(1).'</span>';
@@ -902,13 +912,13 @@ function spamshield_counter( $counter_option = 0 ) {
 				else {
 					$spamshield_counter_title_text = spamshield_promo_text(5);
 					}
-				echo '<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_LINK.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
+				echo '<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
 				echo '<span style="color:#000000;font-size:9px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.' '.spamshield_promo_text(0).'</span><br />'; 
 				echo '</a></strong>'; 
 				}
 			elseif ( $counter_option == 5 ) {
 				$spamshield_counter_title_text = spamshield_promo_text(6);
-				echo '<strong style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_LINK.'" style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
+				echo '<strong style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
 				echo '<span style="color:#FEB22B;font-size:14px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'; 
 				echo '</a></strong>'; 
 				}
@@ -919,7 +929,7 @@ function spamshield_counter( $counter_option = 0 ) {
 				else {
 					$spamshield_counter_title_text = spamshield_promo_text(8);
 					}
-				echo '<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_LINK.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
+				echo '<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
 				echo '<span style="color:#000000;font-size:14px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'; 
 				echo '</a></strong>'; 
 				}
@@ -938,14 +948,14 @@ function spamshield_counter_short( $attr = NULL ) {
 	$counter_option_min = 1;
 	$counter_spam_blocked_msg = __( 'spam blocked by WP-SpamShield', WPSS_PLUGIN_NAME );
 	if ( empty( $counter_option ) || $counter_option > $counter_option_max || $counter_option < $counter_option_min ) {
-		$spamshield_count = number_format( spamshield_count() );
-		$wpss_shortcode_content = '<a href="'.WPSS_HOME_LINK.'" style="text-decoration:none;" rel="external" title="'.spamshield_promo_text(11).'" >'.$spamshield_count.' '.$counter_spam_blocked_msg.'</a>'."\n";
+		$spamshield_count = spamshield_number_format( spamshield_count() );
+		$wpss_shortcode_content = '<a href="'.WPSS_HOME_URL.'" style="text-decoration:none;" rel="external" title="'.spamshield_promo_text(11).'" >'.$spamshield_count.' '.$counter_spam_blocked_msg.'</a>'."\n";
 		return $wpss_shortcode_content;
 		}
 	// Display Counter
 	/* Implementation: <?php if ( function_exists('spamshield_counter') ) { spamshield_counter(1); } ?> */
 	/* Implementation: [spamshieldcounter style=1] or [spamshieldcounter] where "style" is 0-9 */
-	$spamshield_count = number_format( spamshield_count() );
+	$spamshield_count = spamshield_number_format( spamshield_count() );
 	$counter_div_height = array('0','66','66','66','106','61','67','66','66','106');
 	$counter_count_padding_top = array('0','11','11','11','79','14','17','11','11','79');
 
@@ -965,7 +975,7 @@ function spamshield_counter_short( $attr = NULL ) {
 		else {
 			$spamshield_counter_title_text = spamshield_promo_text(3);
 			}
-		$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_LINK.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
+		$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
 		$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:20px;line-height:80%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'."\n"; 
 		$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:14px;line-height:20%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.spamshield_promo_text(0).'</span><br />'."\n"; 
 		$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:9px;line-height:30%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.spamshield_promo_text(1).'</span>'."\n";
@@ -978,12 +988,12 @@ function spamshield_counter_short( $attr = NULL ) {
 		else {
 			$spamshield_counter_title_text = spamshield_promo_text(5);
 			}
-		$wpss_shortcode_content .= "\t".'<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_LINK.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
+		$wpss_shortcode_content .= "\t".'<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
 		$wpss_shortcode_content .= "\t".'<span style="color:#000000;font-size:9px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.' '.spamshield_promo_text(0).'</span><br />'."\n"; 
 		$wpss_shortcode_content .= "\t".'</a></strong>'."\n"; 
 		}
 	elseif ( $counter_option == 5 ) {
-		$wpss_shortcode_content .= "\t".'<strong style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_LINK.'" style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.spamshield_promo_text(6).'" >'."\n";
+		$wpss_shortcode_content .= "\t".'<strong style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.spamshield_promo_text(6).'" >'."\n";
 		$wpss_shortcode_content .= "\t".'<span style="color:#FEB22B;font-size:14px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'."\n"; 
 		$wpss_shortcode_content .= "\t".'</a></strong>'."\n"; 
 		}
@@ -994,7 +1004,7 @@ function spamshield_counter_short( $attr = NULL ) {
 		else {
 			$spamshield_counter_title_text = "\t".''.spamshield_promo_text(8)."\n";
 			}
-		$wpss_shortcode_content .= "\t".'<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_LINK.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
+		$wpss_shortcode_content .= "\t".'<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
 		$wpss_shortcode_content .= "\t".'<span style="color:#000000;font-size:14px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'."\n"; 
 		$wpss_shortcode_content .= "\t".'</a></strong>'."\n"; 
 		}
@@ -1012,7 +1022,7 @@ function spamshield_counter_sm( $counter_sm_option = 1 ) {
 		}
 	// Display Small Counter
 	/* Implementation: <?php if ( function_exists('spamshield_counter_sm') ) { spamshield_counter_sm(1); } ?> */
-	$spamshield_count = number_format( spamshield_count() );
+	$spamshield_count = spamshield_number_format( spamshield_count() );
 	$counter_sm_div_height = array('0','50','50','50','50','50');
 	$counter_sm_count_padding_top = array('0','11','11','11','11','11');
 
@@ -1035,7 +1045,7 @@ function spamshield_counter_sm( $counter_sm_option = 1 ) {
 				else {
 					$spamshield_counter_title_text = spamshield_promo_text(10);
 					}
-				echo '<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_LINK.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
+				echo '<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >';
 				echo '<span style="color:#ffffff;font-size:18px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'; 
 				echo '<span style="color:#ffffff;font-size:10px;line-height:120%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.spamshield_promo_text(0).'</span>';
 				echo '</a></strong>'; 
@@ -1059,7 +1069,7 @@ function spamshield_counter_sm_short( $attr = NULL ) {
 	// Display Small Counter
 	/* Implementation: <?php if ( function_exists('spamshield_counter_sm') ) { spamshield_counter_sm(1); } ?> */
 	/* Implementation: [spamshieldcountersm style=1] or [spamshieldcountersm] where "style" is 1-5 */
-	$spamshield_count = number_format( spamshield_count() );
+	$spamshield_count = spamshield_number_format( spamshield_count() );
 	$counter_sm_div_height = array('0','50','50','50','50','50');
 	$counter_sm_count_padding_top = array('0','11','11','11','11','11');
 
@@ -1081,7 +1091,7 @@ function spamshield_counter_sm_short( $attr = NULL ) {
 		else {
 			$spamshield_counter_title_text = spamshield_promo_text(10);
 			}
-		$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_LINK.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
+		$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
 		$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:18px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'."\n"; 
 		$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:10px;line-height:120%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.spamshield_promo_text(0).'</span>'."\n";
 		$wpss_shortcode_content .= "\t".'</a></strong>'."\n"; 
@@ -1661,7 +1671,7 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 				$wpss_user_spamshield_count = $_SESSION['user_spamshield_count_'.RSMP_HASH]; 
 				} 
 			else { $wpss_user_spamshield_count = 0; }
-			$wpss_spamshield_count = number_format( spamshield_count() );
+			$wpss_spamshield_count = spamshield_number_format( spamshield_count() );
 
 			$wpss_log_comment_data .= "-------------------------------------------------------------------------------------\n";
 			$wpss_log_comment_data .= "PHP Session ID: 	['".$wpss_session_id."']\n";
@@ -1722,13 +1732,15 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			$wpss_end_time_comment_processing 		= spamshield_microtime();
 			$wpss_total_time_wpss_processing 		= $wpss_total_time_jsck_filter + $wpss_total_time_content_filter;
 			$wpss_total_time_wpss_processing_disp	= spamshield_number_format( $wpss_total_time_wpss_processing, 6 );
-			$wpss_total_time_comment_processing 	= spamshield_timer( $wpss_start_time_comment_processing, $wpss_end_time_comment_processing, FALSE, 6 );
-			$wpss_total_time_comment_proc_disp		= $wpss_total_time_comment_processing;
+			$wpss_total_time_comment_processing 	= spamshield_timer( $wpss_start_time_comment_processing, $wpss_end_time_comment_processing, FALSE, 6, TRUE );
+			$wpss_total_time_comment_proc_disp		= spamshield_number_format( $wpss_total_time_comment_processing, 6);
 			$wpss_total_time_wp_processing			= $wpss_total_time_comment_processing - $wpss_total_time_wpss_processing;
 			$wpss_total_time_wp_processing_disp		= spamshield_number_format( $wpss_total_time_wp_processing, 6 );
-			$wpss_log_comment_data .= "JS/C Processing Time: 	['".$wpss_total_time_jsck_filter_disp." seconds'] Time for JS/Cookies Layer to test for spam\n";
-			$wpss_log_comment_data .= "Algo Processing Time: 	['".$wpss_total_time_content_filter_disp." seconds'] Time for Algorithmic Layer to test for spam\n";
-			$wpss_log_comment_data .= "WPSS Processing Time: 	['".$wpss_total_time_wpss_processing_disp." seconds'] Total time for WP-SpamShield to test for spam\n";
+			if ( !empty( $wpss_total_time_jsck_filter_disp ) || !empty( $wpss_total_time_content_filter_disp ) || !empty( $wpss_total_time_wpss_processing_disp ) ) {
+				$wpss_log_comment_data .= "JS/C Processing Time: 	['".$wpss_total_time_jsck_filter_disp." seconds'] Time for JS/Cookies Layer to test for spam\n";
+				$wpss_log_comment_data .= "Algo Processing Time: 	['".$wpss_total_time_content_filter_disp." seconds'] Time for Algorithmic Layer to test for spam\n";
+				$wpss_log_comment_data .= "WPSS Processing Time: 	['".$wpss_total_time_wpss_processing_disp." seconds'] Total time for WP-SpamShield to test for spam\n";
+				}
 			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) === 0 ) {
 				$wpss_total_time_part_1 			= $wpss_log_comment_data_array['total_time_part_1'];
 				$wpss_total_time_part_1_disp		= spamshield_number_format( $wpss_total_time_part_1, 6 );
@@ -1812,8 +1824,8 @@ function spamshield_comment_form_addendum() {
 	$wpss_js_key 			= $wpss_key_values['wpss_js_key'];
 	$wpss_js_val 			= $wpss_key_values['wpss_js_val'];
 
-	echo "\n".'<script type=\'text/javascript\'>'."\n".'// <![CDATA['."\n".WPSS_REF2XJS.'=escape(document[\'referrer\']);'."\n".'hf1N=\''.$wpss_js_key.'\';'."\n".'hf1V=\''.$wpss_js_val.'\';'."\n".'document.write("<input type=\'hidden\' name=\''.WPSS_REF2XJS.'\' value=\'"+'.WPSS_REF2XJS.'+"\'><input type=\'hidden\' name=\'"+hf1N+"\' value=\'"+hf1V+"\'>");'."\n".'// ]]>'."\n".'</script>';
-	echo '<noscript><input type="hidden" name="JSONST" value="NS1"></noscript>'."\n";
+	echo "\n".'<script type=\'text/javascript\'>'."\n".'// <![CDATA['."\n".WPSS_REF2XJS.'=escape(document[\'referrer\']);'."\n".'hf1N=\''.$wpss_js_key.'\';'."\n".'hf1V=\''.$wpss_js_val.'\';'."\n".'document.write("<input type=\'hidden\' name=\''.WPSS_REF2XJS.'\' value=\'"+'.WPSS_REF2XJS.'+"\' /><input type=\'hidden\' name=\'"+hf1N+"\' value=\'"+hf1V+"\' />");'."\n".'// ]]>'."\n".'</script>';
+	echo '<noscript><input type="hidden" name="JSONST" value="NS1" /></noscript>'."\n";
 
 	if ( !empty( $promote_plugin_link ) ) {
 		$sip5c = '0'; $sip5c = substr(RSMP_SERVER_ADDR, 4, 1); // Server IP 5th Char
@@ -2714,11 +2726,11 @@ function spamshield_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			$spamshield_contact_form_content .= '<script type=\'text/javascript\'>'."\n";
 			$spamshield_contact_form_content .= '// <![CDATA['."\n";
 			$spamshield_contact_form_content .= WPSS_REF2XJS.'=escape(document[\'referrer\']);'."\n";
-			$spamshield_contact_form_content .= 'document.write("<input type=\'hidden\' name=\''.WPSS_REF2XJS.'\' value=\'"+'.WPSS_REF2XJS.'+"\'>");'."\n";
+			$spamshield_contact_form_content .= 'document.write("<input type=\'hidden\' name=\''.WPSS_REF2XJS.'\' value=\'"+'.WPSS_REF2XJS.'+"\' />");'."\n";
 			$spamshield_contact_form_content .= '// ]]>'."\n";
 			$spamshield_contact_form_content .= '</script>'."\n";
 
-			$spamshield_contact_form_content .= '<noscript><input type="hidden" name="JSONST" value="NS2"></noscript>'."\n";
+			$spamshield_contact_form_content .= '<noscript><input type="hidden" name="JSONST" value="NS2" /></noscript>'."\n";
 			$wpss_js_disabled_msg 	= __( 'Currently you have JavaScript disabled. In order to use this contact form, please make sure JavaScript and Cookies are enabled, and reload the page.', WPSS_PLUGIN_NAME );
 			$wpss_js_enable_msg 	= __( 'Click here for instructions on how to enable JavaScript in your browser.', WPSS_PLUGIN_NAME );
 			$spamshield_contact_form_content .= '<noscript><p><strong>'.$wpss_js_disabled_msg.'</strong> <a href="http://enable-javascript.com/" rel="nofollow external" >'.$wpss_js_enable_msg.'</a></p></noscript>'."\n";
@@ -3197,7 +3209,7 @@ function spamshield_exploit_url_chk( $urls = NULL ) {
 		}
 	foreach( $urls as $u => $url ) {
 		$query_str = spamshield_get_query_string($url);
-		if ( preg_match( "~/phpinfo\.php\?~i", $url ) ) {
+		if ( preg_match( "~/phpinfo\.ph(p[3-6]?|tml)\?~i", $url ) ) {
 			// phpinfo.php Redirect - Used in XSS
 			return TRUE;
 			}
@@ -3422,7 +3434,7 @@ function spamshield_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL
 		"REVD2103" => "~([0-9]{1,3}[\.\-]){4}(static[\.\-])?[a-z]+broadband(\.[a-z]{2,3})?\.[a-z]{2,3}$~", 
 		"REVD2104" => "~^host([0-9]{1,3}[\.\-]){4}range[0-9]+\-[0-9]+\.btcentralplus\.com$~", 
 		"REVD2105" => "~^ip([0-9]{1,3}[\.\-]){4}[a-z]{2,}\.[a-z]{2,}\.cox\.net$~", 
-		"REVD2106" => "~^([0-9]{1,3}[\.\-]){4}([a-z]{3}\.)?broadband\.kyivstar\.net$~", 
+		"REVD2106" => "~^([0-9]{1,3}[\.\-]){4}(([a-z]+\.)?broadband|gprs)\.kyivstar\.net$~", 
 		"REVD2107" => "~^([0-9]{1,3}[\.\-]){2}broadband\.[a-z]{4,}(\.[a-z]{2,3})?\.[a-z]{2,3}$~", 
 		"REVD2108" => "~^abs\-static\-([0-9]{1,3}[\.\-]){4}aircel\.co\.in$~", 
 		"REVD2109" => "~^([0-9]{1,3}[\.\-]){4}res\.bhn\.net$~", 
@@ -3435,6 +3447,7 @@ function spamshield_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL
 		"REVD2116" => "~([0-9]{1,3}[\.\-]){4}(bol|mtnl)\.net\.in$~", 
 		"REVD2117" => "~([0-9]{1,3}[\.\-]){4}reverse\.spectranet\.in$~", 
 		"REVD2118" => "~([0-9]{1,3}[\.\-]){4}vasaicable\.co\.in$~", 
+		//"REVD2119" => "~^([0-9]{1,3}[\.\-]){4}(board|broad|dail|dial)\.([a-z]{2}\.){2}dynamic\.163data\.com\.cn$~", // Covered by REVD2000
 		);
 
 	if ( $type == 'trackback' ) { $banned_servers = $banned_trackback_servers; }
@@ -3605,7 +3618,7 @@ function spamshield_check_comment_spam( $commentdata ) {
 		}
 	// Timer End - Part 1
 	$wpss_end_time_part_1 = spamshield_microtime();
-	$wpss_total_time_part_1 = spamshield_timer( $commentdata['start_time_comment_processing'], $wpss_end_time_part_1, FALSE, 6 );
+	$wpss_total_time_part_1 = spamshield_timer( $commentdata['start_time_comment_processing'], $wpss_end_time_part_1, FALSE, 6, TRUE );
 	$commentdata['total_time_part_1'] = $wpss_total_time_part_1;
 	// User Authorization - END
 
@@ -3622,9 +3635,6 @@ function spamshield_check_comment_spam( $commentdata ) {
 			// Timer Start - JS/Cookies Filter
 			$wpss_start_time_jsck_filter = spamshield_microtime();
 			$commentdata['start_time_jsck_filter'] = $wpss_start_time_jsck_filter;
-
-			//add_filter('pre_comment_approved', 'spamshield_jsck_legacy_filter', 1);
-			//add_filter('pre_comment_approved', 'spamshield_denied_post_js_cookie', 1); // When ready to switch from legacy code
 
 			// LOG DATA - BEGIN
 			//if ( !empty( $spamshield_options['comment_logging'] ) ) {
@@ -3914,8 +3924,8 @@ function spamshield_content_length( $commentdata, $spamshield_options ) {
 
 	// Timer Start  - Content Filter
 	if ( empty( $commentdata['start_time_content_filter'] ) ) {
-		$wpss_start_time_content_filter = spamshield_microtime();
-		$commentdata['start_time_content_filter'] = $wpss_start_time_content_filter;
+		$wpss_start_time_content_filter				= spamshield_microtime();
+		$commentdata['start_time_content_filter']	= $wpss_start_time_content_filter;
 		}
 
 	$content_short_status 						= $content_long_status = $wpss_error_code = ''; // Must go before tests
@@ -3941,7 +3951,7 @@ function spamshield_content_length( $commentdata, $spamshield_options ) {
 		spamshield_update_session_data($spamshield_options);
 		// Timer End - Content Filter
 		$wpss_end_time_content_filter 				= spamshield_microtime();
-		$wpss_total_time_content_filter 			= spamshield_timer( $commentdata['start_time_content_filter'], $wpss_end_time_content_filter, FALSE, 6 );
+		$wpss_total_time_content_filter 			= spamshield_timer( $commentdata['start_time_content_filter'], $wpss_end_time_content_filter, FALSE, 6, TRUE );
 		$commentdata['total_time_content_filter']	= $wpss_total_time_content_filter;
 		}
 
@@ -3952,13 +3962,6 @@ function spamshield_content_length( $commentdata, $spamshield_options ) {
 	// COMMENT LENGTH CHECK - END
 	}
 
-/*
-function spamshield_js_cookie_filter( $commentdata, $spamshield_options ) {
-	// JavaScript and Cookies Layer
-	// Coming soon
-	}
-*/
-
 function spamshield_exit_jsck_filter( $commentdata, $spamshield_options, $wpss_error_code ) {
 	// Exit JS/CK Filter
 	// This fires when a JavaScript/Cookies spam test is failed.
@@ -3966,7 +3969,7 @@ function spamshield_exit_jsck_filter( $commentdata, $spamshield_options, $wpss_e
 	$commentdata['wpss_error_code']			= $wpss_error_code = ltrim( $wpss_error_code );
 	// Timer End - Content Filter
 	$wpss_end_time_jsck_filter 				= spamshield_microtime();
-	$wpss_total_time_jsck_filter 			= spamshield_timer( $commentdata['start_time_jsck_filter'], $wpss_end_time_jsck_filter, FALSE, 6 );
+	$wpss_total_time_jsck_filter 			= spamshield_timer( $commentdata['start_time_jsck_filter'], $wpss_end_time_jsck_filter, FALSE, 6, TRUE );
 	$commentdata['total_time_jsck_filter']	= $wpss_total_time_jsck_filter;
 	spamshield_update_accept_status( $commentdata, 'r', 'Line: '.__LINE__ );
 	add_filter('pre_comment_approved', 'spamshield_denied_post_js_cookie', 1);
@@ -3984,9 +3987,9 @@ function spamshield_exit_content_filter( $commentdata, $spamshield_options, $wps
 	$commentdata['wpss_error_code']				= $wpss_error_code = ltrim( $wpss_error_code );
 	// Timer End - Content Filter
 	$wpss_end_time_content_filter 				= spamshield_microtime();
-	$wpss_total_time_content_filter 			= spamshield_timer( $commentdata['start_time_content_filter'], $wpss_end_time_content_filter, FALSE, 6 );
+	$wpss_total_time_content_filter 			= spamshield_timer( $commentdata['start_time_content_filter'], $wpss_end_time_content_filter, FALSE, 6, TRUE );
 	$commentdata['total_time_content_filter']	= $wpss_total_time_content_filter;
-	$commentdata['content_filter_status'] = $content_filter_status;
+	$commentdata['content_filter_status'] 		= $content_filter_status;
 	return $commentdata;
 	}
 
@@ -4194,7 +4197,7 @@ function spamshield_trackback_content_filter( $commentdata, $spamshield_options 
 		$wpss_error_code = ltrim( $wpss_error_code );
 		// Timer End - Content Filter
 		$wpss_end_time_content_filter 				= spamshield_microtime();
-		$wpss_total_time_content_filter 			= spamshield_timer( $commentdata['start_time_content_filter'], $wpss_end_time_content_filter, FALSE, 6 );
+		$wpss_total_time_content_filter 			= spamshield_timer( $commentdata['start_time_content_filter'], $wpss_end_time_content_filter, FALSE, 6, TRUE );
 		$commentdata['total_time_content_filter']	= $wpss_total_time_content_filter;
 		}
 	// After spamshield_exit_content_filter() implemented, can remove previous code - END
@@ -4212,8 +4215,8 @@ function spamshield_trackback_ip_filter( $commentdata, $spamshield_options ) {
 
 	// Timer Start  - Content Filter
 	if ( empty( $commentdata['start_time_content_filter'] ) ) {
-		$wpss_start_time_content_filter = spamshield_microtime();
-		$commentdata['start_time_content_filter'] = $wpss_start_time_content_filter;
+		$wpss_start_time_content_filter				= spamshield_microtime();
+		$commentdata['start_time_content_filter']	= $wpss_start_time_content_filter;
 		}
 
 	$content_filter_status 				= $wpss_error_code = ''; // Must go before tests
@@ -4238,7 +4241,7 @@ function spamshield_trackback_ip_filter( $commentdata, $spamshield_options ) {
 		$wpss_error_code = ltrim( $wpss_error_code );
 		// Timer End - Content Filter
 		$wpss_end_time_content_filter 				= spamshield_microtime();
-		$wpss_total_time_content_filter 			= spamshield_timer( $commentdata['start_time_content_filter'], $wpss_end_time_content_filter, FALSE, 6 );
+		$wpss_total_time_content_filter 			= spamshield_timer( $commentdata['start_time_content_filter'], $wpss_end_time_content_filter, FALSE, 6, TRUE );
 		$commentdata['total_time_content_filter']	= $wpss_total_time_content_filter;
 		}
 
@@ -4762,7 +4765,7 @@ function spamshield_comment_content_filter( $commentdata, $spamshield_options ) 
 
 	// Timer End - Content Filter
 	$wpss_end_time_content_filter 				= spamshield_microtime();
-	$wpss_total_time_content_filter 			= spamshield_timer( $commentdata['start_time_content_filter'], $wpss_end_time_content_filter, FALSE, 6 );
+	$wpss_total_time_content_filter 			= spamshield_timer( $commentdata['start_time_content_filter'], $wpss_end_time_content_filter, FALSE, 6, TRUE );
 	$commentdata['total_time_content_filter']	= $wpss_total_time_content_filter;
 
 	if ( empty( $wpss_error_code ) ) {
@@ -5117,8 +5120,8 @@ function spamshield_register_form_addendum() {
 			}
 		}
 
-	echo "\n\t".'<script type=\'text/javascript\'>'."\n\t".'// <![CDATA['."\n\t".WPSS_REF2XJS.'=escape(document[\'referrer\']);'."\n\t".'hf3N=\''.$wpss_js_key.'\';'."\n\t".'hf3V=\''.$wpss_js_val.'\';'."\n\t".'document.write("<input type=\'hidden\' name=\''.WPSS_REF2XJS.'\' value=\'"+'.WPSS_REF2XJS.'+"\'><input type=\'hidden\' name=\'"+hf3N+"\' value=\'"+hf3V+"\'>");'."\n\t".'// ]]>'."\n\t".'</script>'."\n\t";
-	echo '<noscript><input type="hidden" name="JSONST" value="NS3"></noscript>'."\n\t";
+	echo "\n\t".'<script type=\'text/javascript\'>'."\n\t".'// <![CDATA['."\n\t".WPSS_REF2XJS.'=escape(document[\'referrer\']);'."\n\t".'hf3N=\''.$wpss_js_key.'\';'."\n\t".'hf3V=\''.$wpss_js_val.'\';'."\n\t".'document.write("<input type=\'hidden\' name=\''.WPSS_REF2XJS.'\' value=\'"+'.WPSS_REF2XJS.'+"\' /><input type=\'hidden\' name=\'"+hf3N+"\' value=\'"+hf3V+"\' />");'."\n\t".'// ]]>'."\n\t".'</script>'."\n\t";
+	echo '<noscript><input type="hidden" name="JSONST" value="NS3" /></noscript>'."\n\t";
 	$wpss_js_disabled_msg 	= __( 'Currently you have JavaScript disabled. In order to register, please make sure JavaScript and Cookies are enabled, and reload the page.', WPSS_PLUGIN_NAME );
 	$wpss_js_enable_msg 	= __( 'Click here for instructions on how to enable JavaScript in your browser.', WPSS_PLUGIN_NAME );
 	echo '<noscript><p><strong>'.$wpss_js_disabled_msg.'</strong> <a href="http://enable-javascript.com/" rel="nofollow external" >'.$wpss_js_enable_msg.'</a><br /><br /></p></noscript>'."\n\t";
@@ -5455,7 +5458,8 @@ function spamshield_dashboard_stats() {
 	if ( $num_days_installed < 1 ) { $num_days_installed = 1; }
 	$spam_count_so_far = $spamshield_count;
 	if ( $spam_count_so_far < 1 ) { $spam_count_so_far = 1; }
-	$avg_blocked_daily = @round( $spam_count_so_far / $num_days_installed );
+	$avg_blocked_daily		= @round( $spam_count_so_far / $num_days_installed );
+	$avg_blocked_daily_disp	= spamshield_number_format( $avg_blocked_daily );
 	if ( current_user_can( 'manage_options' ) ) {
 		$spam_stat_incl_link = ' (<a href="options-general.php?page='.WPSS_PLUGIN_NAME.'"">' . __( 'Settings' ) . '</a>)</p>'."\n";
 		$spam_stat_url = 'options-general.php?page='.WPSS_PLUGIN_NAME;
@@ -5463,7 +5467,7 @@ function spamshield_dashboard_stats() {
 		}
 	else {
 		$spam_stat_incl_link = '';
-		$spam_stat_url = WPSS_HOME_LINK;
+		$spam_stat_url = WPSS_HOME_URL;
 		$spam_stat_href_attr = 'target="_blank" rel="external"';
 		}
 
@@ -5471,9 +5475,9 @@ function spamshield_dashboard_stats() {
 		echo '<p>' . __( 'No comment spam attempts have been detected yet.', WPSS_PLUGIN_NAME ) . $spam_stat_incl_link;
 		}
 	else {
-		echo '<p>'."<img src='".WPSS_PLUGIN_IMG_URL."/spam-protection-24.png' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' />".' <a href="'.$spam_stat_url.'" '.$spam_stat_href_attr.'>WP-SpamShield</a> '.sprintf( __( 'has blocked <strong> %s </strong> spam.', WPSS_PLUGIN_NAME ), number_format($spamshield_count) ).'</p>'."\n";
+		echo '<p>'."<img src='".WPSS_PLUGIN_IMG_URL."/spam-protection-24.png' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' />".' <a href="'.$spam_stat_url.'" '.$spam_stat_href_attr.'>WP-SpamShield</a> '.sprintf( __( 'has blocked <strong> %s </strong> spam.', WPSS_PLUGIN_NAME ), spamshield_number_format( $spamshield_count ) ).'</p>'."\n";
 		if ( $avg_blocked_daily >= 2 ) {
-			echo "<p><img src='".WPSS_PLUGIN_IMG_URL."/spacer.gif' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' /> " . __( 'Average spam blocked daily', WPSS_PLUGIN_NAME ) . ": <strong>".$avg_blocked_daily."</strong></p>"."\n";
+			echo "<p><img src='".WPSS_PLUGIN_IMG_URL."/spacer.gif' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' /> " . __( 'Average spam blocked daily', WPSS_PLUGIN_NAME ) . ": <strong>".$avg_blocked_daily_disp."</strong></p>"."\n";
 			}
 		}
 	}
@@ -5493,7 +5497,7 @@ function spamshield_filter_plugin_meta( $links, $file ) {
 		// After other links
 		$links[] = '<a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" target="_blank" rel="external" >' . spamshield_doc_txt() . '</a>';
 		$links[] = '<a href="http://www.redsandmarketing.com/plugins/wp-spamshield/support/" target="_blank" rel="external" >' . __( 'Support', WPSS_PLUGIN_NAME ) . '</a>';
-		if ( spamshield_count() >= 2000 && spamshield_is_lang_en_us() ) { $links[] = '<a href="'.WPSS_WP_RATING_LINK.'" title="' . __( 'Let others know by giving it a good rating on WordPress.org!', WPSS_PLUGIN_NAME ) . '" target="_blank" rel="external" >' . __( 'Rate the Plugin', WPSS_PLUGIN_NAME ) . '</a>'; }
+		if ( spamshield_count() >= 2000 && spamshield_is_lang_en_us() ) { $links[] = '<a href="'.WPSS_WP_RATING_URL.'" title="' . __( 'Let others know by giving it a good rating on WordPress.org!', WPSS_PLUGIN_NAME ) . '" target="_blank" rel="external" >' . __( 'Rate the Plugin', WPSS_PLUGIN_NAME ) . '</a>'; }
 		$links[] = '<a href="http://bit.ly/wp-spamshield-donate" target="_blank" rel="external" >' . __( 'Donate', WPSS_PLUGIN_NAME ) . '</a>';
 		}
 	return $links;
@@ -5754,7 +5758,8 @@ if (!class_exists('wpSpamShield')) {
 			if ( $spam_count_so_far < 1 ) {
 				$spam_count_so_far = 1;
 				}
-			$avg_blocked_daily = @round( $spam_count_so_far / $num_days_installed );
+			$avg_blocked_daily		= @round( $spam_count_so_far / $num_days_installed );
+			$avg_blocked_daily_disp	= spamshield_number_format( $avg_blocked_daily );
 
 			$installation_plugins_get_test_1	= WPSS_PLUGIN_NAME; // 'wp-spamshield' - Checking for 'options-general.php?page='.WPSS_PLUGIN_NAME
 			$installation_file_test_0 			= WPSS_PLUGIN_FILE_PATH; // '/public_html/wp-content/plugins/wp-spamshield/wp-spamshield.php'
@@ -5819,10 +5824,10 @@ if (!class_exists('wpSpamShield')) {
 			* Detect PHP Version and Memory Issues and Display Warning, with info on how to fix
 			**/
 
-			if ($spamshield_count) {
-				echo "\n\t\t\t<div style='width:797px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;float:left;clear:left;'>\n\t\t\t<p><img src='".WPSS_PLUGIN_IMG_URL."/spam-protection-24.png' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' /> " . sprintf( __( 'WP-SpamShield has blocked <strong> %s </strong> spam!', WPSS_PLUGIN_NAME ), number_format($spamshield_count) ) . "</p>\n\t\t\t";
+			if ( !empty( $spamshield_count ) ) {
+				echo "\n\t\t\t<div style='width:797px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;float:left;clear:left;'>\n\t\t\t<p><img src='".WPSS_PLUGIN_IMG_URL."/spam-protection-24.png' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' /> " . sprintf( __( 'WP-SpamShield has blocked <strong> %s </strong> spam!', WPSS_PLUGIN_NAME ), spamshield_number_format( $spamshield_count ) ) . "</p>\n\t\t\t";
 				if ( $avg_blocked_daily >= 2 ) {
-					echo "<p><img src='".WPSS_PLUGIN_IMG_URL."/spacer.gif' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' /> " . sprintf( __( 'That\'s <strong> %s </strong> spam a day that you don\'t have to worry about.', WPSS_PLUGIN_NAME ), $avg_blocked_daily ) . "</p>\n\t\t\t";
+					echo "<p><img src='".WPSS_PLUGIN_IMG_URL."/spacer.gif' alt='' width='24' height='24' style='border-style:none;vertical-align:middle;padding-right:7px;' /> " . sprintf( __( 'That\'s <strong> %s </strong> spam a day that you don\'t have to worry about.', WPSS_PLUGIN_NAME ), $avg_blocked_daily_disp ) . "</p>\n\t\t\t";
 					}
 				echo "</div>\n\t\t\t";
 				}
@@ -5837,9 +5842,7 @@ if (!class_exists('wpSpamShield')) {
 				elseif ( !empty( $req_comment_logging ) && !empty( $spamshield_options['comment_logging_start_date'] ) ) {
 					$comment_logging_start_date = $spamshield_options['comment_logging_start_date'];
 					}
-				else {
-					$comment_logging_start_date = 0;
-					}
+				else { $comment_logging_start_date = 0;	}
 
 				// Reset Log when turning on Comment Logging - 1.7.9
 				if ( !empty( $req_comment_logging ) && empty( $spamshield_options['comment_logging'] ) ) {
@@ -5849,12 +5852,7 @@ if (!class_exists('wpSpamShield')) {
 
 
 				// Validate Request Values
-				if ( !empty( $_REQUEST ) ) {
-					$valid_req_spamshield_options = $_REQUEST;
-					}
-				else {
-					$valid_req_spamshield_options = array();
-					}
+				if ( !empty( $_REQUEST ) ) { $valid_req_spamshield_options = $_REQUEST;	} else { $valid_req_spamshield_options = array(); }
 
 				$wpss_options_general_boolean = array ( 'block_all_trackbacks', 'block_all_pingbacks', 'comment_logging', 'comment_logging_all', 'enhanced_comment_blacklist', 'enable_whitelist', 'allow_proxy_users', 'hide_extra_data', 'registration_shield_disable', 'registration_shield_level_1', 'allow_comment_author_keywords', 'promote_plugin_link' );
 
@@ -6032,12 +6030,12 @@ if (!class_exists('wpSpamShield')) {
 			<ol style="list-style-type:decimal;padding-left:30px;">
 				<li><a href="#wpss_general_options"><?php _e( 'General Settings', WPSS_PLUGIN_NAME ); ?></a></li>
 				<li><a href="#wpss_contact_form_options"><?php _e( 'Contact Form Settings', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_installation_instructions" target="_blank" rel="external" ><?php _e( 'Installation Instructions', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_displaying_stats" target="_blank" rel="external" ><?php _e( 'Displaying Spam Stats on Your Blog', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_adding_contact_form" target="_blank" rel="external" ><?php _e( 'Adding a Contact Form to Your Blog', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_configuration" target="_blank" rel="external" ><?php _e( 'Configuration Information', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_known_conflicts" target="_blank" rel="external" ><?php _e( 'Known Plugin Conflicts', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_troubleshooting" target="_blank" rel="external" ><?php _e( 'Troubleshooting Guide / Support', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_URL; ?>#wpss_installation_instructions" target="_blank" rel="external" ><?php _e( 'Installation Instructions', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_URL; ?>#wpss_displaying_stats" target="_blank" rel="external" ><?php _e( 'Displaying Spam Stats on Your Blog', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_URL; ?>#wpss_adding_contact_form" target="_blank" rel="external" ><?php _e( 'Adding a Contact Form to Your Blog', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_URL; ?>#wpss_configuration" target="_blank" rel="external" ><?php _e( 'Configuration Information', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_URL; ?>#wpss_known_conflicts" target="_blank" rel="external" ><?php _e( 'Known Plugin Conflicts', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_URL; ?>#wpss_troubleshooting" target="_blank" rel="external" ><?php _e( 'Troubleshooting Guide / Support', WPSS_PLUGIN_NAME ); ?></a></li>
 				<li><a href="#wpss_let_others_know"><?php _e( 'Let Others Know About WP-SpamShield', WPSS_PLUGIN_NAME ); ?></a></li>
 				<li><a href="#wpss_download_plugin_documentation"><?php echo spamshield_doc_txt(); ?></a></li>
 			</ol>
@@ -6045,19 +6043,19 @@ if (!class_exists('wpSpamShield')) {
 			<div style="width:375px;height:<?php echo $wpss_info_box_height; ?>px;border-style:solid;border-width:1px;border-color:#003366;background-color:#DDEEFF;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;">
 			<p>
 			<?php if ( $spamshield_count > 100 ) { ?>
-			<strong><?php _e( 'Happy with WP-SpamShield?', WPSS_PLUGIN_NAME ); ?></strong><br /> <a href="<?php echo WPSS_WP_RATING_LINK; ?>" target="_blank" rel="external" ><?php _e( 'Let others know by giving it a good rating on WordPress.org!', WPSS_PLUGIN_NAME ); ?></a><br />
+			<strong><?php _e( 'Happy with WP-SpamShield?', WPSS_PLUGIN_NAME ); ?></strong><br /> <a href="<?php echo WPSS_WP_RATING_URL; ?>" target="_blank" rel="external" ><?php _e( 'Let others know by giving it a good rating on WordPress.org!', WPSS_PLUGIN_NAME ); ?></a><br />
 			<img src='<?php echo WPSS_PLUGIN_IMG_URL; ?>/5-stars-rating.gif' alt='' width='99' height='19' style='border-style:none;padding-top:3px;padding-bottom:0px;' /><br /><br />
 			<?php } ?>
 
-			<strong><?php echo spamshield_doc_txt(); ?>:</strong> <a href="<?php echo WPSS_HOME_LINK; ?>" target="_blank" rel="external" ><?php _e( 'Plugin Homepage', WPSS_PLUGIN_NAME ); ?></a><br />
-			<strong><?php _e( 'Tech Support', WPSS_PLUGIN_NAME ); ?>:</strong> <a href="<?php echo WPSS_HOME_LINK; ?>support/" target="_blank" rel="external" ><?php _e( 'WP-SpamShield Support', WPSS_PLUGIN_NAME ); ?></a><br />
+			<strong><?php echo spamshield_doc_txt(); ?>:</strong> <a href="<?php echo WPSS_HOME_URL; ?>" target="_blank" rel="external" ><?php _e( 'Plugin Homepage', WPSS_PLUGIN_NAME ); ?></a><br />
+			<strong><?php _e( 'Tech Support', WPSS_PLUGIN_NAME ); ?>:</strong> <a href="<?php echo WPSS_HOME_URL; ?>support/" target="_blank" rel="external" ><?php _e( 'WP-SpamShield Support', WPSS_PLUGIN_NAME ); ?></a><br />
 			<strong><?php _e( 'Follow on Twitter', WPSS_PLUGIN_NAME ); ?>:</strong> <a href="http://twitter.com/WPSpamShield" target="_blank" rel="external" >@WPSpamShield</a><br />			
 			<strong><?php _e( 'Let Others Know', WPSS_PLUGIN_NAME ); ?>:</strong> <a href="http://www.redsandmarketing.com/blog/wp-spamshield-wordpress-plugin-released/#comments" target="_blank" rel="external" ><?php _e( 'Leave a Comment' ); ?></a><br />
             <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="margin-top:10px;">
             <input type="hidden" name="cmd" value="_s-xclick">
             <input type="hidden" name="hosted_button_id" value="DFMTNHJEPFFUL">
-            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+            <input type="image" src="<?php echo WPSS_PLUGIN_IMG_URL; ?>/btn-donate-sm.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" />
+            <img alt="" border="0" src="<?php echo WPSS_PLUGIN_IMG_URL; ?>/spacer.gif" width="1" height="1" />
             </form>
 			</p>
 			<?php 
@@ -6088,7 +6086,7 @@ if (!class_exists('wpSpamShield')) {
 						// If comment logging is on, check file permissions and attempt to fix. Reset .htaccess file for data dir, to allow IP of current admin to view log file. Let user know if not set correctly.
 						$wpss_hta_reset = spamshield_log_reset( NULL, TRUE, TRUE );
 						if ( empty( $wpss_hta_reset ) ) {
-							echo '<br/>'."\n".'<span style="color:red;"><strong>' . sprintf( __( 'The log file may not be writeable. You may need to manually correct the file permissions.<br/>Set the permission for the "%1$s" directory to "%2$s" and all files within it to "%3$s".</strong><br/>If that doesn\'t work, then please read the <a href="%4$s" %5$s>FAQ</a> for this topic.', WPSS_PLUGIN_NAME ), WPSS_PLUGIN_DATA_PATH, '755', '644', WPSS_HOME_LINK.'#wpss_faqs_5', 'target="_blank"' ) . '</span><br/>'."\n";
+							echo '<br/>'."\n".'<span style="color:red;"><strong>' . sprintf( __( 'The log file may not be writeable. You may need to manually correct the file permissions.<br/>Set the permission for the "%1$s" directory to "%2$s" and all files within it to "%3$s".</strong><br/>If that doesn\'t work, then please read the <a href="%4$s" %5$s>FAQ</a> for this topic.', WPSS_PLUGIN_NAME ), WPSS_PLUGIN_DATA_PATH, '755', '644', WPSS_HOME_URL.'#wpss_faqs_5', 'target="_blank"' ) . '</span><br/>'."\n";
 							}
 						}
 					?>
@@ -6098,13 +6096,13 @@ if (!class_exists('wpSpamShield')) {
 					<label for="comment_logging_all">
 						<input type="checkbox" id="comment_logging_all" name="comment_logging_all" <?php echo ($spamshield_options['comment_logging_all']==TRUE?"checked=\"checked\"":"") ?> value="1" />
 						<strong><?php _e( 'Log All Comments', WPSS_PLUGIN_NAME ); ?></strong><br /><?php _e( 'Requires that Blocked Comment Logging Mode be engaged. Instead of only logging blocked comments, this will allow the log to capture all comments while logging mode is turned on. This provides more technical data for comment submissions than WordPress provides, and helps us improve the plugin.<br/>If you plan on submitting spam samples to us for analysis, it\'s helpful for you to turn this on, otherwise it\'s not necessary.', WPSS_PLUGIN_NAME ); ?></label>
-					<br/><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_configuration_log_all_comments" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', WPSS_PLUGIN_NAME ); ?></a><br />&nbsp;
+					<br/><a href="<?php echo WPSS_HOME_URL; ?>#wpss_configuration_log_all_comments" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', WPSS_PLUGIN_NAME ); ?></a><br />&nbsp;
 					</li>
 					<li>
 					<label for="enhanced_comment_blacklist">
 						<input type="checkbox" id="enhanced_comment_blacklist" name="enhanced_comment_blacklist" <?php echo ($spamshield_options['enhanced_comment_blacklist']==TRUE?"checked=\"checked\"":"") ?> value="1" />
 						<strong><?php _e( 'Enhanced Comment Blacklist', WPSS_PLUGIN_NAME ); ?></strong><br /><?php _e( 'Enhances WordPress\'s Comment Blacklist - instead of just sending comments to moderation, they will be completely blocked. Also adds a link in the comment notification emails that will let you blacklist a commenter\'s IP with one click.<br/>(Useful if you receive repetitive human spam or harassing comments from a particular commenter.)', WPSS_PLUGIN_NAME ); ?></label>
-					<br/><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_configuration_enhanced_comment_blacklist" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', WPSS_PLUGIN_NAME ); ?></a><br />&nbsp;
+					<br/><a href="<?php echo WPSS_HOME_URL; ?>#wpss_configuration_enhanced_comment_blacklist" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', WPSS_PLUGIN_NAME ); ?></a><br />&nbsp;
 					</li>
 					<label for="wordpress_comment_blacklist">
 						<strong><?php _e( 'Your current WordPress Comment Blacklist', WPSS_PLUGIN_NAME ); ?></strong><br/><?php _e( 'When a comment contains any of these words in its content, name, URL, e-mail, or IP, it will be completely blocked, not just marked as spam. One word or IP per line. It is not case-sensitive and will match included words, so "press" on your blacklist will block "WordPress" in a comment.', WPSS_PLUGIN_NAME ); ?><br />
@@ -6115,7 +6113,7 @@ if (!class_exists('wpSpamShield')) {
 					<label for="enable_whitelist">
 						<input type="checkbox" id="enable_whitelist" name="enable_whitelist" <?php echo ($spamshield_options['enable_whitelist']==TRUE?"checked=\"checked\"":"") ?> value="1" />
 						<strong><?php _e( 'Enable WP-SpamShield Whitelist', WPSS_PLUGIN_NAME ); ?></strong><br /><?php _e( 'Enables WP-SpamShield\'s Whitelist - for comments and contact form submissions. When a comment or contact form is submitted from an e-mail address on the whitelist, it will bypass spam filters and be allowed through.<br/>(Useful if you have specific users that you want to let bypass the filters.)', WPSS_PLUGIN_NAME ); ?></label>
-					<br/><a href="<?php echo WPSS_HOME_LINK; ?>#wpss_configuration_enable_whitelist" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', WPSS_PLUGIN_NAME ); ?></a><br />&nbsp;
+					<br/><a href="<?php echo WPSS_HOME_URL; ?>#wpss_configuration_enable_whitelist" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', WPSS_PLUGIN_NAME ); ?></a><br />&nbsp;
 					</li>
 					<label for="wpss_whitelist">
 						<strong><?php _e( 'Your current WP-SpamShield Whitelist', WPSS_PLUGIN_NAME ); ?></strong><br/><?php _e( 'One email address per line. Each entry must be a valid and complete email address, like <em>user@yourwebsite.com</em>. It is not case-sensitive and will only make exact matches, not partial matches.', WPSS_PLUGIN_NAME ); ?><br />
@@ -6364,20 +6362,20 @@ if (!class_exists('wpSpamShield')) {
 			<p><?php _e( '<strong>How does it feel to blog without being bombarded by automated comment spam?</strong> If you\'re happy with WP-SpamShield, there\'s a few things you can do to let others know:', WPSS_PLUGIN_NAME ); ?></p>
 			<ul style="list-style-type:disc;padding-left:30px;">
 				<li><a href="http://www.redsandmarketing.com/blog/wp-spamshield-wordpress-plugin-released/#comments" target="_blank" rel="external" ><?php _e( 'Leave a Comment' ); ?></a></li>
-				<li><a href="<?php echo WPSS_WP_RATING_LINK; ?>" target="_blank" rel="external" ><?php _e( 'Give WP-SpamShield a good rating on WordPress.org.', WPSS_PLUGIN_NAME ); ?></a></li>
-				<li><a href="<?php echo WPSS_HOME_LINK; ?>end-blog-spam/" target="_blank" rel="external" ><?php _e( 'Place a graphic link on your site.', WPSS_PLUGIN_NAME ); ?></a> <?php _e( 'Let others know how they can help end blog spam.', WPSS_PLUGIN_NAME ); ?> ( &lt/BLOGSPAM&gt; )</li>
+				<li><a href="<?php echo WPSS_WP_RATING_URL; ?>" target="_blank" rel="external" ><?php _e( 'Give WP-SpamShield a good rating on WordPress.org.', WPSS_PLUGIN_NAME ); ?></a></li>
+				<li><a href="<?php echo WPSS_HOME_URL; ?>end-blog-spam/" target="_blank" rel="external" ><?php _e( 'Place a graphic link on your site.', WPSS_PLUGIN_NAME ); ?></a> <?php _e( 'Let others know how they can help end blog spam.', WPSS_PLUGIN_NAME ); ?> ( &lt/BLOGSPAM&gt; )</li>
 			</ul>
-			<p><a href="<?php echo WPSS_HOME_LINK; ?>" style="border-style:none;text-decoration:none;" target="_blank" rel="external" ><img src="<?php echo WPSS_PLUGIN_IMG_URL; ?>/end-blog-spam-button-01-black.png" alt="End Blog Spam! WP-SpamShield Comment Spam Protection for WordPress" width="140" height="66" style="border-style:none;text-decoration:none;margin-top:15px;margin-left:15px;" /></a></p>
+			<p><a href="<?php echo WPSS_HOME_URL; ?>" style="border-style:none;text-decoration:none;" target="_blank" rel="external" ><img src="<?php echo WPSS_PLUGIN_IMG_URL; ?>/end-blog-spam-button-01-black.png" alt="End Blog Spam! WP-SpamShield Comment Spam Protection for WordPress" width="140" height="66" style="border-style:none;text-decoration:none;margin-top:15px;margin-left:15px;" /></a></p>
 			<p><div style="float:right;font-size:12px;">[ <a href="#wpss_top"><?php _e( 'BACK TO TOP', WPSS_PLUGIN_NAME ); ?></a> ]</div></p>
 			<p>&nbsp;</p>
 			</div>
 			<div style='width:797px;border-style:solid;border-width:1px;border-color:#003366;background-color:#DDEEFF;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;clear:left;'>
 			<p><a name="wpss_download_plugin_documentation"><h3><?php echo spamshield_doc_txt(); ?></h3></a></p>
-			<p><?php echo __( 'Plugin Homepage', WPSS_PLUGIN_NAME ) . ' / ' . spamshield_doc_txt(); ?>: <a href="<?php echo WPSS_HOME_LINK; ?>" target="_blank" rel="external" >WP-SpamShield</a><br />
+			<p><?php echo __( 'Plugin Homepage', WPSS_PLUGIN_NAME ) . ' / ' . spamshield_doc_txt(); ?>: <a href="<?php echo WPSS_HOME_URL; ?>" target="_blank" rel="external" >WP-SpamShield</a><br />
 			<?php _e( 'Leave a Comment' ); ?>: <a href="http://www.redsandmarketing.com/blog/wp-spamshield-wordpress-plugin-released/" target="_blank" rel="external" ><?php _e( 'WP-SpamShield Release Announcement Blog Post', WPSS_PLUGIN_NAME ); ?></a><br />
-			<?php _e( 'WordPress.org Page', WPSS_PLUGIN_NAME ); ?>: <a href="<?php echo WPSS_WP_LINK; ?>" target="_blank" rel="external" >WP-SpamShield</a><br />
-			<?php _e( 'Tech Support / Questions', WPSS_PLUGIN_NAME ); ?>: <a href="<?php echo WPSS_HOME_LINK; ?>support/" target="_blank" rel="external" ><?php _e( 'WP-SpamShield Support Page', WPSS_PLUGIN_NAME ); ?></a><br />
-			<?php _e( 'End Blog Spam', WPSS_PLUGIN_NAME ); ?>: <a href="<?php echo WPSS_HOME_LINK; ?>end-blog-spam/" target="_blank" rel="external" ><?php _e( 'Let Others Know About WP-SpamShield', WPSS_PLUGIN_NAME ); ?>!</a><br />
+			<?php _e( 'WordPress.org Page', WPSS_PLUGIN_NAME ); ?>: <a href="<?php echo WPSS_WP_URL; ?>" target="_blank" rel="external" >WP-SpamShield</a><br />
+			<?php _e( 'Tech Support / Questions', WPSS_PLUGIN_NAME ); ?>: <a href="<?php echo WPSS_HOME_URL; ?>support/" target="_blank" rel="external" ><?php _e( 'WP-SpamShield Support Page', WPSS_PLUGIN_NAME ); ?></a><br />
+			<?php _e( 'End Blog Spam', WPSS_PLUGIN_NAME ); ?>: <a href="<?php echo WPSS_HOME_URL; ?>end-blog-spam/" target="_blank" rel="external" ><?php _e( 'Let Others Know About WP-SpamShield', WPSS_PLUGIN_NAME ); ?>!</a><br />
 			Twitter: <a href="http://twitter.com/WPSpamShield" target="_blank" rel="external" >@WPSpamShield</a><br />
 			<?php 
 			if ( spamshield_is_lang_en_us() ) {
@@ -6387,8 +6385,8 @@ if (!class_exists('wpSpamShield')) {
             <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="margin-top:10px;">
             <input type="hidden" name="cmd" value="_s-xclick">
             <input type="hidden" name="hosted_button_id" value="DFMTNHJEPFFUL">
-            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+            <input type="image" src="<?php echo WPSS_PLUGIN_IMG_URL; ?>/btn-donate-sm.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" />
+            <img alt="" border="0" src="<?php echo WPSS_PLUGIN_IMG_URL; ?>/spacer.gif" width="1" height="1" />
             </form>
 			</p>
 			<?php 
@@ -6416,8 +6414,8 @@ if (!class_exists('wpSpamShield')) {
 				$wpss_rpd	= array(
 								array('clear:left;','RSM_Genesis','Genesis WordPress Framework','Other themes and frameworks have nothing on Genesis. Optimized for site speed and SEO.','Simply put, the Genesis framework is one of the best ways to design and build a WordPress site. Built-in SEO and optimized for speed. Create just about any kind of design with child themes.'),
 								array('','RSM_AIOSEOP','All in One SEO Pack Pro','The best way to manage the code-related SEO for your WordPress site.','Save time and effort optimizing the code of your WordPress site with All in One SEO Pack. One of the top rated, and most downloaded plugins on WordPress.org, this time-saving plugin is incredibly valuable. The pro version provides powerful features not available in the free version.'),
-								array('clear:left;','RSM_Hostgator','Hostgator Website Hosting','Affordable, high quality web hosting. Great for WordPress and a variety of web applications.','Hostgator has variety of affordable plans, reliable service, and customer support. Even on shared hosting, you get fast servers that are well-configured. Hostgator provides great balance of value and quality, which is why we recommend them.'),
-								array('','RSM_Level10','Level10 Domains','Inexpensive web domains with an easy to use admin dashboard.','Level10 Domains offers some of the best prices you\'ll find on web domain purchasing. The dashboard provides an easy way to manage your domains.'),
+								//array('clear:left;','RSM_Hostgator','Hostgator Website Hosting','Affordable, high quality web hosting. Great for WordPress and a variety of web applications.','Hostgator has variety of affordable plans, reliable service, and customer support. Even on shared hosting, you get fast servers that are well-configured. Hostgator provides great balance of value and quality, which is why we recommend them.'),
+								//array('','RSM_Level10','Level10 Domains','Inexpensive web domains with an easy to use admin dashboard.','Level10 Domains offers some of the best prices you\'ll find on web domain purchasing. The dashboard provides an easy way to manage your domains.'),
 								);
 				foreach( $wpss_rpd as $i => $v ) {
 					echo '<div style="width:375px;height:280px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:15px;margin-right:15px;float:left;'.$v[0].'">'."\n".'<p><strong><a href="http://bit.ly/'.$v[1].'" target="_blank" rel="external" >'.$v[2].'</a></strong></p>'."\n".'<p><strong>'.$v[3].'</strong></p>'."\n".'<p>'.$v[4].'</p>'."\n".'<p><a href="http://bit.ly/'.$v[1].'" target="_blank" rel="external" >Click here to find out more. >></a></p>'."\n".'</div>'."\n";
@@ -6463,6 +6461,17 @@ if (!class_exists('wpSpamShield')) {
 				if ( !empty( $wpss_wp_version ) && version_compare( $wpss_wp_version, WPSS_REQUIRED_WP_VERSION, '<' ) ) {
 					deactivate_plugins( WPSS_PLUGIN_BASENAME );
 					$notice_text = sprintf( __( 'Plugin deactivated. WordPress Version %s required. Please upgrade WordPress to the latest version.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_WP_VERSION );
+					$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
+					update_option( 'spamshield_admin_notices', $new_admin_notice );
+					add_action( 'admin_notices', 'spamshield_admin_notices' );
+					spamshield_append_log_data( "\n".$notice_text, FALSE );
+					return FALSE;
+					}
+				// Make sure user has minimum required PHP version, in order to prevent issues
+				$wpss_php_version = RSMP_PHP_VERSION;
+				if ( !empty( $wpss_php_version ) && version_compare( $wpss_php_version, WPSS_REQUIRED_PHP_VERSION, '<' ) ) {
+					deactivate_plugins( WPSS_PLUGIN_BASENAME );
+					$notice_text = sprintf( __( 'Plugin deactivated. PHP Version %1$s required. PHP %2$s is extremely out of date and should be upgraded as soon as possible for security, functionality, and website performance. If you need help with this, please contact your web host.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_PHP_VERSION, $wpss_php_version ); // NEEDS TRANSLATION - Added 1.8.2
 					$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
 					update_option( 'spamshield_admin_notices', $new_admin_notice );
 					add_action( 'admin_notices', 'spamshield_admin_notices' );
@@ -6547,7 +6556,7 @@ function spamshield_contact_promo_link( $int ) {
 	$contact_form_title = __( 'WP-SpamShield Contact Form for WordPress', WPSS_PLUGIN_NAME );
 	$contact_form_txt = __( 'Contact Form', WPSS_PLUGIN_NAME );
 	$url = spamshield_get_promo_link_url();
-	if ( empty( $url ) ) { $url = WPSS_HOME_LINK; }
+	if ( empty( $url ) ) { $url = WPSS_HOME_URL; }
 	$link_template = '<a href="'.$url.'" title="'.$contact_form_title.'" >X1X2X</a>';
 	$promo_link_data = array(
 		// Showing key numbers to avoid having to count manually when implementing
@@ -6572,7 +6581,7 @@ function spamshield_comment_promo_link( $int ) {
 	// Promo link for comments box if user opts in
 	$comment_title = __( 'WP-SpamShield WordPress Anti-Spam Plugin', WPSS_PLUGIN_NAME );
 	$url = spamshield_get_promo_link_url();
-	if ( empty( $url ) ) { $url = WPSS_HOME_LINK; }
+	if ( empty( $url ) ) { $url = WPSS_HOME_URL; }
 	$link_template = '<a href="'.$url.'" title="'.$comment_title.'" >X1X2X</a>';
 	$promo_link_data = array(
 		// Showing key numbers to avoid having to count manually when implementing
@@ -6607,10 +6616,10 @@ function spamshield_get_promo_link_url() {
 	$sip5c = '0';
 	$sip5c = substr(RSMP_SERVER_ADDR, 4, 1); // Server IP 5th Char
 	$gplu_code = array( '0' => 0, '1' => 1, '2' => 0, '3' => 0, '4' => 0, '5' => 0, '6' => 0, '7' => 0, '8' => 0, '9' => 1, '.' => 0 );
-	$urls = array( WPSS_HOME_LINK, WPSS_WP_LINK );
+	$urls = array( WPSS_HOME_URL, WPSS_WP_URL );
 	if ( preg_match( "~^[0-9\.]$~", $sip5c ) ) { $k = $gplu_code[$sip5c]; } else { $k = 0; }
 	$url = $urls[$k];
-	if ( empty( $url ) ) { $url = WPSS_HOME_LINK; }
+	if ( empty( $url ) ) { $url = WPSS_HOME_URL; }
 	return $url;
 	}
 // Promo Link Functions - END

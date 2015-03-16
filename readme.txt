@@ -2,7 +2,7 @@
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
 Tags: antispam, anti-spam, block spam, comment, comment spam, comments, contact, contact form, form, forms, javascript, login, multisite, register, registration, security, signup, spam, spam filter, user registration spam, trackback
-Requires at least: 3.7
+Requires at least: 3.8
 Tested up to: 4.1
 Stable tag: trunk
 License: GPLv2
@@ -152,6 +152,14 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the main [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.8.2 =
+*released 03/16/15*
+
+* Increased minimum required WordPress version to 3.8 and added a minimum required PHP version of 5.3. It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.1.1) and a reasonably up-to-date version of PHP for security, functionality, and website performance.
+* Fixed XHTML validation error in the hidden input fields on the forms.
+* Internationalized the formatting of numbers used throughout the plugin so users in different countries will see numbers formatted according to their local customs. This will show in the blocked spam stats on the dashboard, spam counter widgets, and in the blocked comments log.
+* Updated the spam filters.
 
 = 1.8.1 =
 *released 03/11/15*
@@ -388,8 +396,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.1 =
-Updated the French (fr_FR) translation and improved/updated the spam filters. Please see Changelog for details.
+= 1.8.2 =
+Increased minimum required WordPress version to 3.8 and minimum required PHP version to 5.3, fixed XHTML validation errors, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
