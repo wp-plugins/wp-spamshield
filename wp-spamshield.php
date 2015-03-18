@@ -6471,7 +6471,8 @@ if (!class_exists('wpSpamShield')) {
 				$wpss_php_version = RSMP_PHP_VERSION;
 				if ( !empty( $wpss_php_version ) && version_compare( $wpss_php_version, WPSS_REQUIRED_PHP_VERSION, '<' ) ) {
 					deactivate_plugins( WPSS_PLUGIN_BASENAME );
-					$notice_text = sprintf( __( 'Plugin deactivated. PHP Version %1$s required. PHP %2$s is extremely out of date and should be upgraded as soon as possible for security, functionality, and website performance. If you need help with this, please contact your web host.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_PHP_VERSION, $wpss_php_version ); // NEEDS TRANSLATION - Added 1.8.2
+					$notice_text = sprintf( __( '<p>Plugin deactivated. <strong>PHP Version %1$s required.</strong> We are no longer supporting PHP 5.2. (It has not been supported by the PHP team <a href=%2$s>since 2011</a>.)</p><p>Your site is running <strong>PHP %3$s</strong>, which is <em>extremely out of date</em>. You should upgrade your PHP version as soon as possible for website security and performance.</p><p>If you need help with this, please contact your web hosting company. Please see the <a href=%4$s>plugin documentation</a> and <a href=%5$s>changelog</a> if you have further questions.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_PHP_VERSION, '"http://php.net/archive/2011.php#id2011-08-23-1" target="_blank" rel="external" ', $wpss_php_version, '"http://www.redsandmarketing.com/plugins/wp-spamshield/?src='.WPSS_VERSION.'-php-notice" target="_blank" rel="external" ', '"http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/?src='.WPSS_VERSION.'-php-notice" target="_blank" rel="external" ');
+
 					$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
 					update_option( 'spamshield_admin_notices', $new_admin_notice );
 					add_action( 'admin_notices', 'spamshield_admin_notices' );
