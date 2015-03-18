@@ -75,8 +75,8 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 
 = Requirements =
 
-* WordPress 3.8+
-* PHP 5.3+
+* WordPress 3.8 or higher (Recommended: WordPress 4.0 or higher)
+* PHP 5.3 or higher (Recommended: PHP 5.4 or higher)
 
 > #### **WordPress Blogging Without Spam**
 > How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by giving it a good rating!
@@ -161,7 +161,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 = 1.8.2 =
 *released 03/16/15*
 
-* Increased minimum required WordPress version to 3.8 and added a minimum required PHP version of 5.3, as we are no longer supporting PHP 5.2. The PHP team [stopped supporting PHP 5.2 back in 2011](http://php.net/archive/2011.php#id2011-08-23-1), and even PHP 5.3 reached its end of life in August 2014. WordPress has a current minimum requirement of 5.2.4, but PHP 5.4 is recommended - see the [WordPress requirements](https://wordpress.org/about/requirements/). It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.1.1) and a reasonably up-to-date version of PHP for security, functionality, and website performance. We recommend PHP 5.4 or higher.
+* Increased minimum required WordPress version to 3.8 and added a minimum required PHP version of 5.3, as we are no longer supporting PHP 5.2. The PHP team [stopped supporting PHP 5.2 back in 2011](http://php.net/archive/2011.php#id2011-08-23-1), and even PHP 5.3 reached its end of life in August 2014. WordPress has a current minimum requirement of 5.2.4, but PHP 5.4 is recommended - see the [WordPress requirements](https://wordpress.org/about/requirements/). It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.1.1) and a reasonably up-to-date version of PHP for security, functionality, and website performance. (Not only are the newer versions more secure, but they are faster, so its a double win.) We recommend PHP 5.4 or higher. Also, see [PHP Unsupported Branches](http://php.net/eol.php) for more info.
 * Fixed XHTML validation error in the hidden input fields on the forms.
 * Internationalized the formatting of numbers used throughout the plugin so users in different countries will see numbers formatted according to their local customs. This will show in the blocked spam stats on the dashboard, spam counter widgets, and in the blocked comments log.
 * Updated the spam filters.
