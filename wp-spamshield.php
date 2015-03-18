@@ -41,7 +41,8 @@ if ( !function_exists( 'add_action' ) ) {
 	}
 
 define( 'WPSS_VERSION', '1.8.1' );
-define( 'WPSS_REQUIRED_WP_VERSION', '3.7' );
+define( 'WPSS_REQUIRED_WP_VERSION', '3.8' );
+define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /** Setting important URL and PATH constants so the plugin can find things
 * Constants prefixed with 'RSMP_' are shared with other RSM Plugins for efficiency.
 **/
@@ -5491,8 +5492,8 @@ function spamshield_filter_plugin_meta( $links, $file ) {
 	// Add Links on Dashboard Plugins page, in plugin meta
 	if ( $file == WPSS_PLUGIN_BASENAME ){
 		// After other links
-		$links[] = '<a href="http://www.redsandmarketing.com/plugins/wp-spamshield/" target="_blank" rel="external" >' . spamshield_doc_txt() . '</a>';
-		$links[] = '<a href="http://www.redsandmarketing.com/plugins/wp-spamshield/support/" target="_blank" rel="external" >' . __( 'Support', WPSS_PLUGIN_NAME ) . '</a>';
+		$links[] = '<a href="'.WPSS_HOME_LINK.'" target="_blank" rel="external" >' . spamshield_doc_txt() . '</a>';
+		$links[] = '<a href="'.WPSS_HOME_LINK.'support/" target="_blank" rel="external" >' . __( 'Support', WPSS_PLUGIN_NAME ) . '</a>';
 		if ( spamshield_count() >= 2000 && spamshield_is_lang_en_us() ) { $links[] = '<a href="'.WPSS_WP_RATING_LINK.'" title="' . __( 'Let others know by giving it a good rating on WordPress.org!', WPSS_PLUGIN_NAME ) . '" target="_blank" rel="external" >' . __( 'Rate the Plugin', WPSS_PLUGIN_NAME ) . '</a>'; }
 		$links[] = '<a href="http://bit.ly/wp-spamshield-donate" target="_blank" rel="external" >' . __( 'Donate', WPSS_PLUGIN_NAME ) . '</a>';
 		}
@@ -6463,6 +6464,17 @@ if (!class_exists('wpSpamShield')) {
 				if ( !empty( $wpss_wp_version ) && version_compare( $wpss_wp_version, WPSS_REQUIRED_WP_VERSION, '<' ) ) {
 					deactivate_plugins( WPSS_PLUGIN_BASENAME );
 					$notice_text = sprintf( __( 'Plugin deactivated. WordPress Version %s required. Please upgrade WordPress to the latest version.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_WP_VERSION );
+					$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
+					update_option( 'spamshield_admin_notices', $new_admin_notice );
+					add_action( 'admin_notices', 'spamshield_admin_notices' );
+					spamshield_append_log_data( "\n".$notice_text, FALSE );
+					return FALSE;
+					}
+				// Make sure user has minimum required PHP version, in order to prevent issues
+				$wpss_php_version = RSMP_PHP_VERSION;
+				if ( !empty( $wpss_php_version ) && version_compare( $wpss_php_version, WPSS_REQUIRED_PHP_VERSION, '<' ) ) {
+					deactivate_plugins( WPSS_PLUGIN_BASENAME );
+					$notice_text = sprintf( __( '<p>Plugin deactivated. <strong>PHP Version %1$s required.</strong> We are no longer supporting PHP 5.2. (It has not been supported by the PHP team <a href=%2$s>since 2011</a>.)</p><p>Your site is running <strong>PHP %3$s</strong>, which is <em>extremely out of date</em>. You should upgrade your PHP version as soon as possible for website security and performance.</p><p>If you need help with this, please contact your web hosting company. Please see the <a href=%4$s>plugin documentation</a> and <a href=%5$s>changelog</a> if you have further questions.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_PHP_VERSION, '"http://php.net/archive/2011.php#id2011-08-23-1" target="_blank" rel="external" ', $wpss_php_version, '"'.WPSS_HOME_LINK.'?src='.WPSS_VERSION.'-php-notice" target="_blank" rel="external" ', '"'.WPSS_HOME_LINK.'version-history/?src='.WPSS_VERSION.'-php-notice" target="_blank" rel="external" ');
 					$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
 					update_option( 'spamshield_admin_notices', $new_admin_notice );
 					add_action( 'admin_notices', 'spamshield_admin_notices' );
