@@ -39,7 +39,7 @@ It does all this with ZERO false positives, because of the method used to block 
 The trackback validation contains a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is guaranteed spam, without fail. This alone eliminates more than 99.99% of trackback spam. Trackback spammers don't send spam out from the same server where their clients' websites reside. There are algorithmic filters in place to ensure 100% trackback spam blocking. Although it's far more rare, the plugin protects again pingback spam as well. You can be confident that only legitimate trackbacks and pingbacks will get through.
 
 = Includes a Spam-Free Contact Form =
-Includes drop-in spam-free contact form, with easy shortcode implementation. Easy to use - no configuration necessary, but you can configure it if you like. (See [Installation](https://wordpress.org/plugins/wp-spamshield/installation/) for info.)
+Includes drop-in spam-free contact form, with easy one-click installation. Easy to use - no configuration necessary, but you can configure it if you like. (See [Installation](https://wordpress.org/plugins/wp-spamshield/installation/) for info.)
 
 = WordPress Registration Spam Blocking =
 The plugin also includes powerful protection from user registration spam on your site's WordPress registration page. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up any more. (Note: This protects the *WordPress registration form* only, not the registration forms of other plugins. See [this FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_13) for more info.
@@ -125,6 +125,8 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 
 **You're done! Sit back and see what it feels like to live without comment spam, trackback spam, and registration spam!**
 
+**NOTE: If you're using a caching plugin, you will need to clear the plugin's cache after you install WP-SpamShield.**
+
 = Displaying Stats on Your Blog =
 Want to show off your spam stats on your blog and tell others about WP-SpamShield? Simply add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-9 corresponding to one of the background styles you'd like to use. (See plugin homepage for more info.)
 
@@ -137,7 +139,8 @@ To add it to any page or post, add the following shortcode to the page or post w
 Or, you can simply use the widget. It displays stats in the style of small counter #1. Now you can show spam stats on your blog without knowing any code.
 
 = Adding a Contact Form to Your Blog =
-First create a distinct page (not post) where you want to have your contact form. Then, insert the following shortcode (using the HTML editing tab, NOT the Visual editor) and you're done: `[spamshieldcontact]`
+First create a distinct page (not post) where you want to have your contact form. Then, go into the editor and click the tab for the "Text" editor (not "Visual" editor). Then click the button that says "WPSS Contact Form". It's that easy. You can also manually insert the following shortcode if you prefer: `[spamshieldcontact]`
+
 The page you place the contact form on should have its own URL, and not be used on the homepage of your site. It also cannot be implemented as part of a widget or theme element, such as a footer, sidebar, etc.
 
 There is no need to configure the form. It allows you to simply drop it into the page you want to install it on. However, there are a few basic configuration options. You can choose whether or not to include Phone and Website fields, whether they should be required, add a drop down menu with up to 10 options, set the width and height of the Message box, set the minimum message length, set the form recipient, enter a custom message to be displayed upon successful contact form submission, and choose whether or not to include user technical data in the email.
@@ -157,6 +160,14 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the main [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.8.3 =
+*released 03/24/15*
+
+* Added a contact form quicktag so users can just click a button in the editor to add a contact form to pages. No more manually inserting shortcodes.
+* Made various code improvements.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
 
 = 1.8.2 =
 *released 03/16/15*
@@ -401,8 +412,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.2 =
-Increased minimum required WordPress version to 3.8 and minimum required PHP version to 5.3, fixed XHTML validation errors, and updated the spam filters. Please see Changelog for details.
+= 1.8.3 =
+Added a contact form quicktag so users can add a contact form to pages with one click in the editor, made various code improvements, and improved/updated the filters in the spam blocking algorithm.
 
 == Other Notes ==
 
