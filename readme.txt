@@ -59,7 +59,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 3. Multiple languages available and more on the way. Currently includes Dutch (nl_NL), French (fr_FR), German (de_DE), and Serbian (sr_RS) translations. Ready for translation into other languages.
 4. Easy to install - truly plug and play. Just upload and activate. (Installation Status on the plugin admin page to let you know if plugin is installed correctly.)
 5. Compatible with popular cache plugins, including WP Super Cache and others. Not all anti-spam plugins can say that.
-6. Display your blocked spam stats on your blog. Widgets and shortcodes for graphic counters to display spam stats, multiple sizes and options.
+6. Display your blocked spam stats on your blog. Customizable widgets for graphic counters to display spam stats, in multiple colors, sizes and options.
 7. Works in WordPress Multisite as well. (See the related [FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_3) for details.)
 8. Enhanced Comment Blacklist option. Instead of just sending comments to moderation as with WordPress's default Comment Blacklist functionality, with this turned on, anything that matches a string in the blacklist will be **completely blocked**. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.
 9. WP-SpamShield Whitelist option. Allows you to specify certain users who you want to let bypass the spam filters.
@@ -128,7 +128,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 **NOTE: If you're using a caching plugin, you will need to clear the plugin's cache after you install WP-SpamShield.**
 
 = Displaying Stats on Your Blog =
-Want to show off your spam stats on your blog and tell others about WP-SpamShield? It's easy, just add a widget and drag and drop it where you like, in several color and size options. You have a choice of the regular size counters in 5 colors, the small counter in 5 colors, or the End Blog Spam graphic. ( </BLOGSPAM> )
+Want to show off your spam stats on your blog and tell others about WP-SpamShield? It's easy, just add a widget and drag and drop it where you like, in several color and size options. You have a choice of the regular size counters in 5 colors, the small counter in 5 colors, or the End Blog Spam graphic. ( `</BLOGSPAM>` )
 
 As of version 1.8.4, there is also a new customizable widget that has a number of color and style options, including a custom color chooser.
 
@@ -160,7 +160,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 = 1.8.4 =
 *released 03/30/15*
 
-* Added new widgets. Converted the spam stat counter graphics to widgets, so they are much easier to add to your site now. No more messing around with code. There are a lot of new widget options to check out. 
+* Added new widgets. Converted the spam stat counter graphics to widgets, so they are much easier to add to your site now. No more messing around with code. There are a number of new widget options to check out. 
 * Added a new customizable widget that has a number of color and style options, including a custom color chooser.
 * Fixed a few potential issues with UTF-8 and multibyte support.
 * Made a small fix to the contact form thank you message that will help multi-language users.
