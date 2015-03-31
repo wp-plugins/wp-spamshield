@@ -128,15 +128,11 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 **NOTE: If you're using a caching plugin, you will need to clear the plugin's cache after you install WP-SpamShield.**
 
 = Displaying Stats on Your Blog =
-Want to show off your spam stats on your blog and tell others about WP-SpamShield? Simply add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-9 corresponding to one of the background styles you'd like to use. (See plugin homepage for more info.)
+Want to show off your spam stats on your blog and tell others about WP-SpamShield? It's easy, just add a widget and drag and drop it where you like, in several color and size options. You have a choice of the regular size counters in 5 colors, the small counter in 5 colors, or the End Blog Spam graphic. ( </BLOGSPAM> )
 
-To add it to any page or post, add the following shortcode to the page or post where you'd like the stats displayed (using the HTML editing tab, NOT the Visual editor): `[spamshieldcounter style=1]` where '1' is the style. Replace the '1' with a number from 1-9 that corresponds to one of the images below that matches the style you'd like to use. To simply display text stats on your site (no graphic), replace the '1' with '0'.
+As of version 1.8.4, there is also a new customizable widget that has a number of color and style options, including a custom color chooser.
 
-To add smaller counter to your site, add the following code to your WordPress theme where you'd like the stats displayed: `<?php if ( function_exists(spamshield_counter) ) { spamshield_counter(1); } ?>` where '1' is the style. Replace the '1' with a number from 1-5 that corresponds to the style you'd like to use. (See plugin homepage for more info.)
-
-To add it to any page or post, add the following shortcode to the page or post where you'd like the stats displayed (using the HTML editing tab, NOT the Visual editor): `[spamshieldcountersm style=1]` where '1' is the style. Replace the '1' with a number from 1-5 that corresponds to the style you'd like to use.
-
-Or, you can simply use the widget. It displays stats in the style of small counter #1. Now you can show spam stats on your blog without knowing any code.
+Now you can show spam stats on your blog without knowing any code.
 
 = Adding a Contact Form to Your Blog =
 First create a distinct page (not post) where you want to have your contact form. Then, go into the editor and click the tab for the "Text" editor (not "Visual" editor). Then click the button that says "WPSS Contact Form". It's that easy. You can also manually insert the following shortcode if you prefer: `[spamshieldcontact]`
@@ -160,6 +156,19 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the main [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.8.4 =
+*released 03/30/15*
+
+* Added new widgets. Converted the spam stat counter graphics to widgets, so they are much easier to add to your site now. No more messing around with code. There are a lot of new widget options to check out. 
+* Added a new customizable widget that has a number of color and style options, including a custom color chooser.
+* Fixed a few potential issues with UTF-8 and multibyte support.
+* Made a small fix to the contact form thank you message that will help multi-language users.
+* Made the comment spam blocking process a little more efficient.
+* Added info to the settings page with info on how much time the plugin has saved you.
+* Made various code improvements.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
 
 = 1.8.3 =
 *released 03/24/15*
@@ -412,8 +421,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.3 =
-Added a contact form quicktag so users can add a contact form to pages with one click in the editor, made various code improvements, and improved/updated the filters in the spam blocking algorithm.
+= 1.8.4 =
+Added new widgets, including a customizable widget, fixed a few potential issues with UTF-8 and multibyte support, made various code improvements, and improved/updated the filters in the spam blocking algorithm.
 
 == Other Notes ==
 

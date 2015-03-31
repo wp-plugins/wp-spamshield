@@ -880,6 +880,10 @@ msgstr ""
 msgid "Comment Spam Blocking"
 msgstr ""
 
+#: class.wpss-widget.php:18
+msgid "WP-SpamShield Counter"
+msgstr ""
+
 #. Description of the plugin/theme
 msgid "An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature."
 msgstr ""
