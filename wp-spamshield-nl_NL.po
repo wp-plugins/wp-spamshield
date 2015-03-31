@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 10:00-0800\n"
-"PO-Revision-Date: 2015-03-08 20:00-0800\n"
+"PO-Revision-Date: 2015-03-30 20:00-0800\n"
 "Last-Translator: Martin Teley <martin.teley@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_c\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.7.4\n"
+"X-Generator: Poedit 1.7.5\n"
 "Language: nl_NL\n"
 "X-Poedit-SearchPath-0: wp-spamshield\n"
 
@@ -895,6 +895,10 @@ msgstr "Reactie Spam Blokkade door WP-SpamShield"
 #: wp-spamshield.php:6816
 msgid "Comment Spam Blocking"
 msgstr "Reactie Spam Blokkade"
+
+#: class.wpss-widget.php:18
+msgid "WP-SpamShield Counter"
+msgstr "WP-SpamShield Counte"
 
 #. Description of the plugin/theme
 msgid "An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature."
