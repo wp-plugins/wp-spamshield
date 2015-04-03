@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.8.4
+Version: 1.8.5
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.8.4' );
+define( 'WPSS_VERSION', '1.8.5' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.8' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -213,7 +213,7 @@ function spamshield_count_words($string) {
 
 function spamshield_strlen($string) {
 	/***
-	* Use this function instead of mb_strlen because some servers(more often IIS) have mb_ functions disabled by default
+	* Use this function instead of mb_strlen because some servers (often IIS) have mb_ functions disabled by default
 	* BUT mb_strlen is superior to strlen, so use it whenever possible
 	***/
 	if ( function_exists( 'mb_strlen' ) ) { $num_chars = mb_strlen($string, 'UTF-8'); } else { $num_chars = strlen($string); }
@@ -426,34 +426,38 @@ function spamshield_scandir( $dir ) {
 	}
 
 function spamshield_get_domain($url) {
-	// Get domain from URL
-	// Filter URLs with nothing after http
+	/***
+	* Get domain from URL
+	* Filter URLs with nothing after http
+	***/
 	if ( empty( $url ) || preg_match( "~^https?\:*/*$~i", $url ) ) { return ''; }
-	// Fix poorly formed URLs so as not to throw errors when parsing
+	/* Fix poorly formed URLs so as not to throw errors when parsing */
 	$url = spamshield_fix_url($url);
-	// NOW start parsing
-	$parsed = parse_url($url);
-	// Filter URLs with no domain
+	/* NOW start parsing */
+	$parsed = @parse_url($url);
+	/* Filter URLs with no domain */
 	if ( empty( $parsed['host'] ) ) { return ''; }
 	return spamshield_casetrans('lower',$parsed['host']);
 	}
 
 function spamshield_get_query_string($url) {
-	// Get query string from URL
-	// Filter URLs with nothing after http
+	/***
+	* Get query string from URL
+	* Filter URLs with nothing after http
+	***/
 	if ( empty( $url ) || preg_match( "~^https?\:*/*$~i", $url ) ) { return ''; }
-	// Fix poorly formed URLs so as not to throw errors when parsing
+	/* Fix poorly formed URLs so as not to throw errors when parsing */
 	$url = spamshield_fix_url($url);
-	// NOW start parsing
-	$parsed = parse_url($url);
-	// Filter URLs with no query string
+	/* NOW start parsing */
+	$parsed = @parse_url($url);
+	/* Filter URLs with no query string */
 	if ( empty( $parsed['query'] ) ) { return ''; }
 	$query_str = $parsed['query'];
 	return $query_str;
 	}
 
 function spamshield_get_email_domain($email) {
-	// Get domain from email address
+	/* Get domain from email address */
 	if ( empty( $email ) ) { return ''; }
 	$email_elements = explode( '@', $email );
 	$domain = $email_elements[1];
@@ -469,12 +473,12 @@ function spamshield_parse_links( $haystack, $type = 'url' ) {
 	$parse_links_regex = "~(<\s*a\s+[a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*\s*href|\[(url|link))\s*\=\s*['\"]?\s*(https?\://[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*['\"]?\s*[a-z0-9\-_\.\?\='\"\:;\(\)\{\}\s]*\s*(>|\])([a-z0-9àáâãäåçèéêëìíîïñńņňòóôõöùúûü\-_\/\.\?\&\=\~\@\%\+\#\:;\!,'\(\)\{\}\s]*)(<|\[)\s*\/\s*a\s*(>|(url|link)\])~iu";
 	$search_http_regex ="~(?:^|\s+)(https?\://[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)(?:$|\s+)~iu";
 	preg_match_all( $parse_links_regex, $haystack, $matches_links, PREG_PATTERN_ORDER );
-	$parsed_links_matches 			= $matches_links[3]; // Array containing URLs parsed from Anchor Text Links in haystack text
-	$parsed_anchortxt_matches		= $matches_links[5]; // Array containing Anchor Text parsed from Anchor Text Links in haystack text
+	$parsed_links_matches 			= $matches_links[3]; /* Array containing URLs parsed from Anchor Text Links in haystack text */
+	$parsed_anchortxt_matches		= $matches_links[5]; /* Array containing Anchor Text parsed from Anchor Text Links in haystack text */
 	if ( $type == 'url' || $type == 'domain' ) {
-		$url_haystack = preg_replace( "~\s~", ' - ', $haystack ); // Workaround Added 1.3.8
+		$url_haystack = preg_replace( "~\s~", ' - ', $haystack ); /* Workaround Added 1.3.8 */
 		preg_match_all( $search_http_regex, $url_haystack, $matches_http, PREG_PATTERN_ORDER );
-		$parsed_http_matches 		= $matches_http[1]; // Array containing URLs parsed from haystack text
+		$parsed_http_matches 		= $matches_http[1]; /* Array containing URLs parsed from haystack text */
 		$parsed_urls_all_raw 		= array_merge( $parsed_links_matches, $parsed_http_matches );
 		$parsed_urls_all			= array_unique( $parsed_urls_all_raw );
 		if ( $type == 'url' ) {
@@ -493,7 +497,7 @@ function spamshield_parse_links( $haystack, $type = 'url' ) {
 			$results = $parsed_urls_all_domains;
 			}
 		}
-	elseif ( $type == 'url_at' ) { // Added 1.3.8
+	elseif ( $type == 'url_at' ) { /* Added 1.3.8 */
 		$results = $parsed_links_matches;
 		}
 	elseif ( $type == 'anchor_text' ) {
@@ -503,18 +507,20 @@ function spamshield_parse_links( $haystack, $type = 'url' ) {
 	}
 
 function spamshield_fix_url( $url, $rem_frag = FALSE, $rem_query = FALSE, $rev = FALSE ) {
-	// Fix poorly formed URLs so as not to throw errors or cause problems
-	// Too many forward slashes or colons after http
+	/***
+	* Fix poorly formed URLs so as not to throw errors or cause problems
+	* Too many forward slashes or colons after http
+	***/
 	$url = preg_replace( "~^(https?)\:+/+~i", "$1://", $url);
-	// Too many dots
+	/* Too many dots */
 	$url = preg_replace( "~\.+~i", ".", $url);
-	// Too many slashes after the domain
+	/* Too many slashes after the domain */
 	$url = preg_replace( "~([a-z0-9]+)/+([a-z0-9]+)~i", "$1/$2", $url);
-	// Remove fragments
+	/* Remove fragments */
 	if ( !empty( $rem_frag ) && strpos( $url, '#' ) !== FALSE ) { $url_arr = explode( '#', $url ); $url = $url_arr[0]; }
-	// Remove query string completely
+	/* Remove query string completely */
 	if ( !empty( $rem_query ) && strpos( $url, '?' ) !== FALSE ) { $url_arr = explode( '?', $url ); $url = $url_arr[0]; }
-	// Reverse
+	/* Reverse */
 	if ( !empty( $rev ) ) { $url = strrev($url); }
 	return $url;
 	}
@@ -542,8 +548,8 @@ function spamshield_get_server_name() {
 	}
 
 function spamshield_get_query_arr($url) {
-	// Get array of variables from query string
-	$query_str = spamshield_get_query_string($url); // 1.7.3 - Validates better
+	/* Get array of variables from query string */
+	$query_str = spamshield_get_query_string($url); /* 1.7.3 - Validates better */
 	if ( !empty( $query_str ) ) { $query_arr = explode( '&', $query_str ); } else { $query_arr = ''; }
 	return $query_arr;
 	}
@@ -555,7 +561,7 @@ function spamshield_remove_query( $url, $skip_wp_args = FALSE ) {
 	foreach( $query_arr as $i => $query_arg ) {
 		$query_arg_arr = explode( '=', $query_arg );
 		$key = $query_arg_arr[0];
-		if ( !empty( $skip_wp_args ) && ( $key == 'p' || $key == 'page_id' ) ) { continue; } // DO NOT ADD 'cpage', only 'p' and 'page_id'!!
+		if ( !empty( $skip_wp_args ) && ( $key == 'p' || $key == 'page_id' ) ) { continue; } /* DO NOT ADD 'cpage', only 'p' and 'page_id'!! */
 		$remove_args[] = $key;
 		}
 	$clean_url = remove_query_arg( $remove_args, $url );
@@ -605,7 +611,7 @@ function spamshield_get_referrer( $raw = FALSE, $lowercase = FALSE, $init = FALS
 	if ( !empty( $_COOKIE['JCS_INENREF'] ) )	{ 
 		$init_referrer	= $_COOKIE['JCS_INENREF'];
 		$site_domain	= RSMP_SERVER_NAME;
-		if ( strpos( $init_referrer, $site_domain ) !== FALSE ) { $init_referrer = ''; } // Tracking referrals from other sites only
+		if ( strpos( $init_referrer, $site_domain ) !== FALSE ) { $init_referrer = ''; } /* Tracking referrals from other sites only */
 		}
 	$referrer = $http_referrer;
 	if ( !empty( $init ) ) { $referrer = $init_referrer; }
@@ -766,14 +772,14 @@ function spamshield_doc_txt() {
 	}
 
 function spamshield_is_lang_en_us( $strict = TRUE ) {
-	// Test if site is set to use English (US) - the default - or another language/localization
+	/* Test if site is set to use English (US) - the default - or another language/localization */
 	$wpss_locale = get_locale();
 	if ( $strict != TRUE ) {
-		// Not strict - English, but localized translations may be in use
+		/* Not strict - English, but localized translations may be in use */
 		if ( !empty( $wpss_locale ) && !preg_match( "~^(en(_[a-z]{2})?)?$~i", $wpss_locale ) ) { $lang_en_us = FALSE; } else { $lang_en_us = TRUE; }
 		}
 	else {
-		// Strict - English (US), no translation being used
+		/* Strict - English (US), no translation being used */
 		if ( !empty( $wpss_locale ) && !preg_match( "~^(en(_us)?)?$~i", $wpss_locale ) ) { $lang_en_us = FALSE; } else { $lang_en_us = TRUE; }
 		}
 	return $lang_en_us;
@@ -812,9 +818,9 @@ function spamshield_load_languages() {
 function spamshield_first_action() {
 
 	spamshield_start_session();
-	// Add all commands after this
+	/* Add all commands after this */
 
-	//Add Vars Here
+	/* Add Vars Here */
 	$key_main_page_hits		= 'wpss_page_hits_'.RSMP_HASH;
 	$key_main_pages_hist 	= 'wpss_pages_hit_'.RSMP_HASH;
 	$key_main_hits_per_page	= 'wpss_pages_hit_count_'.RSMP_HASH;
@@ -839,18 +845,18 @@ function spamshield_first_action() {
 	$_SESSION['wpss_user_agent_current_'.RSMP_HASH] = spamshield_get_user_agent();
 
 	if ( !is_admin() && !current_user_can( 'moderate_comments' ) ) {
-		// Page hits
+		/* Page hits */
 		if ( empty( $_SESSION[$key_main_page_hits] ) ) {
 			$_SESSION[$key_main_page_hits] = 0;
 			}
 		++$_SESSION[$key_main_page_hits];
-		// Pages visited history
+		/* Pages visited history */
 		if ( empty( $_SESSION[$key_main_pages_hist] ) ) {
 			$_SESSION[$key_main_pages_hist] = array();
 			$_SESSION[$key_main_hits_per_page] = array();
 			}
 		$_SESSION[$key_main_pages_hist][] = spamshield_get_url();
-		// Initial referrer
+		/* Initial referrer */
 		if ( empty( $_SESSION[$key_first_ref] ) ) {
 			if ( !empty( $current_ref ) ) { $_SESSION[$key_first_ref] = $current_ref; }
 			else { $_SESSION[$key_first_ref] = '[No Data]'; }
