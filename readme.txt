@@ -46,7 +46,12 @@ Includes drop-in spam-free contact form, with easy one-click installation. Easy 
 The plugin also includes powerful protection from user registration spam on your site's WordPress registration page. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up any more. (Note: This protects the *WordPress registration form* only, not the registration forms of other plugins. See [this FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_13) for more info.
 
 = Why Not Just Use a CAPTCHA? =
-The concept of using a CAPTCHA as an anti-spam solution in this day and age is flawed for several reasons: 1) It's an outdated concept that has far outlived its usefulness. 2) It's extremely unfriendly to users of your website to make them type in numbers and letters obscured by squiggly lines, only to be told they are wrong several times, even after typing in the correct answer. It is proven to hurt a website's business and conversions because of the negative feeling it evokes. People simply don't like CAPTCHAS. 3) CAPTCHAS can be defeated. 4) Why use a CAPTCHA when there are better solutions that don't inconvenience your website users?
+The concept of using a CAPTCHA as an anti-spam solution in this day and age is flawed for several reasons: 
+
+1. It's an outdated concept that has far outlived its usefulness, and was originally developed before user-friendliness was a high priority.
+2. It goes in the exact opposite direction of user-friendly design principles. Think about it. Users of your website have to type in numbers and letters obscured by squiggly lines and symbols, only to be told they are wrong several times, even after typing in the correct answer. This is proven to hurt website business and revenue because of the negative feelings it causes. People simply don't like CAPTCHAS.
+3. CAPTCHAS can be defeated.
+4. Why use a CAPTCHA when there are better solutions that don't inconvenience your website users?
 
 = Optimized and Scalable =
 This plugin has an extremely low overhead and won't slow down your site, unlike some other anti-spam plugins. Each of the filters in the plugin have been benchmarked, and when processing comments for spam, the fastest filters are put at the front of the stack. Once a comment tests positive for spam, the testing process terminates and will not engage the remaining filters. Additionally, as mentioned above, by keeping spam out of the WordPress database altogether, WP-SpamShield helps keep your database slimmer and more efficient, which in turn helps keep your site running faster. This efficiency helps keep the server load down, and helps improve the overall performance of your site.
