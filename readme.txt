@@ -1,7 +1,7 @@
 ﻿=== WP-SpamShield Anti-Spam ===
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
-Tags: antispam, anti-spam, block spam, comment, comment spam, comments, contact, contact form, form, forms, javascript, login, multisite, register, registration, security, signup, spam, spam filter, user registration spam, trackback
+Tags: akismet, all-in-one, antispam, anti-spam, block spam, captcha, comment, comment spam, comments, contact, contact form, contact forms, form, forms, javascript, login, multisite, protection, register, registration, registration spam, security, signup, signup spam, spam, spam blocker, spam filter, trackback, trackbacks, user registration spam, widget
 Requires at least: 3.8
 Tested up to: 4.1
 Stable tag: trunk
@@ -14,7 +14,7 @@ An extremely powerful WordPress anti-spam plugin that eliminates comment spam, t
 An extremely powerful and user-friendly WordPress anti-spam plugin that eliminates comment spam, trackback spam, contact form spam & registration spam.
 
 = An All-in-one Spam Solution for WordPress - Without CAPTCHAS =
-No CAPTCHA's, challenge questions or other inconvenience to site visitors - it works silently in the background.
+No CAPTCHA's, challenge questions or other inconvenience to site visitors - it works silently in the background and simply makes WordPress spam disappear.
 
 = Documentation / Tech Support =
 * Documentation: [Plugin Homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/)
@@ -24,17 +24,17 @@ No CAPTCHA's, challenge questions or other inconvenience to site visitors - it w
 Most of the spam hitting your blog originates from bots, but quite a bit comes from humans too. This plugin works like a firewall to ensure that your commenters are in fact, human, and that those humans aren't spamming you.
 
 = Two Layers of Spam Blocking =
-There are two layers of spam protection that work together to *block both automated and human spam*: a **JavaScript/Cookies Layer**, and an **Algorithmic Layer**. The first layer uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 100% of automated spam from ever getting to your site. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop almost all of the spam that the JavaScript Layer blocks, and provides close to a fully redundant backstop. This JavaScript Layer utilizes multiple randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer consists of over 100 advanced filters, and eliminates *trackback spam* and *most human spam as well*. And, it does all that without hindering legitimate comments and trackbacks.
+There are two layers of anti-spam protection that work together to *block both automated and human spam*: a **JavaScript/Cookies Layer**, and an **Algorithmic Layer**. The first layer uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 100% of automated spam from ever getting to your site. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop almost all of the spam that the JavaScript Layer blocks, and provides close to a fully redundant backstop. This JavaScript Layer utilizes multiple randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer consists of over 100 advanced filters, and eliminates *trackback spam* and *most human spam as well*. And, it does all that without hindering legitimate comments and trackbacks.
 
 = No More Wasted Time Sifting Through the Spam Queue =
 This type of solution works silently in the background, with no inconveniences. You won't have to waste valuable time sifting through a spam queue any more, because there won't be anything there.
 
-WP-SpamShield is different from other spam plugins in that it *BLOCKS* spam at the front door and doesn't allow it into the WordPress database¹ at all. Many other spam plugins simply label a comment as spam, leaving you to sort through a queue, which wastes your valuable time. **WP-SpamShield will give you back your time!**
+WP-SpamShield is different from other anti-spam plugins in that it *BLOCKS* spam at the front door and doesn't allow it into the WordPress database¹ at all. Many other anti-spam plugins simply label a comment as spam, leaving you to sort through a queue, which wastes your valuable time. **WP-SpamShield will give you back your time!**
 
-¹*Not allowing these into the database improves security by potentially preventing SQL injection exploit attacks through automated comment submissions. It also keeps your WordPress database slimmer and more efficient (keeping your site running faster) by not allowing the thousands upon thousands of spam comments into it, which could bloat the database and potentially corrupt it.*
+¹*Not allowing these into the database improves security by potentially preventing SQL injection exploit attacks through automated spam comment submissions. It also keeps your WordPress database slimmer and more efficient (keeping your site running faster) by not allowing the thousands upon thousands of spam comments into it, which could bloat the database and potentially corrupt it.*
 
 = ZERO False Positives =
-It does all this with ZERO false positives, because of the method used to block spam. This leads to fewer frustrated website visitors, and less work for you. If a comment/contact form/registration gets blocked, the user is given feedback and has a chance to correct their comment/contact form/registration and try again. We are committed to keeping the promise of zero false positives.
+It does all this with ZERO false positives, because of the method used to block spam. This leads to fewer frustrated website visitors, and less work for you. If a comment/contact form/registration gets blocked as spam, the user is given instant feedback and has a chance to correct their comment/contact form/registration and try again. We are committed to keeping the promise of zero false positives.
 
 = 100% Trackback Validation and Spam Blocking =
 The trackback validation contains a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is guaranteed spam, without fail. This alone eliminates more than 99.99% of trackback spam. Trackback spammers don't send spam out from the same server where their clients' websites reside. There are algorithmic filters in place to ensure 100% trackback spam blocking. Although it's far more rare, the plugin protects again pingback spam as well. You can be confident that only legitimate trackbacks and pingbacks will get through.
@@ -44,6 +44,14 @@ Includes drop-in spam-free contact form, with easy one-click installation. Easy 
 
 = WordPress Registration Spam Blocking =
 The plugin also includes powerful protection from user registration spam on your site's WordPress registration page. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up any more. (Note: This protects the *WordPress registration form* only, not the registration forms of other plugins. See [this FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_13) for more info.
+
+= Why Not Just Use a CAPTCHA? =
+The concept of using a CAPTCHA as an anti-spam solution in this day and age is flawed for several reasons: 
+
+1. It's an outdated concept that has far outlived its usefulness, and was originally developed before user-friendliness was a high priority.
+2. It goes in the exact opposite direction of user-friendly design principles. Think about it. Users of your website have to type in numbers and letters obscured by squiggly lines and symbols, only to be told they are wrong several times, even after typing in the correct answer. This is proven to hurt website business and revenue because of the negative feelings it causes. People simply don't like CAPTCHAS.
+3. CAPTCHAS can be defeated.
+4. Why use a CAPTCHA when there are better solutions that don't inconvenience your website users?
 
 = Optimized and Scalable =
 This plugin has an extremely low overhead and won't slow down your site, unlike some other anti-spam plugins. Each of the filters in the plugin have been benchmarked, and when processing comments for spam, the fastest filters are put at the front of the stack. Once a comment tests positive for spam, the testing process terminates and will not engage the remaining filters. Additionally, as mentioned above, by keeping spam out of the WordPress database altogether, WP-SpamShield helps keep your database slimmer and more efficient, which in turn helps keep your site running faster. This efficiency helps keep the server load down, and helps improve the overall performance of your site.
@@ -56,15 +64,15 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 
 = Additional Features =
 1. A counter on your dashboard to keep track of all the spam it's blocking. The numbers will show how effective this plugin is.
-2. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked comments and contact form submissions for 7 days, then turns off automatically. If you want to see what's been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
+2. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked spam (comments, trackbacks, registrations, and contact form submissions) for 7 days, then turns off automatically. If you want to see what spam has been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
 3. Multiple languages available and more on the way. Currently includes Dutch (nl_NL), French (fr_FR), German (de_DE), and Serbian (sr_RS) translations. Ready for translation into other languages.
 4. Easy to install - truly plug and play. Just upload and activate. (Installation Status on the plugin admin page to let you know if plugin is installed correctly.)
 5. Compatible with popular cache plugins, including WP Super Cache and others. Not all anti-spam plugins can say that.
 6. Display your blocked spam stats on your blog. Customizable widgets for graphic counters to display spam stats, in multiple colors, sizes and options.
 7. Works in WordPress Multisite as well. (See the related [FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_3) for details.)
-8. Enhanced Comment Blacklist option. Instead of just sending comments to moderation as with WordPress's default Comment Blacklist functionality, with this turned on, anything that matches a string in the blacklist will be **completely blocked**. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.
+8. Enhanced Comment Blacklist option. Instead of just sending comments to moderation as with WordPress's default Comment Blacklist functionality, with this turned on, anything that matches a string in the blacklist will be **completely blocked**. The Enhanced Comment Blacklist has some improvements over the default WordPress blacklist functionality, and adds a link in the comment & contact form notification emails that will let you blacklist a spammer's IP with one click.
 9. WP-SpamShield Whitelist option. Allows you to specify certain users who you want to let bypass the spam filters.
-10. This plugin is legal to use in Germany and the EU, and does not violate European privacy laws. It does not use any type of cloud-based service, data is not transmitted from your server to any other server, and all anti-spam processing happens directly on your website's server.
+10. This plugin is legal to use in Germany and the EU, and does not violate European privacy laws. It does not use any type of cloud-based service, spam data is not transmitted from your server to any other server, and all anti-spam processing happens directly on your website's server.
 11. A truly plug and play replacement and upgrade for WP-SpamFree. (A far more advanced fork of WP-SpamFree with dramatically improved page load speed, security, and spam blocking power, by its original author.) It will import your old data from WP-SpamFree automatically upon installation and activation, and features you were using on your site previously such as contact forms and spam stats will continue to work without any changes to pages, posts, or theme.
 
 = Languages Available =
