@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.8.5
+Version: 1.8.6
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.8.5' );
+define( 'WPSS_VERSION', '1.8.6' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.8' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -1241,6 +1241,7 @@ function spamshield_append_log_data( $str = NULL, $rsds_only = FALSE ) {
 	* Example:
 	* spamshield_append_log_data( "\n".'$wpss_example_variable: "'.$wpss_example_variable.'" Line: '.__LINE__.' | '.__FUNCTION__.' | '.__FILE__, TRUE );
 	* spamshield_append_log_data( "\n".'$wpss_example_variable: "'.$wpss_example_variable.'" Line: '.__LINE__.' | '.__FUNCTION__.' | MEM USED: ' . spamshield_wp_memory_used() . ' | VER: ' . WPSS_VERSION, TRUE );
+	* spamshield_append_log_data( "\n".'$wpss_example_variable: "'.$wpss_example_variable.'" Line: '.__LINE__.' | '.__FUNCTION__.' | MEM USED: ' . spamshield_wp_memory_used() . ' | VER: ' . WPSS_VERSION . ' | BACKTRACE: ' . wp_debug_backtrace_summary(), TRUE );
 	* spamshield_append_log_data( "\n".'[A]$wpss_example_array_var: "'.serialize($wpss_example_array_var).'" Line: '.__LINE__.' | '.__FUNCTION__.' | MEM USED: ' . spamshield_wp_memory_used() . ' | VER: ' . WPSS_VERSION, TRUE );
 	* spamshield_append_log_data( "\n".'Line: '.__LINE__.' | '.__FUNCTION__.' | MEM USED: ' . spamshield_wp_memory_used() . ' | VER: ' . WPSS_VERSION, TRUE );
 	* spamshield_append_log_data( "\n".'Ver '.WPSS_VERSION.' Changelog: Line '.__LINE__.' ADDED|MODDED|DELETED '.__FUNCTION__.'()', TRUE );
@@ -2064,7 +2065,7 @@ function spamshield_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			***/
 			$error_txt = spamshield_error_txt();
 			$wpss_error = $error_txt.':';
-			$spamshield_contact_form_content = '<p><strong>'.$wpss_error.' ' . __( 'Please return to the contact form and fill out all required fields.', WPSS_PLUGIN_NAME ) . '</strong><p>&nbsp;</p>'."\n";
+			$spamshield_contact_form_content = '<p><strong>'.$wpss_error.' ' . __( 'Please return to the contact form and fill out all required fields.', WPSS_PLUGIN_NAME ) . '</strong></p><p>&nbsp;</p>'."\n";
 			$content_new = str_replace($content, $spamshield_contact_form_content, $content);
 			$content_shortcode = $spamshield_contact_form_content;
 			}
@@ -2159,7 +2160,6 @@ function spamshield_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			$contact_form_author_data['javascript_page_referrer']	= $wpss_javascript_page_referrer;
 			$contact_form_author_data['jsonst']						= $wpss_jsonst;
 
-
 			unset( $wpss_javascript_page_referrer, $wpss_jsonst );
 			
 			/* Add New Tests for Logging - END */
@@ -2190,7 +2190,7 @@ function spamshield_contact_form( $content = NULL, $shortcode_check = NULL ) {
 				}
 
 			/* TESTING CONTACT FORM SUBMISSION FOR SPAM - BEGIN */
-			
+
 			/* JS/CK Tests - BEGIN */
 			$wpss_ck_key_bypass = $wpss_js_key_bypass = FALSE;
 			if ( TRUE == WPSS_EDGE && !empty( $spamshield_options['js_head_disable'] ) ) { /* EDGE - 1.8.4 */
@@ -2699,13 +2699,13 @@ function spamshield_contact_form( $content = NULL, $shortcode_check = NULL ) {
 				/* Back URL was here...moved */
 				if ( !empty( $message_spam ) ) {
 					$contact_response_status_message_addendum .= '<noscript><br />&nbsp;<br />&bull; '.$wpss_js_disabled_msg_short.'</noscript>'."\n";
-					$spamshield_contact_form_content .= '<p><strong>'.$wpss_error.' <br />&nbsp;<br />'.$contact_response_status_message_addendum.'</strong><p>&nbsp;</p>'."\n";
+					$spamshield_contact_form_content .= '<p><strong>'.$wpss_error.' <br />&nbsp;<br />'.$contact_response_status_message_addendum.'</strong></p><p>&nbsp;</p>'."\n";
 					}
 				else {
 					$contact_response_status_message_addendum .= '<noscript><br />&nbsp;<br />&bull; '.$wpss_js_disabled_msg_short.'</noscript>'."\n";
 					$spamshield_contact_form_content .= '<p><strong>'.$wpss_error.' ' . __( 'Please return to the contact form and fill out all required fields.', WPSS_PLUGIN_NAME );
 					$spamshield_contact_form_content .= ' ' . __( 'Please make sure JavaScript and Cookies are enabled in your browser.', WPSS_PLUGIN_NAME );
-					$spamshield_contact_form_content .= '<br />&nbsp;<br />'.$contact_response_status_message_addendum.'</strong><p>&nbsp;</p>'."\n";
+					$spamshield_contact_form_content .= '<br />&nbsp;<br />'.$contact_response_status_message_addendum.'</strong></p><p>&nbsp;</p>'."\n";
 					}
 
 				}
@@ -3513,6 +3513,7 @@ function spamshield_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL
 		"REVD1057" => "~^[a-z]+\.highspeedinternetsecurity\.com$~",
 		"REVD1058" => "~^(([0-9]{1,3}[\.\-]){4})?host\.colocrossing\.com$~",
 		"REVD1059" => "~^([0-9]{1,3}[\.\-]){4}bc\.googleusercontent\.com$~",
+		"REVD1060" => "~^([0-9]{1,3}[\.\-]){4}static\.reverse\.lstn\.net$~",
 		);
 
 	$banned_trackback_servers = array(
@@ -5972,7 +5973,6 @@ if (!class_exists('wpSpamShield')) {
 					}
 				else {
 					echo '<div class="error fade"><p>' . __( 'Security token invalid or expired. IP Address not added to Comment Blacklist.', WPSS_PLUGIN_NAME ) . '</p></div>'; /* NEEDS TRANSLATION */
-					/* echo '<div class="error fade"><p>' . __( 'Expired or invalid security token. Not added to Comment Blacklist.', WPSS_PLUGIN_NAME ) . '</p></div>'; */
 					}
 				}
 
@@ -5986,8 +5986,6 @@ if (!class_exists('wpSpamShield')) {
 			</div>
 
 			<?php
-
-
 			/**
 			* TO DO:
 			* Detect PHP Version and Memory Issues and Display Warning, with info on how to fix
@@ -6586,7 +6584,7 @@ if (!class_exists('wpSpamShield')) {
 								/* array('','RSM_Level10','Level10 Domains','Inexpensive web domains with an easy to use admin dashboard.','Level10 Domains offers some of the best prices you\'ll find on web domain purchasing. The dashboard provides an easy way to manage your domains.'), */
 								);
 				foreach( $wpss_rpd as $i => $v ) {
-					echo '<div style="width:375px;height:280px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:'.$wpss_vert_margins.'px;margin-right:'.$wpss_horz_margins.'px;float:left;'.$v[0].'">'."\n".'<p><strong><a href="http://bit.ly/'.$v[1].'" target="_blank" rel="external" >'.$v[2].'</a></strong></p>'."\n".'<p><strong>'.$v[3].'</strong></p>'."\n".'<p>'.$v[4].'</p>'."\n".'<p><a href="http://bit.ly/'.$v[1].'" target="_blank" rel="external" >Click here to find out more. >></a></p>'."\n".'</div>'."\n";
+					echo '<div style="width:375px;height:280px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:'.$wpss_vert_margins.'px;margin-right:'.$wpss_horz_margins.'px;float:left;'.$v[0].'">'."\n".'<p><strong><a href="http://bit.ly/'.$v[1].'" target="_blank" rel="external" >'.$v[2].'</a></strong></p>'."\n".'<p><strong>'.$v[3].'</strong></p>'."\n".'<p>'.$v[4].'</p>'."\n".'<p><a href="http://bit.ly/'.$v[1].'" target="_blank" rel="external" >Click here to find out more. &raquo;</a></p>'."\n".'</div>'."\n";
 					}
 
 				}
@@ -6639,7 +6637,7 @@ if (!class_exists('wpSpamShield')) {
 				$wpss_php_version = RSMP_PHP_VERSION;
 				if ( !empty( $wpss_php_version ) && version_compare( $wpss_php_version, WPSS_REQUIRED_PHP_VERSION, '<' ) ) {
 					deactivate_plugins( WPSS_PLUGIN_BASENAME );
-					$notice_text = sprintf( __( '<p>Plugin deactivated. <strong>PHP Version %1$s required.</strong> We are no longer supporting PHP 5.2. (It has not been supported by the PHP team <a href=%2$s>since 2011</a>.)</p><p>Your site is running <strong>PHP %3$s</strong>, which is <em>extremely out of date</em>. You should upgrade your PHP version as soon as possible for website security and performance.</p><p>If you need help with this, please contact your web hosting company. Please see the <a href=%4$s>plugin documentation</a> and <a href=%5$s>changelog</a> if you have further questions.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_PHP_VERSION, '"http://php.net/archive/2011.php#id2011-08-23-1" target="_blank" rel="external" ', $wpss_php_version, '"'.WPSS_HOME_URL.'?src='.WPSS_VERSION.'-php-notice#wpss_requirements" target="_blank" rel="external" ', '"'.WPSS_HOME_URL.'version-history/?src='.WPSS_VERSION.'-php-notice#ver_182" target="_blank" rel="external" ' ); /* NEEDS TRANSLATION - Added 1.8.2 */
+					$notice_text = sprintf( __( '<p>Plugin deactivated. <strong>Your server is running PHP version %3$s, but WP-SpamShield requires at least PHP %1$s.</strong> We are no longer supporting PHP 5.2, as it has not been supported by the PHP team <a href=%2$s>since 2011</a>, and there are known security, performance, and compatibility issues.</p><p>The version of PHP running on your server is <em>extremely out of date</em>. You should upgrade your PHP version as soon as possible.</p><p>If you need help with this, please contact your web hosting company and ask them to switch your PHP version to 5.4 or 5.5. Please see the <a href=%4$s>plugin documentation</a> and <a href=%5$s>changelog</a> if you have further questions.</p>', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_PHP_VERSION, '"http://php.net/archive/2011.php#id2011-08-23-1" target="_blank" rel="external" ', $wpss_php_version, '"'.WPSS_HOME_URL.'?src='.WPSS_VERSION.'-php-notice#wpss_requirements" target="_blank" rel="external" ', '"'.WPSS_HOME_URL.'version-history/?src='.WPSS_VERSION.'-php-notice#ver_182" target="_blank" rel="external" ' ); /* NEEDS TRANSLATION - Added 1.8.2 */
 					$new_admin_notice = array( 'style' => 'error', 'notice' => $notice_text );
 					update_option( 'spamshield_admin_notices', $new_admin_notice );
 					add_action( 'admin_notices', 'spamshield_admin_notices' );

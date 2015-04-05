@@ -1,7 +1,7 @@
 <?php
 /***
 * WP-SpamShield Widgets
-* Ver 1.8.4
+* Ver 1.8.6
 ***/
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -71,6 +71,7 @@ class WP_SpamShield_Counter_CG extends WP_Widget {
 		***/
 		
 		$widget_options = get_option('spamshield_widget_settings');
+		if ( empty( $widget_options ) ) { $widget_options = array( 'basecolor' => '#5A5A5A', 'style' => '1' ); }
 		extract($widget_options);
 
 		/* Custom Palettes */
