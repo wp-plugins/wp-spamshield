@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.8.7
+Version: 1.8.8
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.8.7' );
+define( 'WPSS_VERSION', '1.8.8' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.8' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -109,8 +109,7 @@ if ( !defined( 'RSMP_PHP_MEM_LIMIT' ) ) {
 	}
 if ( !defined( 'RSMP_WP_VERSION' ) ) {
 	global $wp_version;
-	$wpss_wp_version = $wp_version;
-	define( 'RSMP_WP_VERSION', $wpss_wp_version );
+	define( 'RSMP_WP_VERSION', $wp_version );
 	}
 if ( !defined( 'RSMP_USER_AGENT' ) ) {
 	$wpss_user_agent = 'WP-SpamShield/'.WPSS_VERSION.' (WordPress/'.RSMP_WP_VERSION.') PHP/'.RSMP_PHP_VERSION.' ('.RSMP_SERVER_SOFTWARE.')';
@@ -3398,6 +3397,8 @@ function spamshield_ubl_cache( $method = 'chk' ) {
 	***/
 	$blacklist_status = FALSE;
 	$ip = $_SERVER['REMOTE_ADDR'];
+	$last_admin_ip = get_option( 'spamshield_last_admin' );
+	if ( $ip == $last_admin_ip ) { return FALSE; }
 	$wpss_lang_ck_key = 'UBR_LANG'; $wpss_lang_ck_val = 'default';
 	$wpss_ubl_cache = get_option('spamshield_ubl_cache');
 	if ( empty( $wpss_ubl_cache ) ) { $wpss_ubl_cache = array(); }
@@ -4594,28 +4595,31 @@ function spamshield_comment_content_filter( $commentdata, $spamshield_options ) 
 			}
 		$i++;
 		}
-
-	// Comment Author and Comment Author URL appearing in Content - REGEX VERSION
-	if ( preg_match( "~(<\s*a\s+([a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*)\s*href|\[(url|link))\s*\=\s*(['\"])?\s*$commentdata_comment_author_url_lc_regex([a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]*)(['\"])?(>|\])$commentdata_comment_author_lc_deslashed_regex(<|\[)\s*\/\s*a\s*(>|(url|link)\])~i", $commentdata_comment_content_lc_deslashed ) ) {
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' 9100-1';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	if ( $commentdata_comment_author_url_lc == $commentdata_comment_author_lc_deslashed && !preg_match( "~https?\:/+~i", $commentdata_comment_author_url_lc ) && preg_match( "~(<\s*a\s+([a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*)\s*href|\[(url|link))\s*\=\s*(['\"])?\s*(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*(['\"])?\s*(>|\])$commentdata_comment_author_lc_deslashed_regex(<|\[)\s*\/\s*a\s*(>|(url|link)\])~i", $commentdata_comment_content_lc_deslashed ) ) {
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' 9101';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	if ( preg_match( "~^((ww[w0-9]|m)\.)?$commentdata_comment_author_lc_deslashed_regex$~i", $commentdata_comment_author_url_domain_lc) && !preg_match( "~https?\:/+~i", $commentdata_comment_author_lc_deslashed ) ) {
-		// Changed to include Trackbacks and Pingbacks in 1.1.4.4
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' 9102';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
-		}
-	if ( $commentdata_comment_author_url_lc == $commentdata_comment_author_lc_deslashed && !preg_match( "~https?\:/+~i", $commentdata_comment_author_url_lc ) && preg_match( "~(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)~i", $commentdata_comment_content_lc_deslashed ) ) {
-		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
-		$wpss_error_code .= ' 9103';
-		return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
+	
+	/* Comment Author and URL Tests */
+	if ( !empty( $commentdata_comment_author_url_lc ) && !empty( $commentdata_comment_author_lc_deslashed ) ) {
+		/* Comment Author and Comment Author URL appearing in Content - REGEX VERSION */
+		if ( preg_match( "~(<\s*a\s+([a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*)\s*href|\[(url|link))\s*\=\s*(['\"])?\s*$commentdata_comment_author_url_lc_regex([a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]*)(['\"])?(>|\])$commentdata_comment_author_lc_deslashed_regex(<|\[)\s*\/\s*a\s*(>|(url|link)\])~i", $commentdata_comment_content_lc_deslashed ) ) {
+			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
+			$wpss_error_code .= ' 9100-1';
+			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
+			}
+		if ( $commentdata_comment_author_url_lc == $commentdata_comment_author_lc_deslashed && !preg_match( "~https?\:/+~i", $commentdata_comment_author_url_lc ) && preg_match( "~(<\s*a\s+([a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*)\s*href|\[(url|link))\s*\=\s*(['\"])?\s*(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*(['\"])?\s*(>|\])$commentdata_comment_author_lc_deslashed_regex(<|\[)\s*\/\s*a\s*(>|(url|link)\])~i", $commentdata_comment_content_lc_deslashed ) ) {
+			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
+			$wpss_error_code .= ' 9101';
+			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
+			}
+		if ( preg_match( "~^((ww[w0-9]|m)\.)?$commentdata_comment_author_lc_deslashed_regex$~i", $commentdata_comment_author_url_domain_lc) && !preg_match( "~https?\:/+~i", $commentdata_comment_author_lc_deslashed ) ) {
+			/* Changed to include Trackbacks and Pingbacks in 1.1.4.4 */
+			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
+			$wpss_error_code .= ' 9102';
+			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
+			}
+		if ( $commentdata_comment_author_url_lc == $commentdata_comment_author_lc_deslashed && !preg_match( "~https?\:/+~i", $commentdata_comment_author_url_lc ) && preg_match( "~(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)~i", $commentdata_comment_content_lc_deslashed ) ) {
+			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
+			$wpss_error_code .= ' 9103';
+			return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
+			}
 		}
 
 	/***
@@ -5640,6 +5644,7 @@ function spamshield_admin_jp_fix() {
 	* Fix Compatibility with JetPack if active
 	* The JP Comments module modifies WordPress' comment system core functionality, incapacitating MANY fine plugins...sorry guys, but this has to be deactivated
 	***/
+	if ( is_multisite() ) { return;}
 	$wpss_jp_active	= spamshield_is_plugin_active( 'jetpack/jetpack.php' );
 	if ( !empty( $wpss_jp_active ) ) {
 		$jp_active_mods = get_option('jetpack_active_modules');
@@ -6616,7 +6621,7 @@ if (!class_exists('wpSpamShield')) {
 					return FALSE;
 					}
 				}
-			elseif ( current_user_can( 'manage_options' ) ) {
+			if ( current_user_can( 'manage_options' ) ) {
 				/* Check if plugin has been upgraded */
 				spamshield_upgrade_check();
 				/* Check for pending admin notices */

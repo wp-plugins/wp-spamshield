@@ -166,6 +166,11 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.8.8 =
+*released 04/13/15*
+
+* Fixed a bug in one of the comment spam filters. Previously, if WordPress Discussion settings have "Comment author must fill out name and e-mail" unchecked, and a user submitted a comment where the author name and author URL were both blank, it would incorrectly be blocked. (The comments would go through if there was a URL.) This is fixed in this version.
+* Updated the spam filters.
 
 = 1.8.7 =
 *released 04/08/15*
@@ -447,8 +452,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.7 =
-Updated the filters in the spam blocking algorithm. Please see Changelog for details.
+= 1.8.8 =
+Fixed a bug in one of the comment spam filters, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
 
 == Other Notes ==
 
