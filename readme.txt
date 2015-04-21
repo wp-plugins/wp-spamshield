@@ -166,6 +166,16 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.8.9.1 =
+*released 04/21/15*
+
+* Added an .htaccess file to the `wp-spamshield` directory to control browser access to certain files.
+* Added a fix to ensure that certain security plugins could not inadvertently block browser access to the `jscripts.php` file. This fix will prevent most of the occurrences of the issue discussed in [Troubleshooting Guide](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_troubleshooting) step 14.
+* Upgraded the .htaccess file in the `data` directory (that protects the log file) to be compatible with changes in Apache 2.4.
+* Modified the log file creation process so that WordFence (and any other security plugins that compare plugin files against the WordPress repository) will no longer give the following warning: "Modified plugin file: wp-content/plugins/wp-spamshield/data/temp-comments-log.txt" when Blocked Comment Logging mode is turned on. This file is supposed to change, since it's the log file.
+* Removed inline CSS from the three registration fields that WP-SpamShield adds, in order to make it easier for users to configure the look and feel of the registration page.
+* Updated the spam filters.
+
 = 1.8.9 =
 *released 04/19/15*
 
@@ -458,8 +468,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.9 =
-Made various minor code improvements, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
+= 1.8.9.1 =
+Added several fixes, made various code improvements, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
 
 == Other Notes ==
 

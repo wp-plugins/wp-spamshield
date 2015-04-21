@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.8.9
+Version: 1.8.9.1
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.8.9' );
+define( 'WPSS_VERSION', '1.8.9.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.8' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -1120,11 +1120,12 @@ function spamshield_load_widgets() {
 	
 /* Counters - END */
 
-function spamshield_log_reset( $ip = NULL, $get_fws = FALSE, $clr_hta = FALSE ) {
+function spamshield_log_reset( $ip = NULL, $get_fws = FALSE, $clr_hta = FALSE, $mk_log = FALSE ) {
 	/***
 	* $ip 		- Optional
 	* $get_fws	- File writeable status - returns bool
 	* $clr_hta	- Reset .htaccess only, don't reset log
+	* $mk_log	- Make log log file if none exists
 	***/
 	if ( ( empty( $ip ) || !spamshield_is_valid_ip( $ip ) ) && current_user_can( 'manage_options' ) && !empty( $_SERVER['REMOTE_ADDR'] ) ) { $ip = $_SERVER['REMOTE_ADDR']; }
 	else {
@@ -1136,14 +1137,22 @@ function spamshield_log_reset( $ip = NULL, $get_fws = FALSE, $clr_hta = FALSE ) 
 	$wpss_log_perlm	= array(0755,0644,0644,0644,0644,0644); /* Permission level minimum */
 	$wpss_log_files	= array(); /* Log files with full paths */
 	foreach ( $wpss_log_filns as $f => $filn ) { $wpss_log_files[] = WPSS_PLUGIN_DATA_PATH.'/'.$filn; }
-	/* 1 - Create .htaccess if it doesn't exist */
+	/* 1 - Create temp-comments-log.txt if it doesn't exist */
+	clearstatcache();
+	if ( !file_exists( $wpss_log_files[1] ) ) {
+		@chmod( $wpss_log_files[2], 0666 );
+		@copy( $wpss_log_files[2], $wpss_log_files[1] );
+		@chmod( $wpss_log_files[1], 0666 );
+		}
+	if ( !empty( $mk_log ) ) { return FALSE; }
+	/* 2 - Create .htaccess if it doesn't exist */
 	clearstatcache();
 	if ( !file_exists( $wpss_log_files[3] ) ) {
 		@chmod( $wpss_log_files[0], 0775 ); @chmod( $wpss_log_files[4], 0666 ); @chmod( $wpss_log_files[5], 0666 );
 		@rename( $wpss_log_files[4], $wpss_log_files[3] ); @copy( $wpss_log_files[5], $wpss_log_files[4] );
 		foreach ( $wpss_log_files as $f => $file ) { @chmod( $file, $wpss_log_perlr[$f] ); }
 		}
-	/* 2 - Check file permissions and fix */
+	/* 3 - Check file permissions and fix */
 	clearstatcache();
 	$wpss_log_perms = array(); /* File permissions */
 	foreach ( $wpss_log_files as $f => $file ) { $wpss_log_perms[] = substr(sprintf('%o', fileperms($file)), -4); }
@@ -1153,23 +1162,28 @@ function spamshield_log_reset( $ip = NULL, $get_fws = FALSE, $clr_hta = FALSE ) 
 			break;
 			}
 		}
-	/* 3 - Clear files by copying fresh versions to existing files */
+	/* 4 - Clear files by copying fresh versions to existing files */
 	if ( empty( $clr_hta ) ) { 
 		if ( file_exists( $wpss_log_files[1] ) && file_exists( $wpss_log_files[2] ) ) { @copy( $wpss_log_files[2], $wpss_log_files[1] ); } /* Log file */
 		}
 	if ( file_exists( $wpss_log_files[3] ) && file_exists( $wpss_log_files[5] ) ) { @copy( $wpss_log_files[5], $wpss_log_files[3] ); } /* .htaccess file */
-	/* 4 - Write .htaccess */
-	$wpss_htaccess_data	= $wpss_access = '';
+	/* 5 - Write .htaccess */
+	$wpss_htaccess_data	= $wpss_access_ap22 = '';
+	$wpss_access_ap24 = "Require all denied\n";
 	if ( !empty( $ip ) ) {
 		$ip_rgx = spamshield_preg_quote( $ip );
 		$wpss_htaccess_data .= "SetEnvIf Remote_Addr ^".$ip_rgx."$ wpss_access\n\n";
-		$wpss_access = "allow from env=wpss_access\n";
+		$wpss_access_ap22 = "\t\tAllow from env=wpss_access\n";
+		$wpss_access_ap24 = "Require env wpss_access\n";
 		}
-	$wpss_htaccess_data .= "<Files temp-comments-log.txt>\norder deny,allow\ndeny from all\n".$wpss_access."</Files>\n";
+	$wpss_htaccess_data .= "<Files temp-comments-log.txt>\n";
+	$wpss_htaccess_data .= "\t# Apache 2.2\n\t<IfModule !mod_authz_core.c>\n\t\tOrder deny,allow\n\t\tDeny from all\n".$wpss_access_ap22."\t</IfModule>\n\n";
+	$wpss_htaccess_data .= "\t# Apache 2.4\n\t<IfModule mod_authz_core.c>\n\t\t".$wpss_access_ap24."\t</IfModule>\n";
+	$wpss_htaccess_data .= "</Files>\n";
 	$wpss_htaccess_fp = @fopen( $wpss_log_files[3],'a+' );
 	@fwrite( $wpss_htaccess_fp, $wpss_htaccess_data );
 	@fclose( $wpss_htaccess_fp );
-	/* 5 - If $get_fws, repeat #2 again and return status */
+	/* 6 - If $get_fws (File Writeable Status), repeat #3 again and return status */
 	if ( !empty( $get_fws ) ) {
 		clearstatcache();
 		$wpss_log_perms = array(); /* File permissions */
@@ -1360,6 +1374,8 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 	* Contact Form:			spamshield_log_data( $contact_form_author_data, $wpss_error_code, 'contact form', $wpss_contact_form_msg, $wpss_contact_form_mid, $wpss_contact_form_mcid );
 	* Registration:			spamshield_log_data( $register_author_data, $wpss_error_code, 'register' );
 	***/
+	
+	spamshield_log_reset( NULL, FALSE, FALSE, TRUE ); /* Create log file if it doesn't exist */
 
 	$wpss_log_filename = 'temp-comments-log.txt';
 	$wpss_log_empty_filename = 'temp-comments-log.init.txt';
@@ -5213,13 +5229,13 @@ function spamshield_register_form_addendum() {
 	$new_fields = array(
 		'first_name' 	=> __( 'First Name', WPSS_PLUGIN_NAME ),
 		'last_name' 	=> __( 'Last Name', WPSS_PLUGIN_NAME ),
-		'display_name' 	=> __( 'Display Name', WPSS_PLUGIN_NAME ),
+		'disp_name' 	=> __( 'Display Name', WPSS_PLUGIN_NAME ),
 		);
 
 	foreach( $new_fields as $k => $v ) {
 		echo '	<p>
 		<label for="'.$k.'">'.$v.'<br />
-		<input type="text" name="'.$k.'" id="'.$k.'" class="input" value="" size="25" style="width:272px; height:41px;" /></label>
+		<input type="text" name="'.$k.'" id="'.$k.'" class="input" value="" size="25" /></label>
 	</p>
 ';
 		}
@@ -5347,7 +5363,7 @@ function spamshield_check_new_user( $errors, $user_login, $user_email ) {
 	$new_fields = array(
 		'first_name' 	=> __( 'First Name', WPSS_PLUGIN_NAME ),
 		'last_name' 	=> __( 'Last Name', WPSS_PLUGIN_NAME ),
-		'display_name' 	=> __( 'Display Name', WPSS_PLUGIN_NAME ),
+		'disp_name' 	=> __( 'Display Name', WPSS_PLUGIN_NAME ),
 		);
 	$user_data = array();
 	foreach( $new_fields as $k => $v ) {
@@ -5365,7 +5381,7 @@ function spamshield_check_new_user( $errors, $user_login, $user_email ) {
 
 	/* BAD ROBOT TEST - BEGIN */
 
-	$bad_robot_filter_data 	 = spamshield_bad_robot_blacklist_chk( 'register', $reg_filter_status, '', '', $user_data['display_name'], $user_email );
+	$bad_robot_filter_data 	 = spamshield_bad_robot_blacklist_chk( 'register', $reg_filter_status, '', '', $user_data['disp_name'], $user_email );
 	$reg_filter_status		 = $bad_robot_filter_data['status'];
 	$bad_robot_blacklisted 	 = $bad_robot_filter_data['blacklisted'];
 
@@ -5427,7 +5443,7 @@ function spamshield_check_new_user( $errors, $user_login, $user_email ) {
 	/* AUTHOR KEYPHRASE BLACKLIST */
 	foreach( $user_data as $k => $v ) {
 		$k_uc = spamshield_casetrans('upper',$k);
-		if ( ( $k == 'user_login' || $k == 'first_name' || $k == 'last_name' || $k == 'display_name' ) && spamshield_anchortxt_blacklist_chk($v) ) {
+		if ( ( $k == 'user_login' || $k == 'first_name' || $k == 'last_name' || $k == 'disp_name' ) && spamshield_anchortxt_blacklist_chk($v) ) {
 			$wpss_error_code .= ' '.$pref.'10500A-BL-'.$k_uc;
 			if ( $reg_badrobot_error != TRUE && $reg_jsck_error != TRUE ) {
 				$nfk = $new_fields[$k];
@@ -5461,13 +5477,13 @@ function spamshield_check_new_user( $errors, $user_login, $user_email ) {
 	$user_id = 'None'; /* Possibly change to '' */
 
 	$register_author_data = array(
-		'display_name' 				=> $user_data['display_name'],
+		'display_name' 				=> $user_data['disp_name'],
 		'user_firstname' 			=> $user_data['first_name'],
 		'user_lastname' 			=> $user_data['last_name'],
 		'user_email' 				=> $user_email,
 		'user_login' 				=> $user_login,
 		'ID' 						=> $user_id,
-		'comment_author'			=> $user_data['display_name'],
+		'comment_author'			=> $user_data['disp_name'],
 		'comment_author_email'		=> $user_email,
 		'comment_author_url'		=> '',
 		'javascript_page_referrer'	=> $wpss_javascript_page_referrer,
@@ -5501,14 +5517,16 @@ function spamshield_user_register( $user_id ) {
 		$new_fields = array(
 			'first_name' 	=> __( 'First Name', WPSS_PLUGIN_NAME ),
 			'last_name' 	=> __( 'Last Name', WPSS_PLUGIN_NAME ),
-			'display_name' 	=> __( 'Display Name', WPSS_PLUGIN_NAME ),
+			'disp_name' 	=> __( 'Display Name', WPSS_PLUGIN_NAME ),
 			);
 		$user_data = array();
 		foreach( $new_fields as $k => $v ) {
 			if ( isset( $_POST[$k] ) ) { $user_data[$k] = trim( wp_unslash( $_POST[$k] ) ); } else { $user_data[$k] = ''; }
 			}
 		if ( !empty($user_data) ) {
-			$user_data['ID'] = $user_id;
+			$user_data['ID']			= $user_id;
+			$user_data['display_name']	= $user_data['disp_name'];
+			unset( $user_data['disp_name'] );
 			wp_update_user( $user_data );
 			}
 
@@ -5806,9 +5824,7 @@ if (!class_exists('wpSpamShield')) {
 					}
 
 				$spamshield_count = spamshield_count();
-				if ( empty( $spamshield_count ) ) {
-					update_option( 'spamshield_count', 0 );
-					}
+				if ( empty( $spamshield_count ) ) { update_option( 'spamshield_count', 0 ); }
 				update_option( 'spamshield_options', $spamshield_options_update );
 				/***
 				* NEXT LINE - DEBUGGING ONLY
@@ -5816,7 +5832,7 @@ if (!class_exists('wpSpamShield')) {
 				* Reset Log and Initialize .htaccess
 				***/
 				$last_admin_ip = get_option( 'spamshield_last_admin' );
-				if ( !empty( $last_admin_ip ) ) { spamshield_log_reset( $last_admin_ip ); }
+				if ( !empty( $last_admin_ip ) ) { spamshield_log_reset( $last_admin_ip ); } else { spamshield_log_reset( NULL, FALSE, FALSE, TRUE ); /* Create log file if it doesn't exist */ }
 				/* Require Author Names and Emails on Comments - Added 1.1.7 */
 				update_option('require_name_email', '1');
 				/* Set 'default_role' to 'subscriber' for security - Added 1.3.7 */
@@ -6256,6 +6272,7 @@ if (!class_exists('wpSpamShield')) {
 							echo '<br />'."\n".'<span style="color:red;"><strong>' . sprintf( __( 'The log file may not be writeable. You may need to manually correct the file permissions.<br />Set the permission for the "%1$s" directory to "%2$s" and all files within it to "%3$s".</strong><br />If that doesn\'t work, then please read the <a href="%4$s" %5$s>FAQ</a> for this topic.', WPSS_PLUGIN_NAME ), WPSS_PLUGIN_DATA_PATH, '755', '644', WPSS_HOME_URL.'#wpss_faqs_5', 'target="_blank"' ) . '</span><br />'."\n";
 							}
 						}
+					else { spamshield_log_reset( NULL, FALSE, FALSE, TRUE ); /* Create log file if it doesn't exist */ }
 					?>
 					<br /><strong><a href="<?php echo WPSS_PLUGIN_DATA_URL; ?>/temp-comments-log.txt" target="_blank"><?php _e( 'Download Comment Log File', WPSS_PLUGIN_NAME ); ?></a> - <?php _e( 'Right-click, and select "Save Link As"', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</li>
