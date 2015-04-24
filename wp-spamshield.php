@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.8.9.1
+Version: 1.8.9.2
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.8.9.1' );
+define( 'WPSS_VERSION', '1.8.9.2' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.8' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -508,8 +508,9 @@ function spamshield_parse_links( $haystack, $type = 'url' ) {
 function spamshield_fix_url( $url, $rem_frag = FALSE, $rem_query = FALSE, $rev = FALSE ) {
 	/***
 	* Fix poorly formed URLs so as not to throw errors or cause problems
-	* Too many forward slashes or colons after http
 	***/
+	$url = trim( $url );
+	/* Too many forward slashes or colons after http */
 	$url = preg_replace( "~^(https?)\:+/+~i", "$1://", $url);
 	/* Too many dots */
 	$url = preg_replace( "~\.+~i", ".", $url);
@@ -554,6 +555,10 @@ function spamshield_get_query_arr($url) {
 	}
 
 function spamshield_remove_query( $url, $skip_wp_args = FALSE ) {
+	/***
+	* For removing specific query argument(s)
+	* If you need URL fragments removed, or the entire query string removed, use spamshield_fix_url()
+	***/
 	$query_arr = spamshield_get_query_arr($url);
 	if ( empty( $query_arr ) ) { return $url; }
 	$remove_args = array();
@@ -608,9 +613,10 @@ function spamshield_get_referrer( $raw = FALSE, $lowercase = FALSE, $init = FALS
 	$http_referrer = $init_referrer = '';
 	if ( !empty( $_SERVER['HTTP_REFERER'] ) )	{ $http_referrer = $_SERVER['HTTP_REFERER']; }
 	if ( !empty( $_COOKIE['JCS_INENREF'] ) )	{ 
-		$init_referrer	= $_COOKIE['JCS_INENREF'];
-		$site_domain	= RSMP_SERVER_NAME;
-		if ( strpos( $init_referrer, $site_domain ) !== FALSE ) { $init_referrer = ''; } /* Tracking referrals from other sites only */
+		$init_referrer			= $_COOKIE['JCS_INENREF'];
+		$init_referrer_no_query	= spamshield_fix_url( $init_referrer, TRUE, TRUE ); /* Remove query string and fragments */
+		$site_domain			= RSMP_SERVER_NAME;
+		if ( strpos( $init_referrer_no_query, $site_domain ) !== FALSE ) { $init_referrer = ''; } /* Tracking referrals from other sites only */
 		}
 	$referrer = $http_referrer;
 	if ( !empty( $init ) ) { $referrer = $init_referrer; }
@@ -3407,6 +3413,7 @@ function spamshield_ubl_cache( $method = 'chk' ) {
 	* Added 1.8
 	* $method: 'set','chk'
 	***/
+	return FALSE; /* Temporarily disabled in 1.8.9.2 for testing */
 	$blacklist_status = FALSE;
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$last_admin_ip = get_option( 'spamshield_last_admin' );

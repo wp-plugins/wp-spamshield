@@ -3,7 +3,7 @@ Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
 Tags: akismet, all-in-one, antispam, anti-spam, block spam, captcha, comment, comment spam, comments, contact, contact form, contact forms, form, forms, javascript, login, multisite, protection, register, registration, registration spam, security, signup, signup spam, spam, spam blocker, spam filter, trackback, trackbacks, user registration spam, widget
 Requires at least: 3.8
-Tested up to: 4.1
+Tested up to: 4.2
 Stable tag: trunk
 License: GPLv2
 
@@ -165,6 +165,12 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the main [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.8.9.2 =
+*released 04/23/15*
+
+* Made various minor code improvements.
+* Updated the spam filters.
 
 = 1.8.9.1 =
 *released 04/21/15*
@@ -468,8 +474,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.9.1 =
-Added several fixes, made various code improvements, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
+= 1.8.9.2 =
+Made various minor code improvements, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
 
 == Other Notes ==
 
