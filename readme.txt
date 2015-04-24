@@ -77,6 +77,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 
 = Languages Available =
 
+* English
 * Dutch (nl_NL)
 * French (fr_FR)
 * German (de_DE)
