@@ -1,0 +1,41 @@
+# WP-SpamShield - .htaccess
+# Version 1.8.9.3
+
+# Control direct access to certain files.
+# Apache 2.2 and 2.4 compatible
+
+# Text Files - Deny
+<FilesMatch "^.*\.txt$">
+	# Apache 2.2
+	<IfModule !mod_authz_core.c>
+		Deny from all
+	</IfModule>
+
+	# Apache 2.4
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+</FilesMatch>
+
+# Language Files - Deny
+<FilesMatch "^.*\.(mo|pot)$">
+	<IfModule !mod_authz_core.c>
+		Deny from all
+	</IfModule>
+
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+</FilesMatch>
+
+# jscripts.php - Allow
+# Ensure that .htaccess files other plugins place in "/wp-content/" cannot prevent access
+<Files jscripts.php>
+	<IfModule !mod_authz_core.c>
+		Allow from all
+	</IfModule>
+
+	<IfModule mod_authz_core.c>
+		Require all granted
+	</IfModule>
+</Files>
