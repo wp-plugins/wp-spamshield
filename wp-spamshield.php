@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.8.9.2
+Version: 1.8.9.3
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.8.9.2' );
+define( 'WPSS_VERSION', '1.8.9.3' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.8' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -611,11 +611,16 @@ function spamshield_get_referrer( $raw = FALSE, $lowercase = FALSE, $init = FALS
 	* Default is sanitized
 	***/
 	$http_referrer = $init_referrer = '';
+	$site_domain = RSMP_SERVER_NAME;
 	if ( !empty( $_SERVER['HTTP_REFERER'] ) )	{ $http_referrer = $_SERVER['HTTP_REFERER']; }
 	if ( !empty( $_COOKIE['JCS_INENREF'] ) )	{ 
 		$init_referrer			= $_COOKIE['JCS_INENREF'];
 		$init_referrer_no_query	= spamshield_fix_url( $init_referrer, TRUE, TRUE ); /* Remove query string and fragments */
-		$site_domain			= RSMP_SERVER_NAME;
+		if ( strpos( $init_referrer_no_query, $site_domain ) !== FALSE ) { $init_referrer = ''; } /* Tracking referrals from other sites only */
+		}
+	if ( empty( $init_referrer ) && !empty( $_COOKIE['_referrer_og'] ) )	{ 
+		$init_referrer			= $_COOKIE['_referrer_og'];
+		$init_referrer_no_query	= spamshield_fix_url( $init_referrer, TRUE, TRUE ); /* Remove query string and fragments */
 		if ( strpos( $init_referrer_no_query, $site_domain ) !== FALSE ) { $init_referrer = ''; } /* Tracking referrals from other sites only */
 		}
 	$referrer = $http_referrer;
@@ -3515,7 +3520,7 @@ function spamshield_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL
 		"REVD1037" => "~^([a-z]{2}[0-9]*[\.\-])?[0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}(\.[a-z]{2}-((north|south)(east|west)|north|south|east|west)-([0-9]+))?\.compute\.amazonaws\.com$~",
 		"REVD1038" => "~^([a-z]+)([0-9]{1,3})\.(guarmarr\.com|startdedicated\.com)$~",
 		"REVD1039" => "~^([a-z0-9\-\.]+)\.rev\.sprintdatacenter\.pl$~",
-		"REVD1040" => "~^ns([0-9]+)\.ovh\.net$~",
+		"REVD1040" => "~^ns([0-9]+)\.ovh\.net$~", /* OVH also provides ISP services, so do not block those */
 		"REVD1041" => "~^(static|clients?)[\.\-]([0-9]{1,3}[\.\-]){4}(clients\.your-server\.de|customers\.filemedia\.net|hostwindsdns\.com)$~",
 		"REVD1042" => "~^([0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}[\.\-][0-9]{1,3}|ks[0-9]{7})[\.\-]kimsufi\.com$~",
 		"REVD1043" => "~^([0-9]{1,3}[\.\-]){4}static-reverse\.[a-z]+-cloud\.serverhub\.com$~",
@@ -4590,21 +4595,21 @@ function spamshield_comment_content_filter( $commentdata, $spamshield_options ) 
 	* Test Comment Author
 	* Words in Comment Author Repeated in Content - With Keyword Density
 	***/
-	$RepeatedTermsFilters = array('.','-',':');
-	$RepeatedTermsTempPhrase = str_replace($RepeatedTermsFilters,'',$commentdata_comment_author_lc_deslashed);
-	$RepeatedTermsTest = explode(' ',$RepeatedTermsTempPhrase);
-	$RepeatedTermsTestCount = count($RepeatedTermsTest);
-	$CommentContentTotalWords = spamshield_count_words($commentdata_comment_content_lc_deslashed);
+	$repeated_terms_filters			= array('.','-',':');
+	$repeated_terms_temp_phrase		= str_replace($repeated_terms_filters,'',$commentdata_comment_author_lc_deslashed);
+	$repeated_terms_test			= explode(' ',$repeated_terms_temp_phrase);
+	$repeated_terms_test_count		= count($repeated_terms_test);
+	$comment_content_total_words	= spamshield_count_words($commentdata_comment_content_lc_deslashed);
 	$i = 0;
-	while ( $i < $RepeatedTermsTestCount ) {
-		if ( !empty( $RepeatedTermsTest[$i] ) ) {
-			$RepeatedTermsInContentCount = spamshield_substr_count( $commentdata_comment_content_lc_deslashed, $RepeatedTermsTest[$i] );
-			$RepeatedTermsInContentStrLength = spamshield_strlen($RepeatedTermsTest[$i]);
-			if ( $RepeatedTermsInContentCount > 1 && $CommentContentTotalWords < $RepeatedTermsInContentCount ) {
-				$RepeatedTermsInContentCount = 1;
+	while ( $i < $repeated_terms_test_count ) {
+		if ( !empty( $repeated_terms_test[$i] ) ) {
+			$repeated_terms_in_content_count = spamshield_substr_count( $commentdata_comment_content_lc_deslashed, $repeated_terms_test[$i] );
+			$repeated_terms_in_content_str_len = spamshield_strlen($repeated_terms_test[$i]);
+			if ( $repeated_terms_in_content_count > 1 && $comment_content_total_words < $repeated_terms_in_content_count ) {
+				$repeated_terms_in_content_count = 1;
 				}
-			$RepeatedTermsInContentDensity = ( $RepeatedTermsInContentCount / $CommentContentTotalWords ) * 100;
-			if ( $RepeatedTermsInContentCount >= 5 && $RepeatedTermsInContentStrLength >= 4 && $RepeatedTermsInContentDensity > 40 ) {
+			$repeated_terms_in_content_density = ( $repeated_terms_in_content_count / $comment_content_total_words ) * 100;
+			if ( $repeated_terms_in_content_count >= 5 && $repeated_terms_in_content_str_len >= 4 && $repeated_terms_in_content_density > 40 ) {
 				if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 				$wpss_error_code .= ' 9000-'.$i;
 				return spamshield_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );

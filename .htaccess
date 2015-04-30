@@ -1,11 +1,11 @@
 # WP-SpamShield - .htaccess
-# Version 1.8.9.1
+# Version 1.8.9.3
 
 # Control direct access to certain files.
 # Apache 2.2 and 2.4 compatible
 
-# readme.txt - Deny
-<Files readme.txt>
+# Text Files - Deny
+<FilesMatch "^.*\.txt$">
 	# Apache 2.2
 	<IfModule !mod_authz_core.c>
 		Deny from all
@@ -15,9 +15,9 @@
 	<IfModule mod_authz_core.c>
 		Require all denied
 	</IfModule>
-</Files>
+</FilesMatch>
 
-# Language files - Deny
+# Language Files - Deny
 <FilesMatch "^.*\.(mo|pot)$">
 	<IfModule !mod_authz_core.c>
 		Deny from all
