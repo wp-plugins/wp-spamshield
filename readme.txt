@@ -29,9 +29,13 @@ There are two layers of anti-spam protection that work together to *block both a
 = No More Wasted Time Sifting Through the Spam Queue =
 This type of solution works silently in the background, with no inconveniences. You won't have to waste valuable time sifting through a spam queue any more, because there won't be anything there.
 
-WP-SpamShield is different from other anti-spam plugins in that it *BLOCKS* spam at the front door and doesn't allow it into the WordPress database¹ at all. Many other anti-spam plugins simply label a comment as spam, leaving you to sort through a queue, which wastes your valuable time. **WP-SpamShield will give you back your time!**
+WP-SpamShield is different from other anti-spam plugins in that it *BLOCKS* spam at the front door and doesn't allow it into the WordPress database at all. Many other anti-spam plugins simply label a comment as spam, leaving you to sort through a queue, which wastes your valuable time. **WP-SpamShield will give you back your time!**
 
-¹*Not allowing these into the database improves security by potentially preventing SQL injection exploit attacks through automated spam comment submissions. It also keeps your WordPress database slimmer and more efficient (keeping your site running faster) by not allowing the thousands upon thousands of spam comments into it, which could bloat the database and potentially corrupt it.*
+= Improves Security =
+Not allowing spam into the database improves security by potentially preventing SQL injection exploit attacks through automated spam comment submissions. The plugin also has several other features that improve security, such as blocking certain potentially dangerous URLs in spam comment submissions, and limiting comment size to 15kb. (15kb of text is roughly the equivalent of 3 typed pages in Microsoft Word, single-spaced, so that's more than enough for even the longest of comments.) See [this blog post](http://www.redsandmarketing.com/blog/wp-spamshield-protected-users-from-wordpress-0-day-xss-exploit/) for more info.
+
+= Helps Improve Overall Website Performance =
+The plugin helps keep your WordPress database slimmer and more efficient (keeping your site running faster in the long term) by not allowing the thousands upon thousands of spam comments into it, which could bloat the database and potentially corrupt it. Keeping your database lean is extremely important, because bloated databases result in much longer query times, slowing down a site dramatically even for simple functions. If website performance is important to you, then you definitely want an anti-spam plugin like WP-SpamShield instead of a plugin that uses a spam queue.
 
 = ZERO False Positives =
 It does all this with ZERO false positives, because of the method used to block spam. This leads to fewer frustrated website visitors, and less work for you. If a comment/contact form/registration gets blocked as spam, the user is given instant feedback and has a chance to correct their comment/contact form/registration and try again. We are committed to keeping the promise of zero false positives.
