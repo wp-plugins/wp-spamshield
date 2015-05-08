@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.8.9.3
+Version: 1.8.9.4
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.8.9.3' );
+define( 'WPSS_VERSION', '1.8.9.4' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.8' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -3472,9 +3472,9 @@ function spamshield_regex_alpha_replace( $string ) {
 	$tmp_string = preg_replace( $input, $output, $tmp_string );
 	$tmp_string = spamshield_casetrans( 'lower', trim( $tmp_string ) );
 	$the_replacements = array(
-		" "	=> "([\s\.,\;\:\?\!\/\|\@\(\)\[\]\{\}\-_]*)", "-" => "([\s\.,\;\:\?\!\/\|\@\(\)\[\]\{\}\-_]*)", "a"	=> "([a4\@àáâãäåæāăą])", "b"	=> "([b8ßƀƃƅ])", "c"	=> "([c¢©çćĉċč])", "d" => "([dďđ])", 
-		"e" => "([e3èéêëēĕėęěǝ])", "g" => "([g9ĝğġģ])", "h" => "([hĥħ])", "i"	=> "([i1yìíîïĩīĭį])", "k" => "([kķĸ])", "j"	=> "([jĵ])", "l" => "([l1ĺļľŀł])", "n" => "([nñńņňŉ])", "o" => "([o0ðòóôõöōŏőœ])", 
-		"r"	=> "([r®ŕŗř])", "s"	=> "([s5\$śŝşš])", "t"	=> "([t7ťŧţ])", "u" => "([uùúûüũūŭůűų])", "w" => "([wŵ])", "y" => "([y1i¥ýÿŷ])", "z" => "([z2sźżž])", 
+		" "	=> "([\s\.,\;\:\?\!\/\|\@\(\)\[\]\{\}\-_]*)", "-" => "([\s\.,\;\:\?\!\/\|\@\(\)\[\]\{\}\-_]*)", "a"	=> "([a4\@àáâãäåæāăą])", "b" => "([b8ßƀƃƅ])", "c" => "([c¢©çćĉċč])", "d" => "([dďđ])", 
+		"e" => "([e3èéêëēĕėęěǝ])", "g" => "([g9ĝğġģ])", "h" => "([hĥħ])", "i" => "([i1yìíîïĩīĭį])", "k" => "([kķĸ])", "j" => "([jĵ])", "l" => "([l1ĺļľŀł])", "n" => "([nñńņňŉ])", "o" => "([o0ðòóôõöōŏőœ])", 
+		"r"	=> "([r®ŕŗř])", "s"	=> "([s5\$śŝşš])", "t" => "([t7ťŧţ])", "u" => "([uùúûüũūŭůűų])", "w" => "([wŵ])", "y" => "([y1i¥ýÿŷ])", "z" => "([z2sźżž])", 
 		);
 	if ( !preg_match( "~^NOMOD~i", $tmp_string ) ){
 		$new_string = strtr( $tmp_string, $the_replacements );

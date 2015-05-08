@@ -32,7 +32,7 @@ This type of solution works silently in the background, with no inconveniences. 
 WP-SpamShield is different from other anti-spam plugins in that it *BLOCKS* spam at the front door and doesn't allow it into the WordPress database at all. Many other anti-spam plugins simply label a comment as spam, leaving you to sort through a queue, which wastes your valuable time. **WP-SpamShield will give you back your time!**
 
 = Improves Security =
-Not allowing spam into the database improves security by potentially preventing SQL injection exploit attacks through automated spam comment submissions. The plugin also has several other features that improve security, such as blocking certain potentially dangerous URLs in spam comment submissions, and limiting comment size to 15kb. (15kb of text is roughly the equivalent of 3 typed pages in Microsoft Word, single-spaced, so that's more than enough for even the longest of comments.) See [this blog post](http://www.redsandmarketing.com/blog/wp-spamshield-protected-users-from-wordpress-0-day-xss-exploit/) for more info.
+Not allowing spam into the database improves security by potentially preventing SQL injection and XSS exploit attacks through automated spam comment submissions. The plugin also has several other features that improve security, such as blocking certain potentially dangerous URLs in spam comment submissions, and limiting comment size to 15kb. (15kb of text is roughly the equivalent of 3 typed pages in Microsoft Word, single-spaced, so that's more than enough for even the longest of comments.) See [this blog post](http://www.redsandmarketing.com/blog/wp-spamshield-protected-users-from-wordpress-0-day-xss-exploit/) for more info.
 
 = Helps Improve Overall Website Performance =
 The plugin helps keep your WordPress database slimmer and more efficient (keeping your site running faster in the long term) by not allowing the thousands upon thousands of spam comments into it, which could bloat the database and potentially corrupt it. Keeping your database lean is extremely important, because bloated databases result in much longer query times, slowing down a site dramatically even for simple functions. If website performance is important to you, then you definitely want an anti-spam plugin like WP-SpamShield instead of a plugin that uses a spam queue.
@@ -170,6 +170,11 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the main [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.8.9.4 =
+*released 05/08/15*
+
+* Updated the spam filters.
 
 = 1.8.9.3 =
 *released 04/30/15*
@@ -485,8 +490,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.9.3 =
-Made various minor code improvements, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
+= 1.8.9.4 =
+Updated the filters in the spam blocking algorithm. Please see Changelog for details.
 
 == Other Notes ==
 
