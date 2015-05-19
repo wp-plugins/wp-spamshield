@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.8.9.4
+Version: 1.8.9.5
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.8.9.4' );
+define( 'WPSS_VERSION', '1.8.9.5' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.8' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -5638,7 +5638,7 @@ function spamshield_filter_plugin_meta( $links, $file ) {
 		/* After other links */
 		$links[] = '<a href="'.WPSS_HOME_URL.'" target="_blank" rel="external" >' . spamshield_doc_txt() . '</a>';
 		$links[] = '<a href="'.WPSS_HOME_URL.'support/" target="_blank" rel="external" >' . __( 'Support', WPSS_PLUGIN_NAME ) . '</a>';
-		if ( spamshield_count() >= 2000 && spamshield_is_lang_en_us() ) { $links[] = '<a href="'.WPSS_WP_RATING_URL.'" title="' . __( 'Let others know by giving it a good rating on WordPress.org!', WPSS_PLUGIN_NAME ) . '" target="_blank" rel="external" >' . __( 'Rate the Plugin', WPSS_PLUGIN_NAME ) . '</a>'; }
+		if ( spamshield_count() >= 2000 ) { $links[] = '<a href="'.WPSS_WP_RATING_URL.'" title="' . __( 'Let others know by giving it a good rating on WordPress.org!', WPSS_PLUGIN_NAME ) . '" target="_blank" rel="external" >' . __( 'Rate the Plugin', WPSS_PLUGIN_NAME ) . '</a>'; }
 		$links[] = '<a href="http://bit.ly/wp-spamshield-donate" target="_blank" rel="external" >' . __( 'Donate', WPSS_PLUGIN_NAME ) . '</a>';
 		}
 	return $links;
@@ -5682,6 +5682,25 @@ function spamshield_admin_jp_fix() {
 			update_option( 'jetpack_active_modules', $jp_active_mods );
 			spamshield_append_log_data( "\n".'JetPack Comments module deactivated.', FALSE );
 			}
+		}
+	}
+
+function spamshield_admin_ao_fix() {
+	/***
+	* Fix Compatibility with Autoptimize if active
+	* The Autoptimize plugin forces the WP-SpamShield head JavaScript into the footer, which will cause problems. This fix automatically adds WP-SpamShield to the list of ignored scripts.
+	***/
+	if ( is_multisite() ) { return;}
+	$wpss_ao_active	= spamshield_is_plugin_active( 'autoptimize/autoptimize.php' );
+	if ( !empty( $wpss_ao_active ) ) {
+		$ao_js = get_option('autoptimize_js');
+		if ( empty( $ao_js ) ) { return; }
+		$ao_js_exc = trim( get_option('autoptimize_js_exclude'), ", \t\n\r\0\x0B" );
+		if ( FALSE !== strpos( $ao_js_exc, 'wp-spamshield' ) ) { return; }
+		$s = empty( $ao_js_exc ) ? '' : ',';
+		$ao_js_exc .= $s.'wp-spamshield';
+		update_option( 'autoptimize_js_exclude', $ao_js_exc );
+		spamshield_append_log_data( "\n".'Autoptimize JavaScript exclusion setting appended.', FALSE );
 		}
 	}
 
@@ -5856,6 +5875,7 @@ if (!class_exists('wpSpamShield')) {
 				* Compatibility Checks
 				***/
 				spamshield_admin_jp_fix();
+				spamshield_admin_ao_fix(); /* Added 1.8.9.5 */
 
 				/* Ensure Correct Permissions of JS file - BEGIN */
 				$installation_file_test_3 = WPSS_PLUGIN_JS_PATH.'/jscripts.php';
@@ -6253,10 +6273,7 @@ if (!class_exists('wpSpamShield')) {
             </form>
 			</p>
 			<?php 
-			// English only right now, until we get translations
-			if ( spamshield_is_lang_en_us() ) {
-				echo '<p><strong><a href="http://bit.ly/wp-spamshield-donate" title="' . __( 'WP-SpamShield is provided for free.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ) . '" target="_blank" rel="external" >' . __( 'Donate to WP-SpamShield', WPSS_PLUGIN_NAME ) . '</a></strong></p>';
-				}
+			echo '<p><strong><a href="http://bit.ly/wp-spamshield-donate" title="' . __( 'WP-SpamShield is provided for free.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ) . '" target="_blank" rel="external" >' . __( 'Donate to WP-SpamShield', WPSS_PLUGIN_NAME ) . '</a></strong></p>';
 			?>
 			</div>
 			<div style='width:797px;border-style:solid;border-width:1px;border-color:#333333;background-color:#FEFEFE;padding:0px 15px 0px 15px;margin-top:<?php echo $wpss_vert_margins; ?>px;margin-right:<?php echo $wpss_horz_margins; ?>px;float:left;clear:left;'>
@@ -6587,10 +6604,7 @@ if (!class_exists('wpSpamShield')) {
             </form>
 			</p>
 			<?php 
-			// English only right now, until we get translations
-			if ( spamshield_is_lang_en_us() ) {
-				echo '<p><strong><a href="http://bit.ly/wp-spamshield-donate" target="_blank" rel="external" >' . __( 'Donate to WP-SpamShield', WPSS_PLUGIN_NAME ) . '</a></strong><br />' . __( 'WP-SpamShield is provided for free.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ) . '</p>';
-				}
+			echo '<p><strong><a href="http://bit.ly/wp-spamshield-donate" target="_blank" rel="external" >' . __( 'Donate to WP-SpamShield', WPSS_PLUGIN_NAME ) . '</a></strong><br />' . __( 'WP-SpamShield is provided for free.', WPSS_PLUGIN_NAME ) . ' ' . __( 'If you like the plugin, consider a donation to help further its development.', WPSS_PLUGIN_NAME ) . '</p>';
 			?>
 
 			<p><div style="float:right;font-size:12px;">[ <a href="#wpss_top"><?php _e( 'BACK TO TOP', WPSS_PLUGIN_NAME ); ?></a> ]</div></p>
@@ -6694,6 +6708,7 @@ if (!class_exists('wpSpamShield')) {
 					}
 				/* Compatibility Checks */
 				spamshield_admin_jp_fix();
+				spamshield_admin_ao_fix(); /* Added 1.8.9.5 */
 				}
 			}
 

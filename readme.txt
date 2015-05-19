@@ -69,7 +69,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 = Additional Features =
 1. A counter on your dashboard to keep track of all the spam it's blocking. The numbers will show how effective this plugin is.
 2. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked spam (comments, trackbacks, registrations, and contact form submissions) for 7 days, then turns off automatically. If you want to see what spam has been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
-3. Multiple languages available and more on the way. Currently includes Dutch (nl_NL), French (fr_FR), German (de_DE), and Serbian (sr_RS) translations. Ready for translation into other languages.
+3. Multiple languages available and more on the way. Currently includes Dutch (nl_NL), French (fr_FR), German (de_DE), Italian (it_IT), and Serbian (sr_RS) translations. Ready for translation into other languages.
 4. Easy to install - truly plug and play. Just upload and activate. (Installation Status on the plugin admin page to let you know if plugin is installed correctly.)
 5. Compatible with popular cache plugins, including WP Super Cache and others. Not all anti-spam plugins can say that.
 6. Display your blocked spam stats on your blog. Customizable widgets for graphic counters to display spam stats, in multiple colors, sizes and options.
@@ -85,6 +85,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 * Dutch (nl_NL)
 * French (fr_FR)
 * German (de_DE)
+* Italian (it_IT)
 * Serbian (sr_RS)
 
 = Requirements =
@@ -170,6 +171,14 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the main [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.8.9.5 =
+*released 05/18/15*
+
+* Added Italian Translation (it_IT). Thank you to Bakeneko for doing the Italian translation.
+* Fixed a minor bug in the translation files.
+* Fixed a compatibility issue with the Autoptimize plugin.
+* Updated the spam filters.
 
 = 1.8.9.4 =
 *released 05/08/15*
@@ -490,8 +499,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.9.4 =
-Updated the filters in the spam blocking algorithm. Please see Changelog for details.
+= 1.8.9.5 =
+Added Italian Translation (it_IT), fixed a minor bug in the translation files, fixed a compatibility issue with the Autoptimize plugin, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
 
 == Other Notes ==
 

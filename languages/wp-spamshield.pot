@@ -458,7 +458,7 @@ msgstr ""
 
 #: wp-spamshield.php:6312
 #, php-format
-msgid "The log file may not be writeable. You may need to manually correct the file permissions.<br/>Set the permission for the \"%1$s\" directory to \"%2$s\" and all files within it to \"%3$s\".</strong><br/>If that doesn't work, then please read the <a href=\"%4$s\" %5$s>FAQ</a> for this topic."
+msgid "The log file may not be writeable. You may need to manually correct the file permissions.<br />Set the permission for the \"%1$s\" directory to \"%2$s\" and all files within it to \"%3$s\".</strong><br />If that doesn't work, then please read the <a href=\"%4$s\" %5$s>FAQ</a> for this topic."
 msgstr ""
 
 #: wp-spamshield.php:6316
@@ -475,7 +475,7 @@ msgstr ""
 
 #: wp-spamshield.php:6321
 msgid ""
-"Requires that Blocked Comment Logging Mode be engaged. Instead of only logging blocked comments, this will allow the log to capture all comments while logging mode is turned on. This provides more technical data for comment submissions than WordPress provides, and helps us improve the plugin.<br/>If you plan on submitting spam samples to us for "
+"Requires that Blocked Comment Logging Mode be engaged. Instead of only logging blocked comments, this will allow the log to capture all comments while logging mode is turned on. This provides more technical data for comment submissions than WordPress provides, and helps us improve the plugin.<br />If you plan on submitting spam samples to us for "
 "analysis, it's helpful for you to turn this on, otherwise it's not necessary."
 msgstr ""
 
@@ -488,7 +488,7 @@ msgid "Enhanced Comment Blacklist"
 msgstr ""
 
 #: wp-spamshield.php:6328
-msgid "Enhances WordPress's Comment Blacklist - instead of just sending comments to moderation, they will be completely blocked. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.<br/>(Useful if you receive repetitive human spam or harassing comments from a particular commenter.)"
+msgid "Enhances WordPress's Comment Blacklist - instead of just sending comments to moderation, they will be completely blocked. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.<br />(Useful if you receive repetitive human spam or harassing comments from a particular commenter.)"
 msgstr ""
 
 #: wp-spamshield.php:6339
@@ -512,7 +512,7 @@ msgid "Enable WP-SpamShield Whitelist"
 msgstr ""
 
 #: wp-spamshield.php:6346
-msgid "Enables WP-SpamShield's Whitelist - for comments and contact form submissions. When a comment or contact form is submitted from an e-mail address on the whitelist, it will bypass spam filters and be allowed through.<br/>(Useful if you have specific users that you want to let bypass the filters.)"
+msgid "Enables WP-SpamShield's Whitelist - for comments and contact form submissions. When a comment or contact form is submitted from an e-mail address on the whitelist, it will bypass spam filters and be allowed through.<br />(Useful if you have specific users that you want to let bypass the filters.)"
 msgstr ""
 
 #: wp-spamshield.php:6356
@@ -682,7 +682,7 @@ msgid "Optional: Enter alternate form recipient. Default is blog admin email."
 msgstr ""
 
 #: wp-spamshield.php:6551
-msgid "<strong>Enter message to be displayed upon successful contact form submission.</strong><br/>Can be plain text, HTML, or an ad, etc."
+msgid "<strong>Enter message to be displayed upon successful contact form submission.</strong><br />Can be plain text, HTML, or an ad, etc."
 msgstr ""
 
 #: wp-spamshield.php:6558
