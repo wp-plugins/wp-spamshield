@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 10:00-0800\n"
-"PO-Revision-Date: 2015-03-30 20:00-0800\n"
+"PO-Revision-Date: 2015-05-18 20:00-0800\n"
 "Last-Translator: Christoph Krzikalla <wordpress@krzikalla.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_c\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.7.6\n"
 "Language: de_DE\n"
 "X-Poedit-SearchPath-0: wp-spamshield\n"
 
@@ -463,7 +463,7 @@ msgstr "Das Protokoll wird jedesmal gelöscht, wenn dieses Feature aktiviert wir
 
 #: wp-spamshield.php:6312
 #, php-format
-msgid "The log file may not be writeable. You may need to manually correct the file permissions.<br/>Set the permission for the \"%1$s\" directory to \"%2$s\" and all files within it to \"%3$s\".</strong><br/>If that doesn't work, then please read the <a href=\"%4$s\" %5$s>FAQ</a> for this topic."
+msgid "The log file may not be writeable. You may need to manually correct the file permissions.<br />Set the permission for the \"%1$s\" directory to \"%2$s\" and all files within it to \"%3$s\".</strong><br />If that doesn't work, then please read the <a href=\"%4$s\" %5$s>FAQ</a> for this topic."
 msgstr ""
 "Die Logdatei ist wahrscheinlich nicht beschreibbar. Möglicherweise musst du die Zugriffsberechtigungen manuell anpassen.</br>Setze die Zugriffsberechtigungen für das Verzeichnis \"%1$s\" auf  \"%2$s\" und alle Dateien darin auf  \"%3$s\".</strong></br>Sollte das nicht zum Erfolg führen, dann schaue dir bitte die <a href=\"%4$s\" %5$s>FAQ</a> zu "
 "diesem Thema an."
@@ -482,11 +482,11 @@ msgstr "Alle Kommentare protokollieren"
 
 #: wp-spamshield.php:6321
 msgid ""
-"Requires that Blocked Comment Logging Mode be engaged. Instead of only logging blocked comments, this will allow the log to capture all comments while logging mode is turned on. This provides more technical data for comment submissions than WordPress provides, and helps us improve the plugin.<br/>If you plan on submitting spam samples to us for "
+"Requires that Blocked Comment Logging Mode be engaged. Instead of only logging blocked comments, this will allow the log to capture all comments while logging mode is turned on. This provides more technical data for comment submissions than WordPress provides, and helps us improve the plugin.<br />If you plan on submitting spam samples to us for "
 "analysis, it's helpful for you to turn this on, otherwise it's not necessary."
 msgstr ""
 "Erfordert, dass der Logging Modus für blockierte Kommentare eingeschaltet ist. Anstatt lediglich blockierte Kommentare aufzuzeichnen, werden alle Kommentare aufgezeichnet, solange dieser Modus aktiv ist. Die auf diese Weise gewonnenen technischen Informationen sind tiefergehend als normalerweise bei WordPress und ermöglichen es uns, das Plugin zu "
-"verbessern. <br/> Wenn du vorhast, uns eine Spamprobe zu schicken, hilft es, diesen Modus einzuschalten, ansonsten brauchst du ihn nicht."
+"verbessern. <br /> Wenn du vorhast, uns eine Spamprobe zu schicken, hilft es, diesen Modus einzuschalten, ansonsten brauchst du ihn nicht."
 
 #: wp-spamshield.php:6322 wp-spamshield.php:6329
 msgid "For more about this, see the documentation."
@@ -497,9 +497,9 @@ msgid "Enhanced Comment Blacklist"
 msgstr "Erweiterte Kommentar-Blacklist"
 
 #: wp-spamshield.php:6328
-msgid "Enhances WordPress's Comment Blacklist - instead of just sending comments to moderation, they will be completely blocked. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.<br/>(Useful if you receive repetitive human spam or harassing comments from a particular commenter.)"
+msgid "Enhances WordPress's Comment Blacklist - instead of just sending comments to moderation, they will be completely blocked. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.<br />(Useful if you receive repetitive human spam or harassing comments from a particular commenter.)"
 msgstr ""
-"Verbessert die Wordpress Kommentar-Blacklist - anstatt Kommentare nur zur Moderation weiterzuleiten, werden sie vollständig blockiert. Zusätzlich wird ein Link hinzugefügt, dass es dir erlaubt die IP-Adresse eines Kommentators mit einem Klick zu blacklisten.<br/>(Nützlich, wenn du wiederholt menschlichen Spam oder belästigende Kommentare "
+"Verbessert die Wordpress Kommentar-Blacklist - anstatt Kommentare nur zur Moderation weiterzuleiten, werden sie vollständig blockiert. Zusätzlich wird ein Link hinzugefügt, dass es dir erlaubt die IP-Adresse eines Kommentators mit einem Klick zu blacklisten.<br />(Nützlich, wenn du wiederholt menschlichen Spam oder belästigende Kommentare "
 "erhältst.)"
 
 #: wp-spamshield.php:6339
@@ -525,8 +525,8 @@ msgid "Enable WP-SpamShield Whitelist"
 msgstr "WP-SpamShield Whitelist aktivieren"
 
 #: wp-spamshield.php:6346
-msgid "Enables WP-SpamShield's Whitelist - for comments and contact form submissions. When a comment or contact form is submitted from an e-mail address on the whitelist, it will bypass spam filters and be allowed through.<br/>(Useful if you have specific users that you want to let bypass the filters.)"
-msgstr "Aktiviert die WP-SpamShield Whitelist - für Kommentare und den Versand von Kontaktformularen. Wenn ein Kommentar oder ein Kontaktformular von einer Adresse auf der Whitelist verschickt wird, passiert es alle Spam Filter und wird durchgelassen.<br/>(Sinnvoll, wenn du bestimmte Nutzer an den Filtern vorbei lassen willst.)"
+msgid "Enables WP-SpamShield's Whitelist - for comments and contact form submissions. When a comment or contact form is submitted from an e-mail address on the whitelist, it will bypass spam filters and be allowed through.<br />(Useful if you have specific users that you want to let bypass the filters.)"
+msgstr "Aktiviert die WP-SpamShield Whitelist - für Kommentare und den Versand von Kontaktformularen. Wenn ein Kommentar oder ein Kontaktformular von einer Adresse auf der Whitelist verschickt wird, passiert es alle Spam Filter und wird durchgelassen.<br />(Sinnvoll, wenn du bestimmte Nutzer an den Filtern vorbei lassen willst.)"
 
 #: wp-spamshield.php:6356
 msgid "Your current WP-SpamShield Whitelist"
@@ -697,8 +697,8 @@ msgid "Optional: Enter alternate form recipient. Default is blog admin email."
 msgstr "Optional: Einen alternativen Formularempfänger eintragen. Standard ist die Email des Admins."
 
 #: wp-spamshield.php:6551
-msgid "<strong>Enter message to be displayed upon successful contact form submission.</strong><br/>Can be plain text, HTML, or an ad, etc."
-msgstr "<strong>Trage hier die Nachricht ein, die bei erfolgreichem Versand angezeigt wird</strong><br/>Kann Klartext, HTML, Webung, oder irgendetwas anderes sein."
+msgid "<strong>Enter message to be displayed upon successful contact form submission.</strong><br />Can be plain text, HTML, or an ad, etc."
+msgstr "<strong>Trage hier die Nachricht ein, die bei erfolgreichem Versand angezeigt wird</strong><br />Kann Klartext, HTML, Webung, oder irgendetwas anderes sein."
 
 #: wp-spamshield.php:6558
 msgid "Include user technical data in email."

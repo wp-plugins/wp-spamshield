@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP-SpamShield\n"
 "POT-Creation-Date: 2014-06-26 10:00-0800\n"
-"PO-Revision-Date: 2015-03-30 20:00-0800\n"
+"PO-Revision-Date: 2015-05-18 20:00-0800\n"
 "Last-Translator: Borisa Djuraskovic <borisad@webhostinghub.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_c\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.7.6\n"
 "Language: sr_RS\n"
 "X-Poedit-SearchPath-0: wp-spamshield\n"
 
@@ -463,7 +463,7 @@ msgstr "Može koristiti nešto veće resurse servera, ako želite najbolje perfo
 
 #: wp-spamshield.php:6312
 #, php-format
-msgid "The log file may not be writeable. You may need to manually correct the file permissions.<br/>Set the permission for the \"%1$s\" directory to \"%2$s\" and all files within it to \"%3$s\".</strong><br/>If that doesn't work, then please read the <a href=\"%4$s\" %5$s>FAQ</a> for this topic."
+msgid "The log file may not be writeable. You may need to manually correct the file permissions.<br />Set the permission for the \"%1$s\" directory to \"%2$s\" and all files within it to \"%3$s\".</strong><br />If that doesn't work, then please read the <a href=\"%4$s\" %5$s>FAQ</a> for this topic."
 msgstr ""
 
 #: wp-spamshield.php:6316
@@ -480,10 +480,10 @@ msgstr "Prijavite sve komentare"
 
 #: wp-spamshield.php:6321
 msgid ""
-"Requires that Blocked Comment Logging Mode be engaged. Instead of only logging blocked comments, this will allow the log to capture all comments while logging mode is turned on. This provides more technical data for comment submissions than WordPress provides, and helps us improve the plugin.<br/>If you plan on submitting spam samples to us for "
+"Requires that Blocked Comment Logging Mode be engaged. Instead of only logging blocked comments, this will allow the log to capture all comments while logging mode is turned on. This provides more technical data for comment submissions than WordPress provides, and helps us improve the plugin.<br />If you plan on submitting spam samples to us for "
 "analysis, it's helpful for you to turn this on, otherwise it's not necessary."
 msgstr ""
-"Zahteva aktiviranje režima prijavljivanja blokiranih komentara. Umesto da samo prijavi blokirane komentare, sačuvaće u dnevniku sve komentare dok god je aktiviran režim prijavljivanja. Time se obezbeđuju tehnički podaci za podnošenje komentara koje obezbeđuje WordPress istovremeno nam pomažući da unapredimo plugin. <br/> Ako planirate da "
+"Zahteva aktiviranje režima prijavljivanja blokiranih komentara. Umesto da samo prijavi blokirane komentare, sačuvaće u dnevniku sve komentare dok god je aktiviran režim prijavljivanja. Time se obezbeđuju tehnički podaci za podnošenje komentara koje obezbeđuje WordPress istovremeno nam pomažući da unapredimo plugin. <br /> Ako planirate da "
 "podnesete uzorke spam-ova na analizu, pomoći će vam uključenje ove opcije. U suprotnom, nije neophodna. "
 
 #: wp-spamshield.php:6322 wp-spamshield.php:6329
@@ -495,9 +495,9 @@ msgid "Enhanced Comment Blacklist"
 msgstr "Unapređena crna lista komentara"
 
 #: wp-spamshield.php:6328
-msgid "Enhances WordPress's Comment Blacklist - instead of just sending comments to moderation, they will be completely blocked. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.<br/>(Useful if you receive repetitive human spam or harassing comments from a particular commenter.)"
+msgid "Enhances WordPress's Comment Blacklist - instead of just sending comments to moderation, they will be completely blocked. Also adds a link in the comment notification emails that will let you blacklist a commenter's IP with one click.<br />(Useful if you receive repetitive human spam or harassing comments from a particular commenter.)"
 msgstr ""
-"Unapređuje crnu listu WordPress komentara - tako što ih kompletno blokira, umesto da pošalje komentare na prepravku. Takođe, dodaje link mail-ovima sa obaveštenjima o komentarima koji će vam omogućiti da stavite IP komentatora na crnu listu jednim klikom. <br/> (Korisno ako stalno dobijate spam-ove ili uvredljive komentare od određene osobe.) "
+"Unapređuje crnu listu WordPress komentara - tako što ih kompletno blokira, umesto da pošalje komentare na prepravku. Takođe, dodaje link mail-ovima sa obaveštenjima o komentarima koji će vam omogućiti da stavite IP komentatora na crnu listu jednim klikom.<br />(Korisno ako stalno dobijate spam-ove ili uvredljive komentare od određene osobe.) "
 
 #: wp-spamshield.php:6339
 msgid "Your current WordPress Comment Blacklist"
@@ -520,7 +520,7 @@ msgid "Enable WP-SpamShield Whitelist"
 msgstr ""
 
 #: wp-spamshield.php:6346
-msgid "Enables WP-SpamShield's Whitelist - for comments and contact form submissions. When a comment or contact form is submitted from an e-mail address on the whitelist, it will bypass spam filters and be allowed through.<br/>(Useful if you have specific users that you want to let bypass the filters.)"
+msgid "Enables WP-SpamShield's Whitelist - for comments and contact form submissions. When a comment or contact form is submitted from an e-mail address on the whitelist, it will bypass spam filters and be allowed through.<br />(Useful if you have specific users that you want to let bypass the filters.)"
 msgstr ""
 
 #: wp-spamshield.php:6356
@@ -690,8 +690,8 @@ msgid "Optional: Enter alternate form recipient. Default is blog admin email."
 msgstr "Opciono: Unesite alternativnu primaoca obrasca. Uobičajeno je da to bude mail administratora bloga."
 
 #: wp-spamshield.php:6551
-msgid "<strong>Enter message to be displayed upon successful contact form submission.</strong><br/>Can be plain text, HTML, or an ad, etc."
-msgstr "<strong>Unesite poruku koja će se prikazivati nakon uspešnog podnošenja obrasca kontakta.</strong><br/>Može biti samo tekst, HTML ili reklama, itd."
+msgid "<strong>Enter message to be displayed upon successful contact form submission.</strong><br />Can be plain text, HTML, or an ad, etc."
+msgstr "<strong>Unesite poruku koja će se prikazivati nakon uspešnog podnošenja obrasca kontakta.</strong><br />Može biti samo tekst, HTML ili reklama, itd."
 
 #: wp-spamshield.php:6558
 msgid "Include user technical data in email."
@@ -702,7 +702,7 @@ msgid ""
 "This adds some extra technical data to the end of the contact form email about the person submitting the form.<br />It includes: <strong>Browser / User Agent</strong>, <strong>Referrer</strong>, <strong>IP Address</strong>, <strong>Server</strong>, etc.<br />This is helpful for dealing with abusive or threatening comments. You can use the IP "
 "address provided to identify or block trolls from your site with whatever method you prefer."
 msgstr ""
-"Ovim unosite dodatne tehničke podatke na kraj mail-a sa formularom za kontakt osobe koja podnosi obrazac. <br />IPodaci obuhvataju: <strong>Pretraživač/Agenta korisnika</strong>, <strong>Referer</strong>, <strong>IP Adresu</strong>, <strong>Server</strong>, itd.<br /> Ovo je veoma korisno kad se suočavate sa uvredljivim ili pretećim komentarima. "
+"Ovim unosite dodatne tehničke podatke na kraj mail-a sa formularom za kontakt osobe koja podnosi obrazac. <br />IPodaci obuhvataju: <strong>Pretraživač/Agenta korisnika</strong>, <strong>Referer</strong>, <strong>IP Adresu</strong>, <strong>Server</strong>, itd.<br />Ovo je veoma korisno kad se suočavate sa uvredljivim ili pretećim komentarima. "
 "Možete iskoristiti date IP adrese da biste identifikovali ili blokirali trol-ove sa vašeg site-a kojom god metodom želite."
 
 #: wp-spamshield.php:6572
