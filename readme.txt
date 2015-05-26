@@ -172,6 +172,14 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.8.9.6 =
+*released 05/26/15*
+
+* Increased minimum required WordPress version to 3.9. It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.2.2) for security and functionality.
+* Made various code improvements.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.8.9.5 =
 *released 05/18/15*
 
@@ -499,8 +507,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.9.5 =
-Added Italian Translation (it_IT), fixed a minor bug in the translation files, fixed a compatibility issue with the Autoptimize plugin, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
+= 1.8.9.6 =
+Increased minimum required WordPress version to 3.9, made various code improvements, and improved/updated the filters in the spam blocking algorithm. Please see Changelog for details.
 
 == Other Notes ==
 
