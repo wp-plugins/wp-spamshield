@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.8.9.6
+Version: 1.8.9.7
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.8.9.6' );
+define( 'WPSS_VERSION', '1.8.9.7' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.9' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -2781,46 +2781,55 @@ function spamshield_contact_form( $content = NULL, $shortcode_check = NULL ) {
 
 			$spamshield_contact_form_content .= '<form id="wpss_contact_form" name="wpss_contact_form" action="'.$spamshield_contact_form_url.$spamshield_contact_form_query_op.'form=response" method="post" style="text-align:left;" >'."\n";
 
+			$spamshield_contact_form_required = 'required="required" ';
 			$spamshield_contact_form_content .= '<p><label><strong>' . __( 'Name' ) . '</strong> *<br />'."\n";
 
-			$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_name" name="wpss_contact_name" value="" size="40" /> </label></p>'."\n";
+			$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_name" name="wpss_contact_name" value="" size="40" '.$spamshield_contact_form_required.'/> </label></p>'."\n";
 			$spamshield_contact_form_content .= '<p><label><strong>' . __( 'Email' ) . '</strong> *<br />'."\n";
-			$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_email" name="wpss_contact_email" value="" size="40" /> </label></p>'."\n";
+			$spamshield_contact_form_content .= '<input type="email" id="wpss_contact_email" name="wpss_contact_email" value="" size="40" '.$spamshield_contact_form_required.'/> </label></p>'."\n";
 
 			if ( !empty( $form_include_website ) ) {
+				$spamshield_contact_form_required = '';
 				$spamshield_contact_form_content .= '<p><label><strong>' . __( 'Website' ) . '</strong> ';
 				if ( !empty( $form_require_website ) ) {
 					$spamshield_contact_form_content .= '*';
+					$spamshield_contact_form_required = 'required="required" ';
 					}
 				$spamshield_contact_form_content .= '<br />'."\n";
-				$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_website" name="wpss_contact_website" value="" size="40" /> </label></p>'."\n";
+				$spamshield_contact_form_content .= '<input type="url" id="wpss_contact_website" name="wpss_contact_website" value="" size="40" '.$spamshield_contact_form_required.'/> </label></p>'."\n";
 				}
 
 			if ( !empty( $form_include_phone ) ) {
+				$spamshield_contact_form_required = '';
 				$spamshield_contact_form_content .= '<p><label><strong>' . __( 'Phone', WPSS_PLUGIN_NAME ) . '</strong> ';
 				if ( !empty( $form_require_phone ) ) { 
 					$spamshield_contact_form_content .= '*';
+					$spamshield_contact_form_required = 'required="required" ';
 					}
 				$spamshield_contact_form_content .= '<br />'."\n";
-				$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_phone" name="wpss_contact_phone" value="" size="40" /> </label></p>'."\n";
+				$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_phone" name="wpss_contact_phone" value="" size="40" '.$spamshield_contact_form_required.'/> </label></p>'."\n";
 				}
 
 			if ( !empty( $form_include_company ) ) {
+				$spamshield_contact_form_required = '';
 				$spamshield_contact_form_content .= '<p><label><strong>' . __( 'Company', WPSS_PLUGIN_NAME ) . '</strong> ';
 				if ( !empty( $form_require_company ) ) { 
 					$spamshield_contact_form_content .= '*';
+					$spamshield_contact_form_required = 'required="required" ';
 					}
 				$spamshield_contact_form_content .= '<br />'."\n";
-				$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_company" name="wpss_contact_company" value="" size="40" /> </label></p>'."\n";
+				$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_company" name="wpss_contact_company" value="" size="40" '.$spamshield_contact_form_required.'/> </label></p>'."\n";
 				}
 
 			if ( !empty( $form_include_drop_down_menu ) && !empty( $form_drop_down_menu_title ) && !empty( $form_drop_down_menu_item_1 ) && !empty( $form_drop_down_menu_item_2 ) ) {
+				$spamshield_contact_form_required = '';
 				$spamshield_contact_form_content .= '<p><label><strong>'.$form_drop_down_menu_title.'</strong> ';
 				if ( !empty( $form_require_drop_down_menu ) ) { 
 					$spamshield_contact_form_content .= '*';
+					$spamshield_contact_form_required = 'required="required" ';
 					}
 				$spamshield_contact_form_content .= '<br />'."\n";
-				$spamshield_contact_form_content .= '<select id="wpss_contact_drop_down_menu" name="wpss_contact_drop_down_menu" > '."\n";
+				$spamshield_contact_form_content .= '<select id="wpss_contact_drop_down_menu" name="wpss_contact_drop_down_menu" '.$spamshield_contact_form_required.'> '."\n";
 				$spamshield_contact_form_content .= '<option value="" selected="selected">' . __( 'Select' ) . '</option> '."\n";
 				$spamshield_contact_form_content .= '<option value="">--------------------------</option> '."\n";
 				if ( !empty( $form_drop_down_menu_item_1 ) ) {
@@ -2857,10 +2866,11 @@ function spamshield_contact_form( $content = NULL, $shortcode_check = NULL ) {
 				$spamshield_contact_form_content .= '</label></p>'."\n";
 				}
 
+			$spamshield_contact_form_required = 'required="required" ';
 			$spamshield_contact_form_content .= '<p><label><strong>' . __( 'Subject', WPSS_PLUGIN_NAME ) . '</strong> *<br />'."\n";
-    		$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_subject" name="wpss_contact_subject" value="" size="40" /> </label></p>'."\n";
+    		$spamshield_contact_form_content .= '<input type="text" id="wpss_contact_subject" name="wpss_contact_subject" value="" size="40" '.$spamshield_contact_form_required.'/> </label></p>'."\n";
 			$spamshield_contact_form_content .= '<p><label><strong>' . __( 'Message', WPSS_PLUGIN_NAME ) . '</strong> *<br />'."\n";
-			$spamshield_contact_form_content .= '<textarea id="wpss_contact_message" name="wpss_contact_message" cols="'.$form_message_width.'" rows="'.$form_message_height.'"></textarea> </label></p>'."\n";
+			$spamshield_contact_form_content .= '<textarea id="wpss_contact_message" name="wpss_contact_message" cols="'.$form_message_width.'" rows="'.$form_message_height.'" minlength="'.$form_message_min_length.'" maxlength="25600" '.$spamshield_contact_form_required.'></textarea> </label></p>'."\n";
 
 			$spamshield_contact_form_content .= '<script type=\'text/javascript\'>'."\n";
 			$spamshield_contact_form_content .= '// <![CDATA['."\n";
@@ -6573,28 +6583,28 @@ if (!class_exists('wpSpamShield')) {
 					<li>
 					<label for="form_message_width">
 						<?php $form_message_width = trim(stripslashes($spamshield_options['form_message_width'])); ?>
-						<input type="text" size="4" id="form_message_width" name="form_message_width" value="<?php if ( !empty( $form_message_width ) && $form_message_width >= 40 ) { echo $form_message_width; } else { echo '40';} ?>" />
+						<input type="number" size="4" id="form_message_width" name="form_message_width" value="<?php if ( !empty( $form_message_width ) && $form_message_width >= 40 ) { echo $form_message_width; } else { echo '40';} ?>" min="40" max="400" step="1" />
 						<strong><?php echo sprintf( __( '"Message" field width. (Minimum %s)', WPSS_PLUGIN_NAME ), '40' ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_message_height">
 						<?php $form_message_height = trim(stripslashes($spamshield_options['form_message_height'])); ?>
-						<input type="text" size="4" id="form_message_height" name="form_message_height" value="<?php if ( !empty( $form_message_height ) && $form_message_height >= 5 ) { echo $form_message_height; } elseif ( empty( $form_message_height ) ) { echo '10'; } else { echo '5';} ?>" />
+						<input type="number" size="4" id="form_message_height" name="form_message_height" value="<?php if ( !empty( $form_message_height ) && $form_message_height >= 5 ) { echo $form_message_height; } elseif ( empty( $form_message_height ) ) { echo '10'; } else { echo '5';} ?>" min="5" max="100" step="1" />
 						<strong><?php echo sprintf( __( '"Message" field height. (Minimum %1$s, Default %2$s)', WPSS_PLUGIN_NAME ), '5', '10' ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_message_min_length">
 						<?php $form_message_min_length = trim(stripslashes($spamshield_options['form_message_min_length'])); ?>
-						<input type="text" size="4" id="form_message_min_length" name="form_message_min_length" value="<?php if ( !empty( $form_message_min_length ) && $form_message_min_length >= 15 ) { echo $form_message_min_length; } elseif ( empty( $form_message_width ) ) { echo '25'; } else { echo '15';} ?>" />
+						<input type="number" size="4" id="form_message_min_length" name="form_message_min_length" value="<?php if ( !empty( $form_message_min_length ) && $form_message_min_length >= 15 ) { echo $form_message_min_length; } elseif ( empty( $form_message_width ) ) { echo '25'; } else { echo '15';} ?>" min="15" max="300" step="1" />
 						<strong><?php echo sprintf( __( 'Minimum message length (# of characters). (Minimum %1$s, Default %2$s)', WPSS_PLUGIN_NAME ), '15', '25' ); ?></strong><br />&nbsp;
 					</label>
 					</li>
 					<li>
 					<label for="form_message_recipient">
 						<?php $form_message_recipient = trim(stripslashes($spamshield_options['form_message_recipient'])); ?>
-						<input type="text" size="40" id="form_message_recipient" name="form_message_recipient" value="<?php if ( empty( $form_message_recipient ) ) { echo $wpss_admin_email; } else { echo $form_message_recipient; } ?>" />
+						<input type="email" size="40" id="form_message_recipient" name="form_message_recipient" value="<?php if ( empty( $form_message_recipient ) ) { echo $wpss_admin_email; } else { echo $form_message_recipient; } ?>" />
 						<strong><?php _e( 'Optional: Enter alternate form recipient. Default is blog admin email.', WPSS_PLUGIN_NAME ); ?></strong><br />&nbsp;
 					</label>
 					</li>
@@ -6798,6 +6808,7 @@ if (!class_exists('wpSpamShield')) {
 			if ( is_preview() ) { return FALSE; }
 			if ( ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) {
 				$js_handle = 'wpss-jscripts-ftr'; $js_file = 'jscripts-ftr-min.js'; $js_ver = NULL; /* '1.0', WPSS_VERSION */
+				if ( current_user_can( 'moderate_comments' ) ) { $js_file = 'jscripts-ftr2-min.js'; } /* Added 1.8.9.7 */
 				wp_register_script( $js_handle, WPSS_PLUGIN_JS_URL.'/'.$js_file, array(), $js_ver, TRUE );
 				wp_enqueue_script( $js_handle );
 				}
