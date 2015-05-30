@@ -172,6 +172,11 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.8.9.8 =
+*released 05/30/15*
+
+* Fixed a minor bug.
+
 = 1.8.9.7 =
 *released 05/29/15*
 
@@ -514,8 +519,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.9.7 =
-Added front-end validation to certain elements of the contact form and comments form, made various code improvements, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
+= 1.8.9.8 =
+Fixed a minor bug, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
 
 == Other Notes ==
 
