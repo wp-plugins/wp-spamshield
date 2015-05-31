@@ -520,7 +520,7 @@ For a complete list of changes to the plugin, view the [Version History/Changelo
 
 == Upgrade Notice ==
 = 1.8.9.8 =
-Fixed a minor bug, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
+Fixed a minor bug. Please see Changelog for details.
 
 == Other Notes ==
 
