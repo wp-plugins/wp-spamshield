@@ -177,6 +177,13 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+
+= 1.9 =
+*released 06/02/15*
+
+* Fixed bug that caused a conflict with certain AJAX calls.
+* Fixed bug with registration protection on BuddyPress legacy themes.
+
 = 1.8.9.9 =
 *released 06/02/15*
 
@@ -536,8 +543,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.8.9.9 =
-Added support for Contact Form 7, Gravity Forms, BuddyPress, s2Member, WP-Members and more, made various code improvements/optimizations, and updated the filters in the spam blocking algorithm. Please see Changelog for details.
+= 1.9 =
+Fixed bug that caused a conflict with certain AJAX calls, and fixed bug with registration protection on BuddyPress legacy themes. Please see Changelog for details.
 
 == Other Notes ==
 

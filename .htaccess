@@ -1,5 +1,5 @@
 # WP-SpamShield - .htaccess
-# Version 1.8.9.9
+# Version 1.9
 
 # Control direct access to certain files.
 # Apache 2.2 and 2.4 compatible
@@ -19,7 +19,7 @@
 
 # jscripts.php and .js - Allow
 # Ensure that .htaccess files other plugins place in "/wp-content/" cannot prevent access
-<Files ~ "jscripts\.php|\.js$">
+<Files ~ "(jscripts\.php|\.js)$">
 	<IfModule !mod_authz_core.c>
 		Allow from all
 	</IfModule>
