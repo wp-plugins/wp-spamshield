@@ -1692,6 +1692,7 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			$form_post_data_arr = unserialize( $wpss_log_contact_form_data );
 			$form_post_data_disp = '';
 			foreach( $form_post_data_arr as $k => $v ) {
+				if ( is_array($v) ) { $v = implode( '|', $v ); }
 				$form_post_data_disp .= $k.': '.trim(stripslashes($v))."\n";
 				}
 			$wpss_log_comment_data .= $form_post_data_disp;
@@ -1725,7 +1726,8 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			$wpss_log_comment_data .= $wpss_log_comment_type_ucwords_ref_disp." Processor Ref: ['"; /* Adjust spacing */
 			}
 		else {
-			$wpss_log_comment_data .= $wpss_log_comment_type_ucwords_ref_disp." Processor Ref: 	['"; /* Adjust spacing */
+			//$wpss_log_comment_data .= $wpss_log_comment_type_ucwords_ref_disp." Processor Ref: 	['"; /* Adjust spacing */
+			$wpss_log_comment_data .= "Form Processor Ref: 	['"; /* Adjust spacing */
 			}
 		if ( !empty( $wpss_http_referer ) ) {
 			$wpss_log_comment_data .= $wpss_http_referer;
