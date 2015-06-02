@@ -5042,6 +5042,7 @@ function spamshield_misc_form_spam_check() {
 	
 	if ( empty( $_POST ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || ( defined( 'DOING_CRON' ) && DOING_CRON ) || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) || isset( $_POST['signup_username'] ) || isset( $_POST['signup_email'] ) || isset( $_POST['ws_plugin__s2member_registration'] ) || isset( $_POST['_wpcf7_version'] ) || isset( $_POST['gform_submit'] ) || isset( $_POST['wpss_contact_message'] ) || isset( $_POST[WPSS_REF2XJS] ) || isset( $_POST[WPSS_JSONST] ) ) { return; }
 	if ( is_admin() && !spamshield_is_login_page() ) { return; }
+	if ( spamshield_is_login_page() && ( !isset( $_POST['action'] ) || $_POST['action'] != 'register' ) ) { return; }
 	if ( current_user_can( 'moderate_comments' ) ) { return; }
 	if ( is_user_logged_in() ) { return; } /* May remove later */
 
