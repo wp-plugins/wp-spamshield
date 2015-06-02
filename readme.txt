@@ -1,7 +1,7 @@
 ﻿=== WP-SpamShield Anti-Spam ===
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
-Tags: akismet, all-in-one, antispam, anti-spam, block spam, buddypress, captcha, cf7, comment, comment spam, comments, contact, contact form, contact form 7, contact forms, form, forms, gravity forms, javascript, login, multisite, protection, register, registration, registration spam, s2member, security, signup, signup spam, spam, spam blocker, spam filter, trackback, trackbacks, user registration spam, widget
+Tags: akismet, all-in-one, antispam, anti-spam, block spam, buddypress, captcha, cf7, comment, comment spam, comments, contact, contact form, contact form 7, contact forms, form, forms, gravity forms, javascript, login, mailchimp, multisite, protection, register, registration, registration spam, s2member, security, signup, signup spam, spam, spam blocker, spam filter, trackback, trackbacks, user registration spam, widget
 Requires at least: 3.9
 Tested up to: 4.2
 Stable tag: trunk
@@ -14,7 +14,7 @@ An extremely powerful WordPress anti-spam plugin that eliminates comment spam, t
 An extremely powerful and user-friendly WordPress anti-spam plugin that eliminates comment spam, trackback spam, contact form spam & registration spam.
 
 = An All-in-one Spam Solution for WordPress - Without CAPTCHAS =
-No CAPTCHA's, challenge questions or other inconvenience to site visitors - it works silently in the background and simply makes WordPress spam disappear.
+No CAPTCHA's, challenge questions or other inconvenience to site visitors - it works silently in the background and simply makes WordPress spam disappear. **Supports: Contact Form 7, Gravity Forms, BuddyPress, bbPress, s2Member, WP-Members, Mailchimp for WordPress Lite, and more, including *most* WordPress forms, and *almost all* WordPress registration forms.**
 
 = Documentation / Tech Support =
 * Documentation: [Plugin Homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/)
