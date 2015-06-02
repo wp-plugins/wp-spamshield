@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.8.3
+Version: 1.8.9.9
 */
 
 // Security Sanitization - BEGIN
@@ -195,6 +195,10 @@ $wpss_ck_key_phrase 	= 'wpss_ckkey_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
 $wpss_ck_val_phrase 	= 'wpss_ckval_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
 $wpss_ck_key 			= spamshield_md5_js( $wpss_ck_key_phrase );
 $wpss_ck_val 			= spamshield_md5_js( $wpss_ck_val_phrase );
+$wpss_jq_key_phrase 	= 'wpss_jqkey_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
+$wpss_jq_val_phrase 	= 'wpss_jqval_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
+$wpss_jq_key 			= spamshield_md5_js( $wpss_jq_key_phrase );
+$wpss_jq_val 			= spamshield_md5_js( $wpss_jq_val_phrase );
 // SET COOKIE VALUES - END
 
 // Last thing before headers sent
@@ -218,8 +222,8 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 header('Content-Type: application/x-javascript');
 echo "
 function wpssGetCookie(e){var t=document.cookie.indexOf(e+'=');var n=t+e.length+1;if(!t&&e!=document.cookie.substring(0,e.length)){return null}if(t==-1)return null;var r=document.cookie.indexOf(';',n);if(r==-1)r=document.cookie.length;return unescape(document.cookie.substring(n,r))}function wpssSetCookie(e,t,n,r,i,s){var o=new Date;o.setTime(o.getTime());if(n){n=n*1e3*60*60*24}var u=new Date(o.getTime()+n);document.cookie=e+'='+escape(t)+(n?';expires='+u.toGMTString():'')+(r?';path='+r:'')+(i?';domain='+i:'')+(s?';secure':'')}function wpssDeleteCookie(e,t,n){if(wpssGetCookie(e))document.cookie=e+'='+(t?';path='+t:'')+(n?';domain='+n:'')+';expires=Thu, 01-Jan-1970 00:00:01 GMT'}
-function wpssCommentVal(){wpssSetCookie('".$wpss_ck_key ."','".$wpss_ck_val ."','','/');wpssSetCookie('SJECT15','CKON15','','/');}
-wpssCommentVal();
+function wpssCommentVal(){wpssSetCookie('".$wpss_ck_key."','".$wpss_ck_val."','','/');wpssSetCookie('SJECT15','CKON15','','/');}
+wpssCommentVal();jQuery(document).ready(function($){\$(\"form[method='post']\").append('<input type=\"hidden\" name=\"".$wpss_jq_key."\" value=\"".$wpss_jq_val."\" />')});
 ";
 
 // Uncomment to use:
