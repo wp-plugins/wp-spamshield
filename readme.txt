@@ -16,7 +16,7 @@ An extremely powerful and user-friendly WordPress anti-spam plugin that eliminat
 = An All-in-one Spam Solution for WordPress - Without CAPTCHAS =
 No CAPTCHA's, challenge questions or other inconvenience to site visitors - it works silently in the background and simply makes WordPress spam disappear.
 
-**Supports: Contact Form 7, Gravity Forms, BuddyPress, bbPress, s2Member, WP-Members, Mailchimp for WordPress Lite, and more, including *most* WordPress forms, and *almost all* WordPress registration forms.**
+**Supports: Contact Form 7, Gravity Forms, BuddyPress, bbPress, s2Member, WP-Members, Mailchimp, and more, including *most* WordPress forms, and *almost all* WordPress registration forms.**
 
 = Documentation / Tech Support =
 * Documentation: [Plugin Homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/)
