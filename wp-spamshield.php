@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.9
+Version: 1.9.0.1
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.9' );
+define( 'WPSS_VERSION', '1.9.0.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.9' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -552,12 +552,6 @@ function spamshield_get_server_x_req_w() {
 	return $server_x_req_w;
 	}
 
-function spamshield_is_ajax_request() {
-	$server_x_req_w = spamshield_get_server_x_req_w();
-	if ( $server_x_req_w == 'xmlhttprequest' ) { return TRUE; }
-	return FALSE;
-	}
-
 function spamshield_get_query_arr($url) {
 	/* Get array of variables from query string */
 	$query_str = spamshield_get_query_string($url); /* 1.7.3 - Validates better */
@@ -827,15 +821,39 @@ function spamshield_is_login_page() {
 	}
 
 function spamshield_is_xmlrpc() {
-	$xmlrpc_status = FALSE;
 	if ( defined('XMLRPC_REQUEST') && XMLRPC_REQUEST ) { return TRUE; }
-    return $xmlrpc_status;
+    return FALSE;
 	}
 
-function spamshield_is_cron() {
-	$cron_status = FALSE;
+function spamshield_is_doing_cron() {
 	if ( defined('DOING_CRON') && DOING_CRON ) { return TRUE; }
-    return $cron_status;
+    return FALSE;
+	}
+
+function spamshield_is_doing_ajax() {
+	if ( defined('DOING_AJAX') && DOING_AJAX ) { return TRUE; }
+    return FALSE;
+	}
+
+function spamshield_is_ajax_request() {
+	$server_x_req_w = spamshield_get_server_x_req_w();
+	if ( $server_x_req_w == 'xmlhttprequest' ) { return TRUE; }
+	return FALSE;
+	}
+
+function spamshield_is_comment_request() {
+	$url		= spamshield_get_url();
+	$url_rev	= spamshield_fix_url( $url, TRUE, TRUE, TRUE );
+	$wcp_rev	= strrev( '/wp-comments-post.php' );
+	if ( strpos( $url_rev, $wcp_rev ) === 0 ) {
+		if ( isset( $_POST['comment_post_ID'] ) && isset( $_POST['comment'] ) ) {
+			if ( get_option( 'require_name_email' ) ) {
+				if ( isset( $_POST['author'] ) && isset( $_POST['email'] ) ) { return TRUE; }
+				}
+			else { return TRUE; }
+			}
+		}
+	return FALSE;
 	}
 
 function spamshield_is_firefox() {
@@ -1583,9 +1601,11 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 		}
 	else {
 		/* LOG DATA */
-		$wpss_log_datum = date('Y-m-d (D) H:i:s',$get_current_time_display);
-		$wpss_log_URL = spamshield_get_url();
-		$wpss_log_comment_data = "*************************************************************************************\n";
+		$wpss_log_datum			= date('Y-m-d (D) H:i:s',$get_current_time_display);
+		$wpss_log_URL 			= spamshield_get_url();
+		$wpss_IS_AJAX			= spamshield_is_ajax_request() ? 'TRUE' : 'FALSE';
+		$wpss_IS_COMMENT		= spamshield_is_comment_request() ? 'TRUE' : 'FALSE';
+		$wpss_log_comment_data	= "*************************************************************************************\n";
 		$wpss_log_comment_data .= "-------------------------------------------------------------------------------------\n";
 		$wpss_log_comment_data .= ":: ".$wpss_log_comment_type_display." BEGIN ::"."\n";
 
@@ -1596,27 +1616,8 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 
 		/* IP / PROXY INFO - BEGIN */
 		global $wpss_ip_proxy_info;
-		if ( empty( $wpss_ip_proxy_info ) ) {
-			$wpss_ip_proxy_info 		= spamshield_ip_proxy_info();
-			}
-		$ip_proxy_info					= $wpss_ip_proxy_info;
-		$ip 							= $ip_proxy_info['ip'];
-		$reverse_dns 					= $ip_proxy_info['reverse_dns'];
-		$reverse_dns_lc 				= $ip_proxy_info['reverse_dns_lc'];
-		$reverse_dns_lc_regex 			= $ip_proxy_info['reverse_dns_lc_regex'];
-		$reverse_dns_lc_rev 			= $ip_proxy_info['reverse_dns_lc_rev'];
-		$reverse_dns_lc_rev_regex		= $ip_proxy_info['reverse_dns_lc_rev_regex'];
-		$reverse_dns_ip 				= $ip_proxy_info['reverse_dns_ip'];
-		$reverse_dns_ip_regex 			= $ip_proxy_info['reverse_dns_ip_regex'];
-		$reverse_dns_verification 		= $ip_proxy_info['reverse_dns_verification'];
-		$ip_proxy_via 					= $ip_proxy_info['ip_proxy_via'];
-		$ip_proxy_via_lc 				= $ip_proxy_info['ip_proxy_via_lc'];
-		$masked_ip 						= $ip_proxy_info['masked_ip'];
-		$ip_proxy 						= $ip_proxy_info['ip_proxy'];
-		$ip_proxy_short 				= $ip_proxy_info['ip_proxy_short'];
-		$ip_proxy_data 					= $ip_proxy_info['ip_proxy_data'];
-		$proxy_status 					= $ip_proxy_info['proxy_status'];
-		$ip_proxy_chrome_compression	= $ip_proxy_info['ip_proxy_chrome_compression'];
+		if ( empty( $wpss_ip_proxy_info ) ) { $wpss_ip_proxy_info = spamshield_ip_proxy_info(); }
+		extract( $wpss_ip_proxy_info );
 		/* IP / PROXY INFO - END */
 
 		$wpss_spamshield_count = spamshield_number_format( spamshield_count() );
@@ -1735,7 +1736,10 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 		$wpss_log_comment_data .= "HTTP_ACCEPT_LANGUAGE: 	['".$wpss_http_accept_language."']\n";
 		$wpss_log_comment_data .= "HTTP_ACCEPT: 		['".$wpss_http_accept."']\n";
 		$wpss_log_comment_data .= "HTTP_X_REQUESTED_WITH: 	['".$server_x_req_w."']\n";
+		$wpss_log_comment_data .= "IS_AJAX: 		['".$wpss_IS_AJAX."']\n";
+		$wpss_log_comment_data .= "IS_COMMENT: 		['".$wpss_IS_COMMENT."']\n";
 		$wpss_log_comment_data .= "User-Agent: 		['".$wpss_http_user_agent."']\n";
+		$wpss_log_comment_data .= "URL: 			['".$wpss_log_URL."']\n";
 		$wpss_log_comment_data .= "Form Processor Ref: 	['";
 		if ( !empty( $wpss_http_referer ) ) {
 			$wpss_log_comment_data .= $wpss_http_referer;
@@ -1803,13 +1807,12 @@ function spamshield_log_data( $wpss_log_comment_data_array, $wpss_log_comment_da
 			$wpss_log_comment_data .= "ALGO Spam Count:  	['".$wpss_algo_spamshield_count."']\n"; /* Added 1.8.9.6 */
 			$wpss_log_comment_data .= "Current Status: 	['".$wpss_comments_status_current."']\n"; /* Changed 1.8 */
 			$wpss_log_comment_data .= "REQUEST_METHOD: 	['".$wpss_server_request_method."']\n";
-			if ( strpos( $wpss_log_comment_type, 'register' ) === FALSE ) {
+			if ( strpos( $wpss_log_comment_type, 'register' ) === FALSE && $wpss_log_comment_type != 'contact form 7' && $wpss_log_comment_type != 'gravity forms' && $wpss_log_comment_type != 'misc form' ) {
 				$wpss_log_comment_data .= "Content Length: 	['".$body_content_length."']\n";
 				}
 			$wpss_log_comment_data .= '$_COOKIE'." Data:		['".$wpss_log_data_serial_cookie."']\n";
 			$wpss_log_comment_data .= '$_GET'." Data: 		['".$wpss_log_data_serial_get."']\n";
 			$wpss_log_comment_data .= 'MOD $_POST'." Data:	['".$wpss_log_data_serial_post."']\n";
-			$wpss_log_comment_data .= "URL: 			['".$wpss_log_URL."']\n";
 			$wpss_log_comment_data .= "CL Active: 		['".$wpss_cl_active."']\n";
 			$wpss_log_comment_data .= "Mem Used: 		['".$wpss_mem_used."']\n";
 			$wpss_log_comment_data .= "Extra Data: 		['".$wpss_append_log_data."']\n";
@@ -2072,21 +2075,11 @@ function spamshield_contact_form( $content = NULL, $shortcode_check = NULL ) {
 	$wpss_contact_sender_email		= 'wpspamshield.noreply@'.$server_name;
 	$wpss_contact_sender_name		= __( 'Contact Form', WPSS_PLUGIN_NAME );
 
-	/* IP / PROXY INFO SHORT - BEGIN */
+	/* IP / PROXY INFO - BEGIN */
 	global $wpss_ip_proxy_info;
-	if ( empty( $wpss_ip_proxy_info ) ) {
-		$wpss_ip_proxy_info 		= spamshield_ip_proxy_info();
-		}
-	$ip_proxy_info					= $wpss_ip_proxy_info;
-	$ip 							= $ip_proxy_info['ip'];
-	$reverse_dns 					= $ip_proxy_info['reverse_dns'];
-	$reverse_dns_ip					= $ip_proxy_info['reverse_dns_ip'];
-	$reverse_dns_ip_regex 			= $ip_proxy_info['reverse_dns_ip_regex'];
-	$reverse_dns_lc					= $ip_proxy_info['reverse_dns_lc'];
-	$reverse_dns_lc_regex 			= $ip_proxy_info['reverse_dns_lc_regex'];
-	$reverse_dns_lc_rev 			= $ip_proxy_info['reverse_dns_lc_rev'];
-	$reverse_dns_lc_rev_regex 		= $ip_proxy_info['reverse_dns_ip_regex'];
-	/* IP / PROXY INFO SHORT - END */
+	if ( empty( $wpss_ip_proxy_info ) ) { $wpss_ip_proxy_info = spamshield_ip_proxy_info(); }
+	extract( $wpss_ip_proxy_info );
+	/* IP / PROXY INFO - END */
 	$user_agent 					= spamshield_get_user_agent( TRUE, FALSE );
 	$user_agent_lc 					= spamshield_casetrans('lower',$user_agent);
 	$user_agent_lc_word_count 		= spamshield_count_words($user_agent_lc);
@@ -4319,27 +4312,8 @@ function spamshield_trackback_content_filter( $commentdata, $spamshield_options 
 
 	/* IP / PROXY INFO - BEGIN */
 	global $wpss_ip_proxy_info;
-	if ( empty( $wpss_ip_proxy_info ) ) {
-		$wpss_ip_proxy_info 		= spamshield_ip_proxy_info();
-		}
-	$ip_proxy_info					= $wpss_ip_proxy_info;
-	$ip 							= $ip_proxy_info['ip'];
-	$reverse_dns 					= $ip_proxy_info['reverse_dns'];
-	$reverse_dns_lc 				= $ip_proxy_info['reverse_dns_lc'];
-	$reverse_dns_lc_regex 			= $ip_proxy_info['reverse_dns_lc_regex'];
-	$reverse_dns_lc_rev 			= $ip_proxy_info['reverse_dns_lc_rev'];
-	$reverse_dns_lc_rev_regex		= $ip_proxy_info['reverse_dns_lc_rev_regex'];
-	$reverse_dns_ip 				= $ip_proxy_info['reverse_dns_ip'];
-	$reverse_dns_ip_regex 			= $ip_proxy_info['reverse_dns_ip_regex'];
-	$reverse_dns_verification 		= $ip_proxy_info['reverse_dns_verification'];
-	$ip_proxy_via 					= $ip_proxy_info['ip_proxy_via'];
-	$ip_proxy_via_lc 				= $ip_proxy_info['ip_proxy_via_lc'];
-	$masked_ip 						= $ip_proxy_info['masked_ip'];
-	$ip_proxy 						= $ip_proxy_info['ip_proxy'];
-	$ip_proxy_short 				= $ip_proxy_info['ip_proxy_short'];
-	$ip_proxy_data 					= $ip_proxy_info['ip_proxy_data'];
-	$proxy_status 					= $ip_proxy_info['proxy_status'];
-	$ip_proxy_chrome_compression	= $ip_proxy_info['ip_proxy_chrome_compression'];
+	if ( empty( $wpss_ip_proxy_info ) ) { $wpss_ip_proxy_info = spamshield_ip_proxy_info(); }
+	extract( $wpss_ip_proxy_info );
 	/* IP / PROXY INFO - END */
 
 	if ( empty( $local_pingback ) && $ip_proxy == 'PROXY DETECTED' ) {
@@ -4550,27 +4524,8 @@ function spamshield_comment_content_filter( $commentdata, $spamshield_options ) 
 
 	/* IP / PROXY INFO - BEGIN */
 	global $wpss_ip_proxy_info;
-	if ( empty( $wpss_ip_proxy_info ) ) {
-		$wpss_ip_proxy_info 		= spamshield_ip_proxy_info();
-		}
-	$ip_proxy_info					= $wpss_ip_proxy_info;
-	$ip 							= $ip_proxy_info['ip'];
-	$reverse_dns 					= $ip_proxy_info['reverse_dns'];
-	$reverse_dns_lc 				= $ip_proxy_info['reverse_dns_lc'];
-	$reverse_dns_lc_regex 			= $ip_proxy_info['reverse_dns_lc_regex'];
-	$reverse_dns_lc_rev 			= $ip_proxy_info['reverse_dns_lc_rev'];
-	$reverse_dns_lc_rev_regex		= $ip_proxy_info['reverse_dns_lc_rev_regex'];
-	$reverse_dns_ip 				= $ip_proxy_info['reverse_dns_ip'];
-	$reverse_dns_ip_regex 			= $ip_proxy_info['reverse_dns_ip_regex'];
-	$reverse_dns_verification 		= $ip_proxy_info['reverse_dns_verification'];
-	$ip_proxy_via 					= $ip_proxy_info['ip_proxy_via'];
-	$ip_proxy_via_lc 				= $ip_proxy_info['ip_proxy_via_lc'];
-	$masked_ip 						= $ip_proxy_info['masked_ip'];
-	$ip_proxy 						= $ip_proxy_info['ip_proxy'];
-	$ip_proxy_short 				= $ip_proxy_info['ip_proxy_short'];
-	$ip_proxy_data 					= $ip_proxy_info['ip_proxy_data'];
-	$proxy_status 					= $ip_proxy_info['proxy_status'];
-	$ip_proxy_chrome_compression	= $ip_proxy_info['ip_proxy_chrome_compression'];
+	if ( empty( $wpss_ip_proxy_info ) ) { $wpss_ip_proxy_info = spamshield_ip_proxy_info(); }
+	extract( $wpss_ip_proxy_info );
 	/* IP / PROXY INFO - END */
 
 	/***
@@ -5022,25 +4977,8 @@ function spamshield_ip_proxy_info() {
 		$proxy_status='FALSE';
 		}
 	/* IP / PROXY INFO - END */
-	$ip_proxy_info = array(
-		'ip' 							=> $ip,
-		'reverse_dns' 					=> $reverse_dns,
-		'reverse_dns_lc' 				=> $reverse_dns_lc,
-		'reverse_dns_lc_regex' 			=> $reverse_dns_lc_regex,
-		'reverse_dns_lc_rev' 			=> $reverse_dns_lc_rev,
-		'reverse_dns_lc_rev_regex'		=> $reverse_dns_lc_rev_regex,
-		'reverse_dns_ip' 				=> $reverse_dns_ip,
-		'reverse_dns_ip_regex' 			=> $reverse_dns_ip_regex,
-		'reverse_dns_verification' 		=> $reverse_dns_verification,
-		'ip_proxy_via' 					=> $ip_proxy_via,
-		'ip_proxy_via_lc' 				=> $ip_proxy_via_lc,
-		'masked_ip' 					=> $masked_ip,
-		'ip_proxy' 						=> $ip_proxy,
-		'ip_proxy_short' 				=> $ip_proxy_short,
-		'ip_proxy_data' 				=> $ip_proxy_data,
-		'proxy_status' 					=> $proxy_status,
-		'ip_proxy_chrome_compression'	=> $ip_proxy_chrome_compression,
-		);
+
+	$ip_proxy_info = compact( 'ip', 'reverse_dns', 'reverse_dns_lc', 'reverse_dns_lc_regex', 'reverse_dns_lc_rev', 'reverse_dns_lc_rev_regex', 'reverse_dns_ip', 'reverse_dns_ip_regex', 'reverse_dns_verification', 'ip_proxy_via', 'ip_proxy_via_lc', 'masked_ip', 'ip_proxy', 'ip_proxy_short', 'ip_proxy_data', 'proxy_status', 'ip_proxy_chrome_compression' );
 	return $ip_proxy_info;
 	}
 
@@ -5054,22 +4992,35 @@ function spamshield_misc_form_spam_check() {
 	* Added 1.8.9.9
 	***/
 
-	if ( empty( $_POST ) || isset( $_POST[WPSS_REF2XJS] ) || isset( $_POST[WPSS_JSONST] ) || isset( $_POST['wpss_contact_message'] ) || isset( $_POST['signup_username'] ) || isset( $_POST['signup_email'] ) || isset( $_POST['ws_plugin__s2member_registration'] ) || isset( $_POST['_wpcf7_version'] ) || isset( $_POST['gform_submit'] ) ) { return; }
-	if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || ( defined( 'DOING_CRON' ) && DOING_CRON ) || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) ) { return; }
-	if ( is_trackback() ) { return; }
+	/* BYPASS - GENERAL */
+	if ( empty( $_POST ) || 'POST' != $_SERVER['REQUEST_METHOD'] || isset( $_POST[WPSS_REF2XJS] ) || isset( $_POST[WPSS_JSONST] ) || isset( $_POST['wpss_contact_message'] ) || isset( $_POST['signup_username'] ) || isset( $_POST['signup_email'] ) || isset( $_POST['ws_plugin__s2member_registration'] ) || isset( $_POST['_wpcf7_version'] ) || isset( $_POST['gform_submit'] ) ) { return; }
+	if ( spamshield_is_doing_ajax() || spamshield_is_doing_cron() || spamshield_is_xmlrpc() || defined( 'WP_INSTALLING' ) ) { return; }
+	if ( spamshield_is_ajax_request() || spamshield_is_comment_request() || is_trackback() ) { return; }
 	if ( is_admin() && !spamshield_is_login_page() ) { return; }
 	if ( spamshield_is_login_page() && ( !isset( $_POST['action'] ) || $_POST['action'] != 'register' ) ) { return; }
 	if ( current_user_can( 'moderate_comments' ) ) { return; }
 	if ( is_user_logged_in() ) { return; } /* May remove later */
 	$post_count = count( $_POST );
 	if ( $post_count == 4 && isset( $_POST['excerpt'] ) && isset( $_POST['url'] ) && isset( $_POST['title'] ) && isset( $_POST['blog_name'] ) ) { return; }
-	if ( spamshield_is_ajax_request() ) { return; }
 	$ip = $_SERVER['REMOTE_ADDR'];
 	if ( $ip == RSMP_SERVER_ADDR ) { return; } /* Skip website IP address */
 	if ( strpos( $ip, '.' ) !== FALSE ) {
 		$ip_arr = explode( '.', $ip ); unset( $ip_arr[3] ); $ip_c = implode( '.', $ip_arr ) . '.';
 		if ( strpos( RSMP_SERVER_ADDR, $ip_c ) === 0 ) { return; } /* Skip anything on same C-Block as website */
 		}
+
+	/* IP / PROXY INFO - BEGIN */
+	global $wpss_ip_proxy_info;
+	if ( empty( $wpss_ip_proxy_info ) ) { $wpss_ip_proxy_info = spamshield_ip_proxy_info(); }
+	extract( $wpss_ip_proxy_info );
+	/* IP / PROXY INFO - END */
+	
+	$user_agent = spamshield_get_user_agent();
+	
+	/* BYPASS - SPECIFIC PLUGINS */
+	
+	/* WP Remote */
+	if ( defined( 'WPRP_PLUGIN_SLUG' ) && !empty( $_POST['wpr_verify_key'] ) && preg_match( "~\ WP\-Remote$~", $user_agent ) && preg_match( "~\.amazonaws\.com$~", $reverse_dns ) ) { return; }
 
 	/* TO DO: Add option to turn off protection for miscellaneous forms here */
 	$spamshield_options = get_option('spamshield_options');
@@ -5254,27 +5205,8 @@ function spamshield_extra_notification_data( $text, $spamshield_options = NULL )
 
 	/* IP / PROXY INFO - BEGIN */
 	global $wpss_ip_proxy_info;
-	if ( empty( $wpss_ip_proxy_info ) ) {
-		$wpss_ip_proxy_info 		= spamshield_ip_proxy_info();
-		}
-	$ip_proxy_info					= $wpss_ip_proxy_info;
-	$ip 							= $ip_proxy_info['ip'];
-	$reverse_dns 					= $ip_proxy_info['reverse_dns'];
-	$reverse_dns_lc 				= $ip_proxy_info['reverse_dns_lc'];
-	$reverse_dns_lc_regex 			= $ip_proxy_info['reverse_dns_lc_regex'];
-	$reverse_dns_lc_rev 			= $ip_proxy_info['reverse_dns_lc_rev'];
-	$reverse_dns_lc_rev_regex		= $ip_proxy_info['reverse_dns_lc_rev_regex'];
-	$reverse_dns_ip 				= $ip_proxy_info['reverse_dns_ip'];
-	$reverse_dns_ip_regex 			= $ip_proxy_info['reverse_dns_ip_regex'];
-	$reverse_dns_verification 		= $ip_proxy_info['reverse_dns_verification'];
-	$ip_proxy_via 					= $ip_proxy_info['ip_proxy_via'];
-	$ip_proxy_via_lc 				= $ip_proxy_info['ip_proxy_via_lc'];
-	$masked_ip 						= $ip_proxy_info['masked_ip'];
-	$ip_proxy 						= $ip_proxy_info['ip_proxy'];
-	$ip_proxy_short 				= $ip_proxy_info['ip_proxy_short'];
-	$ip_proxy_data 					= $ip_proxy_info['ip_proxy_data'];
-	$proxy_status 					= $ip_proxy_info['proxy_status'];
-	$ip_proxy_chrome_compression	= $ip_proxy_info['ip_proxy_chrome_compression'];
+	if ( empty( $wpss_ip_proxy_info ) ) { $wpss_ip_proxy_info = spamshield_ip_proxy_info(); }
+	extract( $wpss_ip_proxy_info );
 	/* IP / PROXY INFO - END */
 
 	/* Sanitized versions for output */

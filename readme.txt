@@ -46,7 +46,7 @@ It does all this with ZERO false positives, because of the method used to block 
 The trackback validation contains a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is guaranteed spam, without fail. This alone eliminates more than 99.99% of trackback spam. Trackback spammers don't send spam out from the same server where their clients' websites reside. There are algorithmic filters in place to ensure 100% trackback spam blocking. Although it's far more rare, the plugin protects again pingback spam as well. You can be confident that only legitimate trackbacks and pingbacks will get through.
 
 = Includes a Spam-Free Contact Form, and Anti-Spam for Contact Form 7 and Others =
-Includes drop-in spam-free contact form, with easy one-click installation. Easy to use - no configuration necessary, but you can configure it if you like. (See [Installation](https://wordpress.org/plugins/wp-spamshield/installation/) for info.) As of version 1.8.9.9 WP-SpamShield also includes automatic spam protection for Contact Form 7 and Gravity Forms. (You don't have to do anything...just add your CF7 and GF forms to your site, and they will automatically be protected.) It will now also automatically protect many forms on your WordPress site from automated spam, even if they are not listed here.
+Includes drop-in spam-free contact form, with easy one-click installation. Easy to use - no configuration necessary, but you can configure it if you like. (See [Installation](https://wordpress.org/plugins/wp-spamshield/installation/) for info.) As of version 1.8.9.9 WP-SpamShield also includes automatic spam protection for Contact Form 7 and Gravity Forms. (You don't have to do anything...just add your Contact Form 7 and Gravity Forms to your site, and they will automatically be protected.) It will now also automatically protect many forms on your WordPress site from automated spam, even if they are not listed here.
 
 = WordPress Registration Spam Blocking =
 The plugin also includes powerful protection from user registration spam. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up any more. (Note: This protects the WordPress registration form, and registration forms for bbPress, BuddyPress, s2Member, WP-Members, and more. See [this FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_13) for more info.
@@ -177,6 +177,10 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.0.1 =
+*released 06/03/15*
+
+* Fixed bug that caused a conflict with the WP Remote plugin.
 
 = 1.9 =
 *released 06/02/15*
@@ -543,8 +547,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9 =
-Fixed bug that caused a conflict with certain AJAX calls, and fixed bug with registration protection on BuddyPress legacy themes. Please see Changelog for details.
+= 1.9.0.1 =
+Fixed bug that caused a conflict with the WP Remote Plugin. Please see Changelog for details.
 
 == Other Notes ==
 
