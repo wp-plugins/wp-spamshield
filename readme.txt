@@ -159,7 +159,7 @@ The page you place the contact form on should have its own URL, and not be used 
 
 There is no need to configure the form. It allows you to simply drop it into the page you want to install it on. However, there are a few basic configuration options. You can choose whether or not to include Phone and Website fields, whether they should be required, add a drop down menu with up to 10 options, set the width and height of the Message box, set the minimum message length, set the form recipient, enter a custom message to be displayed upon successful contact form submission, and choose whether or not to include user technical data in the email.
 
-**As of version 1.8.9.9 WP-SpamShield also includes automatic anti-spam protection for Contact Form 7 and Gravity Forms. (You don't have to do anything...just add your CF7 and GF forms to your site, and they will automatically be protected from spam.) It will now automatically protect many forms on your WordPress site from spam, even if they are not listed here.**
+**As of version 1.8.9.9 WP-SpamShield also includes automatic anti-spam protection for Contact Form 7 and Gravity Forms. (You don't have to do anything...just add your Contact Form 7 and Gravity Forms to your site, and they will *automatically* be protected from spam.) It will also now *automatically* protect many forms on your WordPress site from spam, even if they are not specifically listed here.**
 
 Please visit the plugin documentation for more info on [contact form installation and use](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_adding_contact_form).
 
