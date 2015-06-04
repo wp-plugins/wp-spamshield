@@ -180,7 +180,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 = 1.9.0.1 =
 *released 06/03/15*
 
-* Fixed bug that caused a conflict with the WP Remote plugin.
+* Fixed a bug that caused a conflict with the WP Remote plugin.
 
 = 1.9 =
 *released 06/02/15*
