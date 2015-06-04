@@ -69,7 +69,7 @@ No cost, no hidden fees. This plugin is **free** for **both Commercial and Perso
 If you have any issues with the plugin, we are here to help. Simply submit a support request at the [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/), and we'll help you diagnose and fix the issue quickly.
 
 = Additional Features =
-1. As of version 1.8.9.9, now WP-SpamShield provides automatic anti-spam protection for Contact Form 7 forms, Gravity Forms, BuddyPress registration forms, and almost all registration forms!
+1. As of version 1.8.9.9, now WP-SpamShield provides automatic anti-spam protection for Contact Form 7 forms, Gravity Forms, BuddyPress registration forms, many other WordPress forms, and almost all registration forms!
 2. A counter on your dashboard to keep track of all the spam it's blocking. The numbers will show how effective this plugin is.
 3. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked spam (comments, trackbacks, registrations, and contact form submissions) for 7 days, then turns off automatically. If you want to see what spam has been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
 4. Multiple languages available and more on the way. Currently includes Dutch (nl_NL), French (fr_FR), German (de_DE), Italian (it_IT), and Serbian (sr_RS) translations. Ready for translation into other languages.
@@ -185,8 +185,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 = 1.9 =
 *released 06/02/15*
 
-* Fixed bug that caused a conflict with certain AJAX calls.
-* Fixed bug with registration protection on BuddyPress legacy themes.
+* Fixed a bug that caused a conflict with certain AJAX calls.
+* Fixed a bug with registration protection on BuddyPress legacy themes.
 
 = 1.8.9.9 =
 *released 06/02/15*
