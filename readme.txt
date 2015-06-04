@@ -1,7 +1,7 @@
 ﻿=== WP-SpamShield Anti-Spam ===
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
-Tags: akismet, all-in-one, antispam, anti-spam, block spam, buddypress, captcha, cf7, comment, comment spam, comments, contact, contact form, contact form 7, contact forms, form, forms, gravity forms, javascript, login, mailchimp, multisite, protection, register, registration, registration spam, s2member, security, signup, signup spam, spam, spam blocker, spam filter, trackback, trackbacks, user registration spam, widget
+Tags: akismet, all-in-one, antispam, anti-spam, bbpress, block spam, buddypress, captcha, cf7, comment, comment spam, comments, contact, contact form, contact form 7, contact forms, form, forms, gravity forms, javascript, login, mailchimp, multisite, protection, register, registration, registration spam, s2member, security, signup, signup spam, spam, spam blocker, spam filter, trackback, trackbacks, user registration spam, widget
 Requires at least: 3.9
 Tested up to: 4.2
 Stable tag: trunk
