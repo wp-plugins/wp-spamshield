@@ -177,6 +177,14 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.0.2 =
+*released 06/04/15*
+
+* Fixed a couple bugs.
+* Added the option to set the minimum required comment length, from 1-30 characters. Previously, the minimum comment length was 15 characters.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.9.0.1 =
 *released 06/03/15*
 
