@@ -555,8 +555,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.0.1 =
-Fixed bug that caused a conflict with the WP Remote Plugin. Please see Changelog for details.
+= 1.9.0.2 =
+Fixed a couple bugs, added the option to set the minimum required comment length, from 1-30 characters, and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
