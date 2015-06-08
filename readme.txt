@@ -177,6 +177,14 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.0.3 =
+*released 06/08/15*
+
+* Added compatibility for 2 additional caching plugins: ZenCache and ZenCache Pro. As of this release, the following 14 cache plugins are supported: Cachify, DB Cache Reloaded, DB Cache Reloaded Fix, Gator Cache, Hyper Cache, Hyper Cache Extended, Lite Cache, Quick Cache, W3 Total Cache, WP Fast Cache, WP Fastest Cache, WP Super Cache, ZenCache, and ZenCache Pro.
+* Added options to disable anti-spam protection for Contact Form 7, Gravity Forms, and miscellaneous forms if you wish.
+* Made various code improvements.
+* Updated the spam filters.
+
 = 1.9.0.2 =
 *released 06/04/15*
 
@@ -555,8 +563,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.0.2 =
-Fixed a couple bugs, added the option to set the minimum required comment length, from 1-30 characters, and improved/updated the spam filters. Please see Changelog for details.
+= 1.9.0.3 =
+Added compatibility for 2 more caching plugins, added 3 new options to the settings page, made various code improvements, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
