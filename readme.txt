@@ -177,6 +177,14 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.0.4 =
+*released 06/09/15*
+
+* Added improved compatibility and full support for WooCommerce to protect its registration form from spam.
+* Made various code improvements.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.9.0.3 =
 *released 06/08/15*
 
@@ -563,8 +571,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.0.3 =
-Added compatibility for 2 more caching plugins, added 3 new options to the settings page, made various code improvements, and updated the spam filters. Please see Changelog for details.
+= 1.9.0.4 =
+Added improved compatibility and full support for WooCommerce registration forms, made various code improvements, and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

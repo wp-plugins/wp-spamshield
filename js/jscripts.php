@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.8.9.9
+Version: 1.9.0.4
 */
 
 // Security Sanitization - BEGIN
@@ -223,7 +223,7 @@ header('Content-Type: application/x-javascript');
 echo "
 function wpssGetCookie(e){var t=document.cookie.indexOf(e+'=');var n=t+e.length+1;if(!t&&e!=document.cookie.substring(0,e.length)){return null}if(t==-1)return null;var r=document.cookie.indexOf(';',n);if(r==-1)r=document.cookie.length;return unescape(document.cookie.substring(n,r))}function wpssSetCookie(e,t,n,r,i,s){var o=new Date;o.setTime(o.getTime());if(n){n=n*1e3*60*60*24}var u=new Date(o.getTime()+n);document.cookie=e+'='+escape(t)+(n?';expires='+u.toGMTString():'')+(r?';path='+r:'')+(i?';domain='+i:'')+(s?';secure':'')}function wpssDeleteCookie(e,t,n){if(wpssGetCookie(e))document.cookie=e+'='+(t?';path='+t:'')+(n?';domain='+n:'')+';expires=Thu, 01-Jan-1970 00:00:01 GMT'}
 function wpssCommentVal(){wpssSetCookie('".$wpss_ck_key."','".$wpss_ck_val."','','/');wpssSetCookie('SJECT15','CKON15','','/');}
-wpssCommentVal();jQuery(document).ready(function($){\$(\"form[method='post']\").append('<input type=\"hidden\" name=\"".$wpss_jq_key."\" value=\"".$wpss_jq_val."\" />')});
+wpssCommentVal();jQuery(document).ready(function($){var h=\"form[method='post']\";\$(h).submit(function() {\$('<input>').attr('type','hidden').attr('name','".$wpss_jq_key."').attr('value','".$wpss_jq_val."').appendTo(h);return true;})});
 ";
 
 // Uncomment to use:
