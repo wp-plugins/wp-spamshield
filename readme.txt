@@ -26,12 +26,12 @@ No CAPTCHA's, challenge questions or other inconvenience to site visitors - it w
 Most of the spam hitting your blog originates from bots, but quite a bit comes from humans too. This plugin works like a firewall to ensure that your commenters are in fact, human, and that those humans aren't spamming you.
 
 = Two Layers of Spam Blocking =
-There are two layers of anti-spam protection that work together to *block both automated and human spam*: a **JavaScript/Cookies Layer**, and an **Algorithmic Layer**. The first layer uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 100% of automated spam from ever getting to your site. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop almost all of the spam that the JavaScript Layer blocks, and provides close to a fully redundant backstop. This JavaScript Layer utilizes multiple randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer consists of over 100 advanced filters, and eliminates *trackback spam* and *most human spam as well*. And, it does all that without hindering legitimate comments and trackbacks.
+There are two layers of anti-spam protection that work together to *block both automated (spambots) and human spam*: a **JavaScript/Cookies Layer**, and an **Algorithmic Layer**. The first layer uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 100% of automated spam from ever getting to your site. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop almost all of the spam that the JavaScript Layer blocks, and provides close to a fully redundant backstop. This JavaScript Layer utilizes multiple randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer consists of over 100 advanced filters, and eliminates *trackback spam* and *most human spam as well*. And, it does all that without hindering legitimate comments and trackbacks.
 
 = No More Wasted Time Sifting Through the Spam Queue =
 This type of solution works silently in the background, with no inconveniences. You won't have to waste valuable time sifting through a spam queue any more, because there won't be anything there.
 
-WP-SpamShield is different from other anti-spam plugins in that it *BLOCKS* spam at the front door and doesn't allow it into the WordPress database at all. Many other anti-spam plugins simply label a comment as spam, leaving you to sort through a queue, which wastes your valuable time. **WP-SpamShield will give you back your time!**
+WP-SpamShield is different from other anti-spam plugins in that it *BLOCKS* spam at the front door of your site and doesn't allow it into the WordPress database at all. Many other anti-spam plugins simply label a comment as spam, leaving you to sort through a spam queue, which wastes your valuable time. **WP-SpamShield will give you back your time!**
 
 = Improves Security =
 Not allowing spam into the database improves security by potentially preventing SQL injection and XSS exploit attacks through automated spam comment submissions. The plugin also has several other features that improve security, such as blocking certain potentially dangerous URLs in spam comment submissions, and limiting comment size to 15kb. (15kb of text is roughly the equivalent of 3 typed pages in Microsoft Word, single-spaced, so that's more than enough for even the longest of comments.) See [this blog post](http://www.redsandmarketing.com/blog/wp-spamshield-protected-users-from-wordpress-0-day-xss-exploit/) for more info.
@@ -45,7 +45,7 @@ It does all this with ZERO false positives, because of the method used to block 
 = 100% Trackback Validation and Spam Blocking =
 The trackback validation contains a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is guaranteed spam, without fail. This alone eliminates more than 99.99% of trackback spam. Trackback spammers don't send spam out from the same server where their clients' websites reside. There are algorithmic filters in place to ensure 100% trackback spam blocking. Although it's far more rare, the plugin protects again pingback spam as well. You can be confident that only legitimate trackbacks and pingbacks will get through.
 
-= Includes a Spam-Free Contact Form, and Anti-Spam for Contact Form 7 and Others =
+= Includes a Spam-Free Contact Form, and Anti-Spam for Contact Form 7, Gravity Forms, and Others =
 Includes drop-in spam-free contact form, with easy one-click installation. Easy to use - no configuration necessary, but you can configure it if you like. (See [Installation](https://wordpress.org/plugins/wp-spamshield/installation/) for info.) As of version 1.8.9.9 WP-SpamShield also includes automatic spam protection for Contact Form 7 and Gravity Forms. (You don't have to do anything...just add your Contact Form 7 and Gravity Forms to your site, and they will automatically be protected.) It will now also automatically protect many forms on your WordPress site from automated spam, even if they are not listed here.
 
 = WordPress Registration Spam Blocking =
@@ -54,8 +54,8 @@ The plugin also includes powerful protection from user registration spam. Once y
 = Why Not Just Use a CAPTCHA? =
 The concept of using a CAPTCHA as an anti-spam solution in this day and age is flawed for several reasons: 
 
-1. It's an outdated concept that has far outlived its usefulness, and was originally developed before user-friendliness was a high priority.
-2. It goes in the exact opposite direction of user-friendly design principles. Think about it. Users of your website have to type in numbers and letters obscured by squiggly lines and symbols, only to be told they are wrong several times, even after typing in the correct answer. This is proven to hurt website business and revenue because of the negative feelings it causes. People simply don't like CAPTCHAS.
+1. It's an *outdated concept* that has far outlived its usefulness, and was originally developed before user-friendliness was a high priority.
+2. It goes in the *exact opposite direction of user-friendly design principles*. Think about it. Users of your website have to type in numbers and letters obscured by squiggly lines and symbols, only to be told they are wrong several times, even after typing in the correct answer. This is proven to hurt website business and revenue because of the negative feelings it causes. *People simply don't like CAPTCHAS.*
 3. CAPTCHAS can be defeated.
 4. Why use a CAPTCHA when there are better solutions that don't inconvenience your website users?
 
