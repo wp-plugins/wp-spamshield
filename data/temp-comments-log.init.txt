@@ -1,1 +1,23 @@
-﻿
+﻿*************************************************************************************
+-------------------------------------------------------------------------------------
+:: WP-SPAMSHIELD LOG ::
+-------------------------------------------------------------------------------------
+For security reasons, DO NOT POST THIS TO WORDPRESS.ORG FORUMS!! (Or any forum)
+-------------------------------------------------------------------------------------
+If you need help, please visit these resources first:
+
+TROUBLESHOOTING:
+http://www.redsandmarketing.com/wp-spamshield/#wpss_troubleshooting
+
+FAQS:
+http://www.redsandmarketing.com/wp-spamshield/#wpss_faqs
+
+SUPPORT REQUESTS:
+http://www.redsandmarketing.com/wp-spamshield-help/
+
+If you have a question about your log results, submit the log to us here:
+http://www.redsandmarketing.com/wp-spamshield-help/
+-------------------------------------------------------------------------------------
+*************************************************************************************
+
+
