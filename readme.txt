@@ -180,6 +180,15 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.0.6 =
+*released 06/15/15*
+
+* Added several improvements to the integration with ecommerce plugins.
+* Pre-emptive security enhancement for the log file (formerly `temp-comments-log.txt`) - added a randomly generated 32 character long key to the filename to make it unique (now `temp-comments-log-{random key}.txt`). The log was already protected by an `.htaccess` file and restricted to the IP address of the admin.
+* Made various code improvements.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the spam filters.
+
 = 1.9.0.5 =
 *released 06/12/15*
 
@@ -582,8 +591,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.0.5 =
-Added an automatic email obfuscation feature to thwart email-harvesting bots, fix for new users registering on a WooCommerce checkout page, made various code improvements, and updated the spam filters. Please see Changelog for details.
+= 1.9.0.6 =
+* Added several improvements to ecommerce integration, pre-emptive security enhancement for the log file, made various code improvements, and improved/updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
