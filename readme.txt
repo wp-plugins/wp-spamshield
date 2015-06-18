@@ -180,6 +180,16 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.1 =
+*released 06/18/15*
+
+* Added 2 new Advanced Features: "Compatibility Mode" and "Disable Temporary Blacklist". The Advanced Features are something new that we'll be introducing over time, and are explained in the [plugin documentation in more detail](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_advanced_configuration).
+* Added some improvements to the installation status detection. 
+* Added automatic fixes for certain issues. During the installation status detection process the plugin will attempt to fix some uncommon issues by automatically switching the plugin into Compatibility Mode. (At the top of the Settings page it tells you if the plugin is installed correctly or not.)
+* Made various code improvements.
+* Improved some of the contact form filters for the built-in WP-SpamShield contact form, Contact Form 7, and Gravity Forms.
+* Updated the spam filters.
+
 = 1.9.0.6 =
 *released 06/15/15*
 
@@ -591,8 +601,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.0.6 =
-* Added several improvements to ecommerce integration, pre-emptive security enhancement for the log file, made various code improvements, and improved/updated the spam filters. Please see Changelog for details.
+= 1.9.1 =
+* Added 2 new Advanced Features, added improvements to the installation status detection, added automatic fixes for certain issues, made various code improvements, improved some of the contact form filters, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

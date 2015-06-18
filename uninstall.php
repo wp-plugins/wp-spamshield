@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield - uninstall.php
-Version: 1.9.0.6
+Version: 1.9.1
 
 This script uninstalls WP-SpamShield and removes all options and traces of its existence.
 */
