@@ -11,12 +11,12 @@ An extremely powerful WordPress anti-spam plugin that eliminates comment spam, t
 
 == Description ==
 
-An extremely powerful and user-friendly WordPress anti-spam plugin that eliminates comment spam, trackback spam, contact form spam & registration spam.
+An extremely powerful and user-friendly WordPress anti-spam plugin that eliminates comment spam, trackback spam, contact form spam & registration spam. It also encodes all email addresses in your website content into a format that isn't readable by email-harvesting bots.
 
 = An All-in-one Spam Solution for WordPress - Without CAPTCHAS =
 No CAPTCHA's, challenge questions or other inconvenience to site visitors - it works silently in the background and simply makes WordPress spam disappear.
 
-**Supports: Contact Form 7, Gravity Forms, BuddyPress, bbPress, WooCommerce, s2Member, WP-Members, Mailchimp, and more, including *most* WordPress forms, and *almost all* WordPress registration forms.**
+**Supports: Contact Form 7, Gravity Forms, BuddyPress, bbPress, WooCommerce, s2Member, WP-Members, Mailchimp, and *many* more, including *almost all* WordPress forms, and *almost all* WordPress registration forms.**
 
 = Documentation / Tech Support =
 * Documentation: [Plugin Homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/)
@@ -72,7 +72,7 @@ No cost, no hidden fees. This plugin is **free** for **both Commercial and Perso
 If you have any issues with the plugin, we are here to help. Simply submit a support request at the [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/), and we'll help you diagnose and fix the issue quickly.
 
 = Additional Features =
-1. Now WP-SpamShield provides automatic anti-spam protection for Contact Form 7 forms, Gravity Forms, Ninja Forms, BuddyPress and WooCommerce registration forms, most other WordPress forms, and almost all registration forms!
+1. Now WP-SpamShield provides automatic anti-spam protection for Contact Form 7 forms, Gravity Forms, Ninja Forms, BuddyPress and WooCommerce registration forms, almost all other WordPress forms, and almost all registration forms!
 2. A counter on your dashboard to keep track of all the spam it's blocking. The numbers will show how effective this plugin is.
 3. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked spam (comments, trackbacks, registrations, and contact form submissions) for 7 days, then turns off automatically. If you want to see what spam has been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
 4. Multiple languages available and more on the way. Currently includes Dutch (nl_NL), French (fr_FR), German (de_DE), Italian (it_IT), and Serbian (sr_RS) translations. Ready for translation into other languages.
@@ -100,7 +100,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 * PHP 5.3 or higher (Recommended: PHP 5.4 or higher)
 
 > #### **WordPress Blogging Without Spam**
-> How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by giving it a good rating!
+> How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by [giving it a good rating!](https://wordpress.org/support/view/plugin-reviews/wp-spamshield?rate=5#postform)
 
 == Installation ==
 
@@ -162,7 +162,7 @@ The page you place the contact form on should have its own URL, and not be used 
 
 There is no need to configure the form. It allows you to simply drop it into the page you want to install it on. However, there are a few basic configuration options. You can choose whether or not to include Phone and Website fields, whether they should be required, add a drop down menu with up to 10 options, set the width and height of the Message box, set the minimum message length, set the form recipient, enter a custom message to be displayed upon successful contact form submission, and choose whether or not to include user technical data in the email.
 
-**As of version 1.8.9.9 WP-SpamShield also includes automatic anti-spam protection for Contact Form 7, Gravity Forms, and Ninja Forms. (You don't have to do anything...just add your Contact Form 7, Gravity Forms, and Ninja Forms to your site, and they will *automatically* be protected from spam.) It will also now *automatically* protect most forms on your WordPress site from spam, even if they are not specifically listed here.**
+**As of version 1.8.9.9 WP-SpamShield also includes automatic anti-spam protection for Contact Form 7, Gravity Forms, Ninja Forms, and many more. (You don't have to do anything...just add your Contact Form 7, Gravity Forms, and Ninja Forms to your site, and they will *automatically* be protected from spam.) It will also now *automatically* protect most forms on your WordPress site from spam, even if they are not specifically listed here.**
 
 Please visit the plugin documentation for more info on [contact form installation and use](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_adding_contact_form).
 
@@ -187,7 +187,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added some improvements to the installation status detection. 
 * Added automatic fixes for certain issues. During the installation status detection process the plugin will attempt to fix some uncommon issues by automatically switching the plugin into Compatibility Mode. (At the top of the Settings page it tells you if the plugin is installed correctly or not.)
 * Made various code improvements.
-* Improved some of the contact form filters for the built-in WP-SpamShield contact form, Contact Form 7, and Gravity Forms.
+* Improved some of the contact form filters for the built-in WP-SpamShield contact form, Contact Form 7, Gravity Forms, and miscellaneous forms.
 * Updated the spam filters.
 
 = 1.9.0.6 =
