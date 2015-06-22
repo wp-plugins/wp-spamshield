@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.9.1
+Version: 1.9.2
 */
 
 // Security Sanitization - BEGIN
@@ -22,12 +22,9 @@ if ( !empty( $_POST ) || preg_match( "~^(POST|TRACE|TRACK|DEBUG|DELETE)$~", $wps
 $wpss_js_start_time = spamshield_microtime_js();
 
 // SESSION CHECK AND FUNCTIONS - BEGIN
-$wpss_session_test = @session_id();
-if( empty($wpss_session_test) && !headers_sent() ) {
-	@session_start();
-	global $wpss_session_id;
-	$wpss_session_id = @session_id();
-	}
+global $wpss_session_id;
+$wpss_session_id = @session_id();
+if ( empty( $wpss_session_id ) && !headers_sent() ) { @session_start(); $wpss_session_id = @session_id(); }
 
 if ( !defined( 'RSMP_SERVER_IP_NODOT' ) ) {
 	$wpss_server_ip_nodot = str_replace( '.', '', spamshield_get_server_addr_js() );
@@ -89,10 +86,8 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 		$current_ref 	= trim(strip_tags($_SERVER['HTTP_REFERER']));
 		$key_first_ref	= 'wpss_referer_init_'.RSMP_HASH;
 		$key_last_ref	= 'wpss_jscripts_referer_last_'.RSMP_HASH;
-		if ( !array_key_exists( $current_ref, $_SESSION[$key_pages_hist] ) ) {
-			$_SESSION[$key_pages_hist][] = $current_ref;
-			}
-		if ( !array_key_exists( $current_ref, $_SESSION[$key_hits_per_page] ) ) {
+		$_SESSION[$key_pages_hist][] = $current_ref;
+		if ( !isset( $_SESSION[$key_hits_per_page][$current_ref] ) ) {
 			$_SESSION[$key_hits_per_page][$current_ref] = 1;
 			}
 		++$_SESSION[$key_hits_per_page][$current_ref];
@@ -155,7 +150,7 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	// AUTHOR, EMAIL, URL HISTORY - END
 	
 	// SESSION USER BLACKLIST CHECK - BEGIN
-	if ( !empty( $_SESSION['wpss_clear_blacklisted_user_'.RSMP_HASH] ) ) { $wpss_cl_sbluck = TRUE; $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] = FALSE; }
+	if ( !empty( $_SESSION['wpss_clear_blacklisted_user_'.RSMP_HASH] ) ) { $wpss_cl_sbluck = TRUE; unset( $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] ); }
 	elseif ( !empty( $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] ) && empty( $_COOKIE[$wpss_lang_ck_key] ) ) { $wpss_sbluck = TRUE; }
 	elseif ( !empty( $_COOKIE[$wpss_lang_ck_key] ) && $_COOKIE[$wpss_lang_ck_key] == $wpss_lang_ck_val ) { $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] = TRUE; }
 	// SESSION USER BLACKLIST CHECK - END
@@ -169,8 +164,7 @@ function spamshield_md5_js( $string ) {
 	return $hash;
 	}
 function spamshield_microtime_js() {
-	$mtime = microtime( TRUE );
-	return $mtime;
+	return microtime( TRUE );
 	}
 function spamshield_timer_js( $start = NULL, $end = NULL, $show_seconds = FALSE, $precision = 8 ) {
 	if ( empty( $start ) || empty( $end ) ) { $start = 0; $end = 0; }
@@ -191,7 +185,8 @@ function spamshield_get_server_addr_js() {
 // STANDARD FUNCTIONS - END
 
 // SET COOKIE VALUES - BEGIN
-$wpss_session_id = @session_id();
+/* global $wpss_session_id; */
+if ( empty( $wpss_session_id ) ) { $wpss_session_id = @session_id(); }
 $wpss_ck_key_phrase 	= 'wpss_ckkey_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
 $wpss_ck_val_phrase 	= 'wpss_ckval_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
 $wpss_ck_key 			= spamshield_md5_js( $wpss_ck_key_phrase );
@@ -215,6 +210,8 @@ if ( !empty( $wpss_new_visit ) ) {
 	}
 if ( !empty( $wpss_cl_sbluck ) ) {
 	@setcookie( $wpss_lang_ck_key, $wpss_lang_ck_val, $current_dt-31536000, '/' ); // -1 year (deletes cookie)
+	unset( $_SESSION['wpss_clear_blacklisted_user_'.RSMP_HASH] );
+	unset( $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] );
 	}
 elseif ( !empty( $wpss_sbluck ) ) {
 	@setcookie( $wpss_lang_ck_key, $wpss_lang_ck_val, $current_dt+60*60*24*365*10, '/' ); // 10 years
