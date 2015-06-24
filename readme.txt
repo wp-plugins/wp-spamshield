@@ -51,7 +51,7 @@ Includes drop-in spam-free contact form, with easy one-click installation. Easy 
 The plugin also includes powerful protection from user registration spam. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up any more. (Note: This protects *almost all* registration forms, including the WordPress default registration form, and registration forms for bbPress, BuddyPress, WooCommerce, s2Member, WP-Members, and many more. See [this FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_13) for more info.
 
 = Stops Email Harvesters =
-The plugin has a feature to thwart email-harvesting bots and keep them from scraping your site for email addresses. It automatically obfuscates plain text email addresses and mailto links in your website content by encoding them into HTML entities (hexadecimal and decimal character codes that look like gibberish to harvesters, but render the email addresses perfectly in a browser). It protects email addresses on pages, posts, comments, excerpts, and text widgets.
+The plugin has a feature to thwart email harvesting bots and keep them from scraping your site for email addresses. It automatically obfuscates plain text email addresses and mailto links in your website content by encoding them into HTML entities (hexadecimal and decimal character codes that look like gibberish to harvesters, but render the email addresses perfectly in a browser). It protects email addresses on pages, posts, comments, excerpts, and text widgets.
 
 = Why Not Just Use a CAPTCHA? =
 The concept of using a CAPTCHA as an anti-spam solution in this day and age is flawed for several reasons: 
@@ -193,7 +193,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 *released 06/18/15*
 
 * Added 2 new Advanced Features: "Compatibility Mode" and "Disable Temporary Blacklist". The Advanced Features are something new that we'll be introducing over time, and are explained in the [plugin documentation in more detail](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_advanced_configuration).
-* Added some improvements to the installation status detection. 
+* Added some improvements to the installation status detection.
 * Added automatic fixes for certain issues. During the installation status detection process the plugin will attempt to fix some uncommon issues by automatically switching the plugin into Compatibility Mode. (At the top of the Settings page it tells you if the plugin is installed correctly or not.)
 * Made various code improvements.
 * Improved some of the contact form filters for the built-in WP-SpamShield contact form, Contact Form 7, Gravity Forms, and miscellaneous forms.
@@ -211,7 +211,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 = 1.9.0.5 =
 *released 06/12/15*
 
-* Added a new feature to thwart email-harvesting bots and keep them from scraping your site for email addresses. It automatically obfuscates plain text email addresses and mailto links in your website content by encoding them into HTML entities (hexadecimal and decimal character codes that look like gibberish to harvesters, but render the email addresses perfectly in a browser). It protects email addresses on pages, posts, comments, excerpts, and text widgets. (It's always best not to post email addresses on your site and use a contact form instead, but if you absolutely have to, they should be encoded.)
+* Added a new feature to thwart email harvesting bots and keep them from scraping your site for email addresses. It automatically obfuscates plain text email addresses and mailto links in your website content by encoding them into HTML entities (hexadecimal and decimal character codes that look like gibberish to harvesters, but render the email addresses perfectly in a browser). It protects email addresses on pages, posts, comments, excerpts, and text widgets. (It's always best not to post email addresses on your site and use a contact form instead, but if you absolutely have to, they should be encoded.)
 * Compatibility fix for new users registering on a WooCommerce checkout page.
 * Made various code improvements.
 * Updated the spam filters.
