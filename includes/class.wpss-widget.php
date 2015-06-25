@@ -1,7 +1,7 @@
 <?php
 /***
 * WP-SpamShield Widgets
-* Ver 1.8.6
+* Ver 1.9.3
 ***/
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -20,24 +20,21 @@ class WP_SpamShield_Counter_CG extends WP_Widget {
 				'description' => __( 'Show how much spam is being blocked by WP-SpamShield.', WPSS_PLUGIN_NAME ) .' '. __( 'This is a very customizable widget with options for color and style, including a custom color chooser.', WPSS_PLUGIN_NAME ), /* NEEDS TRANSLATION */
 				)
 			);
-
 		if ( is_active_widget( false, false, $this->id_base ) ) {
-			add_action( 'wp_head', array( $this, 'wpss_widget_css' ) );
+			add_action( 'wp_head', array( $this, 'css' ) );
 			}
-		
-		//add_action( 'load-widgets.php', array(&$this, 'wpss_widget_enqueue_scripts') );
-		add_action( 'admin_enqueue_scripts', array( $this, 'wpss_widget_enqueue_scripts' ) );
-		add_action( 'admin_footer-widgets.php', array( $this, 'wpss_widget_print_scripts' ), 9999 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'admin_footer-widgets.php', array( $this, 'print_scripts' ), 9999 );
 		}
 
-    public function wpss_widget_enqueue_scripts( $hook_suffix ) {
+    public function enqueue_scripts( $hook_suffix ) {
 		if ( 'widgets.php' !== $hook_suffix ) { return; }
         wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_script( 'wp-color-picker' );
 		wp_enqueue_script( 'underscore' );
 		}
 
-	public function wpss_widget_print_scripts() {
+	public function print_scripts() {
 		?>
 		<script>
 			( function( $ ){
@@ -64,7 +61,7 @@ class WP_SpamShield_Counter_CG extends WP_Widget {
 		<?php
 	}
 
-	public function wpss_widget_css() {
+	public function css() {
 		/***
 		* Allow users to customize.
 		* Load colors from options, only use individual color override is that option is selected from the drop down, otherwise use palettes
@@ -112,7 +109,7 @@ class WP_SpamShield_Counter_CG extends WP_Widget {
 		$l1_fnt_sz		= '20';	$l2_fnt_sz		= '11';	$l3_fnt_sz		= '11';	/* Default Font Size */
 
 		/* Check string length so we can adjust letter spacing and font size to make everything fit nicely, without JS */
-		$blocked_txt_len 		= spamshield_strlen(spamshield_blocked_txt());
+		$blocked_txt_len 		= rs_wpss_strlen(rs_wpss_blocked_txt());
 		if		( $blocked_txt_len > 18 ) { $l2_let_spac = 1; $l3_let_spac = 1; $l2_fnt_sz = '10'; $l3_fnt_sz = '10'; }
 		elseif	( $blocked_txt_len > 15 ) { $l2_let_spac = 1; $l3_let_spac = 1; }
 		elseif	( $blocked_txt_len > 14 ) { $l2_let_spac = 2; $l3_let_spac = 1; }
@@ -250,7 +247,7 @@ class WP_SpamShield_Counter_CG extends WP_Widget {
 
 	private function fixhex2($num) {
 		$padnum = '0'.$num;
-		return (spamshield_strlen($num) < 2) ? $padnum : $num;
+		return (rs_wpss_strlen($num) < 2) ? $padnum : $num;
 		}
 
 	private function get_colors() {
@@ -297,7 +294,7 @@ class WP_SpamShield_Counter_CG extends WP_Widget {
 	public function form( $instance ) {
 		$color_options = $this->get_colors();
 		$color_options['user_color'] = __('Choose your own color', WPSS_PLUGIN_NAME );
-		$title = !empty( $instance['title'] ) ? sanitize_text_field( $instance['title'] ) : spamshield_blocked_txt('UCW');
+		$title = !empty( $instance['title'] ) ? sanitize_text_field( $instance['title'] ) : rs_wpss_blocked_txt('UCW');
 		$color = isset( $instance['color'] ) ? sanitize_text_field( $instance['color'] ) : '0';
 		$style = isset( $instance['style'] ) ? sanitize_text_field( $instance['style'] ) : '1';
 		$user_color = ( !empty( $instance['user_color'] ) && $color == 'user_color' ) ? sanitize_text_field( $instance['user_color'] ) : $color_options[$color];
@@ -353,11 +350,11 @@ class WP_SpamShield_Counter_CG extends WP_Widget {
 		$color_options['user_color'] = __('Choose your own color', WPSS_PLUGIN_NAME );
 		$instance['color'] = isset( $new_instance['color'] ) ? sanitize_text_field( $new_instance['color'] ) : '0';
 		$instance['style'] = isset( $new_instance['style'] ) ? sanitize_text_field( $new_instance['style'] ) : '1';
-		$instance['title'] = !empty( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : spamshield_blocked_txt('UCW');
+		$instance['title'] = !empty( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : rs_wpss_blocked_txt('UCW');
 		$instance['user_color'] = !empty( $new_instance['user_color'] ) ? sanitize_text_field( $new_instance['user_color'] ) : '#5A5A5A';
 		$basecolor = $color_options[$instance['color']];
 		if ( $instance['color'] == 'user_color' ) {  $basecolor = $instance['user_color']; }
-		$basecolor = spamshield_casetrans( 'upper', $basecolor );
+		$basecolor = rs_wpss_casetrans( 'upper', $basecolor );
 		$style = $instance['style'];
 		$widget_settings = compact('basecolor','style');
 		update_option( 'spamshield_widget_settings', $widget_settings );
@@ -365,15 +362,15 @@ class WP_SpamShield_Counter_CG extends WP_Widget {
 		}
 
 	public function widget( $args, $instance ) {
-		$title	= !empty( $instance['title'] ) ? sanitize_text_field( $instance['title'] ) : spamshield_blocked_txt('UCW');
-		$count	= spamshield_number_format( spamshield_count() );
-		//$count	= spamshield_number_format( 1000000 ); /* FOR TESTING & SCREEN SHOTS ONLY */
-		$byline	= str_replace( WPSS_PLUGIN_NAME, '<strong>WP-SpamShield</strong>', spamshield_casetrans( 'lower', spamshield_promo_text(1) ) );
+		$title	= !empty( $instance['title'] ) ? sanitize_text_field( $instance['title'] ) : rs_wpss_blocked_txt('UCW');
+		$count	= rs_wpss_number_format( rs_wpss_count() );
+		//$count	= rs_wpss_number_format( 1000000 ); /* FOR TESTING & SCREEN SHOTS ONLY */
+		$byline	= str_replace( WPSS_PLUGIN_NAME, '<strong>WP-SpamShield</strong>', rs_wpss_casetrans( 'lower', WPSS_Promo_Links::promo_text(1) ) );
 		echo $args['before_widget'];
 		echo $args['before_title'] . $title . $args['after_title'];
 ?>
 	<div class="wpssstats">
-		<a href="<?php echo WPSS_HOME_URL; ?>" target="_blank" rel="external" title=""><?php printf( __( '<strong class="wpsscount">%1$s</strong> <strong class="wpsscount2">%2$s</strong> <span class="wpsscount3">%3$s</span>', WPSS_PLUGIN_NAME ), $count, spamshield_blocked_txt(), $byline ); ?></a>
+		<a href="<?php echo WPSS_HOME_URL; ?>" target="_blank" rel="external" title=""><?php printf( __( '<strong class="wpsscount">%1$s</strong> <strong class="wpsscount2">%2$s</strong> <span class="wpsscount3">%3$s</span>', WPSS_PLUGIN_NAME ), $count, rs_wpss_blocked_txt(), $byline ); ?></a>
 	</div>
 <?php
 		echo $args['after_widget'];
@@ -394,7 +391,7 @@ class WP_SpamShield_Counter_LG extends WP_Widget {
 		}
 
 	public function form( $instance ) {
-		$title		= !empty( $instance['title'] ) ? sanitize_text_field( $instance['title'] ) : spamshield_blocked_txt('UCW');
+		$title		= !empty( $instance['title'] ) ? sanitize_text_field( $instance['title'] ) : rs_wpss_blocked_txt('UCW');
 		$style		= !empty( $instance['style'] ) ? sanitize_text_field( $instance['style'] ) : '6';
 		$lg_txt		= __('Large', WPSS_PLUGIN_NAME); $sm_txt = __('Small', WPSS_PLUGIN_NAME); $ctr_txt = __( 'Counters', WPSS_PLUGIN_NAME );
 		$blk_txt	= __('Black', WPSS_PLUGIN_NAME); $red_txt = __('Red', WPSS_PLUGIN_NAME); $lbl_txt = __('Light Blue', WPSS_PLUGIN_NAME); $dbl_txt = __('Dark Blue', WPSS_PLUGIN_NAME); $grn_txt = __('Green', WPSS_PLUGIN_NAME);
@@ -441,7 +438,7 @@ class WP_SpamShield_Counter_LG extends WP_Widget {
 
 	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
-		$instance['title'] = !empty( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : spamshield_blocked_txt('UCW');
+		$instance['title'] = !empty( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : rs_wpss_blocked_txt('UCW');
 		$instance['style'] = !empty( $new_instance['style'] ) ? sanitize_text_field( $new_instance['style'] ) : '6';
 		return $instance;
 		}
@@ -458,14 +455,14 @@ class WP_SpamShield_Counter_LG extends WP_Widget {
 		if ( empty( $style ) || $style > $style_max || $style < $style_min ) { $style = 1; }
 		if ( $style > 5 ) { $size = 's'; $imgn = $style-5; $ht_x_diff = 7; } else { $size = 'lg'; $imgn = $style; $ht_x_diff = 0; }
 
-		$count	= spamshield_number_format( spamshield_count() );
-		//$count	= spamshield_number_format( 1000000 ); /* FOR TESTING & SCREEN SHOTS ONLY */
-		$byline	= spamshield_promo_text(1);
+		$count	= rs_wpss_number_format( rs_wpss_count() );
+		//$count	= rs_wpss_number_format( 1000000 ); /* FOR TESTING & SCREEN SHOTS ONLY */
+		$byline	= WPSS_Promo_Links::promo_text(1);
 		$sip1c 	= substr(RSMP_SERVER_ADDR, 0, 1);
 		$ht_x 				= $sip1c > '5' ? 2 + $ht_x_diff : 3 + $ht_x_diff;
-		$hreftitle_txt 		= spamshield_promo_text($ht_x);
-		$blocked_txt		= spamshield_blocked_txt();
-		$blocked_txt_len 	= spamshield_strlen($blocked_txt);
+		$hreftitle_txt 		= WPSS_Promo_Links::promo_text($ht_x);
+		$blocked_txt		= rs_wpss_blocked_txt();
+		$blocked_txt_len 	= rs_wpss_strlen($blocked_txt);
 
 		echo $args['before_widget'];
 		echo $args['before_title'] . $title . $args['after_title'];
@@ -584,7 +581,7 @@ class WP_SpamShield_End_Blog_Spam extends WP_Widget {
 		if ( empty( $style ) || $style > $style_max || $style < $style_min ) { $style = 1; }
 		$sip1c = substr(RSMP_SERVER_ADDR, 0, 1);
 		$ht_x = $sip1c > '5' ? 2 : 3;
-		$hreftitle_txt = spamshield_promo_text($ht_x);
+		$hreftitle_txt = WPSS_Promo_Links::promo_text($ht_x);
 
 		echo $args['before_widget'];
 		echo $args['before_title'] . $title . $args['after_title'];
@@ -604,3 +601,106 @@ class WP_SpamShield_End_Blog_Spam extends WP_Widget {
 
 	}
 
+class WPSS_Old_Counters {
+	/* Old counter functions */
+
+	public static function counter_short( $atts = array() ) {
+		if ( rs_wpss_is_doing_scan() ) { return NULL; }
+		global $wpss_wid_inst;
+		if ( !isset( $wpss_wid_inst ) ) { $wpss_wid_inst = 0; }
+		++$wpss_wid_inst;
+		$counter_option = $atts['style'];
+		$counter_option_max = 9;
+		$counter_option_min = 1;
+		$counter_spam_blocked_msg = __( 'spam blocked by WP-SpamShield', WPSS_PLUGIN_NAME );
+		if ( empty( $counter_option ) || $counter_option > $counter_option_max || $counter_option < $counter_option_min ) {
+			$spamshield_count = rs_wpss_number_format( rs_wpss_count() );
+			$wpss_shortcode_content = '<a href="'.WPSS_HOME_URL.'" style="text-decoration:none;" target="_blank" rel="external" title="'.WPSS_Promo_Links::promo_text(11).'" >'.$spamshield_count.' '.$counter_spam_blocked_msg.'</a>'."\n";
+			return $wpss_shortcode_content;
+			}
+		/***
+		* Display Counter
+		* Implementation: [spamshieldcounter style=1] or [spamshieldcounter] where "style" is 0-9
+		***/
+		$spamshield_count = !empty( $atts['spamshield_count'] ) ? $atts['spamshield_count'] : rs_wpss_number_format( rs_wpss_count() );
+		$counter_div_height = array('0','66','66','66','106','61','67','66','66','106');
+		$counter_count_padding_top = array('0','11','11','11','75','14','17','11','11','75');
+		$wpss_shortcode_content  = '';
+		$wpss_shortcode_content .= '<style type="text/css">'."\n";
+		$wpss_shortcode_content .= '#spamshield_counter_wrap_'.$wpss_wid_inst.' {color:#ffffff;text-decoration:none;width:140px;}'."\n";
+		$wpss_shortcode_content .= '#spamshield_counter_'.$wpss_wid_inst.' {background:url('.WPSS_PLUGIN_COUNTER_URL.'/spamshield-counter-bg-'.$counter_option.'.png) no-repeat top left;height:'.$counter_div_height[$counter_option].'px;width:140px;overflow:hidden;border-style:none;color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;padding-top:'.$counter_count_padding_top[$counter_option].'px;}'."\n";
+		$wpss_shortcode_content .= '</style>'."\n";
+		$wpss_shortcode_content .= '<div id="spamshield_counter_wrap_'.$wpss_wid_inst.'" >'."\n";
+		$wpss_shortcode_content .= "\t".'<div id="spamshield_counter_'.$wpss_wid_inst.'" >'."\n";
+		$sip1c = substr(RSMP_SERVER_ADDR, 0, 1);
+		if ( ( $counter_option >= 1 && $counter_option <= 3 ) || ( $counter_option >= 7 && $counter_option <= 8 ) ) {
+			$spamshield_counter_title_text = $sip1c > '5' ? WPSS_Promo_Links::promo_text(2) : WPSS_Promo_Links::promo_text(3);
+			$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
+			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:20px !important;line-height:80% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'."\n";
+			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:14px !important;line-height:130% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.WPSS_Promo_Links::promo_text(0).'</span><br />'."\n";
+			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:9px !important;line-height:90% !important;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.WPSS_Promo_Links::promo_text(1).'</span>'."\n";
+			$wpss_shortcode_content .= "\t".'</a></strong>';
+			}
+		elseif ( $counter_option == 4 || $counter_option == 9 ) {
+			if ( $sip1c > '5' ) { $spamshield_counter_title_text = WPSS_Promo_Links::promo_text(4); }
+			else { $spamshield_counter_title_text = WPSS_Promo_Links::promo_text(5); }
+			$wpss_shortcode_content .= "\t".'<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
+			$wpss_shortcode_content .= "\t".'<span style="color:#000000;font-size:9px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.' '.WPSS_Promo_Links::promo_text(0).'</span><br />'."\n";
+			$wpss_shortcode_content .= "\t".'</a></strong>'."\n";
+			}
+		elseif ( $counter_option == 5 ) {
+			$wpss_shortcode_content .= "\t".'<strong style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.WPSS_Promo_Links::promo_text(6).'" >'."\n";
+			$wpss_shortcode_content .= "\t".'<span style="color:#FEB22B;font-size:14px !important;line-height:100% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'."\n";
+			$wpss_shortcode_content .= "\t".'</a></strong>'."\n";
+			}
+		elseif ( $counter_option == 6 ) {
+			if ( $sip1c > '5' ) { $spamshield_counter_title_text = "\t".''.WPSS_Promo_Links::promo_text(7)."\n"; }
+			else { $spamshield_counter_title_text = "\t".''.WPSS_Promo_Links::promo_text(8)."\n"; }
+			$wpss_shortcode_content .= "\t".'<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100% !important;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
+			$wpss_shortcode_content .= "\t".'<span style="color:#000000;font-size:14px !important;line-height:100% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'."\n";
+			$wpss_shortcode_content .= "\t".'</a></strong>'."\n";
+			}
+		$wpss_shortcode_content .= "\t".'</div>'."\n";
+		$wpss_shortcode_content .= '</div>'."\n";
+		return $wpss_shortcode_content;
+		}
+
+	public static function counter_sm_short( $atts = array() ) {
+		if ( rs_wpss_is_doing_scan() ) { return NULL; }
+		global $wpss_wid_inst;
+		if ( !isset( $wpss_wid_inst ) ) { $wpss_wid_inst = 0; }
+		++$wpss_wid_inst;
+		$counter_sm_option = $atts['style'];
+		$counter_sm_option_max = 5;
+		$counter_sm_option_min = 1;
+		if ( empty( $counter_sm_option ) || $counter_sm_option > $counter_sm_option_max || $counter_sm_option < $counter_sm_option_min ) { $counter_sm_option = 1; }
+		/***
+		* Display Small Counter
+		* Implementation: [spamshieldcountersm style=1] or [spamshieldcountersm] where "style" is 1-5
+		***/
+		$spamshield_count = !empty( $atts['spamshield_count'] ) ? $atts['spamshield_count'] : rs_wpss_number_format( rs_wpss_count() );
+		$counter_sm_div_height = array('0','50','50','50','50','50');
+		$counter_sm_count_padding_top = array('0','11','11','11','11','11');
+		$wpss_shortcode_content  = '';
+		$wpss_shortcode_content .= "\n\n";
+		$wpss_shortcode_content .= '<style type="text/css">'."\n";
+		$wpss_shortcode_content .= '#rs_wpss_counter_sm_wrap_'.$wpss_wid_inst.' {color:#ffffff;text-decoration:none;width:120px;}'."\n";
+		$wpss_shortcode_content .= '#rs_wpss_counter_sm_'.$wpss_wid_inst.' {background:url('.WPSS_PLUGIN_COUNTER_URL.'/spamshield-counter-sm-bg-'.$counter_sm_option.'.png) no-repeat top left;height:'.$counter_sm_div_height[$counter_sm_option].'px;width:120px;overflow:hidden;border-style:none;color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;padding-top:'.$counter_sm_count_padding_top[$counter_sm_option].'px;}'."\n";
+		$wpss_shortcode_content .= '</style>'."\n\n";
+		$wpss_shortcode_content .= '<div id="rs_wpss_counter_sm_wrap_'.$wpss_wid_inst.'" >'."\n\t";
+		$wpss_shortcode_content .= '<div id="rs_wpss_counter_sm_'.$wpss_wid_inst.'" >'."\n";
+		$sip1c = substr(RSMP_SERVER_ADDR, 0, 1);
+		if ( ( $counter_sm_option >= 1 && $counter_sm_option <= 5 ) ) {
+			if ( $sip1c > '5' ) { $spamshield_counter_title_text = WPSS_Promo_Links::promo_text(9); }
+			else { $spamshield_counter_title_text = WPSS_Promo_Links::promo_text(10); }
+			$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'."\n";
+			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:18px !important;line-height:100% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'."\n";
+			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:10px !important;line-height:120% !important;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.WPSS_Promo_Links::promo_text(0).'</span>'."\n";
+			$wpss_shortcode_content .= "\t".'</a></strong>'."\n";
+			}
+		$wpss_shortcode_content .= "\t".'</div>'."\n";
+		$wpss_shortcode_content .= '</div>'."\n";
+		return $wpss_shortcode_content;
+		}
+
+	}

@@ -1,7 +1,7 @@
 ﻿=== WP-SpamShield Anti-Spam ===
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
-Tags: akismet, all-in-one, antispam, anti-spam, bbpress, block spam, buddypress, captcha, cf7, comment, comment spam, comments, contact, contact form, contact form 7, contact forms, e-mail, email, encode, encoder, encoding, filter, form, forms, gravity forms, harvester, javascript, jetpack, login, mail, mailchimp, multisite, ninja, ninja forms, obfuscate, obfuscation, protection, register, registration, registration spam, s2member, security, signup, signup spam, spam, spam blocker, spam filter, spambot, trackback, trackbacks, user registration spam, widget, woocommerce
+Tags: akismet, all-in-one, antispam, anti-spam, bbpress, block spam, buddypress, captcha, cf7, comment, comment spam, comments, contact, contact form, contact form 7, contact form spam, contact forms, e-mail, email, encode, encoder, encoding, filter, form, forms, gravity forms, harvester, javascript, jetpack, login, mail, mailchimp, multisite, ninja, ninja forms, obfuscate, obfuscation, protection, register, registration, registration spam, s2member, security, signup, signup spam, spam, spam blocker, spam comments, spam filter, spambot, trackback, trackbacks, user registration spam, widget, woocommerce
 Requires at least: 3.9
 Tested up to: 4.2
 Stable tag: trunk
@@ -155,8 +155,16 @@ There is also a customizable widget that has a number of color and style options
 
 Now you can show spam stats on your blog without knowing any code.
 
+Go to your **WordPress Admin** -> **Appearance** -> **Widgets**. Choose one of the following WP-SpamShield Widgets and choose your options:
+
+*  **WP-SpamShield Counter - Custom**: Show how much spam is being blocked by WP-SpamShield. This is a very customizable widget with options for color and style, including a custom color chooser.
+*  **WP-SpamShield Counter - Graphic**: Show how much spam is being blocked by WP-SpamShield. This widget provides a spam counter graphic that lets you choose what color and size you prefer.
+*  **End Blog Spam**: Let others know how they can help end blog spam.&lt;/BLOGSPAM&gt;
+
+You can also add shortcodes to your pages and posts, and PHP code to your theme. For more info see the plugin documentation section on [Displaying Spam Stats on Your Blog](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_displaying_stats).
+
 = Adding a Contact Form to Your Blog =
-First create a distinct page (not post) where you want to have your contact form. Then, go into the editor and click the tab for the "Text" editor (not "Visual" editor). Then click the button that says "WPSS Contact Form". It's that easy. You can also manually insert the following shortcode if you prefer: `[spamshieldcontact]`
+First create a distinct page (not post) where you want to have your contact form. Then, go into the editor and click the tab for the "Text" editor (not "Visual" editor). Then click the button that says **"WPSS Contact Form"**. It's that easy. You can also manually insert the following shortcode if you prefer: `[spamshieldcontact]`
 
 The page you place the contact form on should have its own URL, and not be used on the homepage of your site. It also cannot be implemented as part of a widget or theme element, such as a footer, sidebar, etc.
 
@@ -179,6 +187,13 @@ Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp
 If you have any further questions, please submit them on the main [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
 == Changelog ==
+
+= 1.9.3 =
+*released 06/25/15*
+
+* Added an option in the settings to disable email harvester protection if you choose.
+* Made a number of code improvements to further improve overall performance, efficiency, and speed of the plugin.
+* Updated the spam filters.
 
 = 1.9.2 =
 *released 06/22/15*
@@ -610,8 +625,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.2 =
-* Added compatibility and anti-spam for JetPack Comments and JetPack Contact Forms, made various logic and code improvements, improved/updated the spam filters. Please see Changelog for details.
+= 1.9.3 =
+* Added an option to disable email harvester protection, further improved plugin performance/efficiency/speed, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

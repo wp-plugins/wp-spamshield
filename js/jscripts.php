@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.9.2
+Version: 1.9.3
 */
 
 // Security Sanitization - BEGIN
@@ -19,7 +19,7 @@ if ( !empty( $_POST ) || preg_match( "~^(POST|TRACE|TRACK|DEBUG|DELETE)$~", $wps
 // Security Sanitization - END
 
 // Uncomment to use:
-$wpss_js_start_time = spamshield_microtime_js();
+$wpss_js_start_time = wpss_js_microtime();
 
 // SESSION CHECK AND FUNCTIONS - BEGIN
 global $wpss_session_id;
@@ -27,10 +27,10 @@ $wpss_session_id = @session_id();
 if ( empty( $wpss_session_id ) && !headers_sent() ) { @session_start(); $wpss_session_id = @session_id(); }
 
 if ( !defined( 'RSMP_SERVER_IP_NODOT' ) ) {
-	$wpss_server_ip_nodot = str_replace( '.', '', spamshield_get_server_addr_js() );
+	$wpss_server_ip_nodot = str_replace( '.', '', wpss_js_get_server_addr() );
 	define( 'RSMP_SERVER_IP_NODOT', $wpss_server_ip_nodot );
 	}
-if ( !defined( 'RSMP_HASH_ALT' ) ) { $wpss_alt_prefix = spamshield_md5_js( RSMP_SERVER_IP_NODOT ); define( 'RSMP_HASH_ALT', $wpss_alt_prefix ); }
+if ( !defined( 'RSMP_HASH_ALT' ) ) { $wpss_alt_prefix = wpss_js_md5( RSMP_SERVER_IP_NODOT ); define( 'RSMP_HASH_ALT', $wpss_alt_prefix ); }
 if ( !defined( 'RSMP_SITE_URL' ) && !empty( $_SESSION['wpss_site_url_'.RSMP_HASH_ALT] ) ) {
 	$wpss_site_url 		= $_SESSION['wpss_site_url_'.RSMP_HASH_ALT];
 	$wpss_plugin_url	= $_SESSION['wpss_plugin_url_'.RSMP_HASH_ALT];
@@ -38,7 +38,7 @@ if ( !defined( 'RSMP_SITE_URL' ) && !empty( $_SESSION['wpss_site_url_'.RSMP_HASH
 	}
 
 if ( defined( 'RSMP_SITE_URL' ) && !defined( 'RSMP_HASH' ) ) {
-	$wpss_hash_prefix = spamshield_md5_js( RSMP_SITE_URL ); define( 'RSMP_HASH', $wpss_hash_prefix );
+	$wpss_hash_prefix = wpss_js_md5( RSMP_SITE_URL ); define( 'RSMP_HASH', $wpss_hash_prefix );
 	}
 elseif ( !empty( $_SESSION ) && !empty( $_COOKIE ) && !defined( 'RSMP_HASH' ) ) {
 	//$wpss_cookies = $_COOKIE;
@@ -64,7 +64,7 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	$key_init_dt			= 'wpss_timestamp_init_'.RSMP_HASH;
 	$ck_key_init_dt			= 'NCS_INENTIM'; //Initial Entry Time
 	$current_ip 			= $_SERVER['REMOTE_ADDR'];
-	$current_ua 			= spamshield_get_user_agent_js();
+	$current_ua 			= wpss_js_get_user_agent();
 	$current_mt 			= $wpss_js_start_time; // Site entry time - microtime
 	$current_dt 			= time(); // Site entry time - timestamp
 	if ( empty( $_SESSION[$key_init_ip] ) ) { $_SESSION[$key_init_ip] = $current_ip; }
@@ -157,16 +157,16 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	}
 
 // STANDARD FUNCTIONS - BEGIN
-function spamshield_md5_js( $string ) {
+function wpss_js_md5( $string ) {
 	// Use this function instead of hash for compatibility
 	// BUT hash is faster than md5, so use it whenever possible
 	if ( function_exists( 'hash' ) ) { $hash = hash( 'md5', $string ); } else { $hash = md5( $string );	}
 	return $hash;
 	}
-function spamshield_microtime_js() {
+function wpss_js_microtime() {
 	return microtime( TRUE );
 	}
-function spamshield_timer_js( $start = NULL, $end = NULL, $show_seconds = FALSE, $precision = 8 ) {
+function wpss_js_timer( $start = NULL, $end = NULL, $show_seconds = FALSE, $precision = 8 ) {
 	if ( empty( $start ) || empty( $end ) ) { $start = 0; $end = 0; }
 	// $precision will default to 8 but can be set to anything - 1,2,3,5,etc.
 	$total_time = $end - $start;
@@ -174,11 +174,11 @@ function spamshield_timer_js( $start = NULL, $end = NULL, $show_seconds = FALSE,
 	if ( !empty( $show_seconds ) ) { $total_time_for .= ' seconds'; }
 	return $total_time_for;
 	}
-function spamshield_get_user_agent_js() {
+function wpss_js_get_user_agent() {
 	if ( !empty( $_SERVER['HTTP_USER_AGENT'] ) ) { $user_agent = trim(addslashes(strip_tags($_SERVER['HTTP_USER_AGENT']))); } else { $user_agent = ''; }
 	return $user_agent;
 	}
-function spamshield_get_server_addr_js() {
+function wpss_js_get_server_addr() {
 	if ( !empty( $_SERVER['SERVER_ADDR'] ) ) { $server_addr = $_SERVER['SERVER_ADDR']; } else { $server_addr = getenv('SERVER_ADDR'); }
 	return $server_addr;
 	}
@@ -189,12 +189,12 @@ function spamshield_get_server_addr_js() {
 if ( empty( $wpss_session_id ) ) { $wpss_session_id = @session_id(); }
 $wpss_ck_key_phrase 	= 'wpss_ckkey_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
 $wpss_ck_val_phrase 	= 'wpss_ckval_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
-$wpss_ck_key 			= spamshield_md5_js( $wpss_ck_key_phrase );
-$wpss_ck_val 			= spamshield_md5_js( $wpss_ck_val_phrase );
+$wpss_ck_key 			= wpss_js_md5( $wpss_ck_key_phrase );
+$wpss_ck_val 			= wpss_js_md5( $wpss_ck_val_phrase );
 $wpss_jq_key_phrase 	= 'wpss_jqkey_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
 $wpss_jq_val_phrase 	= 'wpss_jqval_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
-$wpss_jq_key 			= spamshield_md5_js( $wpss_jq_key_phrase );
-$wpss_jq_val 			= spamshield_md5_js( $wpss_jq_val_phrase );
+$wpss_jq_key 			= wpss_js_md5( $wpss_jq_key_phrase );
+$wpss_jq_val 			= wpss_js_md5( $wpss_jq_val_phrase );
 // SET COOKIE VALUES - END
 
 // Last thing before headers sent
@@ -229,7 +229,7 @@ wpssCommentVal();jQuery(document).ready(function($){var h=\"form[method='post']\
 ";
 
 // Uncomment to use:
-$wpss_js_end_time = spamshield_microtime_js();
-$wpss_js_total_time = spamshield_timer_js( $wpss_js_start_time, $wpss_js_end_time, TRUE, 6 );
+$wpss_js_end_time = wpss_js_microtime();
+$wpss_js_total_time = wpss_js_timer( $wpss_js_start_time, $wpss_js_end_time, TRUE, 6 );
 echo "// Generated in: ".$wpss_js_total_time."\n";
 ?>
