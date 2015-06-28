@@ -6098,9 +6098,9 @@ function rs_wpss_admin_ao_fix() {
 		$ao_js = get_option('autoptimize_js');
 		if ( empty( $ao_js ) ) { return; }
 		$ao_js_exc = trim( get_option('autoptimize_js_exclude'), ", \t\n\r\0\x0B" );
-		if ( FALSE !== strpos( $ao_js_exc, 'wp-spamshield' ) ) { return; }
+		if ( FALSE !== strpos( $ao_js_exc, '.php,jquery' ) ) { return; }
 		$s = empty( $ao_js_exc ) ? '' : ',';
-		$ao_js_exc .= $s.'wp-spamshield';
+		$ao_js_exc .= $s.'.php,jquery';
 		update_option( 'autoptimize_js_exclude', $ao_js_exc );
 		rs_wpss_append_log_data( "\n".'Autoptimize JavaScript exclusion setting appended.', FALSE );
 		}
