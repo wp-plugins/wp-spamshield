@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.9.3
+Version: 1.9.4
 */
 
 // Security Sanitization - BEGIN
@@ -12,7 +12,7 @@ if ( !empty( $_GET ) || strpos( $_SERVER['REQUEST_URI'], '?' ) !== FALSE ) {
 	}
 if ( !empty( $_SERVER['REQUEST_METHOD'] ) ) { $wpss_request_method = $_SERVER['REQUEST_METHOD']; } else { $wpss_request_method = getenv('REQUEST_METHOD'); }
 if ( empty( $wpss_request_method ) ) { $wpss_request_method = ''; }
-if ( !empty( $_POST ) || preg_match( "~^(POST|TRACE|TRACK|DEBUG|DELETE)$~", $wpss_request_method ) ) {
+if ( !empty( $_POST ) || ( $wpss_request_method != 'GET' && $wpss_request_method != 'HEAD' ) ) {
 	header('HTTP/1.1 405 Method Not Allowed');
 	die('ERROR: This resource does not accept requests of that type.');
 	}
@@ -23,8 +23,8 @@ $wpss_js_start_time = wpss_js_microtime();
 
 // SESSION CHECK AND FUNCTIONS - BEGIN
 global $wpss_session_id;
-$wpss_session_id = @session_id();
-if ( empty( $wpss_session_id ) && !headers_sent() ) { @session_start(); $wpss_session_id = @session_id(); }
+$wpss_session_id = session_id();
+if ( empty( $wpss_session_id ) && !headers_sent() ) { session_start(); $wpss_session_id = session_id(); }
 
 if ( !defined( 'RSMP_SERVER_IP_NODOT' ) ) {
 	$wpss_server_ip_nodot = str_replace( '.', '', wpss_js_get_server_addr() );
@@ -186,7 +186,7 @@ function wpss_js_get_server_addr() {
 
 // SET COOKIE VALUES - BEGIN
 /* global $wpss_session_id; */
-if ( empty( $wpss_session_id ) ) { $wpss_session_id = @session_id(); }
+if ( empty( $wpss_session_id ) ) { $wpss_session_id = session_id(); }
 $wpss_ck_key_phrase 	= 'wpss_ckkey_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
 $wpss_ck_val_phrase 	= 'wpss_ckval_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
 $wpss_ck_key 			= wpss_js_md5( $wpss_ck_key_phrase );
@@ -201,27 +201,27 @@ $wpss_jq_val 			= wpss_js_md5( $wpss_jq_val_phrase );
 $_SESSION['wpss_sess_status'] = 'on';
 
 if ( !empty( $current_ref ) && preg_match( "~([&\?])form\=response$~i", $current_ref ) && !empty( $_SESSION[$key_comment_auth] ) ) {
-	@setcookie( $key_comment_auth, $_SESSION[$key_comment_auth], 0, '/' );
-	if ( !empty( $_SESSION[$key_comment_email] ) )	{ @setcookie( $key_comment_email, $_SESSION[$key_comment_email], 0, '/' ); }
-	if ( !empty( $_SESSION[$key_comment_url] ) ) 	{ @setcookie( $key_comment_url, $_SESSION[$key_comment_url], 0, '/' ); }
+	setcookie( $key_comment_auth, $_SESSION[$key_comment_auth], 0, '/' );
+	if ( !empty( $_SESSION[$key_comment_email] ) )	{ setcookie( $key_comment_email, $_SESSION[$key_comment_email], 0, '/' ); }
+	if ( !empty( $_SESSION[$key_comment_url] ) ) 	{ setcookie( $key_comment_url, $_SESSION[$key_comment_url], 0, '/' ); }
 	}
 if ( !empty( $wpss_new_visit ) ) {
-	@setcookie( $ck_key_init_dt, $current_dt, $current_dt+3600, '/' ); // 1 hour
+	setcookie( $ck_key_init_dt, $current_dt, $current_dt+3600, '/' ); // 1 hour
 	}
 if ( !empty( $wpss_cl_sbluck ) ) {
-	@setcookie( $wpss_lang_ck_key, $wpss_lang_ck_val, $current_dt-31536000, '/' ); // -1 year (deletes cookie)
+	setcookie( $wpss_lang_ck_key, $wpss_lang_ck_val, $current_dt-31536000, '/' ); // -1 year (deletes cookie)
 	unset( $_SESSION['wpss_clear_blacklisted_user_'.RSMP_HASH] );
 	unset( $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] );
 	}
 elseif ( !empty( $wpss_sbluck ) ) {
-	@setcookie( $wpss_lang_ck_key, $wpss_lang_ck_val, $current_dt+60*60*24*365*10, '/' ); // 10 years
+	setcookie( $wpss_lang_ck_key, $wpss_lang_ck_val, $current_dt+60*60*24*365*10, '/' ); // 10 years
 	}
 
-@setcookie( $wpss_ck_key, $wpss_ck_val, 0, '/' );
+setcookie( $wpss_ck_key, $wpss_ck_val, 0, '/' );
 header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 header("Pragma: no-cache"); // HTTP 1.0
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-header('Content-Type: application/x-javascript');
+header('Content-Type: application/javascript');
 echo "
 function wpssGetCookie(e){var t=document.cookie.indexOf(e+'=');var n=t+e.length+1;if(!t&&e!=document.cookie.substring(0,e.length)){return null}if(t==-1)return null;var r=document.cookie.indexOf(';',n);if(r==-1)r=document.cookie.length;return unescape(document.cookie.substring(n,r))}function wpssSetCookie(e,t,n,r,i,s){var o=new Date;o.setTime(o.getTime());if(n){n=n*1e3*60*60*24}var u=new Date(o.getTime()+n);document.cookie=e+'='+escape(t)+(n?';expires='+u.toGMTString():'')+(r?';path='+r:'')+(i?';domain='+i:'')+(s?';secure':'')}function wpssDeleteCookie(e,t,n){if(wpssGetCookie(e))document.cookie=e+'='+(t?';path='+t:'')+(n?';domain='+n:'')+';expires=Thu, 01-Jan-1970 00:00:01 GMT'}
 function wpssCommentVal(){wpssSetCookie('".$wpss_ck_key."','".$wpss_ck_val."','','/');wpssSetCookie('SJECT15','CKON15','','/');}

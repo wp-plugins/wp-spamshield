@@ -1,8 +1,25 @@
 # WP-SpamShield - "/wp-spamshield/js/" .htaccess
-# Version 1.9.1
+# Version 1.9.4
 
 # Control direct access to certain files.
+# Compress and cache JS files.
 # Apache 2.2 and 2.4 compatible
+
+<IfModule mod_headers.c>
+	Header set Vary "Accept-Encoding"
+	<Files ~ "^(.+)\.js$">
+		Header set Cache-Control "max-age=15552000, must-revalidate"
+	</Files>
+</IfModule>
+
+<IfModule mod_deflate.c>
+	SetOutputFilter DEFLATE
+</IfModule>
+
+<IfModule mod_expires.c>
+	ExpiresActive On 
+	ExpiresDefault "access plus 1 year"
+</IfModule>
 
 # Apache 2.2
 <IfModule !mod_authz_core.c>

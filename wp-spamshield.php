@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.9.3
+Version: 1.9.4
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.9.3' );
+define( 'WPSS_VERSION', '1.9.4' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.9' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -77,18 +77,9 @@ if ( !defined( 'WPSS_PLUGIN_IMG_PATH' ) ) 		{ define( 'WPSS_PLUGIN_IMG_PATH', WP
 if ( !defined( 'WPSS_PLUGIN_INCL_PATH' ) ) 		{ define( 'WPSS_PLUGIN_INCL_PATH', WPSS_PLUGIN_PATH . '/includes' ); }
 if ( !defined( 'WPSS_PLUGIN_JS_PATH' ) ) 		{ define( 'WPSS_PLUGIN_JS_PATH', WPSS_PLUGIN_PATH . '/js' ); }
 if ( !defined( 'WPSS_PLUGIN_LANG_PATH' ) ) 		{ define( 'WPSS_PLUGIN_LANG_PATH', WPSS_PLUGIN_PATH . '/languages' ); }
-if ( !defined( 'RSMP_SERVER_IP_NODOT' ) ) {
-	$wpss_server_ip_nodot = str_replace( '.', '', rs_wpss_get_server_addr() );
-	define( 'RSMP_SERVER_IP_NODOT', $wpss_server_ip_nodot );
-	}
-if ( !defined( 'RSMP_HASH_ALT' ) ) {
-	$wpss_alt_prefix = rs_wpss_md5( RSMP_SERVER_IP_NODOT );
-	define( 'RSMP_HASH_ALT', $wpss_alt_prefix );
-	}
-if ( !defined( 'RSMP_HASH' ) ) {
-	if ( defined( 'COOKIEHASH' ) ) { $wpss_hash_prefix = COOKIEHASH; } else { $wpss_hash_prefix = rs_wpss_md5( RSMP_SITE_URL ); }
-	define( 'RSMP_HASH', $wpss_hash_prefix );
-	}
+if ( !defined( 'RSMP_SERVER_IP_NODOT' ) ) 		{ $wpss_server_ip_nodot = str_replace( '.', '', rs_wpss_get_server_addr() ); define( 'RSMP_SERVER_IP_NODOT', $wpss_server_ip_nodot ); }
+if ( !defined( 'RSMP_HASH_ALT' ) ) 				{ $wpss_alt_prefix = rs_wpss_md5( RSMP_SERVER_IP_NODOT ); define( 'RSMP_HASH_ALT', $wpss_alt_prefix ); }
+if ( !defined( 'RSMP_HASH' ) )					{ $wpss_hash_prefix = defined( 'COOKIEHASH' ) ? COOKIEHASH : rs_wpss_md5( RSMP_SITE_URL ); define( 'RSMP_HASH', $wpss_hash_prefix ); }
 if ( !defined( 'RSMP_SERVER_ADDR' ) ) 			{ define( 'RSMP_SERVER_ADDR', rs_wpss_get_server_addr() ); }
 if ( !defined( 'RSMP_SERVER_NAME' ) ) 			{ define( 'RSMP_SERVER_NAME', rs_wpss_get_server_name() ); }
 if ( !defined( 'RSMP_SERVER_NAME_REV' ) ) 		{ define( 'RSMP_SERVER_NAME_REV', strrev( RSMP_SERVER_NAME ) ); }
@@ -102,31 +93,17 @@ if ( !defined( 'RSMP_RSM_URL' ) ) 				{ define( 'RSMP_RSM_URL', 'http://www.reds
 if ( !defined( 'WPSS_HOME_URL' ) ) 				{ define( 'WPSS_HOME_URL', RSMP_RSM_URL.'plugins/wp-spamshield/' ); }
 if ( !defined( 'WPSS_WP_URL' ) ) 				{ define( 'WPSS_WP_URL', 'http://wordpress.org/extend/plugins/wp-spamshield/' ); }
 if ( !defined( 'WPSS_WP_RATING_URL' ) ) 		{ define( 'WPSS_WP_RATING_URL', 'http://bit.ly/wp-spamshield-rate' ); }
-if ( !defined( 'RSMP_SERVER_SOFTWARE' ) ) 		{ define( 'RSMP_SERVER_SOFTWARE', $_SERVER['SERVER_SOFTWARE'] ); }
-if ( !defined( 'RSMP_PHP_UNAME' ) ) 			{ define( 'RSMP_PHP_UNAME', @php_uname() ); }
-if ( !defined( 'RSMP_PHP_VERSION' ) ) 			{ define( 'RSMP_PHP_VERSION', phpversion() ); }
-if ( !defined( 'RSMP_PHP_MEM_LIMIT' ) ) {
-	$wpss_php_memory_limit = rs_wpss_format_bytes( ini_get( 'memory_limit' ) );
-	define( 'RSMP_PHP_MEM_LIMIT', $wpss_php_memory_limit );
-	}
-if ( !defined( 'RSMP_WP_VERSION' ) ) {
-	global $wp_version;
-	define( 'RSMP_WP_VERSION', $wp_version );
-	}
-if ( !defined( 'RSMP_USER_AGENT' ) ) {
-	$wpss_ua = 'WP-SpamShield/'.WPSS_VERSION.' (WordPress/'.RSMP_WP_VERSION.') PHP/'.RSMP_PHP_VERSION.' ('.RSMP_SERVER_SOFTWARE.')';
-	define( 'RSMP_USER_AGENT', $wpss_ua );
-	}
-/* INCLUDE POPULAR CACHE PLUGINS HERE (12) */
-$popular_cache_plugins_default = array ( 'cachify', 'db-cache-reloaded', 'db-cache-reloaded-fix', 'gator-cache', 'hyper-cache', 'hyper-cache-extended', 'lite-cache', 'quick-cache', 'w3-total-cache', 'wp-fast-cache', 'wp-fastest-cache', 'wp-super-cache', 'zencache', 'zencache-pro' );
-if ( !defined( 'WPSS_POPULAR_CACHE_PLUGINS' ) ) {
-	/* Popular cache plugins - convert from array and store in constant */
-	define( 'WPSS_POPULAR_CACHE_PLUGINS', serialize( $popular_cache_plugins_default ) );
-	}
+if ( !defined( 'WPSS_PHP_VERSION' ) ) 			{ define( 'WPSS_PHP_VERSION', PHP_VERSION ); }
+if ( !defined( 'RSMP_PHP_MEM_LIMIT' ) ) 		{ $wpss_php_memory_limit = rs_wpss_format_bytes( ini_get( 'memory_limit' ) ); define( 'RSMP_PHP_MEM_LIMIT', $wpss_php_memory_limit ); }
+if ( !defined( 'WPSS_WP_VERSION' ) ) 			{ global $wp_version; define( 'WPSS_WP_VERSION', $wp_version ); }
+/* INCLUDE POPULAR CACHE PLUGINS HERE (14) */
+$popular_cache_plugins_default 					= array ( 'cachify', 'db-cache-reloaded', 'db-cache-reloaded-fix', 'gator-cache', 'hyper-cache', 'hyper-cache-extended', 'lite-cache', 'quick-cache', 'w3-total-cache', 'wp-fast-cache', 'wp-fastest-cache', 'wp-super-cache', 'zencache', 'zencache-pro' );
+if ( !defined( 'WPSS_POPULAR_CACHE_PLUGINS' ) ) { define( 'WPSS_POPULAR_CACHE_PLUGINS', serialize( $popular_cache_plugins_default ) ); }
 /* SET THE DEFAULT CONSTANT VALUES HERE */
-$spamshield_default = array ( 'block_all_trackbacks' => 0, 'block_all_pingbacks' => 0, 'comment_logging' => 0, 'comment_logging_start_date' => 0, 'comment_logging_all' => 0, 'enhanced_comment_blacklist' => 0, 'enable_whitelist' => 0, 'comment_min_length' => 15, 'allow_proxy_users' => 1, 'hide_extra_data' => 0, 'registration_shield_disable' => 0, 'registration_shield_level_1' => 0, 'disable_cf7_shield' => 0, 'disable_gf_shield' => 0, 'disable_misc_form_shield' => 0, 'disable_email_encode' => 0, 'allow_comment_author_keywords' => 0, 'form_include_website' => 1, 'form_require_website' => 0, 'form_include_phone' => 1, 'form_require_phone' => 0, 'form_include_company' => 0, 'form_require_company' => 0, 'form_include_drop_down_menu' => 0, 'form_require_drop_down_menu' => 0, 'form_drop_down_menu_title' => '', 'form_drop_down_menu_item_1' => '', 'form_drop_down_menu_item_2' => '', 'form_drop_down_menu_item_3' => '', 'form_drop_down_menu_item_4' => '', 'form_drop_down_menu_item_5' => '', 'form_drop_down_menu_item_6' => '', 'form_drop_down_menu_item_7' => '', 'form_drop_down_menu_item_8' => '', 'form_drop_down_menu_item_9' => '', 'form_drop_down_menu_item_10' => '', 'form_message_width' => 40, 'form_message_height' => 10, 'form_message_min_length' => 25, 'form_response_thank_you_message' => __( 'Your message was sent successfully. Thank you.', WPSS_PLUGIN_NAME ), 'form_include_user_meta' => 1, 'promote_plugin_link' => 0, );
-if ( !defined( 'WPSS_DEFAULT_VALUES' ) ) { define( 'WPSS_DEFAULT_VALUES', serialize( $spamshield_default ) ); }
+$spamshield_default 							= array ( 'block_all_trackbacks' => 0, 'block_all_pingbacks' => 0, 'comment_logging' => 0, 'comment_logging_start_date' => 0, 'comment_logging_all' => 0, 'enhanced_comment_blacklist' => 0, 'enable_whitelist' => 0, 'comment_min_length' => 15, 'allow_proxy_users' => 1, 'hide_extra_data' => 0, 'registration_shield_disable' => 0, 'registration_shield_level_1' => 0, 'disable_cf7_shield' => 0, 'disable_gf_shield' => 0, 'disable_misc_form_shield' => 0, 'disable_email_encode' => 0, 'allow_comment_author_keywords' => 0, 'form_include_website' => 1, 'form_require_website' => 0, 'form_include_phone' => 1, 'form_require_phone' => 0, 'form_include_company' => 0, 'form_require_company' => 0, 'form_include_drop_down_menu' => 0, 'form_require_drop_down_menu' => 0, 'form_drop_down_menu_title' => '', 'form_drop_down_menu_item_1' => '', 'form_drop_down_menu_item_2' => '', 'form_drop_down_menu_item_3' => '', 'form_drop_down_menu_item_4' => '', 'form_drop_down_menu_item_5' => '', 'form_drop_down_menu_item_6' => '', 'form_drop_down_menu_item_7' => '', 'form_drop_down_menu_item_8' => '', 'form_drop_down_menu_item_9' => '', 'form_drop_down_menu_item_10' => '', 'form_message_width' => 40, 'form_message_height' => 10, 'form_message_min_length' => 25, 'form_response_thank_you_message' => __( 'Your message was sent successfully. Thank you.', WPSS_PLUGIN_NAME ), 'form_include_user_meta' => 1, 'promote_plugin_link' => 0, );
+if ( !defined( 'WPSS_DEFAULT_VALUES' ) ) 		{ define( 'WPSS_DEFAULT_VALUES', serialize( $spamshield_default ) ); }
 
+unset( $wpss_server_ip_nodot, $wpss_alt_prefix, $wpss_hash_prefix, $wpss_php_memory_limit, $wpss_ua, $popular_cache_plugins_default, $spamshield_default );
 rs_wpss_set_memory();
 
 /* Includes - BEGIN */
@@ -139,17 +116,20 @@ require_once( WPSS_PLUGIN_INCL_PATH.'/class.wpss-widget.php' );
 if ( !defined( 'WPSS_COMPAT_MODE' ) ) 			{ define( 'WPSS_COMPAT_MODE', FALSE ); }
 if ( !defined( 'WPSS_TEMP_BL_DISABLE' ) ) 		{ define( 'WPSS_TEMP_BL_DISABLE', FALSE ); }
 if ( !defined( 'WPSS_TEMP_BL_CF_ONLY' ) ) 		{ define( 'WPSS_TEMP_BL_CF_ONLY', FALSE ); }
+if ( !defined( 'WPSS_BAN_IP_ENABLE' ) ) 		{ define( 'WPSS_BAN_IP_ENABLE', FALSE ); }
+if ( !defined( 'WPSS_BAN_IP_CLEAR' ) ) 			{ define( 'WPSS_BAN_IP_CLEAR', FALSE ); }
+
 
 /* Standard Functions - BEGIN */
 
 function rs_wpss_start_session() {
 	global $wpss_session_id;
-	if ( empty( $wpss_session_id ) ) { $wpss_session_id = @session_id(); }
-	if ( empty( $wpss_session_id ) && !headers_sent() ) { @session_start(); $wpss_session_id = @session_id(); }
+	if ( empty( $wpss_session_id ) ) { $wpss_session_id = session_id(); }
+	if ( empty( $wpss_session_id ) && !headers_sent() ) { session_start(); $wpss_session_id = session_id(); }
 	}
 
 function rs_wpss_end_session() {
-	@session_destroy();
+	session_destroy();
 	}
 
 function rs_wpss_login( $user_login, $user = NULL ) {
@@ -190,8 +170,8 @@ function rs_wpss_set_memory() {
 	* Boost memory limits
 	* WordPress' default is 40M, but it requires at least 64M to run smoothly on many sites. 128M+ is better.
 	***/
-	if ( function_exists( 'memory_get_usage' ) && function_exists( 'ini_get' ) && function_exists( 'ini_set' ) ) {
-		$current_limit		= @ini_get( 'memory_limit' );
+	if ( function_exists( 'memory_get_usage' ) && function_exists( 'ini_set' ) ) {
+		$current_limit		= ini_get( 'memory_limit' );
 		$current_limit_int	= intval( $current_limit );
 		if ( FALSE !== strpos( $current_limit, 'G' ) ) { $current_limit_int *= 1024; }
 		$wpss_limit_int		= intval( WPSS_MEMORY_LIMIT );
@@ -328,7 +308,7 @@ function rs_wpss_verify_nonce( $value, $action, $name = '_wpss_nonce' ) {
 	$spamshield_nonces = get_option( 'spamshield_nonces' );
 	if ( empty( $spamshield_nonces ) ) { return FALSE; }
 	foreach( $spamshield_nonces as $i => $n ) {
-		if ( $n['nonce'] == $value && $n['action'] == $action && $n['expire'] > $timenow ) {
+		if ( $n['nonce'] === $value && $n['action'] === $action && $n['expire'] > $timenow ) {
 			unset( $spamshield_nonces[$i] );
 			$nonce_valid = TRUE;
 			}
@@ -483,14 +463,14 @@ function rs_wpss_parse_links( $haystack, $type = 'url' ) {
 	preg_match_all( $parse_links_regex, $haystack, $matches_links, PREG_PATTERN_ORDER );
 	$parsed_links_matches 			= $matches_links[3]; /* Array containing URLs parsed from Anchor Text Links in haystack text */
 	$parsed_anchortxt_matches		= $matches_links[5]; /* Array containing Anchor Text parsed from Anchor Text Links in haystack text */
-	if ( $type == 'url' || $type == 'domain' ) {
+	if ( $type === 'url' || $type === 'domain' ) {
 		$url_haystack = preg_replace( "~\s~", ' - ', $haystack ); /* Workaround Added 1.3.8 */
 		preg_match_all( $search_http_regex, $url_haystack, $matches_http, PREG_PATTERN_ORDER );
 		$parsed_http_matches 		= $matches_http[1]; /* Array containing URLs parsed from haystack text */
 		$parsed_urls_all_raw 		= array_merge( $parsed_links_matches, $parsed_http_matches );
 		$parsed_urls_all			= array_unique( $parsed_urls_all_raw );
-		if ( $type == 'url' ) { $results = $parsed_urls_all; }
-		elseif ( $type == 'domain' ) {
+		if ( $type === 'url' ) { $results = $parsed_urls_all; }
+		elseif ( $type === 'domain' ) {
 			$parsed_urls_all_domains = array();
 			foreach( $parsed_urls_all as $u => $url_raw ) {
 				$url = rs_wpss_casetrans( 'lower', trim( stripslashes( $url_raw ) ) );
@@ -501,8 +481,8 @@ function rs_wpss_parse_links( $haystack, $type = 'url' ) {
 			$results = $parsed_urls_all_domains;
 			}
 		}
-	elseif ( $type == 'url_at' ) { $results = $parsed_links_matches; }
-	elseif ( $type == 'anchor_text' ) { $results = $parsed_anchortxt_matches; }
+	elseif ( $type === 'url_at' ) { $results = $parsed_links_matches; }
+	elseif ( $type === 'anchor_text' ) { $results = $parsed_anchortxt_matches; }
 	return $results;
 	}
 
@@ -532,8 +512,16 @@ function rs_wpss_get_url() {
 	return $url;
 	}
 
+function rs_wpss_get_rewrite_base() {
+	$root_url  = rs_wpss_is_https() ? 'https://' : 'http://';
+	$root_url .= RSMP_SERVER_NAME;
+	$tmp = str_replace( $root_url, '', RSMP_SITE_URL );
+	$rewrite_base = !empty( $tmp ) ? trailingslashit( $tmp ) : '/';
+	return $rewrite_base;
+	}
+
 function rs_wpss_is_https() {
-	if ( !empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] != 'off' ) { return TRUE; }
+	if ( !empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] !== 'off' ) { return TRUE; }
 	return FALSE;
 	}
 
@@ -590,7 +578,7 @@ function rs_wpss_remove_query( $url, $skip_wp_args = FALSE ) {
 	foreach( $query_arr as $i => $query_arg ) {
 		$query_arg_arr = explode( '=', $query_arg );
 		$key = $query_arg_arr[0];
-		if ( !empty( $skip_wp_args ) && ( $key == 'p' || $key == 'page_id' ) ) { continue; } /* DO NOT ADD 'cpage', only 'p' and 'page_id'!! */
+		if ( !empty( $skip_wp_args ) && ( $key === 'p' || $key === 'page_id' ) ) { continue; } /* DO NOT ADD 'cpage', only 'p' and 'page_id'!! */
 		$remove_args[] = $key;
 		}
 	$clean_url = remove_query_arg( $remove_args, $url );
@@ -612,6 +600,10 @@ function rs_wpss_get_user_agent( $raw = FALSE, $lowercase = FALSE ) {
 		}
 	else { $wpss_user_agent = ''; }
 	return $wpss_user_agent;
+	}
+
+function rs_wpss_get_plugin_user_agent() {
+	return 'WP-SpamShield/'.WPSS_VERSION.' (WordPress/'.WPSS_WP_VERSION.') PHP/'.WPSS_PHP_VERSION.' ('.$_SERVER['SERVER_SOFTWARE'].')';
 	}
 
 function rs_wpss_get_http_accept( $raw = FALSE, $lowercase = FALSE, $lang = FALSE ) {
@@ -742,7 +734,7 @@ function rs_wpss_get_regex_phrase( $input, $custom_delim = NULL, $flag = "N" ) {
 		$regex_flag = $flag_regex_arr[$flag];
 		$regex_phrase_pre_arr = array();
 		foreach( $input as $i => $val ) {
-			if ( $flag == "rgx_str" || $flag == "authorkw" || $flag == "atxtwrap" ) { $val_reg_pre = $val; } /* Variable must come in prepped for regex (preg_quoted) */
+			if ( $flag === "rgx_str" || $flag === "authorkw" || $flag === "atxtwrap" ) { $val_reg_pre = $val; } /* Variable must come in prepped for regex (preg_quoted) */
 			else { $val_reg_pre = rs_wpss_preg_quote($val); }
 			$regex_phrase_pre_arr[] = $val_reg_pre;
 			}
@@ -750,19 +742,19 @@ function rs_wpss_get_regex_phrase( $input, $custom_delim = NULL, $flag = "N" ) {
 		$regex_phrase_str 		= preg_replace( "~X~", $regex_phrase_pre_str, $regex_flag );
 		if ( !empty( $custom_delim ) ) {  $delim = $custom_delim; } else { $delim = "~"; }
 		$regex_phrase = $delim.$regex_phrase_str.$delim."iu"; /* UTF-8 enabled */
-		if ( $flag == "email_addr" || $flag == "red_str" ) {
+		if ( $flag === "email_addr" || $flag === "red_str" ) {
 			$regex_phrase = str_replace( '@gmail\.', '@g(oogle)?mail\.', $regex_phrase );
 			}
 		}
 	elseif ( is_string( $input ) ) {
 		$val = $input;
 		$regex_flag = $flag_regex_arr[$flag];
-		if ( $flag == "rgx_str" || $flag == "authorkw" || $flag == "atxtwrap" ) { $val_reg_pre = $val; } /* Variable must come in prepped for regex (preg_quoted) */
+		if ( $flag === "rgx_str" || $flag === "authorkw" || $flag === "atxtwrap" ) { $val_reg_pre = $val; } /* Variable must come in prepped for regex (preg_quoted) */
 		else { $val_reg_pre = rs_wpss_preg_quote($val); }
 		$regex_phrase_str 	= preg_replace( "~X~", $val_reg_pre, $regex_flag );
 		if ( !empty( $custom_delim ) ) {  $delim = $custom_delim; } else { $delim = "~"; }
 		$regex_phrase = $delim.$regex_phrase_str.$delim."iu"; /* UTF-8 enabled */
-		if ( $flag == "email_addr" || $flag == "red_str" ) {
+		if ( $flag === "email_addr" || $flag === "red_str" ) {
 			$regex_phrase = str_replace( '@gmail\.', '@g(oogle)?mail\.', $regex_phrase );
 			}
 		}
@@ -774,7 +766,7 @@ function rs_wpss_rbkmd( $dat, $mod = 'en', $exp = FALSE, $imp = FALSE, $case = N
 	if ( !empty( $imp ) && is_array( $dat ) ) { $dat = implode(  $del, $dat ); }
 	$lft = '.!:;1234567890|abcdefghijklmnopqrstuvwxyz{}()<>~@#$%^&*?,_-+= \/';
 	$rgt = 'ghiJVWXyz@#$%^&*?,_-+=1234567890ABCdefGHIjklMNOpqrSTUvwxYZabcDEF';
-	if ( $mod == 'en' ) { $mod_dat = strtr( $dat, $lft, $rgt ); } else { $mod_dat = strtr( $dat, $rgt, $lft ); }
+	if ( $mod === 'en' ) { $mod_dat = strtr( $dat, $lft, $rgt ); } else { $mod_dat = strtr( $dat, $rgt, $lft ); }
 	if ( !empty( $case ) ) { $mod_dat = rs_wpss_casetrans( $case, $mod_dat ); }
 	if ( !empty( $exp ) ) { $mod_dat = explode(  $del, $mod_dat ); }
 	return $mod_dat;
@@ -785,31 +777,30 @@ function rs_wpss_is_plugin_active( $plugin_name ) {
 	* Using this because is_plugin_active() only works in Admin 
 	* ex. $plugin_name = 'folder/filename.php';
 	***/
-	$plugin_active_status = FALSE;
-	if ( empty( $plugin_name ) ){ return $plugin_active_status; }
+	if ( empty( $plugin_name ) ){ return FALSE; }
 	global $wpss_active_plugins;
 	if ( empty( $wpss_active_plugins ) ) { $wpss_active_plugins = get_option( 'active_plugins' ); }
-	if ( in_array( $plugin_name, $wpss_active_plugins, TRUE ) ) { $plugin_active_status = TRUE; }
-	return $plugin_active_status;
+	if ( in_array( $plugin_name, $wpss_active_plugins, TRUE ) ) { return TRUE; }
+	return FALSE;
 	}
 
 function rs_wpss_is_user_admin() {
 	global $wpss_user_can_manage_options;
 	if ( empty( $wpss_user_can_manage_options ) ) { $wpss_user_can_manage_options = current_user_can( 'manage_options' ) ? 'YES' : 'NO' ; }
-	if ( $wpss_user_can_manage_options == 'YES' ) { return TRUE; }
+	if ( $wpss_user_can_manage_options === 'YES' ) { return TRUE; }
 	return FALSE;
 	}
 
 function rs_wpss_error_txt( $case = 'UC' ) {
 	/* $case = 'def' (default - unaltered), 'UC' (uppercase) */
 	$default_txt = __( 'Error' );
-	if ( $case == 'UC' ) { return rs_wpss_casetrans( 'upper', $default_txt ); } else { return $default_txt; }
+	if ( $case === 'UC' ) { return rs_wpss_casetrans( 'upper', $default_txt ); } else { return $default_txt; }
 	}
 
 function rs_wpss_blocked_txt( $case = 'def' ) {
 	/* $case = 'def' (default - unaltered), 'UCW' (uppercase words) */
 	$default_txt = __( 'SPAM BLOCKED', WPSS_PLUGIN_NAME );
-	if ( $case == 'UCW' ) { return rs_wpss_casetrans( 'ucwords', $default_txt ); } else { return $default_txt; }
+	if ( $case === 'UCW' ) { return rs_wpss_casetrans( 'ucwords', $default_txt ); } else { return $default_txt; }
 	}
 
 function rs_wpss_doc_txt() {
@@ -819,7 +810,7 @@ function rs_wpss_doc_txt() {
 function rs_wpss_is_lang_en_us( $strict = TRUE ) {
 	/* Test if site is set to use English (US) - the default - or another language/localization */
 	$wpss_locale = get_locale();
-	if ( $strict != TRUE ) {
+	if ( $strict !== TRUE ) {
 		/* Not strict - English, but localized translations may be in use */
 		if ( !empty( $wpss_locale ) && !preg_match( "~^(en(_[a-z]{2})?)?$~i", $wpss_locale ) ) { $lang_en_us = FALSE; } else { $lang_en_us = TRUE; }
 		}
@@ -831,8 +822,10 @@ function rs_wpss_is_lang_en_us( $strict = TRUE ) {
 	}
 
 function rs_wpss_is_login_page() {
-	$wpss_login_page_check = in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) );
-    return $wpss_login_page_check;
+	global $pagenow;
+    if ( $pagenow === 'wp-login.php' || $pagenow === 'wp-register.php' ) { return TRUE; }
+    if ( strpos( $_SERVER['PHP_SELF'], '/wp-login.php' ) !== FALSE || strpos( $_SERVER['PHP_SELF'], '/wp-register.php' ) !== FALSE ) { return TRUE; }
+    return FALSE;
 	}
 
 function rs_wpss_is_xmlrpc() {
@@ -845,16 +838,16 @@ function rs_wpss_is_doing_cron() {
     return FALSE;
 	}
 
-function rs_wpss_is_doing_scan( $admin = FALSE ) {
-	global $wpss_is_doing_scan;
-	if ( empty( $wpss_is_doing_scan ) ) {
-		$t = rs_wpss_rbkmd(rs_wpss_get_idsdat(),'de',TRUE,FALSE,'upper');
+function rs_wpss_is_admin_sproc( $admin = FALSE ) {
+	global $wpss_is_admin_sproc;
+	if ( empty( $wpss_is_admin_sproc ) ) {
+		$t = rs_wpss_rbkmd(rs_wpss_get_iapdat(),'de',TRUE,FALSE,'upper');
 		if (defined($t[0]) && (isset($_GET[$t[1]]) || isset($_GET[$t[2]]))) {
-			if ( TRUE == $admin ) { $wpss_is_doing_scan = 'YES'; return TRUE; } elseif ( rs_wpss_is_user_admin() ) { $wpss_is_doing_scan = 'YES'; return TRUE; }
+			if ( TRUE === $admin ) { $wpss_is_admin_sproc = 'YES'; return TRUE; } elseif ( rs_wpss_is_user_admin() ) { $wpss_is_admin_sproc = 'YES'; return TRUE; }
 			}
 		}
-	if ( $wpss_is_doing_scan == 'YES' ) { return TRUE; }
-	$wpss_is_doing_scan == 'NO';
+	if ( $wpss_is_admin_sproc === 'YES' ) { return TRUE; }
+	$wpss_is_admin_sproc === 'NO';
     return FALSE;
 	}
 
@@ -865,7 +858,7 @@ function rs_wpss_is_doing_ajax() {
 
 function rs_wpss_is_ajax_request() {
 	$server_x_req_w = rs_wpss_get_server_x_req_w();
-	if ( $server_x_req_w == 'xmlhttprequest' ) { return TRUE; }
+	if ( $server_x_req_w === 'xmlhttprequest' ) { return TRUE; }
 	return FALSE;
 	}
 
@@ -874,9 +867,9 @@ function rs_wpss_is_comment_request() {
 	$url_rev	= rs_wpss_fix_url( $url, TRUE, TRUE, TRUE );
 	$wcp_rev	= strrev( '/wp-comments-post.php' );
 	if ( strpos( $url_rev, $wcp_rev ) === 0 ) {
-		if ( isset( $_POST['comment_post_ID'] ) && isset( $_POST['comment'] ) ) {
+		if ( isset( $_POST['comment'] ) && ( isset( $_POST['comment_post_ID'] ) || isset( $_POST['comment_post_id'] ) ) ) {
 			if ( get_option( 'require_name_email' ) ) {
-				if ( isset( $_POST['author'] ) && isset( $_POST['email'] ) ) { return TRUE; }
+				if ( isset( $_POST['author'], $_POST['email'] ) ) { return TRUE; }
 				}
 			else { return TRUE; }
 			}
@@ -954,7 +947,7 @@ function rs_wpss_encode_str( $string ) {
 		$ord = ord( $char );
 		if ( $ord < 128 ) {
 			$r = ( $seed * ( 1 + $key ) ) % 100;
-			if ( $r > 60 && $char != '@' ) { ; } elseif ( $r < 45 ) { $chars[$key] = '&#x'.dechex( $ord ).';'; } else { $chars[$key] = '&#'.$ord.';'; }
+			if ( $r > 60 && $char !== '@' ) { ; } elseif ( $r < 45 ) { $chars[$key] = '&#x'.dechex( $ord ).';'; } else { $chars[$key] = '&#'.$ord.';'; }
 			}
 		}
 	return implode( '', $chars );
@@ -967,7 +960,7 @@ function rs_wpss_load_languages() {
 	}
 
 function rs_wpss_first_action() {
-	if ( rs_wpss_is_doing_scan() ) { return; }
+	if ( rs_wpss_is_admin_sproc() ) { return; }
 	rs_wpss_start_session();
 	/* Add all commands after this */
 
@@ -1040,8 +1033,8 @@ function rs_wpss_check_cache_status() {
 		$wpss_active_plugins 	= get_option( 'active_plugins' );
 		}
 	$wpss_active_plugins_ser	= rs_wpss_casetrans( 'lower', serialize( $wpss_active_plugins ) );
-	if ( defined( 'WP_CACHE' ) && TRUE == WP_CACHE ) { $wpss_caching_status = 'ACTIVE'; } else { $wpss_caching_status = 'INACTIVE'; }
-	if ( defined( 'ENABLE_CACHE' ) && TRUE == ENABLE_CACHE ) { $wpss_caching_enabled_status = 'ACTIVE'; } else { $wpss_caching_enabled_status = 'INACTIVE'; }
+	if ( defined( 'WP_CACHE' ) && TRUE === WP_CACHE ) { $wpss_caching_status = 'ACTIVE'; } else { $wpss_caching_status = 'INACTIVE'; }
+	if ( defined( 'ENABLE_CACHE' ) && TRUE === ENABLE_CACHE ) { $wpss_caching_enabled_status = 'ACTIVE'; } else { $wpss_caching_enabled_status = 'INACTIVE'; }
 	/* Check if any popular cache plugins are active */
 	$popular_cache_plugins				= unserialize( WPSS_POPULAR_CACHE_PLUGINS );
 	$popular_cache_plugins_array_count	= count( $popular_cache_plugins );
@@ -1057,7 +1050,7 @@ function rs_wpss_check_cache_status() {
 		$i++;
 		}
 	if ( $popular_cache_plugins_temp == 1 ) { $wpss_caching_plugin_status = 'ACTIVE'; } else { $wpss_caching_plugin_status = 'INACTIVE'; }
-	if ( $wpss_caching_status == 'ACTIVE' || $wpss_caching_enabled_status == 'ACTIVE' || $wpss_caching_plugin_status == 'ACTIVE' ) {
+	if ( $wpss_caching_status === 'ACTIVE' || $wpss_caching_enabled_status === 'ACTIVE' || $wpss_caching_plugin_status === 'ACTIVE' ) {
 		/* This is the overall test if caching is active. */
 		$cache_check_status = 'ACTIVE';
 		}
@@ -1107,7 +1100,7 @@ function rs_wpss_reg_count() {
 	}
 
 function rs_wpss_increment_reg_count() {
-	update_option( 'spamshield_reg_count', rs_wpss_reg_count() + 1 );
+	update_option( 'spamshield_reg_count', rs_wpss_reg_count() + 1, FALSE );
 	if ( empty( $_SESSION['user_spamshield_reg_count_'.RSMP_HASH] ) ) { $_SESSION['user_spamshield_reg_count_'.RSMP_HASH] = 0; }
 	++$_SESSION['user_spamshield_reg_count_'.RSMP_HASH];
 	}
@@ -1115,7 +1108,7 @@ function rs_wpss_increment_reg_count() {
 function rs_wpss_procdat( $method = 'get' ) {
 	/* $method: 'reset','get' */
 	$wpss_proc_data = array( 'total_tracked' => 0, 'total_wpss_time' => 0, 'avg_wpss_proc_time' => 0, 'total_comment_proc_time' => 0, 'avg_comment_proc_time' => 0, 'total_wpss_avg_tracked' => 0, 'total_avg_wpss_proc_time' => 0, 'avg2_wpss_proc_time' => 0 );
-	if ( $method == 'reset' ) { update_option( 'spamshield_procdat', $wpss_proc_data ); } else { return $wpss_proc_data; }
+	if ( $method === 'reset' ) { update_option( 'spamshield_procdat', $wpss_proc_data ); } else { return $wpss_proc_data; }
 	}
 
 /* Counters - BEGIN */
@@ -1147,7 +1140,7 @@ function spamshield_counter_sm( $counter_sm_option = 1 ) {
 
 /* Widgets */
 function rs_wpss_load_widgets() {
-	if ( rs_wpss_is_doing_scan() ) { return; }
+	if ( rs_wpss_is_admin_sproc() ) { return; }
 	register_widget( 'WP_SpamShield_Counter_LG' );
 	register_widget( 'WP_SpamShield_Counter_CG' );
 	register_widget( 'WP_SpamShield_End_Blog_Spam' );
@@ -1254,7 +1247,7 @@ function rs_wpss_modify_advanced( $feature, $old_val = NULL, $new_val = NULL ) {
 	file_put_contents( $file, $file_new );
 	@chmod( $file, 0644 );
 	$file_mod = file_get_contents( $file );
-	$success = $file_mod == $file_new ? TRUE : FALSE;
+	$success = $file_mod === $file_new ? TRUE : FALSE;
 	return $success;
 	}
 
@@ -1269,14 +1262,14 @@ function rs_wpss_get_http_status( $url ) {
 
 function rs_wpss_jscripts_403_fix() {
 	/***
-	* Check jscripts.php for 403/404 errors and fix by switching plugin into Compatibility Mode
+	* Check jscripts.php for 403/404/500 errors and fix by switching plugin into Compatibility Mode
 	* Added 1.9.1
 	***/
-	if ( TRUE == WPSS_COMPAT_MODE ) { return array( 'blocked' => FALSE, 'compat_mode' => TRUE ); }
+	if ( TRUE === WPSS_COMPAT_MODE ) { return array( 'blocked' => FALSE, 'compat_mode' => TRUE ); }
 	$blocked = $compat_mode = FALSE;
 	$url = WPSS_PLUGIN_JS_URL.'/jscripts.php';
 	$status = rs_wpss_get_http_status( $url );
-	if ( $status == '403' || $status == '404' ) {
+	if ( $status == '403' || $status == '404' || $status == '500' ) {
 		$blocked = TRUE;
 		$compat_mode = rs_wpss_modify_advanced( 'WPSS_COMPAT_MODE', 'FALSE', 'TRUE' );
 		}
@@ -1303,7 +1296,7 @@ function rs_wpss_get_key_values( $ignore_cache = FALSE ) {
 	* Param $ignore_cache can be used to skip the cache check, for non-cached pages like registration form.
 	***/
 	global $wpss_session_id;
-	if ( empty( $wpss_session_id ) ) { $wpss_session_id = @session_id(); }
+	if ( empty( $wpss_session_id ) ) { $wpss_session_id = session_id(); }
 	/* Cookie key - dynamic */
 	$wpss_ck_key_phrase		= 'wpss_ckkey_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
 	$wpss_ck_val_phrase		= 'wpss_ckval_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
@@ -1324,12 +1317,9 @@ function rs_wpss_get_key_values( $ignore_cache = FALSE ) {
 	if ( empty( $ignore_cache ) ) {
 		$wpss_js_ke2_phrase	= 'wpss_jske2_'.RSMP_SERVER_IP_NODOT.'_'.WPSS_REF2XJS;
 		$wpss_js_va2_phrase	= 'wpss_jsva2_'.RSMP_SERVER_IP_NODOT.'_'.WPSS_REF2XJS;
-		global $wpss_cache_check;
-		if ( empty( $wpss_cache_check ) ) {
-			$wpss_cache_check = rs_wpss_check_cache_status();
-			}
+		global $wpss_cache_check; if ( empty( $wpss_cache_check ) ) { $wpss_cache_check = rs_wpss_check_cache_status(); }
 		$cache_check_status	= $wpss_cache_check['cache_check_status'];
-		if ( $cache_check_status == 'ACTIVE' || TRUE == WPSS_COMPAT_MODE ) {
+		if ( $cache_check_status === 'ACTIVE' || TRUE === WPSS_COMPAT_MODE ) {
 			$wpss_js_key 	= rs_wpss_md5( $wpss_js_ke2_phrase );
 			$wpss_js_val 	= rs_wpss_md5( $wpss_js_va2_phrase );
 			}
@@ -1350,7 +1340,7 @@ function rs_wpss_get_log_key() {
 		}
 	else {
 		global $wpss_session_id;
-		if ( empty( $wpss_session_id ) ) { $wpss_session_id = @session_id(); }
+		if ( empty( $wpss_session_id ) ) { $wpss_session_id = session_id(); }
 		$mtime				= rs_wpss_microtime();
 		$rando				= mt_rand( 1000, 9999 );
 		if ( rs_wpss_is_user_admin() ) {
@@ -1404,12 +1394,12 @@ function rs_wpss_get_log_session_data() {
 	$key_comment_stat_curr	= 'wpss_comments_status_current_'.RSMP_HASH;
 	$key_append_log_data	= 'wpss_append_log_data_'.RSMP_HASH;
 	global $wpss_session_id, $wpss_session_name;
-	if ( empty( $wpss_session_id ) ) 	{ $wpss_session_id		= @session_id(); }
-	if ( empty( $wpss_session_name ) ) 	{ $wpss_session_name	= @session_name(); }
+	if ( empty( $wpss_session_id ) ) 	{ $wpss_session_id		= session_id(); }
+	if ( empty( $wpss_session_name ) ) 	{ $wpss_session_name	= session_name(); }
 	if ( empty( $wpss_session_name ) )	{ $wpss_session_name	= 'PHPSESSID'; }
 	if ( !empty( $_COOKIE[$wpss_session_name] ) ) {
 		$wpss_session_ck = $_COOKIE[$wpss_session_name];
-		if ( $wpss_session_ck == $wpss_session_id  ) { $wpss_session_verified = '[Verified]'; }
+		if ( $wpss_session_ck === $wpss_session_id  ) { $wpss_session_verified = '[Verified]'; }
 		else { $wpss_session_verified = '[Not Verified]'; }
 		}
 	else { $wpss_session_ck = '[No Session Cookie]'; $wpss_session_verified = '[Not Verified]'; }
@@ -1420,14 +1410,14 @@ function rs_wpss_get_log_session_data() {
 	$wpss_pages_history = '';
 	if ( !empty( $_SESSION[$key_pages_hist] ) ) { $wpss_pages_history_data = $_SESSION[$key_pages_hist]; }
 	else { $wpss_pages_history = $noda; }
-	if ( $wpss_pages_history != $noda ) {
+	if ( $wpss_pages_history !== $noda ) {
 		$wpss_pages_history = "\n";
 		foreach ( $wpss_pages_history_data as $page ) { $wpss_pages_history .= "['".$page."']\n"; }
 		}
 	$wpss_hits_per_page = '';
 	if ( !empty( $_SESSION[$key_hits_per_page] ) ) { $wpss_hits_per_page_data = $_SESSION[$key_hits_per_page]; }
 	else { $wpss_hits_per_page = $noda; }
-	if ( $wpss_hits_per_page != $noda ) {
+	if ( $wpss_hits_per_page !== $noda ) {
 		$wpss_hits_per_page = "\n";
 		foreach ( $wpss_hits_per_page_data as $page => $hits ) { $wpss_hits_per_page .= "['".$hits."'] ['".$page."']\n"; }
 		}
@@ -1478,7 +1468,28 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 	* JetPack Form:			rs_wpss_log_data( $form_auth_dat, $wpss_error_code, 'jetpack form', $msc_serial_post );
 	* Ninja Forms:			rs_wpss_log_data( $form_auth_dat, $wpss_error_code, 'ninja forms', $msc_serial_post );
 	***/
+
+	$wpss_log_session_data = rs_wpss_get_log_session_data();
+	extract( $wpss_log_session_data );
+
+	$noda = '[No Data]';
+		
+	/* Timer - BEGIN*/
+	$wpss_time_end					= rs_wpss_microtime();
+	if ( empty( $wpss_time_init ) && !empty( $wpss_timestamp_init ) ) {
+		$wpss_time_init = $wpss_timestamp_init;
+		}
+	if ( !empty( $wpss_time_init ) ) {
+		$wpss_time_on_site			= rs_wpss_timer( $wpss_time_init, $wpss_time_end, TRUE, 2 );
+		}
+	else { $wpss_time_on_site 		= $noda; }
+	if ( !empty( $wpss_timestamp_init ) ) {
+		$wpss_site_entry_time		= get_date_from_gmt( date( 'Y-m-d H:i:s', $wpss_timestamp_init ), 'Y-m-d (D) H:i:s e' ); /* Added 1.7.3 */
+		}
+	else { $wpss_site_entry_time 	= $noda; }
 	
+	/* Timer - END */
+
 	rs_wpss_log_reset( NULL, FALSE, FALSE, TRUE ); /* Create log file if it doesn't exist */
 
 	$wpss_log_key				= rs_wpss_get_log_key();
@@ -1492,7 +1503,7 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 	$wpss_log_comment_type_ucwords			= rs_wpss_casetrans('ucwords',$wpss_log_comment_type);
 	$wpss_log_comment_type_ucwords_ref_disp	= preg_replace("~\sform~i", "", $wpss_log_comment_type_ucwords);
 
-	$noda = '[No Data]';
+
 	$wpss_display_name = $wpss_user_firstname = $wpss_user_lastname = $wpss_user_email = $wpss_user_url = $wpss_user_login = $wpss_user_id = '';
 	$wpss_user_logged_in 		= FALSE;
 	if ( is_user_logged_in() ) {
@@ -1511,9 +1522,6 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 	global $spamshield_options; if ( empty( $spamshield_options ) ) { $spamshield_options = get_option('spamshield_options'); }
 	rs_wpss_update_session_data($spamshield_options);
 
-	$wpss_log_session_data = rs_wpss_get_log_session_data();
-	extract( $wpss_log_session_data );
-
 	global $wpss_active_plugins;
 	if ( empty( $wpss_active_plugins ) ) {
 		$wpss_active_plugins 		= get_option( 'active_plugins' );
@@ -1523,19 +1531,9 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 	if ( empty( $wpss_cl_active ) ) {
 		$wpss_cl_active				= rs_wpss_is_plugin_active( 'commentluv/commentluv.php' );
 		}
-
-	$wpss_time_end					= rs_wpss_microtime();
-	if ( empty( $wpss_time_init ) && !empty( $wpss_timestamp_init ) ) {
-		$wpss_time_init = $wpss_timestamp_init;
-		}
-	if ( !empty( $wpss_time_init ) ) {
-		$wpss_time_on_site			= rs_wpss_timer( $wpss_time_init, $wpss_time_end, TRUE, 2 );
-		}
-	else { $wpss_time_on_site 		= $noda; }
-	if ( !empty( $wpss_timestamp_init ) ) {
-		$wpss_site_entry_time		= get_date_from_gmt( date( 'Y-m-d H:i:s', $wpss_timestamp_init ), 'Y-m-d (D) H:i:s e' ); /* Added 1.7.3 */
-		}
-	else { $wpss_site_entry_time 	= $noda; }
+	
+	$wpss_plugin_user_agent			= rs_wpss_get_plugin_user_agent();
+	$wpss_php_uname 				= function_exists( 'php_uname' ) ? @php_uname() : PHP_OS .' '. @gethostname();
 
 	$comment_logging 				= $spamshield_options['comment_logging'];
 	$comment_logging_start_date 	= $spamshield_options['comment_logging_start_date'];
@@ -1572,11 +1570,13 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 		}
 	else {
 		/* LOG DATA */
+		global $wpss_cache_check; if ( empty( $wpss_cache_check ) ) { $wpss_cache_check = rs_wpss_check_cache_status(); }
 		$wpss_log_datum			= date('Y-m-d (D) H:i:s',$get_current_time_display);
 		$wpss_log_URL 			= rs_wpss_get_url();
 		$wpss_IS_AJAX			= rs_wpss_is_ajax_request() ? 'TRUE' : 'FALSE';
 		$wpss_IS_COMMENT		= rs_wpss_is_comment_request() ? 'TRUE' : 'FALSE';
-		$wpss_IS_404			= is_404() ? 'TRUE' : 'FALSE';
+		$wpss_compat_on			= TRUE === WPSS_COMPAT_MODE ? 'ON' : 'OFF';
+		$wpss_cache_on			= $wpss_cache_check['cache_check_status'] === 'ACTIVE' ? 'ON' : 'OFF';
 		$wpss_log_data			= "*************************************************************************************\n";
 		$wpss_log_data		   .= "-------------------------------------------------------------------------------------\n";
 		$wpss_log_data		   .= ":: ".$wpss_log_comment_type_display." BEGIN ::"."\n";
@@ -1593,8 +1593,8 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 		/* IP / PROXY INFO - END */
 
 		$wpss_spamshield_count = rs_wpss_number_format( rs_wpss_count() );
-		if ( $wpss_log_comment_type == 'comment' || $wpss_log_comment_type == 'contact form' ) { $body_content_length = rs_wpss_number_format( $wpss_log_data_array['body_content_len'] ); } else { $body_content_length = ''; }
-		if ( $wpss_log_comment_type == 'comment' ) {
+		if ( $wpss_log_comment_type === 'comment' || $wpss_log_comment_type === 'contact form' ) { $body_content_length = rs_wpss_number_format( $wpss_log_data_array['body_content_len'] ); } else { $body_content_length = ''; }
+		if ( $wpss_log_comment_type === 'comment' ) {
 			$wpss_log_data .= "-------------------------------------------------------------------------------------\n";
 			/* Comment Post Info */
 			$comment_author_email = $wpss_log_data_array['comment_author_email'];
@@ -1658,7 +1658,7 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 			if ( empty( $wpss_log_data_array['user_url'] ) ) { $wpss_log_data_array['user_url'] = '[None]'; }
 			$wpss_log_data .= "User URL: 		['".$wpss_log_data_array['user_url']."']\n";
 			}
-		elseif ( $wpss_log_comment_type == 'contact form' ) {
+		elseif ( $wpss_log_comment_type === 'contact form' ) {
 			$wpss_log_contact_form_subject = !empty( $_POST['wpss_contact_subject'] ) ? sanitize_text_field($_POST['wpss_contact_subject']) : '';
 			$wpss_log_data .= "-------------------------------------------------------------------------------------\n";
 			$wpss_log_data .= "Date/Time: 		['".$wpss_log_datum."']\n";
@@ -1691,7 +1691,7 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 		$wpss_http_user_agent 			= rs_wpss_get_user_agent();
 		$wpss_http_referer				= rs_wpss_get_referrer(); /* Not original ref - Comment Processor Referrer */
 		$wpss_log_data .= "-------------------------------------------------------------------------------------\n";
-		if ( $wpss_user_logged_in != FALSE ) {
+		if ( $wpss_user_logged_in !== FALSE ) {
 			$wpss_log_data .= "User ID: 		['".$wpss_user_id."']\n";
 			}
 		$wpss_log_data .= "IP Address: 		['".$ip."'] ['http://ipaddressdata.com/".$ip."']\n";
@@ -1710,7 +1710,7 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 		$wpss_log_data .= "HTTP_X_REQUESTED_WITH: 	['".$server_x_req_w."']\n";
 		$wpss_log_data .= "IS_AJAX: 		['".$wpss_IS_AJAX."']\n";
 		$wpss_log_data .= "IS_COMMENT: 		['".$wpss_IS_COMMENT."']\n";
-		$wpss_log_data .= "404: 			['".$wpss_IS_404."']\n";
+		//$wpss_log_data .= "404: 			['".$wpss_IS_404."']\n";
 		$wpss_log_data .= "User-Agent: 		['".$wpss_http_user_agent."']\n";
 		$wpss_log_data .= "URL: 			['".$wpss_log_URL."']\n";
 		$wpss_log_data .= "Form Processor Ref: 	['";
@@ -1774,7 +1774,7 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 			$wpss_log_data .= "ALGO Spam Count:  	['".$wpss_algo_spamshield_count."']\n"; /* Added 1.8.9.6 */
 			$wpss_log_data .= "Current Status: 	['".$wpss_comments_status_current."']\n"; /* Changed 1.8 */
 			$wpss_log_data .= "REQUEST_METHOD: 	['".$wpss_server_request_method."']\n";
-			if ( $wpss_log_comment_type == 'comment' || $wpss_log_comment_type == 'contact form' ) {
+			if ( $wpss_log_comment_type === 'comment' || $wpss_log_comment_type === 'contact form' ) {
 				$wpss_log_data .= "Content Length: 	['".$body_content_length."']\n";
 				}
 			$wpss_log_data .= '$_COOKIE'." Data:		['".$wpss_log_data_serial_cookie."']\n";
@@ -1793,7 +1793,7 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 			$wpss_log_data_errors_count = rs_wpss_count_words($wpss_log_data_errors);
 			}
 		if ( empty( $wpss_log_data_errors ) ) { $wpss_log_data_errors = 'No Error'; }
-		if ( $wpss_log_comment_type == 'comment' ) {
+		if ( $wpss_log_comment_type === 'comment' ) {
 			if ( empty( $wpss_log_data_array['total_time_jsck_filter'] ) ) {
 				$wpss_total_time_jsck_filter 		= 0;
 				}
@@ -1875,14 +1875,16 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 		$wpss_log_data .= "Failed Test Codes: 	['".$wpss_log_data_errors."']\n";
 		$wpss_log_data .= "Spam Count:  		['".$wpss_spamshield_count."']\n"; /* Added 1.8 */
 		$wpss_log_data .= "-------------------------------------------------------------------------------------\n";
+		$wpss_log_data .= "Compatibility Mode:	['".$wpss_compat_on."']\n";
+		$wpss_log_data .= "Caching:		['".$wpss_cache_on."']\n";
 		$wpss_log_data .= "Debugging Data:		['PHP MemLimit: ".RSMP_PHP_MEM_LIMIT."; WP MemLimit: ".WP_MEMORY_LIMIT."; Sessions: ".$wpss_sessions_enabled."']\n";
 		$wpss_log_data .= "Site Server Name:	['".RSMP_SERVER_NAME."']\n";
 		$wpss_log_data .= "Site Server IP:		['".RSMP_SERVER_ADDR."']\n";
 		$wpss_log_data .= "-------------------------------------------------------------------------------------\n";
 		$wpss_log_data .= "Active Plugins:		['".$wpss_active_plugins_str."']\n";
 		$wpss_log_data .= "-------------------------------------------------------------------------------------\n";
-		$wpss_log_data .= RSMP_USER_AGENT."\n";
-		$wpss_log_data .= RSMP_PHP_UNAME."\n";
+		$wpss_log_data .= $wpss_plugin_user_agent."\n";
+		$wpss_log_data .= $wpss_php_uname."\n";
 		$wpss_log_data .= "-------------------------------------------------------------------------------------\n";
 		$wpss_log_data .= ":: ".$wpss_log_comment_type_display." END ::"."\n";
 		$wpss_log_data .= "-------------------------------------------------------------------------------------\n";
@@ -1895,11 +1897,11 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 	}
 
 function rs_wpss_comment_form_append() {
-	if ( rs_wpss_is_doing_scan() ) { return; }
+	if ( rs_wpss_is_admin_sproc() ) { return; }
 	global $spamshield_options; if ( empty( $spamshield_options ) ) { $spamshield_options = get_option('spamshield_options'); }
 	rs_wpss_update_session_data($spamshield_options);
 	$promote_plugin_link 	= $spamshield_options['promote_plugin_link'];
-	if ( TRUE == WPSS_COMPAT_MODE ) {
+	if ( TRUE === WPSS_COMPAT_MODE ) {
 		$wpss_key_values 		= rs_wpss_get_key_values();
 		$wpss_js_key 			= $wpss_key_values['wpss_js_key'];
 		$wpss_js_val 			= $wpss_key_values['wpss_js_val'];
@@ -1991,13 +1993,13 @@ function rs_wpss_update_accept_status( $commentdata, $status = 'r', $line = NULL
 	if ( empty( $_SESSION[$key_comment_den_jsck] ) )	{ $_SESSION[$key_comment_den_jsck] = 0; }
 	if ( empty( $_SESSION[$key_comment_den_algo] ) )	{ $_SESSION[$key_comment_den_algo] = 0; }
 	if ( !empty( $line ) ) { $line .= ' '; }
-	if ( $status == 'r' ) {
+	if ( $status === 'r' ) {
 		++$_SESSION[$key_comment_den];
 		$_SESSION[$key_comment_stat_curr] = '[REJECTED '.$line.$wpss_datum.']';
 		$error_type = rs_wpss_get_error_type( $error_code ); /* 1.8.9.6 */
 		rs_wpss_increment_count( $error_type ); /* 1.8 */
 		}
-	elseif ( $status == 'a' ) {
+	elseif ( $status === 'a' ) {
 		++$_SESSION[$key_comment_acc];
 		$_SESSION[$key_comment_stat_curr] = '[ACCEPTED '.$line.$wpss_datum.']';
 		$_SESSION['user_spamshield_count_'.RSMP_HASH] = 0; /* 1.8 */
@@ -2030,7 +2032,7 @@ function rs_wpss_update_accept_status( $commentdata, $status = 'r', $line = NULL
 
 function rs_wpss_contact_shortcode( $atts = array() ) {
 	/* Implementation: [spamshieldcontact] */
-	if ( rs_wpss_is_doing_scan() ) { return NULL; }
+	if ( rs_wpss_is_admin_sproc() ) { return NULL; }
 	if ( is_page() && in_the_loop() && ( !is_home() && !is_feed() && !is_archive() && !is_search() && !is_404() ) ) {
 		$shortcode_check = 'shortcode';
 		$content_new_shortcode = rs_wpss_contact_form('',$shortcode_check);
@@ -2043,14 +2045,14 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 	/*** 
 	* Contact Form
 	***/
-	if ( rs_wpss_is_doing_scan() ) { return $content; }
+	if ( rs_wpss_is_admin_sproc() ) { return $content; }
 	$spamshield_contact_repl_text = array( '<!--spamshield-contact-->', '<!--spamfree-contact-->' );
 
 	$server_name 					= RSMP_SERVER_NAME;
 	/***
 	* Get rid of 'www' and such
 	* WP Version
-	* if ( substr( $server_name , 0, 4 ) == 'www.' ) { $server_name = substr( $server_name, 4 ); }
+	* if ( substr( $server_name , 0, 4 ) === 'www.' ) { $server_name = substr( $server_name, 4 ); }
 	* Preferred Version
 	* $server_name 					= preg_replace( "~^(ww[w0-9]|m)\.~i", '', $server_name );
 	***/
@@ -2112,7 +2114,7 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 		if ( $form_message_min_length < 15 ) { $form_message_min_length = 15; } elseif ( empty( $form_message_min_length ) ) { $form_message_min_length = 25; }
 		$form_message_max_length				= 25600; /* 25kb */
 
-		if ( $get_form == 'response' && ( $_SERVER['REQUEST_METHOD'] != 'POST' || empty($_POST) ) ) {
+		if ( $get_form === 'response' && ( $_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST) ) ) {
 			/***
 			* 1 - PRE-CHECK FOR BLANK FORMS
 			* REQUEST_METHOD not POST or empty $_POST - Not a legitimate contact form submission - likely a bot scraping the site
@@ -2124,7 +2126,7 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			$content_new = str_replace($content, $cf_content, $content);
 			$content_shortcode = $cf_content;
 			}
-		elseif ( $get_form == 'response' ) {
+		elseif ( $get_form === 'response' ) {
 			/***
 			* 2 - RESPONSE PAGE - FORM HAS BEEN SUBMITTED
 			* CONTACT FORM BACK END - BEGIN
@@ -2210,7 +2212,7 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 				}
 			else { $wpss_javascript_page_referrer = '[None]'; }
 
-			if ( $post_jsonst_lc == 'ns1' || $post_jsonst_lc == 'ns2' || $post_jsonst_lc == 'ns3' || $post_jsonst_lc == 'ns4' ) { $wpss_jsonst = $post_jsonst; } else { $wpss_jsonst = '[None]'; }
+			if ( $post_jsonst_lc === 'ns1' || $post_jsonst_lc === 'ns2' || $post_jsonst_lc === 'ns3' || $post_jsonst_lc === 'ns4' ) { $wpss_jsonst = $post_jsonst; } else { $wpss_jsonst = '[None]'; }
 
 			$cf_author_data['javascript_page_referrer']	= $wpss_javascript_page_referrer;
 			$cf_author_data['jsonst']					= $wpss_jsonst;
@@ -2247,22 +2249,22 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			/* TESTING CONTACT FORM SUBMISSION FOR SPAM - BEGIN */
 
 			/* JS/CK Tests - BEGIN */
-			if ( TRUE == WPSS_COMPAT_MODE ) { /* 1.9.1 */
+			if ( TRUE === WPSS_COMPAT_MODE ) { /* 1.9.1 */
 				$wpss_ck_key_bypass = TRUE;
 				}
-			if ( FALSE == $wpss_ck_key_bypass ) {
-				if ( $wpss_jsck_cookie_val != $wpss_ck_val ) {
+			if ( FALSE === $wpss_ck_key_bypass ) {
+				if ( $wpss_jsck_cookie_val !== $wpss_ck_val ) {
 					$wpss_error_code .= ' CF-COOKIE-2';
 					$cf_jsck_error = TRUE;
 					}
 				}
-			if ( FALSE == $wpss_js_key_bypass ) { /* 1.8.9 */
-				if ( $wpss_jsck_field_val != $wpss_js_val ) {
+			if ( FALSE === $wpss_js_key_bypass ) { /* 1.8.9 */
+				if ( $wpss_jsck_field_val !== $wpss_js_val ) {
 					$wpss_error_code .= ' CF-FVFJS-2';
 					$cf_jsck_error = TRUE;
 					}
 				}
-			if ( $post_jsonst_lc == 'ns1' || $post_jsonst_lc == 'ns2' || $post_jsonst_lc == 'ns3' || $post_jsonst_lc == 'ns4' ) {
+			if ( $post_jsonst_lc === 'ns1' || $post_jsonst_lc === 'ns2' || $post_jsonst_lc === 'ns3' || $post_jsonst_lc === 'ns4' ) {
 				$wpss_error_code .= ' CF-JSONST-1000-2';
 				$cf_jsck_error = TRUE;
 				}
@@ -2469,7 +2471,7 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) === 0 ) {
 				$wpss_debug_server_rgx = rs_wpss_preg_quote( ltrim( RSMP_DEBUG_SERVER_NAME, '.' ) );
 				$last_admin_ip = get_option( 'spamshield_last_admin' );
-				if ( preg_match( "~@$wpss_debug_server_rgx$~", $wpss_contact_email ) && $ip != $last_admin_ip ) {
+				if ( preg_match( "~@$wpss_debug_server_rgx$~", $wpss_contact_email ) && $ip !== $last_admin_ip ) {
 					$invalid_value=1;
 					$restricted_email=1;
 					$wpss_error_code .= ' CF-RESTR-EMAIL';
@@ -2608,7 +2610,7 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			$wpss_contact_form_msg_1 .= __( 'Email' ) . ': '.$wpss_contact_email_lc."\n";
 			$form_include['phone']['d'] = $wpss_contact_phone; $form_include['company']['d'] = $wpss_contact_company; $form_include['website']['d'] = $wpss_contact_website_lc;  
 			foreach ( $form_include as $k => $v ) {
-				if ( $k == 'website' ) { $text = __( 'Website' ); $type = 'url'; } else { $text = __( rs_wpss_casetrans( 'ucfirst', $k ), WPSS_PLUGIN_NAME ); $type = 'text'; }
+				if ( $k === 'website' ) { $text = __( 'Website' ); $type = 'url'; } else { $text = __( rs_wpss_casetrans( 'ucfirst', $k ), WPSS_PLUGIN_NAME ); $type = 'text'; }
 				if ( !empty( $v['i'] ) ) { $wpss_contact_form_msg_1 .= $text.': '.$v['d']."\n"; }
 				}
 			if ( !empty( $form_include_drop_down_menu ) && !empty( $form_drop_down_menu_title ) && !empty( $form_drop_down_menu_item_1 ) && !empty( $form_drop_down_menu_item_2 ) ) {
@@ -2664,7 +2666,7 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 				if ( empty( $spamshield_wpssmid_cache ) ) {
 					$spamshield_wpssmid_cache = array();
 					}
-				if ( !empty( $_SESSION[$key_contact_status] ) && $_SESSION[$key_contact_status] != 'SENT' && !in_array( $wpss_contact_form_mid, $_SESSION[$key_contact_forms_submitted], TRUE ) && !in_array( $wpss_contact_form_mid, $spamshield_wpssmid_cache, TRUE ) ) {
+				if ( !empty( $_SESSION[$key_contact_status] ) && $_SESSION[$key_contact_status] !== 'SENT' && !in_array( $wpss_contact_form_mid, $_SESSION[$key_contact_forms_submitted], TRUE ) && !in_array( $wpss_contact_form_mid, $spamshield_wpssmid_cache, TRUE ) ) {
 					@wp_mail( $wpss_contact_form_to, $wpss_contact_form_subject, $wpss_contact_form_msg, $wpss_contact_form_msg_headers );
 					$_SESSION[$key_contact_status] = 'SENT';
 					$_SESSION[$key_contact_forms_submitted][] = $wpss_contact_form_mid;
@@ -2692,7 +2694,7 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 				}
 			else {
 				$wpss_error_code = trim( $wpss_error_code );
-				if ( TRUE == $user_blacklisted ) {
+				if ( TRUE === $user_blacklisted ) {
 					rs_wpss_append_log_data( "\n".'Blacklisted user detected. Contact form has been temporarily disabled to prevent spam. ERROR CODE: '.$wpss_error_code, FALSE );
 					}
 				rs_wpss_update_accept_status( $cf_author_data, 'r', 'Line: '.__LINE__, $wpss_error_code );
@@ -2711,7 +2713,7 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			$wpss_error = $error_txt.':';
 			$wpss_js_disabled_msg_short = __( 'Currently you have JavaScript disabled.', WPSS_PLUGIN_NAME );
 
-			if ( $contact_response_status == 'thank-you' ) {
+			if ( $contact_response_status === 'thank-you' ) {
 				if ( !empty( $form_response_thank_you_message ) ) { $cf_content .= '<p>'.$form_response_thank_you_message.'</p><p>&nbsp;</p>'."\n"; }
 				else { $cf_content .= $form_response_thank_you_message_default."\n"; }
 				}
@@ -2727,7 +2729,8 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 					$cf_content .= ' ' . __( 'Please make sure JavaScript and Cookies are enabled in your browser.', WPSS_PLUGIN_NAME );
 					$cf_content .= '<br />&nbsp;<br />'.$contact_response_status_message_addendum.'</strong></p><p>&nbsp;</p>'."\n";
 					}
-
+				/* Log error messages when debug is on */
+				rs_wpss_append_log_data( "\n".'$cf_content: "'.$cf_content.'" Line: '.__LINE__.' | '.__FUNCTION__.' | MEM USED: ' . rs_wpss_wp_memory_used() . ' | VER: ' . WPSS_VERSION, TRUE );
 				}
 			$content_new = str_replace($content, $cf_content, $content);
 			$content_shortcode = $cf_content;
@@ -2755,7 +2758,7 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			$cf_content .= '<p><label><strong>' . __( 'Email' ) . '</strong> *<br />'."\n";
 			$cf_content .= '<input type="email" id="wpss_contact_email" name="wpss_contact_email" value="" size="40" '.$cf_req.'/> </label></p>'."\n";
 			foreach ( $form_include as $k => $v ) {
-				if ( $k == 'website' ) { $text = __( 'Website' ); $type = 'url'; }
+				if ( $k === 'website' ) { $text = __( 'Website' ); $type = 'url'; }
 				else { $text = __( rs_wpss_casetrans( 'ucfirst', $k ), WPSS_PLUGIN_NAME ); $type = 'text'; }
 				if ( !empty( $v['i'] ) ) {
 					$cf_req = ''; $cf_content .= '<p><label><strong>'.$text.'</strong> ';
@@ -2824,7 +2827,7 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			$wpss_error_code = trim( $wpss_error_code );
 
 			/* DISABLE CONTACT FORM IF BLACKLISTED */
-			if ( !empty( $cf_blacklist_status ) && $cache_check_status != 'ACTIVE' ) {
+			if ( !empty( $cf_blacklist_status ) && $cache_check_status !== 'ACTIVE' ) {
 				$cf_content = '<strong>' . __( 'Contact form has been temporarily disabled to prevent spam. Please try again later.', WPSS_PLUGIN_NAME ) . '</strong>';
 				rs_wpss_append_log_data( "\n".'Blacklisted user detected. Contact form has been temporarily disabled to prevent spam. ERROR CODE: '.$wpss_error_code, FALSE );
 				}
@@ -2833,9 +2836,9 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 			/* CONTACT FORM FRONT END - END */
 			}
 		}
-	if ( $get_form == 'response' ) { $content_new = str_replace($content, $cf_content, $content); $content_shortcode = $cf_content; }
+	if ( $get_form === 'response' ) { $content_new = str_replace($content, $cf_content, $content); $content_shortcode = $cf_content; }
 	else { $content_new = str_replace($spamshield_contact_repl_text, $cf_content, $content); $content_shortcode = $cf_content; }
-	if ( $shortcode_check == 'shortcode' && !empty( $content_shortcode ) ) { $content_new = $content_shortcode; }
+	if ( $shortcode_check === 'shortcode' && !empty( $content_shortcode ) ) { $content_new = $content_shortcode; }
 	return $content_new;
 	}
 
@@ -2898,7 +2901,7 @@ function rs_wpss_bad_robot_blacklist_chk( $type = 'comment', $status = NULL, $ip
 		$blacklisted = TRUE;
 		}
 	/* HA1002 removed in 1.9.0.3 */
-	if ( $user_http_accept == '*' ) {
+	if ( $user_http_accept === '*' ) {
 		$wpss_error_code .= ' '.$pref.'HA1003';
 		$blacklisted = TRUE;
 		}
@@ -2910,7 +2913,7 @@ function rs_wpss_bad_robot_blacklist_chk( $type = 'comment', $status = NULL, $ip
 	$i_max = 20;
 	while ( $i < $user_http_accept_elements_count && $i < $i_max ) {
 		if ( !empty( $user_http_accept_elements[$i] ) ) {
-			if ( $user_http_accept_elements[$i] == '*' ) {
+			if ( $user_http_accept_elements[$i] === '*' ) {
 				$wpss_error_code .= ' '.$pref.'HA1004';
 				$blacklisted = TRUE;
 				break;
@@ -2922,7 +2925,7 @@ function rs_wpss_bad_robot_blacklist_chk( $type = 'comment', $status = NULL, $ip
 		$wpss_error_code .= ' '.$pref.'HAL1001';
 		$blacklisted = TRUE;
 		}
-	if ( $user_http_accept_language == '*' ) {
+	if ( $user_http_accept_language === '*' ) {
 		$wpss_error_code .= ' '.$pref.'HAL1002';
 		$blacklisted = TRUE;
 		}
@@ -2934,7 +2937,7 @@ function rs_wpss_bad_robot_blacklist_chk( $type = 'comment', $status = NULL, $ip
 	$i_max = 20;
 	while ( $i < $user_http_accept_language_elements_count && $i < $i_max ) {
 		if ( !empty( $user_http_accept_language_elements[$i] ) ) {
-			if ( $user_http_accept_language_elements[$i] == '*' && strpos( $user_agent_lc, 'links (' ) !== 0 ) {
+			if ( $user_http_accept_language_elements[$i] === '*' && strpos( $user_agent_lc, 'links (' ) !== 0 ) {
 				$wpss_error_code .= ' '.$pref.'HAL1004';
 				$blacklisted = TRUE;
 				break;
@@ -3077,11 +3080,11 @@ function rs_wpss_urlshort_blacklist_chk( $url = NULL, $email_domain = NULL, $com
 	if ( empty( $domain ) ) { return FALSE; }
 	$domain_rgx = rs_wpss_preg_quote( $domain );
 	/* See if link points to domain root or legit corporate page (ie. bitly.com) */
-	if ( $comment_type != 'trackback' && preg_match( "~^https?\://$domain_rgx(/|.*([a-z0-9\-]+/[a-z0-9\-]{4,}.*|[a-z0-9\-]{4,}\.[a-z]{3,4}))?$~iu", $url ) ) { return FALSE; }
+	if ( $comment_type !== 'trackback' && preg_match( "~^https?\://$domain_rgx(/|.*([a-z0-9\-]+/[a-z0-9\-]{4,}.*|[a-z0-9\-]{4,}\.[a-z]{3,4}))?$~iu", $url ) ) { return FALSE; }
 	/* Shortened URL check begins */
 	$regex_phrase = rs_wpss_get_regex_phrase($url_shorteners,'','domain');
 		/* Consider adding regex for 2-letter domains with 2-letter extensions ( "aa.xx" ) */
-	if ( $email_domain != $domain && preg_match( $regex_phrase, $domain ) ) {
+	if ( $email_domain !== $domain && preg_match( $regex_phrase, $domain ) ) {
 		return TRUE;
 		}
 	return $blacklist_status;
@@ -3110,12 +3113,12 @@ function rs_wpss_social_media_url_chk( $url = NULL, $comment_type = NULL ) {
 	/* Goes after array */
 	$blacklist_status = FALSE;
 	if ( empty( $url ) ) { return FALSE; }
-	if ( $comment_type == 'trackback' ) { $social_media_domains = $social_media_domains_ext; }
+	if ( $comment_type === 'trackback' ) { $social_media_domains = $social_media_domains_ext; }
 	$domain = rs_wpss_get_domain( $url );
 	$domain_rgx = rs_wpss_preg_quote( $domain );
 	$url = rs_wpss_fix_url( $url );
 	/* See if link points to domain root (ie. facebook.com) */
-	if ( $comment_type != 'trackback' && preg_match( "~^https?\://$domain_rgx/?$~iu", $url ) ) { return FALSE; }
+	if ( $comment_type !== 'trackback' && preg_match( "~^https?\://$domain_rgx/?$~iu", $url ) ) { return FALSE; }
 	$regex_phrase = rs_wpss_get_regex_phrase($social_media_domains,'','domain');
 	if ( preg_match( $regex_phrase, $domain ) ) { return TRUE; }
 	/* When $regex_phrase exceeds a certain size, switch this to run smaller groups or run each domain individually */
@@ -3287,16 +3290,16 @@ function rs_wpss_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = FALS
 	if ( !empty( $spamshield_options['allow_comment_author_keywords'] ) ) { $wpss_cak_active = 1; } else { $wpss_cak_active = 0; } /* Check if Comment Author Name Keywords are allowed - equivalent to CommentLuve being active */
 	$blacklisted_keyphrases = rs_wpss_rbkmd( rs_wpss_get_anchortxt_blacklist(), 'de', TRUE );
 	$blacklisted_keyphrases_lite = rs_wpss_rbkmd( rs_wpss_get_anchortxt_blacklist_lite(), 'de', TRUE );
-	if ( $haystack_type == 'author' && ( !empty( $wpss_cl_active ) || !empty( $wpss_cak_active ) || empty( $url ) ) ) {
+	if ( $haystack_type === 'author' && ( !empty( $wpss_cl_active ) || !empty( $wpss_cak_active ) || empty( $url ) ) ) {
 		$blacklisted_keyphrases = $blacklisted_keyphrases_lite;
 		}
 	if ( !empty( $get_list_arr ) ) {
-		if ( $haystack_type == 'content' ) { return $blacklisted_keyphrases_lite; } else { return $blacklisted_keyphrases; }
+		if ( $haystack_type === 'content' ) { return $blacklisted_keyphrases_lite; } else { return $blacklisted_keyphrases; }
 		}
 	/* Goes after array */
 	$blacklist_status = FALSE;
 	if ( empty( $haystack ) ) { return FALSE; }
-	if ( $haystack_type == 'author' ) {
+	if ( $haystack_type === 'author' ) {
 		/* Check 1: Testing for URLs and author domain in author name */
 		if ( preg_match( "~^https?~i", $haystack ) ) { return TRUE; }
 		if ( !empty( $url ) ) {
@@ -3325,7 +3328,7 @@ function rs_wpss_anchortxt_blacklist_chk( $haystack = NULL, $get_list_arr = FALS
 			if ( preg_match( $regex_check_phrase, $haystack ) ) { return TRUE; }
 			}
 		}
-	elseif ( $haystack_type == 'content' ) {
+	elseif ( $haystack_type === 'content' ) {
 		/***
 		* Parse content for links with Anchor Text
 		* Test 1: Coming Soon
@@ -3367,11 +3370,11 @@ function rs_wpss_ubl_cache( $method = 'chk' ) {
 	* $method: 'set','chk'
 	***/
 	/* Temporarily disabled in 1.8.9.2 for testing, re-enabled with modifications in 1.8.9.6 */
-	if ( TRUE == WPSS_TEMP_BL_DISABLE || !empty( $_SESSION['wpss_clear_blacklisted_user_'.RSMP_HASH] ) ) { rs_wpss_clear_ubl_cache(); return FALSE; }
+	if ( TRUE === WPSS_TEMP_BL_DISABLE || !empty( $_SESSION['wpss_clear_blacklisted_user_'.RSMP_HASH] ) ) { rs_wpss_clear_ubl_cache(); return FALSE; }
 	$wpss_ubl_cache_disable = get_option('spamshield_ubl_cache_disable');
 	if ( !empty( $wpss_ubl_cache_disable ) ) { rs_wpss_clear_ubl_cache(); return FALSE; }
 	$ip = rs_wpss_get_ip_addr();
-	if ( $ip == RSMP_SERVER_ADDR ) { return FALSE; } /* Skip website IP address */
+	if ( $ip === RSMP_SERVER_ADDR ) { return FALSE; } /* Skip website IP address */
 	if ( strpos( $ip, '.' ) !== FALSE ) {
 		$ip_arr = explode( '.', $ip ); unset( $ip_arr[3] ); $ip_c = implode( '.', $ip_arr ) . '.';
 		if ( strpos( RSMP_SERVER_ADDR, $ip_c ) === 0 ) { return FALSE; } /* Skip anything on same C-Block as website */
@@ -3383,9 +3386,9 @@ function rs_wpss_ubl_cache( $method = 'chk' ) {
 	$wpss_ubl_cache = get_option('spamshield_ubl_cache');
 	if ( empty( $wpss_ubl_cache ) ) { $wpss_ubl_cache = array(); }
 	/* Check */
-	if ( !empty( $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] ) || ( !empty( $_COOKIE[$wpss_lang_ck_key] ) && $_COOKIE[$wpss_lang_ck_key] == $wpss_lang_ck_val ) || ( !empty( $ip ) && in_array( $ip, $wpss_ubl_cache, TRUE ) ) ||rs_wpss_referrer_blacklist_chk() ) { $blacklist_status = TRUE; }
+	if ( !empty( $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] ) || ( !empty( $_COOKIE[$wpss_lang_ck_key] ) && $_COOKIE[$wpss_lang_ck_key] === $wpss_lang_ck_val ) || ( !empty( $ip ) && in_array( $ip, $wpss_ubl_cache, TRUE ) ) ||rs_wpss_referrer_blacklist_chk() ) { $blacklist_status = TRUE; }
 	/* Set */
-	if ( !empty( $blacklist_status ) || $method == 'set' ) {
+	if ( !empty( $blacklist_status ) || $method === 'set' ) {
 		if ( !empty( $ip ) && !in_array( $ip, $wpss_ubl_cache, TRUE ) ) { $wpss_ubl_cache[] = $ip; }
 		$_SESSION['wpss_blacklisted_user_'.RSMP_HASH] = TRUE;
 		update_option( 'spamshield_ubl_cache', $wpss_ubl_cache );
@@ -3493,7 +3496,7 @@ function rs_wpss_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL, $
 	if ( strpos( $rev_dns, '.ip.incapdns.net' ) !== FALSE ) { update_option( 'spamshield_ubl_cache_disable', TRUE ); }
 	if ( !empty( $author ) ) 	{ $author = rs_wpss_casetrans( 'lower', $author ); }
 	if ( !empty( $email ) ) 	{ $author = rs_wpss_casetrans( 'lower', $email ); }
-	if ( $type == 'contact' ) 	{ $pref = 'CF-'; } elseif ( $type == 'register' ) { $pref = 'R-'; } elseif ( $type == 'trackback' ) { $pref = 'T-'; } else { $pref = ''; }
+	if ( $type === 'contact' ) 	{ $pref = 'CF-'; } elseif ( $type === 'register' ) { $pref = 'R-'; } elseif ( $type === 'trackback' ) { $pref = 'T-'; } else { $pref = ''; }
 
 	/* Test Reverse DNS Hosts - Do all with Reverse DNS moving forward */
 
@@ -3502,6 +3505,7 @@ function rs_wpss_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL, $
 		/***
 		* Web servers should not post comments/contact forms/register
 		* Regex must be *specific* and *tight* to prevent false pos
+		* These are the worst of the worst offenders
 		***/
 		"REVD1023" => "~(^|\.)keywordspy\.com$~",
 		"REVD1024" => "~(^|\.)clients\.your-server\.de$~",
@@ -3540,6 +3544,7 @@ function rs_wpss_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL, $
 		"REVD1059" => "~^([0-9]{1,3}[\.\-]){4}bc\.googleusercontent\.com$~",
 		"REVD1060" => "~^([0-9]{1,3}[\.\-]){4}static\.reverse\.lstn\.net$~",
 		"REVD1061" => "~^dont\.try\.to\.f[uv]ck(ed)?\.us$~",
+		"REVD1062" => "~^server\.chservers\.com$~",
 		);
 
 	$banned_trackback_servers = array(
@@ -3567,19 +3572,19 @@ function rs_wpss_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL, $
 		***/
 		);
 
-	if ( $type == 'trackback' ) { $banned_servers = $banned_trackback_servers; }
+	if ( $type === 'trackback' ) { $banned_servers = $banned_trackback_servers; }
 
-	if ( $type == 'trackback' && strpos( $rev_dns, '.dynamic.' ) !== FALSE && strpos( $rev_dns, 'www.dynamic.' ) === FALSE ) {
+	if ( $type === 'trackback' && strpos( $rev_dns, '.dynamic.' ) !== FALSE && strpos( $rev_dns, 'www.dynamic.' ) === FALSE ) {
 		$wpss_error_code .= ' '.$pref.'REVD2000'; $blacklisted = TRUE;
 		}
-	elseif ( $type == 'trackback' && strpos( $rev_dns, '.broadband.' ) !== FALSE && strpos( $rev_dns, 'www.broadband.' ) === FALSE ) {
+	elseif ( $type === 'trackback' && strpos( $rev_dns, '.broadband.' ) !== FALSE && strpos( $rev_dns, 'www.broadband.' ) === FALSE ) {
 		$wpss_error_code .= ' '.$pref.'REVD2001'; $blacklisted = TRUE;
 		}
-	elseif ( $type == 'trackback' && ( strpos( $rev_dns, '.dsl.dyn.' ) !== FALSE || strpos( $rev_dns, '.dyn.dsl.' ) !== FALSE ) ) {
+	elseif ( $type === 'trackback' && ( strpos( $rev_dns, '.dsl.dyn.' ) !== FALSE || strpos( $rev_dns, '.dyn.dsl.' ) !== FALSE ) ) {
 		$wpss_error_code .= ' '.$pref.'REVD2010'; $blacklisted = TRUE;
 		}
 	/*
-	elseif ( $type == 'trackback' && strpos( $rev_dns, '.dial-up.' ) !== FALSE && strpos( $rev_dns, 'www.dial-up.' ) === FALSE ) {
+	elseif ( $type === 'trackback' && strpos( $rev_dns, '.dial-up.' ) !== FALSE && strpos( $rev_dns, 'www.dial-up.' ) === FALSE ) {
 		$wpss_error_code .= ' '.$pref.'REVD2011'; $blacklisted = TRUE;
 		}
 	*/
@@ -3589,7 +3594,7 @@ function rs_wpss_revdns_filter( $type = 'comment', $status = NULL, $ip = NULL, $
 			}
 		}
 
-	if ( empty( $blacklisted ) && !empty( $author ) && !empty( $email ) && ( $type == 'comment' || $type == 'register' ) ) { 
+	if ( empty( $blacklisted ) && !empty( $author ) && !empty( $email ) && ( $type === 'comment' || $type === 'register' ) ) { 
 		/* The 8's Pattern - from relakks.com - Anonymous surfing, powered by bots */
 		if ( preg_match( "~^anon-([0-9]+)-([0-9]+)\.relakks\.com$~", $rev_dns ) && preg_match( "~^([a-z]{8})$~", $author ) && preg_match( "~^([a-z]{8})\@([a-z]{8})\.com$~", $email ) ) {
 			/* anon-###-##.relakks.com spammer pattern */
@@ -3652,7 +3657,7 @@ function rs_wpss_check_comment_spam( $commentdata ) {
 		}
 	else { $wpss_javascript_page_referrer = '[None]'; }
 
-	if ( $post_jsonst_lc  == 'ns1' || $post_jsonst_lc  == 'ns2' || $post_jsonst_lc  == 'ns3' || $post_jsonst_lc  == 'ns4' ) { $wpss_jsonst = $post_jsonst; } else { $wpss_jsonst = '[None]'; }
+	if ( $post_jsonst_lc  === 'ns1' || $post_jsonst_lc  === 'ns2' || $post_jsonst_lc  === 'ns3' || $post_jsonst_lc  === 'ns4' ) { $wpss_jsonst = $post_jsonst; } else { $wpss_jsonst = '[None]'; }
 
 	$commentdata['comment_post_title']			= get_the_title($commentdata['comment_post_ID']);
 	$commentdata['comment_post_url']			= get_permalink($commentdata['comment_post_ID']);
@@ -3745,7 +3750,7 @@ function rs_wpss_check_comment_spam( $commentdata ) {
 		$wpss_error_code_addendum .= ' 5-WHITELIST';
 		}
 
-	if ( $bypass_tests != FALSE ) {
+	if ( TRUE === $bypass_tests ) {
 		$wpss_error_code = 'No Error';
 		/* $wpss_error_code .= $wpss_error_code_addendum; */
 		}
@@ -3755,7 +3760,7 @@ function rs_wpss_check_comment_spam( $commentdata ) {
 	$commentdata['total_time_part_1'] = $wpss_total_time_part_1;
 	/* User Authorization - END */
 
-	if ( $bypass_tests != TRUE ) {
+	if ( TRUE !== $bypass_tests ) {
 		/* ONLY IF NOT ADMINS, EDITORS - BEGIN */
 
 		/* First Do JS/Cookies Test */
@@ -3764,7 +3769,7 @@ function rs_wpss_check_comment_spam( $commentdata ) {
 		* JS/Cookies TEST - BEGIN
 		* Rework this
 		***/
-		if ( $commentdata['comment_type'] != 'trackback' && $commentdata['comment_type'] != 'pingback' ) {
+		if ( $commentdata['comment_type'] !== 'trackback' && $commentdata['comment_type'] !== 'pingback' ) {
 			/* If Comment is not a trackback or pingback */
 
 			/* Timer Start - JS/Cookies Filter */
@@ -3777,14 +3782,14 @@ function rs_wpss_check_comment_spam( $commentdata ) {
 			$wpss_jsck_cookie_val	= !empty( $_COOKIE[$wpss_ck_key] )	? $_COOKIE[$wpss_ck_key]	: '';
 			$wpss_jsck_field_val	= !empty( $_POST[$wpss_js_key] )	? $_POST[$wpss_js_key]		: '';
 			$wpss_jsck_jquery_val	= !empty( $_POST[$wpss_jq_key] )	? $_POST[$wpss_jq_key]		: '';
-			if ( TRUE == WPSS_COMPAT_MODE ) { /* 1.9.1 */
+			if ( TRUE === WPSS_COMPAT_MODE ) { /* 1.9.1 */
 				$wpss_ck_key_bypass = TRUE;
 				}
 			if ( rs_wpss_admin_jp_fix( TRUE ) ) { /* Check if JP Comments active - make compatible 1.9.2 */
 				$wpss_js_key_bypass = TRUE;
 				}
-			if ( FALSE == $wpss_ck_key_bypass ) {
-				if ( $wpss_jsck_cookie_val != $wpss_ck_val ) {
+			if ( FALSE === $wpss_ck_key_bypass ) {
+				if ( $wpss_jsck_cookie_val !== $wpss_ck_val ) {
 					/***
 					* JS/CK Test 01
 					* Failed the Cookie Test
@@ -3807,15 +3812,15 @@ function rs_wpss_check_comment_spam( $commentdata ) {
 				}
 			/* ALSO PART OF BAD ROBOTS TEST - END */
 			/* JavaScript Off NoScript Test - JSONST - will only be sent by Scraping Spambots */
-			if ( $post_jsonst_lc == 'ns1' || $post_jsonst_lc  == 'ns2' || $post_jsonst_lc  == 'ns3' || $post_jsonst_lc  == 'ns4' ) {
+			if ( $post_jsonst_lc === 'ns1' || $post_jsonst_lc  === 'ns2' || $post_jsonst_lc  === 'ns3' || $post_jsonst_lc  === 'ns4' ) {
 				/* JS/CK Test 03 */
 				$wpss_error_code .= ' JSONST-1000-1';
 				$commentdata['wpss_error_code'] = trim( $wpss_error_code );
 				rs_wpss_exit_jsck_filter( $commentdata, $spamshield_options, $wpss_error_code );
 				}
 
-			if ( FALSE == $wpss_js_key_bypass ) {
-				if ( $wpss_jsck_field_val != $wpss_js_val ) {
+			if ( FALSE === $wpss_js_key_bypass ) {
+				if ( $wpss_jsck_field_val !== $wpss_js_val ) {
 					/***
 					* JS/CK Test 04
 					* Failed the FVFJS Test
@@ -3838,7 +3843,7 @@ function rs_wpss_check_comment_spam( $commentdata ) {
 		/* JS/Cookies TEST - END */
 
 		/* 2ND - Trackbacks/Pingbacks */
-		if ( $commentdata['comment_type'] == 'trackback' || $commentdata['comment_type'] == 'pingback' ) {
+		if ( $commentdata['comment_type'] === 'trackback' || $commentdata['comment_type'] === 'pingback' ) {
 			/* 1ST - TR1 - Trackback Content Filter */
 			$commentdata 			= rs_wpss_trackback_content_filter( $commentdata, $spamshield_options );
 			$content_filter_status 	= $commentdata['content_filter_status'];
@@ -3849,7 +3854,7 @@ function rs_wpss_check_comment_spam( $commentdata ) {
 				rs_wpss_denied_post_response( $commentdata, 'vague' );
 				}
 			/* 2ND - TR2 - Trackback False IP Check */
-			if ( $commentdata['comment_type'] == 'trackback' ) {
+			if ( $commentdata['comment_type'] === 'trackback' ) {
 				$commentdata			= rs_wpss_trackback_ip_filter( $commentdata, $spamshield_options );
 				$content_filter_status	= $commentdata['content_filter_status'];
 				$wpss_error_code		= ltrim( $commentdata['wpss_error_code'] );
@@ -3940,7 +3945,7 @@ function rs_wpss_denied_post_js_cookie( $commentdata = NULL ) {
 	$error_msg .= '<noscript>' . __( 'Status: JavaScript is currently disabled.', WPSS_PLUGIN_NAME ) . '<br /><br /></noscript>'."\n";
 	$error_msg .= '<strong>' . __( 'Please be sure JavaScript and Cookies are enabled in your browser. Then, please hit the back button on your browser, and try posting your comment again. (You may need to reload the page.)', WPSS_PLUGIN_NAME ) . '</strong><br /><br />'."\n";
 	$error_msg .= '<br /><hr noshade />'."\n";
-	if ( !empty( $_COOKIE['SJECT15'] ) && $_COOKIE['SJECT15'] == 'CKON15' ) {
+	if ( !empty( $_COOKIE['SJECT15'] ) && $_COOKIE['SJECT15'] === 'CKON15' ) {
 		$error_msg .= __( 'If you feel you have received this message in error (for example if JavaScript and Cookies are in fact enabled and you have tried to post several times), there is most likely a technical problem (could be a plugin conflict or misconfiguration). Please contact the author of this site, and let them know they need to look into it.', WPSS_PLUGIN_NAME ) . '<br />'."\n";
 		$error_msg .= '<hr noshade /><br />'."\n";
 		}
@@ -3953,7 +3958,7 @@ function rs_wpss_denied_post_content_filter( $commentdata = NULL ) {
 	$error_txt = rs_wpss_error_txt();
 	$error_msg_alt = '<span style="font-size:12px;"><strong>'.$error_txt.':</strong> ' . __( 'Comments have been temporarily disabled to prevent spam. Please try again later.', WPSS_PLUGIN_NAME ) . '</span>'; /* Stop spammers without revealing why. */
 	$error_msg = '<span style="font-size:12px;"><strong>'.$error_txt.': ' . __( 'Your comment appears to be spam.', WPSS_PLUGIN_NAME ) . '</strong><br /><br />'."\n";
-	if ( $commentdata['wpss_error_code'] == '10500A-BL' && strpos( $commentdata['comment_author'], '@' ) !== FALSE ) {
+	if ( $commentdata['wpss_error_code'] === '10500A-BL' && strpos( $commentdata['comment_author'], '@' ) !== FALSE ) {
 		$error_msg .= sprintf( __( '"%1$s" appears to be spam. Please enter a different value in the <strong> %2$s </strong> field.', WPSS_PLUGIN_NAME ), sanitize_text_field($commentdata['comment_author']), __( 'Name' ) ) . '<br /><br />'."\n";
 		}
 	$error_msg .= __( 'Please go back and check all parts of your comment submission (including name, email, website, and comment content).', WPSS_PLUGIN_NAME ) . '</span>'."\n";
@@ -3999,7 +4004,7 @@ function rs_wpss_content_length( $commentdata, $spamshield_options ) {
 	$comment_min_length 						= !empty( $spamshield_options['comment_min_length'] ) ? $spamshield_options['comment_min_length'] : '15';
 	$comment_max_length 						= 15360; /* 15kb */
 	$commentdata_comment_type					= $commentdata['comment_type'];
-	if ( $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
+	if ( $commentdata_comment_type !== 'trackback' && $commentdata_comment_type !== 'pingback' ) {
 		if ( $comment_length < $comment_min_length ) {
 			$content_short_status = TRUE;
 			/* $wpss_error_code .= ' SHORT15'; */
@@ -4109,14 +4114,14 @@ function rs_wpss_trackback_content_filter( $commentdata, $spamshield_options ) {
 	$commentdata_comment_author_lc_spam_a1 = $commentdata_comment_author_lc_deslashed.'</a>'; /* Trackbacks/Pingbacks */
 	$commentdata_comment_author_lc_spam_a2 = $commentdata_comment_author_lc_deslashed.' </a>'; /* Trackbacks/Pingbacks */
 
-	if ( $commentdata_remote_addr == RSMP_SERVER_ADDR && $commentdata['comment_type'] == 'pingback' ) { $local_pingback = TRUE; } else { $local_pingback = FALSE; }
+	if ( $commentdata_remote_addr === RSMP_SERVER_ADDR && $commentdata['comment_type'] === 'pingback' ) { $local_pingback = TRUE; } else { $local_pingback = FALSE; }
 
-	if ( !empty( $block_all_trackbacks ) && $commentdata['comment_type'] == 'trackback' ) {
+	if ( !empty( $block_all_trackbacks ) && $commentdata['comment_type'] === 'trackback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '3'; }
 		$wpss_error_code .= ' BLOCKING-TRACKBACKS ';
 		return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 		}
-	if ( !empty( $block_all_pingbacks ) && $commentdata['comment_type'] == 'pingback' ) {
+	if ( !empty( $block_all_pingbacks ) && $commentdata['comment_type'] === 'pingback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '3'; }
 		$wpss_error_code .= ' BLOCKING-PINGBACKS';
 		return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4210,7 +4215,7 @@ function rs_wpss_trackback_content_filter( $commentdata, $spamshield_options ) {
 	extract( $wpss_ip_proxy_info );
 	/* IP / PROXY INFO - END */
 
-	if ( empty( $local_pingback ) && $ip_proxy == 'PROXY DETECTED' ) {
+	if ( empty( $local_pingback ) && $ip_proxy === 'PROXY DETECTED' ) {
 		/* Check to see if Trackback/Pingback is using proxy. Real ones don't do that since they come directly from a website/server. */
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '3'; }
 		$wpss_error_code .= ' T1011-FPD-1';
@@ -4289,10 +4294,10 @@ function rs_wpss_trackback_ip_filter( $commentdata, $spamshield_options ) {
 	$commentdata_comment_author_url_lc	= rs_wpss_casetrans('lower',$commentdata_comment_author_url);
 
 	/* Check to see if IP Trackback client IP matches IP of Server where link is supposedly coming from */
-	if ( $commentdata_comment_type == 'trackback' ) {
+	if ( $commentdata_comment_type === 'trackback' ) {
 		$trackback_domain = rs_wpss_get_domain($commentdata_comment_author_url_lc);
 		$trackback_ip = gethostbyname($trackback_domain);
-		if ( $commentdata_remote_addr_lc != $trackback_ip ) {
+		if ( $commentdata_remote_addr_lc !== $trackback_ip ) {
 			if ( empty( $content_filter_status ) ) { $content_filter_status = '3'; }
 			$wpss_error_code .= ' T1000-FIP-1';
 			}
@@ -4386,7 +4391,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 	$commentdata_comment_type						= $commentdata['comment_type'];
 
 	/*
-	if ( $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( $commentdata_comment_type !== 'pingback' && $commentdata_comment_type !== 'trackback' ) {
 		$commentdata_comment_type = 'comment';
 		}
 	*/
@@ -4443,7 +4448,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 	***/
 
 	/* Author Blacklist Check - Invalid Author Names - Stopping Human Spam */
-	if ( $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' && rs_wpss_anchortxt_blacklist_chk( $commentdata_comment_author_lc_deslashed, '', 'author', $commentdata_comment_author_url_lc ) ) {
+	if ( $commentdata_comment_type !== 'trackback' && $commentdata_comment_type !== 'pingback' && rs_wpss_anchortxt_blacklist_chk( $commentdata_comment_author_lc_deslashed, '', 'author', $commentdata_comment_author_url_lc ) ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$wpss_error_code .= ' 10500A-BL';
 		return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4478,7 +4483,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 		$i_max = 20;
 		while ( $i < $commentdata_comment_author_url_domain_lc_elements_count && $i < $i_max ) {
 			if ( !empty( $commentdata_comment_author_url_domain_lc_elements[$i] ) ) {
-				if ( $commentdata_comment_author_url_domain_lc_elements[$i] == $wpss_spammer_id_string ) {
+				if ( $commentdata_comment_author_url_domain_lc_elements[$i] === $wpss_spammer_id_string ) {
 					if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 					$wpss_error_code .= ' 10511AUA';
 					return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4515,7 +4520,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 		return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 		}
 	/* Blacklisted Anchor Text Check - Links in Content - Stopping Human Spam */
-	if ( rs_wpss_anchortxt_blacklist_chk( $commentdata_comment_content_lc_deslashed, '', 'content' ) && $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
+	if ( rs_wpss_anchortxt_blacklist_chk( $commentdata_comment_content_lc_deslashed, '', 'content' ) && $commentdata_comment_type !== 'trackback' && $commentdata_comment_type !== 'pingback' ) {
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$wpss_error_code .= ' 10500CAT-BL';
 		return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4578,7 +4583,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 			$wpss_error_code .= ' 9100-1';
 			return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 			}
-		if ( $commentdata_comment_author_url_lc == $commentdata_comment_author_lc_deslashed && !preg_match( "~https?\:/+~i", $commentdata_comment_author_url_lc ) && preg_match( "~(<\s*a\s+([a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*)\s*href|\[(url|link))\s*\=\s*(['\"])?\s*(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*(['\"])?\s*(>|\])$commentdata_comment_author_lc_deslashed_regex(<|\[)\s*\/\s*a\s*(>|(url|link)\])~i", $commentdata_comment_content_lc_deslashed ) ) {
+		if ( $commentdata_comment_author_url_lc === $commentdata_comment_author_lc_deslashed && !preg_match( "~https?\:/+~i", $commentdata_comment_author_url_lc ) && preg_match( "~(<\s*a\s+([a-z0-9\-_\.\?\='\"\:\(\)\{\}\s]*)\s*href|\[(url|link))\s*\=\s*(['\"])?\s*(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)\s*(['\"])?\s*(>|\])$commentdata_comment_author_lc_deslashed_regex(<|\[)\s*\/\s*a\s*(>|(url|link)\])~i", $commentdata_comment_content_lc_deslashed ) ) {
 			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 			$wpss_error_code .= ' 9101';
 			return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4589,7 +4594,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 			$wpss_error_code .= ' 9102';
 			return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 			}
-		if ( $commentdata_comment_author_url_lc == $commentdata_comment_author_lc_deslashed && !preg_match( "~https?\:/+~i", $commentdata_comment_author_url_lc ) && preg_match( "~(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)~i", $commentdata_comment_content_lc_deslashed ) ) {
+		if ( $commentdata_comment_author_url_lc === $commentdata_comment_author_lc_deslashed && !preg_match( "~https?\:/+~i", $commentdata_comment_author_url_lc ) && preg_match( "~(https?\:/+[a-z0-9\-_\/\.\?\&\=\~\@\%\+\#\:]+)~i", $commentdata_comment_content_lc_deslashed ) ) {
 			if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 			$wpss_error_code .= ' 9103';
 			return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4607,7 +4612,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 		}
 
 	/* TEST REFERRERS 1 - TO THE COMMENT PROCESSOR */
-	if ( strpos( $wp_comments_post_url, $commentdata_php_self_lc ) !== FALSE && $commentdata_referrer_lc == $wp_comments_post_url ) {
+	if ( strpos( $wp_comments_post_url, $commentdata_php_self_lc ) !== FALSE && $commentdata_referrer_lc === $wp_comments_post_url ) {
 		/* Often spammers send the referrer as the URL for the wp-comments-post.php page. */
 		if ( empty( $content_filter_status ) ) { $content_filter_status = '1'; }
 		$wpss_error_code .= ' REF-1-1011';
@@ -4649,7 +4654,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 		}
 	$commentdata_user_agent_lc_word_count = rs_wpss_count_words($commentdata_user_agent_lc);
 	if ( !empty( $commentdata_user_agent_lc ) && $commentdata_user_agent_lc_word_count < 3 ) {
-		if ( $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' || ( strpos( $commentdata_user_agent_lc, 'movabletype' ) === FALSE && $commentdata_comment_type == 'trackback' ) ) {
+		if ( $commentdata_comment_type !== 'trackback' && $commentdata_comment_type !== 'pingback' || ( strpos( $commentdata_user_agent_lc, 'movabletype' ) === FALSE && $commentdata_comment_type === 'trackback' ) ) {
 			/* Another test for altered UA's. */
 			$content_filter_status = '3'; /* Was 1, changed to 3 - V1.8.4 */
 			$wpss_error_code .= ' UA1003';
@@ -4664,7 +4669,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 		}
 	/* PART OF BAD ROBOTS TEST - END */
 
-	if ( $commentdata_comment_type != 'trackback' && $commentdata_comment_type != 'pingback' ) {
+	if ( $commentdata_comment_type !== 'trackback' && $commentdata_comment_type !== 'pingback' ) {
 
 		/***
 		* PART OF BAD ROBOTS TEST - BEGIN
@@ -4676,7 +4681,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 			return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 			}
 		/* HA1002 removed in 1.9.0.3 */
-		if ( $user_http_accept == '*' ) {
+		if ( $user_http_accept === '*' ) {
 			$content_filter_status = '3'; /* Was 1, changed to 3 - V1.8.4 */
 			$wpss_error_code .= ' HA1003';
 			return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4690,7 +4695,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 		$i_max = 20;
 		while ( $i < $user_http_accept_elements_count && $i < $i_max ) {
 			if ( !empty( $user_http_accept_elements[$i] ) ) {
-				if ( $user_http_accept_elements[$i] == '*' ) {
+				if ( $user_http_accept_elements[$i] === '*' ) {
 					$content_filter_status = '3'; /* Was 1, changed to 3 - V1.8.4 */
 					$wpss_error_code .= ' HA1004';
 					return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4705,7 +4710,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 			$wpss_error_code .= ' HAL1001';
 			return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
 			}
-		if ( $user_http_accept_language == '*' ) {
+		if ( $user_http_accept_language === '*' ) {
 			$content_filter_status = '3'; /* Was 1, changed to 3 - V1.8.4 */
 			$wpss_error_code .= ' HAL1002';
 			return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4719,7 +4724,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 		$i_max = 20;
 		while ( $i < $user_http_accept_language_elements_count && $i < $i_max ) {
 			if ( !empty( $user_http_accept_language_elements[$i] ) ) {
-				if ( $user_http_accept_language_elements[$i] == '*' && strpos( $commentdata_user_agent_lc, 'links (' ) !== 0 ) {
+				if ( $user_http_accept_language_elements[$i] === '*' && strpos( $commentdata_user_agent_lc, 'links (' ) !== 0 ) {
 					$content_filter_status = '3'; /* Was 1, changed to 3 - V1.8.4 */
 					$wpss_error_code .= ' HAL1004';
 					return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4737,7 +4742,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 		* Test PROXY STATUS if option
 		* Google Chrome Compression Proxy Bypass
 		***/
-		if ( $ip_proxy == 'PROXY DETECTED' && $ip_proxy_chrome_compression != 'TRUE' && empty( $spamshield_options['allow_proxy_users'] ) ) {
+		if ( $ip_proxy === 'PROXY DETECTED' && $ip_proxy_chrome_compression !== 'TRUE' && empty( $spamshield_options['allow_proxy_users'] ) ) {
 			$content_filter_status = '10';
 			$wpss_error_code .= ' PROXY1001';
 			return rs_wpss_exit_content_filter( $commentdata, $spamshield_options, $wpss_error_code, $content_filter_status );
@@ -4751,7 +4756,7 @@ function rs_wpss_comment_content_filter( $commentdata, $spamshield_options ) {
 	***/
 
 	/* Reverse DNS Server Tests - BEGIN */
-	if ( $commentdata_comment_type != 'pingback' && $commentdata_comment_type != 'trackback' ) {
+	if ( $commentdata_comment_type !== 'pingback' && $commentdata_comment_type !== 'trackback' ) {
 		/* Test Reverse DNS Hosts - Do all with Reverse DNS not Remote Host */
 		$rev_dns_filter_data = rs_wpss_revdns_filter( 'comment', $content_filter_status, $ip, $reverse_dns_lc, $commentdata_comment_author_lc_deslashed, $commentdata_comment_author_email_lc );
 		$revdns_blacklisted = $rev_dns_filter_data['blacklisted'];
@@ -4832,17 +4837,17 @@ function rs_wpss_ip_proxy_info() {
 	$masked_ip = '';
 	if ( !empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
 		$masked_ip = trim($_SERVER['HTTP_X_FORWARDED_FOR']);
-		if ( $masked_ip == $ip ) { $masked_ip = ''; }
+		if ( $masked_ip === $ip ) { $masked_ip = ''; }
 		}
 	$reverse_dns 				= @gethostbyaddr($ip);
-	if ( $reverse_dns == '.' ) { $reverse_dns_ip = '[No Data]'; } elseif ( $reverse_dns == $ip ) { $reverse_dns_ip = $ip; } else { $reverse_dns_ip = gethostbyname($reverse_dns); }
+	if ( $reverse_dns == '.' ) { $reverse_dns_ip = '[No Data]'; } elseif ( $reverse_dns === $ip ) { $reverse_dns_ip = $ip; } else { $reverse_dns_ip = gethostbyname($reverse_dns); }
 	$reverse_dns_ip_regex 		= rs_wpss_preg_quote($reverse_dns_ip);
 	$reverse_dns_lc 			= rs_wpss_casetrans('lower',$reverse_dns);
 	$reverse_dns_lc_regex 		= rs_wpss_preg_quote($reverse_dns_lc);
 	$reverse_dns_lc_rev 		= strrev($reverse_dns_lc);
 	$reverse_dns_lc_rev_regex 	= rs_wpss_preg_quote($reverse_dns_lc_rev);
 	/* Forward-confirmed reverse DNS (FCrDNS) */
-	if ( $reverse_dns_ip == $ip ) { $reverse_dns_verification = '[Verified]'; } else { $reverse_dns_verification = '[Possibly Forged]'; }
+	if ( $reverse_dns_ip === $ip ) { $reverse_dns_verification = '[Verified]'; } else { $reverse_dns_verification = '[Possibly Forged]'; }
 	/* Detect Incapsula, and disable rs_wpss_ubl_cache - 1.8.9.6 */
 	if ( strpos( $reverse_dns_lc, '.ip.incapdns.net' ) !== FALSE ) { update_option( 'spamshield_ubl_cache_disable', TRUE ); }
 	/* Detect Use of Proxy */
@@ -4870,23 +4875,23 @@ function rs_wpss_misc_form_spam_check() {
 	* Added 1.8.9.9
 	***/
 
-	if ( rs_wpss_is_doing_scan() ) { return; }
+	if ( rs_wpss_is_admin_sproc() ) { return; }
 	global $spamshield_options; if ( empty( $spamshield_options ) ) { $spamshield_options = get_option('spamshield_options'); }
 	rs_wpss_update_session_data($spamshield_options);
 	if ( !empty( $spamshield_options['disable_misc_form_shield'] ) ) { return; }
 
 	/* BYPASS - GENERAL */
-	if ( empty( $_POST ) || 'POST' != $_SERVER['REQUEST_METHOD'] || isset( $_POST[WPSS_REF2XJS] ) || isset( $_POST[WPSS_JSONST] ) || isset( $_POST['wpss_contact_message'] ) || isset( $_POST['signup_username'] ) || isset( $_POST['signup_email'] ) || isset( $_POST['ws_plugin__s2member_registration'] ) || isset( $_POST['_wpcf7_version'] ) || isset( $_POST['gform_submit'] ) ) { return; }
+	if ( empty( $_POST ) || 'POST' !== $_SERVER['REQUEST_METHOD'] || isset( $_POST[WPSS_REF2XJS] ) || isset( $_POST[WPSS_JSONST] ) || isset( $_POST['wpss_contact_message'] ) || isset( $_POST['signup_username'] ) || isset( $_POST['signup_email'] ) || isset( $_POST['ws_plugin__s2member_registration'] ) || isset( $_POST['_wpcf7_version'] ) || isset( $_POST['gform_submit'] ) ) { return; }
 	if ( rs_wpss_is_doing_ajax() || rs_wpss_is_doing_cron() || rs_wpss_is_xmlrpc() || defined( 'WP_INSTALLING' ) ) { return; }
 	if ( rs_wpss_is_ajax_request() || rs_wpss_is_comment_request() || is_trackback() ) { return; }
 	if ( is_admin() && !rs_wpss_is_login_page() ) { return; }
-	if ( rs_wpss_is_login_page() && ( !isset( $_GET['action'] ) || $_GET['action'] != 'register' ) ) { return; }
+	if ( rs_wpss_is_login_page() && ( !isset( $_GET['action'] ) || $_GET['action'] !== 'register' ) ) { return; }
 	if ( current_user_can( 'moderate_comments' ) ) { return; }
 	if ( is_user_logged_in() ) { return; } /* May remove later */
 	$post_count = count( $_POST );
 	if ( $post_count == 4 && isset( $_POST['excerpt'], $_POST['url'], $_POST['title'], $_POST['blog_name'] ) ) { return; }
 	$ip = rs_wpss_get_ip_addr();
-	if ( $ip == RSMP_SERVER_ADDR ) { return; } /* Skip website IP address */
+	if ( $ip === RSMP_SERVER_ADDR ) { return; } /* Skip website IP address */
 	if ( strpos( $ip, '.' ) !== FALSE ) {
 		$ip_arr = explode( '.', $ip ); unset( $ip_arr[3] ); $ip_c = implode( '.', $ip_arr ) . '.';
 		if ( strpos( RSMP_SERVER_ADDR, $ip_c ) === 0 ) { return; } /* Skip anything on same C-Block as website */
@@ -4894,7 +4899,7 @@ function rs_wpss_misc_form_spam_check() {
 	$ecom_urls = array( '/checkout/', '/store/', '/shop/', '/cart/' );
 	foreach( $ecom_urls as $k => $u ) { if ( strpos( $_SERVER['REQUEST_URI'], $u ) !== FALSE ) { return; } }
 	$admin_url = RSMP_ADMIN_URL.'/';
-	if ( $post_count >= 5 && isset( $_POST['log'], $_POST['pwd'], $_POST['wp-submit'], $_POST['testcookie'], $_POST['redirect_to'] ) && $_POST['redirect_to'] == $admin_url ) { return; }
+	if ( $post_count >= 5 && isset( $_POST['log'], $_POST['pwd'], $_POST['wp-submit'], $_POST['testcookie'], $_POST['redirect_to'] ) && $_POST['redirect_to'] === $admin_url ) { return; }
 	if ( $post_count >= 5 && isset( $_POST['log'], $_POST['pwd'], $_POST['login'], $_POST['testcookie'], $_POST['redirect_to'] ) ) { return; }
 
 	/* IP / PROXY INFO - BEGIN */
@@ -4934,7 +4939,7 @@ function rs_wpss_misc_form_spam_check() {
 	/* OA Social Login */
 	if ( defined( 'OA_SOCIAL_LOGIN_VERSION' ) ) {
 		$ref_dom_rev = strrev( rs_wpss_get_domain( $referer ) ); $oa_dom_rev = strrev( 'api.oneall.com' );
-		if ( $post_count >= 4 && isset( $_GET['oa_social_login_source'], $_POST['oa_action'], $_POST['oa_social_login_token'], $_POST['connection_token'], $_POST['identity_vault_key'] ) && $_POST['oa_action'] == 'social_login' && strpos( $ref_dom_rev, $oa_dom_rev ) === 0 ) { return; }
+		if ( $post_count >= 4 && isset( $_GET['oa_social_login_source'], $_POST['oa_action'], $_POST['oa_social_login_token'], $_POST['connection_token'], $_POST['identity_vault_key'] ) && $_POST['oa_action'] === 'social_login' && strpos( $ref_dom_rev, $oa_dom_rev ) === 0 ) { return; }
 		}
 
 	$msc_filter_status		= $wpss_error_code = $log_pref = '';
@@ -4949,19 +4954,19 @@ function rs_wpss_misc_form_spam_check() {
 	$form_auth_dat 			= array( 'comment_author' => '', 'comment_author_email' => '', 'comment_author_url' => '' );
 
 	/* Check for Specific Contact Form Plugins */
-	if ( defined( 'JETPACK__VERSION' ) && isset( $_POST['action'] ) && $_POST['action'] == 'grunion-contact-form' ) { $form_type = 'jetpack form'; $pref = 'JP-'; }
+	if ( defined( 'JETPACK__VERSION' ) && isset( $_POST['action'] ) && $_POST['action'] === 'grunion-contact-form' ) { $form_type = 'jetpack form'; $pref = 'JP-'; }
 	elseif ( defined( 'NF_PLUGIN_VERSION' ) && isset( $_POST['_ninja_forms_display_submit'] ) ) { $form_type = 'ninja forms'; $pref = 'NF-'; }
 
 	/* JS/JQUERY CHECK */
 	$wpss_key_values 		= rs_wpss_get_key_values();
 	$wpss_jq_key 			= $wpss_key_values['wpss_jq_key'];
 	$wpss_jq_val 			= $wpss_key_values['wpss_jq_val'];
-	if ( TRUE == WPSS_COMPAT_MODE ) { // Fall back to FVFJS Keys instead of jQuery keys from jscripts.php
+	if ( TRUE === WPSS_COMPAT_MODE ) { // Fall back to FVFJS Keys instead of jQuery keys from jscripts.php
 		$wpss_jq_key 		= $wpss_key_values['wpss_js_key'];
 		$wpss_jq_val 		= $wpss_key_values['wpss_js_val'];
 		}
 	$wpss_jsck_jquery_val	= !empty( $_POST[$wpss_jq_key] ) ? $_POST[$wpss_jq_key] : '';
-	if ( $wpss_jsck_jquery_val != $wpss_jq_val ) {
+	if ( $wpss_jsck_jquery_val !== $wpss_jq_val ) {
 		$wpss_error_code .= ' '.$pref.'JQHFT-5';
 		$msc_jsck_error = TRUE;
 		$err_cod = 'jsck_error';
@@ -4978,10 +4983,10 @@ function rs_wpss_misc_form_spam_check() {
 			$v_lc = rs_wpss_casetrans('lower',trim(stripslashes($v)));
 			if ( strpos( $k_lc, 'email' ) !== FALSE && is_email( $v_lc ) ) {
 				$email_domain = rs_wpss_get_domain_from_email( $v_lc );
-				if ( $email_domain == $server_email_domain ) { continue; }
+				if ( $email_domain === $server_email_domain ) { continue; }
 				if ( rs_wpss_email_blacklist_chk( $v_lc ) ) {
 					$wpss_error_code .= ' '.$pref.'9200E-BL';
-					if ( $msc_jsck_error != TRUE ) {
+					if ( $msc_jsck_error !== TRUE ) {
 						$err_cod = 'blacklist_email_error';
 						$err_msg = __( 'Sorry, that email address is not allowed!' ) . ' ' . __( 'Please enter a valid email address.' );
 						$errors_3p[$err_cod] = $err_msg;
@@ -4991,7 +4996,7 @@ function rs_wpss_misc_form_spam_check() {
 				}
 			}
 
-		if ( $form_type == 'jetpack form' || $form_type == 'ninja forms' ) {
+		if ( $form_type === 'jetpack form' || $form_type === 'ninja forms' ) {
 			/* CONTACT FORM CONTENT BLACKLIST */
 			foreach( $_POST as $k => $v ) {
 				if ( !is_string( $v ) ) { continue; }
@@ -4999,7 +5004,7 @@ function rs_wpss_misc_form_spam_check() {
 				$v_lc = rs_wpss_casetrans('lower',trim(stripslashes($v)));
 				if ( ( strpos( $k_lc, 'message' ) !== FALSE || strpos( $k_lc, 'comment' ) !== FALSE ) && rs_wpss_cf_content_blacklist_chk( $v_lc ) ) {
 					$wpss_error_code .= ' '.$pref.'10400C-BL';
-					if ( $msc_jsck_error != TRUE ) {
+					if ( $msc_jsck_error !== TRUE ) {
 						$err_cod = 'blacklist_content_error';
 						$err_msg = __( 'Message appears to be spam.', WPSS_PLUGIN_NAME );
 						$errors_3p[$err_cod] = $err_msg;
@@ -5016,7 +5021,7 @@ function rs_wpss_misc_form_spam_check() {
 		if ( !empty( $bad_robot_blacklisted ) ) {
 			$wpss_error_code .= $bad_robot_filter_data['error_code'];
 			$msc_badrobot_error = TRUE;
-			if ( $msc_jsck_error != TRUE ) {
+			if ( $msc_jsck_error !== TRUE ) {
 				$err_cod = 'badrobot_error';
 				$err_msg = __( 'That action is currently not allowed.' );
 				$errors_3p[$err_cod] = $err_msg;
@@ -5059,6 +5064,9 @@ function rs_wpss_misc_form_spam_check() {
 		foreach ( $errors_3p as $c => $m ) {
 			$error_msg .= '<strong>'.$error_txt.':</strong> '.$m.'<br /><br />'."\n";
 			}
+		
+		/* If enabled, run security check to make sure this POST submission wasn't a vulnerability probe or hack attempt */
+		
 		$args = array( 'response' => '403' );
 		wp_die( $error_msg, '', $args );
 		}
@@ -5086,12 +5094,12 @@ function rs_wpss_cf7_spam_check( $spam ) {
 	$wpss_key_values 		= rs_wpss_get_key_values();
 	$wpss_jq_key 			= $wpss_key_values['wpss_jq_key'];
 	$wpss_jq_val 			= $wpss_key_values['wpss_jq_val'];
-	if ( TRUE == WPSS_COMPAT_MODE ) { // Fall back to FVFJS Keys instead of jQuery keys from jscripts.php
+	if ( TRUE === WPSS_COMPAT_MODE ) { // Fall back to FVFJS Keys instead of jQuery keys from jscripts.php
 		$wpss_jq_key 		= $wpss_key_values['wpss_js_key'];
 		$wpss_jq_val 		= $wpss_key_values['wpss_js_val'];
 		}
 	$wpss_jsck_jquery_val	= !empty( $_POST[$wpss_jq_key] ) ? $_POST[$wpss_jq_key] : '';
-	if ( !empty( $_POST ) && ( !isset( $_POST[WPSS_REF2XJS] ) || $wpss_jsck_jquery_val != $wpss_jq_val ) ) {
+	if ( !empty( $_POST ) && ( !isset( $_POST[WPSS_REF2XJS] ) || $wpss_jsck_jquery_val !== $wpss_jq_val ) ) {
 		add_filter( 'wpcf7_display_message', 'rs_wpss_cf7_spam_message_js', 10, 2 );
 		$wpss_error_code .= ' '.$pref.'JQHFT-6';
 		$cf7_jsck_error = TRUE;
@@ -5104,7 +5112,7 @@ function rs_wpss_cf7_spam_check( $spam ) {
 		$v_lc = rs_wpss_casetrans('lower',trim(stripslashes($v)));
 		if ( strpos( $k_lc, 'email' ) !== FALSE && is_email( $v_lc ) ) {
 			$email_domain = rs_wpss_get_domain_from_email( $v_lc );
-			if ( $email_domain == $server_email_domain ) { continue; }
+			if ( $email_domain === $server_email_domain ) { continue; }
 			if ( rs_wpss_email_blacklist_chk( $v_lc ) ) {
 				if ( empty( $wpss_error_code ) ) {
 					add_filter( 'wpcf7_display_message', 'rs_wpss_cf7_spam_message_email_bl', 10, 2 );
@@ -5172,7 +5180,7 @@ function rs_wpss_cf7_spam_message_js( $err_msg, $status = 'spam' ) {
 	* Updates Contact Form 7 spam response message - JS Error
 	* Added 1.8.9.9
 	***/
-	if ( $status == 'spam' ) {
+	if ( $status === 'spam' ) {
 		$err_msg = __( 'Sorry, there was an error. Please be sure JavaScript and Cookies are enabled in your browser and try again.', WPSS_PLUGIN_NAME );
 		}
 	return $err_msg;
@@ -5183,7 +5191,7 @@ function rs_wpss_cf7_spam_message_email_bl( $err_msg, $status = 'spam' ) {
 	* Updates Contact Form 7 spam response message - Email Blacklist
 	* Added 1.9.1
 	***/
-	if ( $status == 'spam' ) { $err_msg = __( 'Sorry, that email address is not allowed!' ) . ' ' . __( 'Please enter a valid email address.' ); }
+	if ( $status === 'spam' ) { $err_msg = __( 'Sorry, that email address is not allowed!' ) . ' ' . __( 'Please enter a valid email address.' ); }
 	return $err_msg;
 	}
 
@@ -5192,7 +5200,7 @@ function rs_wpss_cf7_spam_message_cf_content_bl( $err_msg, $status = 'spam' ) {
 	* Updates Contact Form 7 spam response message - Contact Form Content Blacklist
 	* Added 1.9.1
 	***/
-	if ( $status == 'spam' ) { $err_msg = __( 'Message appears to be spam.', WPSS_PLUGIN_NAME ); }
+	if ( $status === 'spam' ) { $err_msg = __( 'Message appears to be spam.', WPSS_PLUGIN_NAME ); }
 	return $err_msg;
 	}
 
@@ -5201,7 +5209,7 @@ function rs_wpss_cf7_spam_message_vague( $err_msg, $status = 'spam' ) {
 	* Updates Contact Form 7 spam response message - Generic
 	* Added 1.9.1
 	***/
-	if ( $status == 'spam' ) { $err_msg = __( 'That action is currently not allowed.' ); }
+	if ( $status === 'spam' ) { $err_msg = __( 'That action is currently not allowed.' ); }
 	return $err_msg;
 	}
 
@@ -5226,12 +5234,12 @@ function rs_wpss_gf_spam_check( $spam ) {
 	$wpss_key_values 		= rs_wpss_get_key_values();
 	$wpss_jq_key 			= $wpss_key_values['wpss_jq_key'];
 	$wpss_jq_val 			= $wpss_key_values['wpss_jq_val'];
-	if ( TRUE == WPSS_COMPAT_MODE ) { // Fall back to FVFJS Keys instead of jQuery keys from jscripts.php
+	if ( TRUE === WPSS_COMPAT_MODE ) { // Fall back to FVFJS Keys instead of jQuery keys from jscripts.php
 		$wpss_jq_key 		= $wpss_key_values['wpss_js_key'];
 		$wpss_jq_val 		= $wpss_key_values['wpss_js_val'];
 		}
 	$wpss_jsck_jquery_val	= !empty( $_POST[$wpss_jq_key] ) ? $_POST[$wpss_jq_key] : '';
-	if ( !empty( $_POST ) && ( !isset( $_POST[WPSS_REF2XJS] ) || $wpss_jsck_jquery_val != $wpss_jq_val ) ) {
+	if ( !empty( $_POST ) && ( !isset( $_POST[WPSS_REF2XJS] ) || $wpss_jsck_jquery_val !== $wpss_jq_val ) ) {
 		$wpss_error_code .= ' '.$pref.'JQHFT-7';
 		}
 
@@ -5243,7 +5251,7 @@ function rs_wpss_gf_spam_check( $spam ) {
 		/* if ( strpos( $k_lc, 'email' ) !== FALSE && is_email( $v_lc ) ) { */
 		if ( is_email( $v_lc ) ) { 
 			$email_domain = rs_wpss_get_domain_from_email( $v_lc );
-			if ( $email_domain == $server_email_domain ) { continue; }
+			if ( $email_domain === $server_email_domain ) { continue; }
 			if ( rs_wpss_email_blacklist_chk( $v_lc ) ) {
 				$wpss_error_code .= ' '.$pref.'9200E-BL';
 				break;
@@ -5485,17 +5493,17 @@ function rs_wpss_blacklist_check( $author, $email, $url, $content, $user_ip, $us
 					$key_pq = rs_wpss_preg_quote( $key );
 					if ( preg_match( "~$key_pq$~i", $user_server ) ) { return TRUE; }
 					}
-				elseif ( $key == $user_server ) { return TRUE; }
+				elseif ( $key === $user_server ) { return TRUE; }
 				}
 			}
 		elseif ( is_email( $key ) ) {
-			if ( !empty( $email ) && $key == $email ) { return TRUE; }
+			if ( !empty( $email ) && $key === $email ) { return TRUE; }
 			}
 		elseif ( rs_wpss_is_valid_ip( $key, '', TRUE ) ) { /* IP C-block */
 			if ( !empty( $user_ip ) && strpos( $user_ip, $key ) === 0 ) { return TRUE; }
 			}
 		elseif ( rs_wpss_is_valid_ip( $key ) ) { /* Complete IP Address */
-			if ( !empty( $user_ip ) && $key == $user_ip ) { return TRUE; }
+			if ( !empty( $user_ip ) && $key === $user_ip ) { return TRUE; }
 			}
 		elseif ( 
 			   ( !empty( $author ) 	&& preg_match( $pattern_regex, $author ) )
@@ -5524,7 +5532,7 @@ function rs_wpss_whitelist_check( $email = NULL ) {
 		$key = trim( $key );
 		/* Skip empty lines */
 		if ( empty( $key ) ) { continue; }
-		if ( is_email( $key ) ) { if ( $key == $email ) { return TRUE; } }
+		if ( is_email( $key ) ) { if ( $key === $email ) { return TRUE; } }
 		}
 	return FALSE;
 	}
@@ -5561,12 +5569,12 @@ function rs_wpss_wc_before_register( ) {
 	$wc_reg_enabled		= get_option( 'woocommerce_enable_myaccount_registration' );
 	global $spamshield_options; if ( empty( $spamshield_options ) ) { $spamshield_options = get_option('spamshield_options'); }
 	rs_wpss_update_session_data($spamshield_options);
-	if ( !empty( $spamshield_options['registration_shield_disable'] ) || $wc_reg_enabled != 'yes' ) { return; }
+	if ( !empty( $spamshield_options['registration_shield_disable'] ) || $wc_reg_enabled !== 'yes' ) { return; }
 	global $wpss_wc_reg_active; $wpss_wc_reg_active = TRUE;
 	}
 
 function rs_wpss_register_form_append() {
-	if ( rs_wpss_is_doing_scan() ) { return; }
+	if ( rs_wpss_is_admin_sproc() ) { return; }
 	global $spamshield_options; if ( empty( $spamshield_options ) ) { $spamshield_options = get_option('spamshield_options'); }
 	rs_wpss_update_session_data($spamshield_options);
 
@@ -5582,17 +5590,17 @@ function rs_wpss_register_form_append() {
 	if ( defined( 'WS_PLUGIN__S2MEMBER_VERSION' ) ) { $s2member_status = TRUE; }
 	if ( defined( 'WPMEM_VERSION' ) ) { $wpmembers_status = TRUE; }
 
-	if ( FALSE == $s2member_status ) {
+	if ( FALSE === $s2member_status ) {
 		$new_fields = array(
 			'first_name' 	=> __( 'First Name', WPSS_PLUGIN_NAME ),
 			'last_name' 	=> __( 'Last Name', WPSS_PLUGIN_NAME ),
 			'disp_name' 	=> __( 'Display Name', WPSS_PLUGIN_NAME ),
 			);
-		if ( TRUE == $wpmembers_status ) {
+		if ( TRUE === $wpmembers_status ) {
 			unset( $new_fields['first_name'], $new_fields['last_name'] );
 			}
 			
-		if ( TRUE == $wc_status ) {
+		if ( TRUE === $wc_status ) {
 			unset( $new_fields['disp_name'] );
 			}
 			
@@ -5605,7 +5613,7 @@ function rs_wpss_register_form_append() {
 			}
 		}
 
-	if ( TRUE == WPSS_COMPAT_MODE ) {
+	if ( TRUE === WPSS_COMPAT_MODE ) {
 		$wpss_key_values 		= rs_wpss_get_key_values();
 		$wpss_js_key 			= $wpss_key_values['wpss_js_key'];
 		$wpss_js_val 			= $wpss_key_values['wpss_js_val'];
@@ -5724,7 +5732,7 @@ if ( !function_exists('wp_new_user_notification') ) {
 
 function rs_wpss_wc_check_new_user( $errors ) {
 	/* WooCommerce wrapper for rs_wpss_check_new_user() */
-	if ( isset( $_GET['action'] ) && $_GET['action'] == 'woocommerce_checkout' ) { return $errors; }
+	if ( isset( $_GET['action'] ) && $_GET['action'] === 'woocommerce_checkout' ) { return $errors; }
 	$ecom_urls = array( '/checkout/' );
 	foreach( $ecom_urls as $k => $u ) {
 		if ( strpos( $_SERVER['REQUEST_URI'], $u ) !== FALSE ) { return $errors; }
@@ -5739,7 +5747,7 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 
 	if ( rs_wpss_is_woocom_enabled() ) {
 		/* Check if we're on a WooCommerce Checkout Page */
-		if ( ( isset( $_GET['action'] ) && $_GET['action'] == 'woocommerce_checkout' ) ) { return $errors; }
+		if ( ( isset( $_GET['action'] ) && $_GET['action'] === 'woocommerce_checkout' ) ) { return $errors; }
 		$ecom_urls = array( '/checkout/' );
 		foreach( $ecom_urls as $k => $u ) {
 			if ( strpos( $_SERVER['REQUEST_URI'], $u ) !== FALSE ) { return $errors; }
@@ -5781,7 +5789,7 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 	if ( defined( 'WS_PLUGIN__S2MEMBER_VERSION' ) ) { $s2member_status = TRUE; $log_pref = 's2-'; }
 	if ( defined( 'WPMEM_VERSION' ) ) { $wpmembers_status = TRUE; $log_pref = 'wpm-'; }
 
-	if ( TRUE == $wc_status ) {
+	if ( TRUE === $wc_status ) {
 		$user_login = '';
 		if ( empty( $user_login ) && isset( $_POST['username'] ) ) {
 			$user_login		= rs_wpss_casetrans( 'lower', trim( wp_unslash( $_POST['username'] ) ) );
@@ -5801,7 +5809,7 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 		if ( isset( $_POST[$k] ) ) { $user_data[$k] = trim( wp_unslash( $_POST[$k] ) ); } else { $user_data[$k] = ''; }
 		}
 
-	if ( FALSE == $buddypress_status && FALSE == $wc_status && FALSE == $s2member_status ) {
+	if ( FALSE === $buddypress_status && FALSE === $wc_status && FALSE === $s2member_status ) {
 		/* Check New Fields for Blanks */
 		foreach( $new_fields as $k => $v ) {
 			$k_uc = rs_wpss_casetrans('upper',$k);
@@ -5823,10 +5831,10 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 	/* BAD ROBOT TEST - END */
 
 	/* BAD ROBOTS */
-	if ( $reg_badrobot_error != FALSE ) {
+	if ( $reg_badrobot_error !== FALSE ) {
 		$err_cod = 'badrobot_error';
 		$err_msg = __( 'User registration is currently not allowed.' );
-		if ( TRUE == $buddypress_status ) { $errors_3p[$err_cod] = $err_msg; } else { $errors->add( $err_cod, '<strong>'.$error_txt.':</strong> ' . $err_msg ); }
+		if ( TRUE === $buddypress_status ) { $errors_3p[$err_cod] = $err_msg; } else { $errors->add( $err_cod, '<strong>'.$error_txt.':</strong> ' . $err_msg ); }
 		}
 
 	/* JS/COOKIES CHECK */
@@ -5836,60 +5844,60 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 	$wpss_jsck_cookie_val	= !empty( $_COOKIE[$wpss_ck_key] )	? $_COOKIE[$wpss_ck_key]	: '';
 	$wpss_jsck_field_val	= !empty( $_POST[$wpss_js_key] )	? $_POST[$wpss_js_key]		: '';
 	$wpss_jsck_jquery_val	= !empty( $_POST[$wpss_jq_key] )	? $_POST[$wpss_jq_key]		: '';
-	if ( TRUE == WPSS_COMPAT_MODE ) { /* 1.9.1 */
+	if ( TRUE === WPSS_COMPAT_MODE ) { /* 1.9.1 */
 		$wpss_ck_key_bypass = TRUE;
 		}
-	if ( FALSE == $wpss_ck_key_bypass ) { /* 1.8.9 */
+	if ( FALSE === $wpss_ck_key_bypass ) { /* 1.8.9 */
 		/* If jscripts.php is disabled, these would be skipped - Compatibility Mode */
-		if ( $wpss_jsck_cookie_val != $wpss_ck_val ) {
+		if ( $wpss_jsck_cookie_val !== $wpss_ck_val ) {
 			$wpss_error_code .= ' '.$pref.'COOKIE-3';
 			$reg_jsck_error = TRUE;
 			}
-		if ( $wpss_jsck_jquery_val != $wpss_jq_val ) {
+		if ( $wpss_jsck_jquery_val !== $wpss_jq_val ) {
 			$wpss_error_code .= ' '.$pref.'JQHFT-3';
 			$reg_jsck_error = TRUE;
 			}
 		}
-	if ( FALSE == $wpss_js_key_bypass ) {
-		if ( $wpss_jsck_field_val != $wpss_js_val ) {
+	if ( FALSE === $wpss_js_key_bypass ) {
+		if ( $wpss_jsck_field_val !== $wpss_js_val ) {
 			$wpss_error_code .= ' '.$pref.'FVFJS-3';
 			$reg_jsck_error = TRUE;
 			}
 		}
 	$post_jsonst 	= !empty( $_POST[WPSS_JSONST] ) ? trim( $_POST[WPSS_JSONST] ) : '';
 	$post_jsonst_lc	= rs_wpss_casetrans('lower',$post_jsonst);
-	if ( FALSE == $buddypress_status ) {
-		if ( $post_jsonst_lc == 'ns1' || $post_jsonst_lc == 'ns2' || $post_jsonst_lc == 'ns3' || $post_jsonst_lc == 'ns4' ) {
+	if ( FALSE === $buddypress_status ) {
+		if ( $post_jsonst_lc === 'ns1' || $post_jsonst_lc === 'ns2' || $post_jsonst_lc === 'ns3' || $post_jsonst_lc === 'ns4' ) {
 			$wpss_error_code .= ' '.$pref.'JSONST-1000-3';
 			$reg_jsck_error = TRUE;
 			}
 		}
 
-	if ( $reg_jsck_error != FALSE && $reg_badrobot_error != TRUE ) {
+	if ( $reg_jsck_error !== FALSE && $reg_badrobot_error !== TRUE ) {
 		$err_cod = 'jsck_error';
 		$err_msg = __( 'JavaScript and Cookies are required in order to register. Please be sure JavaScript and Cookies are enabled in your browser, and reload the page.', WPSS_PLUGIN_NAME );
-		if ( TRUE == $buddypress_status ) { $errors_3p[$err_cod] = $err_msg; } else { $errors->add( $err_cod, '<strong>'.$error_txt.':</strong> ' . $err_msg ); }
+		if ( TRUE === $buddypress_status ) { $errors_3p[$err_cod] = $err_msg; } else { $errors->add( $err_cod, '<strong>'.$error_txt.':</strong> ' . $err_msg ); }
 		}
 
-	if ( FALSE == $wc_status ) {
+	if ( FALSE === $wc_status ) {
 		/* EMAIL BLACKLIST */
 		if ( rs_wpss_email_blacklist_chk( $user_email ) ) {
 			$wpss_error_code .= ' '.$pref.'9200E-BL';
-			if ( $reg_badrobot_error != TRUE && $reg_jsck_error != TRUE ) {
+			if ( $reg_badrobot_error !== TRUE && $reg_jsck_error !== TRUE ) {
 				$err_cod = 'blacklist_email_error';
 				$err_msg = __( 'Sorry, that email address is not allowed!' ) . ' ' . __( 'Please enter a valid email address.' );
-				if ( TRUE == $buddypress_status ) { $errors_3p[$err_cod] = $err_msg; } else { $errors->add( $err_cod, '<strong>'.$error_txt.':</strong> ' . $err_msg ); }
+				if ( TRUE === $buddypress_status ) { $errors_3p[$err_cod] = $err_msg; } else { $errors->add( $err_cod, '<strong>'.$error_txt.':</strong> ' . $err_msg ); }
 				}
 			}
 		}
 
-	if ( FALSE == $buddypress_status && FALSE == $wc_status && FALSE == $s2member_status ) {
+	if ( FALSE === $buddypress_status && FALSE === $wc_status && FALSE === $s2member_status ) {
 		/* AUTHOR KEYPHRASE BLACKLIST */
 		foreach( $user_data as $k => $v ) {
 			$k_uc = rs_wpss_casetrans('upper',$k);
-			if ( ( $k == 'user_login' || $k == 'first_name' || $k == 'last_name' || $k == 'disp_name' ) && rs_wpss_anchortxt_blacklist_chk($v) ) {
+			if ( ( $k === 'user_login' || $k === 'first_name' || $k === 'last_name' || $k === 'disp_name' ) && rs_wpss_anchortxt_blacklist_chk($v) ) {
 				$wpss_error_code .= ' '.$pref.'10500A-BL-'.$k_uc;
-				if ( $reg_badrobot_error != TRUE && $reg_jsck_error != TRUE ) {
+				if ( $reg_badrobot_error !== TRUE && $reg_jsck_error !== TRUE ) {
 					$nfk = $new_fields[$k];
 					$errors->add( 'blacklist_'.$k.'_error', '<strong>'.$error_txt.':</strong> ' . sprintf( __( '"%1$s" appears to be spam. Please enter a different value in the <strong> %2$s </strong> field.', WPSS_PLUGIN_NAME ), sanitize_text_field($v), $nfk ) );
 					}
@@ -5897,13 +5905,13 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 			}
 		}
 
-	if ( FALSE == $wc_status ) {
+	if ( FALSE === $wc_status ) {
 		/* BLACKLISTED USER */
 		if ( empty( $wpss_error_code ) && rs_wpss_ubl_cache() ) {
 			$wpss_error_code .= ' '.$pref.'0-BL';
 			$err_cod = 'blacklisted_user_error';
 			$err_msg = __( 'User registration is currently not allowed.' );
-			if ( TRUE == $buddypress_status ) { $errors_3p[$err_cod] = $err_msg; } else { $errors->add( $err_cod, '<strong>'.$error_txt.':</strong> ' . $err_msg ); }
+			if ( TRUE === $buddypress_status ) { $errors_3p[$err_cod] = $err_msg; } else { $errors->add( $err_cod, '<strong>'.$error_txt.':</strong> ' . $err_msg ); }
 			}
 		}
 
@@ -5921,7 +5929,7 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 		}
 	else { $wpss_javascript_page_referrer = '[None]'; }
 
-	if ( $post_jsonst_lc == 'ns1' || $post_jsonst_lc == 'ns2' || $post_jsonst_lc == 'ns3' || $post_jsonst_lc == 'ns4' ) { $wpss_jsonst = $post_jsonst; } else { $wpss_jsonst = '[None]'; }
+	if ( $post_jsonst_lc === 'ns1' || $post_jsonst_lc === 'ns2' || $post_jsonst_lc === 'ns3' || $post_jsonst_lc === 'ns4' ) { $wpss_jsonst = $post_jsonst; } else { $wpss_jsonst = '[None]'; }
 
 	$user_id = 'None'; /* Possibly change to '' */
 
@@ -5948,16 +5956,16 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 		}
 
 	if ( !empty( $wpss_error_code ) ) {
-		if( TRUE == $buddypress_status ) {
+		if( TRUE === $buddypress_status ) {
 			$wpss_error_code = str_replace( 'R-', 'BPR-', $wpss_error_code );
 			}
-		elseif( TRUE == $wc_status ) {
+		elseif( TRUE === $wc_status ) {
 			$wpss_error_code = str_replace( 'R-', 'WCR-', $wpss_error_code );
 			}
-		elseif( TRUE == $s2member_status ) {
+		elseif( TRUE === $s2member_status ) {
 			$wpss_error_code = str_replace( 'R-', 'S2R-', $wpss_error_code );
 			}
-		elseif( TRUE == $wpmembers_status ) {
+		elseif( TRUE === $wpmembers_status ) {
 			$wpss_error_code = str_replace( 'R-', 'WPMR-', $wpss_error_code );
 			}
 		rs_wpss_update_accept_status( $register_author_data, 'r', 'Line: '.__LINE__, $wpss_error_code );
@@ -5966,7 +5974,7 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 			rs_wpss_log_data( $register_author_data, $wpss_error_code, $log_pref.'register' );
 			}
 		}
-	elseif( TRUE == $buddypress_status ) {
+	elseif( TRUE === $buddypress_status ) {
 		rs_wpss_update_accept_status( $register_author_data, 'a', 'Line: '.__LINE__ );
 		if ( !empty( $spamshield_options['comment_logging'] ) && !empty( $spamshield_options['comment_logging_all'] ) ) {
 			rs_wpss_log_data( $register_author_data, $wpss_error_code, $log_pref.'register' );
@@ -5974,9 +5982,9 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 		}
 
 	/* Now return the error values, or output error message */
-	if ( TRUE == $wc_status ) { $wpss_wc_reg_inprog = FALSE; }
+	if ( TRUE === $wc_status ) { $wpss_wc_reg_inprog = FALSE; }
 	if ( !empty( $wpss_error_code ) ) {
-		if ( TRUE == $buddypress_status ) {
+		if ( TRUE === $buddypress_status ) {
 			$error_msg = '';
 			foreach ( $errors_3p as $c => $m ) {
 				$error_msg .= '<strong>'.$error_txt.':</strong> '.$m.'<br /><br />'."\n";
@@ -5985,7 +5993,7 @@ function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email
 			wp_die( $error_msg, '', $args );
 			}
 		}
-	elseif( TRUE == $wc_status ) {
+	elseif( TRUE === $wc_status ) {
 		rs_wpss_update_accept_status( $register_author_data, 'a', 'Line: '.__LINE__ );
 		if ( !empty( $spamshield_options['comment_logging'] ) && !empty( $spamshield_options['comment_logging_all'] ) ) {
 			rs_wpss_log_data( $register_author_data, $wpss_error_code, $log_pref.'register' );
@@ -6070,13 +6078,13 @@ function rs_wpss_admin_jp_fix( $get_jp_com_status = FALSE ) {
 	* Fix Compatibility with JetPack if active
 	* The JP Comments module modifies WordPress' comment system core functionality, incapacitating MANY fine plugins...sorry guys, but this has to be deactivated
 	***/
-	if ( FALSE == $get_jp_com_status && is_multisite() ) { return; }
+	if ( FALSE === $get_jp_com_status && is_multisite() ) { return; }
 	$wpss_jp_active	= rs_wpss_is_plugin_active( 'jetpack/jetpack.php' );
 	if ( !empty( $wpss_jp_active ) ) {
 		$jp_active_mods = get_option('jetpack_active_modules');
 		if ( !empty( $jp_active_mods ) && is_array( $jp_active_mods ) ) { $jp_com_key = array_search( 'comments', $jp_active_mods, TRUE ); } else { return FALSE; }
 		if ( isset( $jp_com_key ) && is_int( $jp_com_key ) ) {
-			if ( TRUE == $get_jp_com_status ) { return TRUE; }
+			if ( TRUE === $get_jp_com_status ) { return TRUE; }
 			$jp_num_active_mods = count( $jp_active_mods );
 			if ( empty( $jp_active_mods ) ) { $jp_num_active_mods = 0; }
 			if ( $jp_num_active_mods < 2 ) { $jp_active_mods = array(); } else { unset( $jp_active_mods[$jp_com_key] ); }
@@ -6092,15 +6100,18 @@ function rs_wpss_admin_ao_fix() {
 	* The Autoptimize plugin forces the WP-SpamShield head JavaScript into the footer, which will cause problems. This fix automatically adds WP-SpamShield to the list of ignored scripts.
 	***/
 	if ( is_multisite() ) { return; }
-	global $wpss_ao_active;
+	global $wpss_ao_active,$wpss_ao_js,$wpss_ao_js_exc;
 	if ( empty( $wpss_ao_active ) ) { $wpss_ao_active = rs_wpss_is_plugin_active( 'autoptimize/autoptimize.php' ); }
 	if ( !empty( $wpss_ao_active ) ) {
-		$ao_js = get_option('autoptimize_js');
-		if ( empty( $ao_js ) ) { return; }
-		$ao_js_exc = trim( get_option('autoptimize_js_exclude'), ", \t\n\r\0\x0B" );
-		if ( FALSE !== strpos( $ao_js_exc, '.php,jquery' ) ) { return; }
-		$s = empty( $ao_js_exc ) ? '' : ',';
-		$ao_js_exc .= $s.'.php,jquery';
+		if ( empty( $wpss_ao_js ) ) { $wpss_ao_js = get_option('autoptimize_js'); } /* See if "Optimize JavaScript Code" enabled */
+		if ( empty( $wpss_ao_js ) ) { return; }
+		if ( empty( $wpss_ao_js_exc ) ) { $wpss_ao_js_exc = get_option('autoptimize_js_exclude'); } /* JavaScript exclusion setting */
+		$ao_js_exc		= trim( $wpss_ao_js_exc, ", \t\n\r\0\x0B" );
+		$exc_phrs		= array( '1899' => 'wp-spamshield', '192' => '.php,jquery', ); $exc_phr = $exc_phrs['192'];
+		$ao_js_exc_mod	= trim( implode( ',', array_unique( array_values( array_filter( explode( ',', str_replace( array( $exc_phrs['1899'].'1', $exc_phrs['1899'] ), array( '', '' ), $ao_js_exc ) ) ) ) ) ), ", \t\n\r\0\x0B" );
+		if ( FALSE !== strpos( $ao_js_exc, $exc_phr ) && $wpss_ao_js_exc === $ao_js_exc_mod ) { return; } else { $ao_js_exc = $ao_js_exc_mod; }
+		if ( FALSE === strpos( $ao_js_exc, $exc_phr ) ) { $s = empty( $ao_js_exc ) ? '' : ','; $ao_js_exc .= $s.$exc_phr; }
+		$ao_js_exc = implode( ',', array_unique( explode( ',', $ao_js_exc ) ) );
 		update_option( 'autoptimize_js_exclude', $ao_js_exc );
 		rs_wpss_append_log_data( "\n".'Autoptimize JavaScript exclusion setting appended.', FALSE );
 		}
@@ -6114,8 +6125,8 @@ function rs_wpss_admin_ao_fix() {
 if (!class_exists('WP_SpamShield')) {
     class WP_SpamShield {
 
-		function WP_SpamShield() {
-			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 && RSMP_SERVER_ADDR != '127.0.0.1' && !WPSS_DEBUG && !WP_DEBUG ) {
+		function __construct() {
+			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 && RSMP_SERVER_ADDR !== '127.0.0.1' && !WPSS_DEBUG && !WP_DEBUG ) {
 				error_reporting(0); /* Prevents error display on production sites, but testing on 127.0.0.1 will display errors, or if debug mode turned on */
 				}
 			/* Activation */
@@ -6126,8 +6137,8 @@ if (!class_exists('WP_SpamShield')) {
 			add_action( 'widgets_init', 'rs_wpss_load_widgets' );
 			add_action( 'admin_menu', array(&$this,'add_settings_page') );
 			add_action( 'admin_init', array(&$this,'check_version') );
-			foreach ( array( 'wp_enqueue_scripts', 'login_enqueue_scripts' ) as $a ) { add_action( $a, array(&$this,'enqueue_scripts'), 100 );	} /* Changed 1.9.1 */
-			if ( FALSE == WPSS_COMPAT_MODE ) { foreach ( array( 'wp_head', 'login_head' ) as $a ) { add_action( $a, array(&$this,'insert_head_js') ); } } /* Changed 1.9.1 */
+			foreach ( array( 'wp_enqueue_scripts', 'login_enqueue_scripts' ) as $a ) { add_action( $a, array(&$this,'enqueue_scripts'), 100 ); } /* Changed 1.9.1 */
+			if ( FALSE === WPSS_COMPAT_MODE ) { foreach ( array( 'wp_head', 'login_head' ) as $a ) { add_action( $a, array(&$this,'insert_head_js'), 9999 ); } } /* Changed 1.9.1 */
 			add_action( 'comment_form', 'rs_wpss_comment_form_append', 10 );
 			foreach ( array( 'wp_footer', 'login_footer' ) as $a ) { add_action( $a, array(&$this,'insert_footer_js') ); } /* Changed 1.9.1 */
 			add_action( 'preprocess_comment', 'rs_wpss_check_comment_spam', -10 );
@@ -6141,7 +6152,7 @@ if (!class_exists('WP_SpamShield')) {
 			add_filter( 'plugin_action_links', array(&$this,'filter_plugin_actions'), 10, 2 );
 			add_filter( 'plugin_row_meta', array(&$this,'filter_plugin_meta'), 10, 2 );
 			add_filter( 'the_content', 'rs_wpss_contact_form', 10 );
-			foreach ( array( 'the_content', 'the_excerpt', 'widget_text', 'comment_text', 'comment_excerpt' ) as $f ) { add_filter( $f, 'rs_wpss_encode_emails', 9999); } /* Added 1.9.0.5 */
+			foreach ( array( 'the_content', 'the_excerpt', 'widget_text', 'comment_text', 'comment_excerpt' ) as $f ) { add_filter( $f, 'rs_wpss_encode_emails', 9999 ); } /* Added 1.9.0.5 */
 			add_filter( 'comment_notification_recipients', 'rs_wpss_comment_notification_check', 9999, 2 );
 			add_filter( 'comment_moderation_recipients', 'rs_wpss_comment_moderation_check', 9999, 2 );
 			add_filter( 'registration_errors', 'rs_wpss_check_new_user', -10, 3 );
@@ -6231,7 +6242,7 @@ if (!class_exists('WP_SpamShield')) {
 				* update_option('moderation_notify', 1);
 				* Compatibility Checks
 				***/
-				if ( TRUE == WPSS_COMPAT_MODE ) { rs_wpss_admin_jp_fix(); }
+				if ( TRUE === WPSS_COMPAT_MODE ) { rs_wpss_admin_jp_fix(); }
 				rs_wpss_admin_ao_fix();
 
 				/* Ensure Correct Permissions of JS file - BEGIN */
@@ -6258,25 +6269,24 @@ if (!class_exists('WP_SpamShield')) {
 			}
 
 		function add_settings_page() {
-			if ( rs_wpss_is_doing_scan( TRUE ) ) { return; }
+			if ( rs_wpss_is_admin_sproc( TRUE ) ) { return; }
 			add_options_page( 'WP-SpamShield ' . __( 'Settings' ), 'WP-SpamShield', 'manage_options', WPSS_PLUGIN_NAME, array(&$this,'main_settings_page') );
 			}
 
 		function filter_plugin_actions( $links, $file ) {
 			/* Add "Settings" Link on Dashboard Plugins page, in plugin listings */
-			if ( rs_wpss_is_doing_scan( TRUE ) ) { return $links; }
-			if ( $file == WPSS_PLUGIN_BASENAME && rs_wpss_is_user_admin() ) {
+			if ( rs_wpss_is_admin_sproc( TRUE ) ) { return $links; }
+			if ( $file === WPSS_PLUGIN_BASENAME ) { /* Before other links */
 				$settings_link = '<a href="options-general.php?page='.WPSS_PLUGIN_NAME.'">' . __( 'Settings' ) . '</a>';
-				array_unshift( $links, $settings_link ); /* Before other links */
+				array_unshift( $links, $settings_link );
 				}
 			return $links;
 			}
 
 		function filter_plugin_meta( $links, $file ) {
 			/* Add Links on Dashboard Plugins page, in plugin meta */
-			if ( rs_wpss_is_doing_scan( TRUE ) ) { return $links; }
-			if ( $file == WPSS_PLUGIN_BASENAME && rs_wpss_is_user_admin() ) {
-				/* After other links */
+			if ( rs_wpss_is_admin_sproc( TRUE ) ) { return $links; }
+			if ( $file === WPSS_PLUGIN_BASENAME ) { /* After other links */
 				$links[] = '<a href="'.WPSS_HOME_URL.'" target="_blank" rel="external" >' . rs_wpss_doc_txt() . '</a>';
 				$links[] = '<a href="'.WPSS_HOME_URL.'support/" target="_blank" rel="external" >' . __( 'Support', WPSS_PLUGIN_NAME ) . '</a>';
 				if ( rs_wpss_count() >= 2000 ) { $links[] = '<a href="'.WPSS_WP_RATING_URL.'" title="' . __( 'Let others know by giving it a good rating on WordPress.org!', WPSS_PLUGIN_NAME ) . '" target="_blank" rel="external" >' . __( 'Rate the Plugin', WPSS_PLUGIN_NAME ) . '</a>'; }
@@ -6301,7 +6311,7 @@ if (!class_exists('WP_SpamShield')) {
 			}
 
 		function dashboard_counter() {
-			if ( rs_wpss_is_doing_scan( TRUE ) ) { return; }
+			if ( rs_wpss_is_admin_sproc( TRUE ) ) { return; }
 			$spamshield_count = rs_wpss_count();
 			global $spamshield_options; if ( empty( $spamshield_options ) ) { $spamshield_options = get_option('spamshield_options'); }
 			rs_wpss_update_session_data($spamshield_options);
@@ -6412,14 +6422,14 @@ if (!class_exists('WP_SpamShield')) {
 				$ip_blacklist_nonce_value	= $_REQUEST[$ip_blacklist_nonce_name];
 				}
 			if ( !empty( $_REQUEST['wpss_action'] ) ) { $wpss_action = $_REQUEST['wpss_action']; } else { $wpss_action = ''; }
-			if ( $wpss_action == 'blacklist_ip' && !empty( $_REQUEST['bl_ip'] ) && !empty( $_REQUEST[$ip_blacklist_nonce_name] ) && rs_wpss_is_user_admin() && empty( $_REQUEST['submit_wpss_general_options'] ) && empty( $_REQUEST['submit_wpss_contact_options'] ) ) {
+			if ( $wpss_action === 'blacklist_ip' && !empty( $_REQUEST['bl_ip'] ) && !empty( $_REQUEST[$ip_blacklist_nonce_name] ) && rs_wpss_is_user_admin() && empty( $_REQUEST['submit_wpss_general_options'] ) && empty( $_REQUEST['submit_wpss_contact_options'] ) ) {
 				if ( rs_wpss_verify_nonce( $ip_blacklist_nonce_value, $ip_blacklist_nonce_action, $ip_blacklist_nonce_name ) ) {
 					if ( rs_wpss_is_valid_ip( $ip_to_blacklist ) ) {
 						$last_admin_ip = get_option( 'spamshield_last_admin' );
-						if ( $ip_to_blacklist == $ip ) {
+						if ( $ip_to_blacklist === $ip ) {
 							echo '<div class="error fade"><p>' . __( 'Are you sure you want to blacklist yourself? IP Address not added to Comment Blacklist.', WPSS_PLUGIN_NAME ) . '</p></div>'; /* NEEDS TRANSLATION */
 							}
-						elseif ( !empty( $last_admin_ip ) && $ip_to_blacklist == $last_admin_ip ) { /* TO DO: Switch to in_array once changes are made to last_admin_ip */
+						elseif ( !empty( $last_admin_ip ) && $ip_to_blacklist === $last_admin_ip ) { /* TO DO: Switch to in_array() once changes are made to last_admin_ip */
 							echo '<div class="error fade"><p>' . __( 'Are you sure you want to blacklist an Administrator? IP Address not added to Comment Blacklist.', WPSS_PLUGIN_NAME ) . '</p></div>'; /* NEEDS TRANSLATION */
 							}
 						else {
@@ -6494,7 +6504,7 @@ if (!class_exists('WP_SpamShield')) {
 				$wpss_options_general_boolean_count = count( $wpss_options_general_boolean );
 				$i = 0;
 				while ( $i < $wpss_options_general_boolean_count ) {
-					if ( !empty( $_REQUEST[$wpss_options_general_boolean[$i]] ) && ( $_REQUEST[$wpss_options_general_boolean[$i]] == 'on' || $_REQUEST[$wpss_options_general_boolean[$i]] == 1 || $_REQUEST[$wpss_options_general_boolean[$i]] == '1' ) ) { $valid_req_spamshield_options[$wpss_options_general_boolean[$i]] = 1; }
+					if ( !empty( $_REQUEST[$wpss_options_general_boolean[$i]] ) && ( $_REQUEST[$wpss_options_general_boolean[$i]] === 'on' || $_REQUEST[$wpss_options_general_boolean[$i]] == 1 || $_REQUEST[$wpss_options_general_boolean[$i]] == '1' ) ) { $valid_req_spamshield_options[$wpss_options_general_boolean[$i]] = 1; }
 					else { $valid_req_spamshield_options[$wpss_options_general_boolean[$i]] = 0; }
 					$i++;
 					}
@@ -6536,7 +6546,7 @@ if (!class_exists('WP_SpamShield')) {
 				$wpss_options_contact_boolean_count = count( $wpss_options_contact_boolean );
 				$i = 0;
 				while ( $i < $wpss_options_contact_boolean_count ) {
-					if ( !empty( $_REQUEST[$wpss_options_contact_boolean[$i]] ) && ( $_REQUEST[$wpss_options_contact_boolean[$i]] == 'on' || $_REQUEST[$wpss_options_contact_boolean[$i]] == 1 || $_REQUEST[$wpss_options_contact_boolean[$i]] == '1' ) ) { $valid_req_spamshield_options[$wpss_options_contact_boolean[$i]] = 1; }
+					if ( !empty( $_REQUEST[$wpss_options_contact_boolean[$i]] ) && ( $_REQUEST[$wpss_options_contact_boolean[$i]] === 'on' || $_REQUEST[$wpss_options_contact_boolean[$i]] == 1 || $_REQUEST[$wpss_options_contact_boolean[$i]] == '1' ) ) { $valid_req_spamshield_options[$wpss_options_contact_boolean[$i]] = 1; }
 					else { $valid_req_spamshield_options[$wpss_options_contact_boolean[$i]] = 0; }
 					$i++;
 					}
@@ -6890,7 +6900,7 @@ if (!class_exists('WP_SpamShield')) {
 		function settings_ver_ftr() {
 			global $compat_mode;
 			echo 'Version '.WPSS_VERSION;
-			if ( TRUE == WPSS_COMPAT_MODE || !empty( $compat_mode ) ) { echo "<br />\n". rs_wpss_casetrans( 'upper', __( 'Compatibility Mode', WPSS_PLUGIN_NAME ) ); /* TRANSLATE */ }
+			if ( TRUE === WPSS_COMPAT_MODE || !empty( $compat_mode ) ) { echo "<br />\n". rs_wpss_casetrans( 'upper', __( 'Compatibility Mode', WPSS_PLUGIN_NAME ) ); /* TRANSLATE */ }
 			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) === 0 ) {
 				$wpss_proc_data = get_option( 'spamshield_procdat' );
 				if ( !isset( $wpss_proc_data['avg2_wpss_proc_time'] ) && isset( $wpss_proc_data['avg_wpss_proc_time'] ) ) {
@@ -6913,7 +6923,7 @@ if (!class_exists('WP_SpamShield')) {
 			}
 
 		function check_version() {
-			if ( rs_wpss_is_doing_scan( TRUE ) ) { return; }
+			if ( rs_wpss_is_admin_sproc( TRUE ) ) { return; }
 			if ( current_user_can( 'manage_network' ) ) {
 				/* Check for pending admin notices */
 				$admin_notices = get_option('spamshield_admin_notices');
@@ -6936,7 +6946,7 @@ if (!class_exists('WP_SpamShield')) {
 				$admin_notices = get_option('spamshield_admin_notices');
 				if ( !empty( $admin_notices ) ) { add_action( 'admin_notices', array(&$this,'admin_notices') ); }
 				/* Make sure user has minimum required WordPress version, in order to prevent issues */
-				$wpss_wp_version = RSMP_WP_VERSION;
+				$wpss_wp_version = WPSS_WP_VERSION;
 				if ( !empty( $wpss_wp_version ) && version_compare( $wpss_wp_version, WPSS_REQUIRED_WP_VERSION, '<' ) ) {
 					deactivate_plugins( WPSS_PLUGIN_BASENAME );
 					$notice_text = sprintf( __( 'Plugin deactivated. WordPress Version %s required. Please upgrade WordPress to the latest version.', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_WP_VERSION );
@@ -6947,7 +6957,7 @@ if (!class_exists('WP_SpamShield')) {
 					return FALSE;
 					}
 				/* Make sure user has minimum required PHP version, in order to prevent issues */
-				$wpss_php_version = RSMP_PHP_VERSION;
+				$wpss_php_version = WPSS_PHP_VERSION;
 				if ( !empty( $wpss_php_version ) && version_compare( $wpss_php_version, WPSS_REQUIRED_PHP_VERSION, '<' ) ) {
 					deactivate_plugins( WPSS_PLUGIN_BASENAME );
 					$notice_text = sprintf( __( '<p>Plugin deactivated. <strong>Your server is running PHP version %3$s, but WP-SpamShield requires at least PHP %1$s.</strong> We are no longer supporting PHP 5.2, as it has not been supported by the PHP team <a href=%2$s>since 2011</a>, and there are known security, performance, and compatibility issues.</p><p>The version of PHP running on your server is <em>extremely out of date</em>. You should upgrade your PHP version as soon as possible.</p><p>If you need help with this, please contact your web hosting company and ask them to switch your PHP version to 5.4 or 5.5. Please see the <a href=%4$s>plugin documentation</a> and <a href=%5$s>changelog</a> if you have further questions.</p>', WPSS_PLUGIN_NAME ), WPSS_REQUIRED_PHP_VERSION, '"http://php.net/archive/2011.php#id2011-08-23-1" target="_blank" rel="external" ', $wpss_php_version, '"'.WPSS_HOME_URL.'?src='.WPSS_VERSION.'-php-notice#wpss_requirements" target="_blank" rel="external" ', '"'.WPSS_HOME_URL.'version-history/?src='.WPSS_VERSION.'-php-notice#ver_182" target="_blank" rel="external" ' ); /* NEEDS TRANSLATION - Added 1.8.2 */
@@ -6976,14 +6986,14 @@ if (!class_exists('WP_SpamShield')) {
 					***/
 					}
 				/* Compatibility Checks */
-				if ( TRUE == WPSS_COMPAT_MODE ) { rs_wpss_admin_jp_fix(); }
+				if ( TRUE === WPSS_COMPAT_MODE ) { rs_wpss_admin_jp_fix(); }
 				rs_wpss_admin_ao_fix();
 				}
 			}
 
 		function upgrade_check( $installed_ver = NULL ) {
 			if ( empty( $installed_ver ) ) { $installed_ver = get_option( 'wp_spamshield_version' ); }
-			if ( $installed_ver != WPSS_VERSION ) {
+			if ( $installed_ver !== WPSS_VERSION ) {
 				$upd_options = array( 'wp_spamshield_version' => WPSS_VERSION, 'spamshield_ubl_cache' => array(), 'spamshield_wpssmid_cache' => array() );
 				foreach( $upd_options as $option => $val ) { update_option( $option, $val ); }
 				$del_options = array( 'spamshield_install_status', 'spamshield_warning_status', 'spamshield_regalert_status' );
@@ -6998,8 +7008,8 @@ if (!class_exists('WP_SpamShield')) {
 			* Added 1.9.1
 			***/
 			$wpss_inst_status_option = get_option( 'spamshield_install_status' );
-			if ( !empty( $wpss_inst_status_option ) && $wpss_inst_status_option == 'correct' ) { return TRUE; }
-			elseif ( !empty( $wpss_inst_status_option ) && $wpss_inst_status_option == 'incorrect' ) { return FALSE; }
+			if ( !empty( $wpss_inst_status_option ) && $wpss_inst_status_option === 'correct' ) { return TRUE; }
+			elseif ( !empty( $wpss_inst_status_option ) && $wpss_inst_status_option === 'incorrect' ) { return FALSE; }
 			else {
 				$inst_plugins_get_test_1	= WPSS_PLUGIN_NAME; /* 'wp-spamshield' - Checking for 'options-general.php?page='.WPSS_PLUGIN_NAME */
 				$inst_file_test_0 			= WPSS_PLUGIN_FILE_PATH; /* '/public_html/wp-content/plugins/wp-spamshield/wp-spamshield.php' */
@@ -7015,9 +7025,9 @@ if (!class_exists('WP_SpamShield')) {
 				$jscripts_status = rs_wpss_jscripts_403_fix();
 				global $compat_mode;
 				extract( $jscripts_status );
-				$jscripts_blocked = ( FALSE == $blocked || TRUE == $compat_mode ) ? FALSE : TRUE;
+				$jscripts_blocked = ( FALSE === $blocked || TRUE === $compat_mode ) ? FALSE : TRUE;
 
-				if ( ( $inst_plugins_get_test_1 == $get_page || TRUE == $activation ) && file_exists( $inst_file_test_0 ) && file_exists( $inst_file_test_3 ) && FALSE == $jscripts_blocked ) {
+				if ( ( $inst_plugins_get_test_1 === $get_page || TRUE === $activation ) && file_exists( $inst_file_test_0 ) && file_exists( $inst_file_test_3 ) && FALSE === $jscripts_blocked ) {
 					update_option( 'spamshield_install_status', 'correct' );
 					return TRUE;
 					}
@@ -7030,9 +7040,9 @@ if (!class_exists('WP_SpamShield')) {
 
 		function editor_add_quicktags() {
 			 /* Added 1.8.3 */
-			if ( rs_wpss_is_doing_scan( TRUE ) ) { return; }
+			if ( rs_wpss_is_admin_sproc( TRUE ) ) { return; }
 			$current_screen = get_current_screen();
-			if ( !wp_script_is( 'quicktags' ) || $current_screen->parent_base != 'edit' || $current_screen->post_type != 'page' || !current_user_can( 'edit_pages' ) ) { return; }
+			if ( !wp_script_is( 'quicktags' ) || $current_screen->parent_base !== 'edit' || $current_screen->post_type !== 'page' || !current_user_can( 'edit_pages' ) ) { return; }
 			echo "\n".'<script type=\'text/javascript\'>'."\n".'/* <![CDATA[ */'."\n".'QTags.addButton( \'wpss_cf\', \'WPSS '.__( 'Contact Form', WPSS_PLUGIN_NAME ).'\', \'[spamshieldcontact]\', \'\', \'\', \'WP-SpamShield '.__( 'Contact Form', WPSS_PLUGIN_NAME ).'\', 999 );'."\n".'/* ]]> */'."\n".'</script>';
 			}
 
@@ -7062,7 +7072,7 @@ if (!class_exists('WP_SpamShield')) {
 			* The JS file is really a dynamically generated hybrid script that uses both server-side and client-side code so it requires the PHP functionality.
 			* "But couldn't that be done by..." Stop right there...No, it cannot.
 			***/
-			if ( ( ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) && !rs_wpss_is_doing_scan() ) {
+			if ( ( ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) && !rs_wpss_is_admin_sproc() ) {
 				echo "\n";
 				global $wpss_ao_active; $ao_noop_open = $ao_noop_close = '';
 				if ( empty( $wpss_ao_active ) ) { $wpss_ao_active = rs_wpss_is_plugin_active( 'autoptimize/autoptimize.php' ); }
@@ -7077,7 +7087,7 @@ if (!class_exists('WP_SpamShield')) {
 			* Insert WP-SpamShield JS into footer. This adds essential hidden fields to the relevant forms via jQuery. (REF2XJS and FVFJS)
 			* Added 1.8.9.9
 			***/
-			if ( ( ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) && !rs_wpss_is_doing_scan() ) {
+			if ( ( ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) && !rs_wpss_is_admin_sproc() ) {
 				$wpss_key_values 	= rs_wpss_get_key_values();
 				$wpss_js_key 		= $wpss_key_values['wpss_js_key'];
 				$wpss_js_val 		= $wpss_key_values['wpss_js_val'];
@@ -7089,18 +7099,18 @@ if (!class_exists('WP_SpamShield')) {
 				if ( empty( $wpss_ao_active ) ) { $wpss_ao_active = rs_wpss_is_plugin_active( 'autoptimize/autoptimize.php' ); }
 				if ( !empty( $wpss_ao_active ) ) { $ao_noop_open = '<!--noptimize-->'; $ao_noop_close = '<!--/noptimize-->'; } /* Add noptimize tags if Autoptimize is active */
 				echo $ao_noop_open.'<script type=\'text/javascript\'>'."\n".'/* <![CDATA[ */'."\n".WPSS_REF2XJS.'=escape(document[\'referrer\']);'."\n".'hf4N=\''.$wpss_js_key.'\';'."\n".'hf4V=\''.$wpss_js_val.'\';'."\n".'jQuery(document).ready(function($){'.'var e="#commentform, .comment-respond form, .comment-form, #registerform, #loginform, #wpss_contact_form, .wpcf7-form, .gform_wrapper form, #buddypress #signup_form, .buddypress #signup_form";$(e).submit(function(){$("<input>").attr("type","hidden").attr("name","'.WPSS_REF2XJS.'").attr("value",'.WPSS_REF2XJS.').appendTo(e);';
-				if ( FALSE == WPSS_COMPAT_MODE ) { echo '$("<input>").attr("type","hidden").attr("name",hf4N).attr("value",hf4V).appendTo(e);'; }
+				if ( FALSE === WPSS_COMPAT_MODE ) { echo '$("<input>").attr("type","hidden").attr("name",hf4N).attr("value",hf4V).appendTo(e);'; }
 				echo 'return true;});';
-				if ( TRUE == WPSS_COMPAT_MODE ) { echo 'var h="form[method=\'post\']";$(h).submit(function(){$("<input>").attr("type","hidden").attr("name",hf4N).attr("value",hf4V).appendTo(h);return true;});'; }
+				if ( TRUE === WPSS_COMPAT_MODE ) { echo 'var h="form[method=\'post\']";$(h).submit(function(){$("<input>").attr("type","hidden").attr("name",hf4N).attr("value",hf4V).appendTo(h);return true;});'; }
 				else { echo '$("#comment").attr({minlength:"'.$comment_min_length.'",maxlength:"15360"})'; }
 				echo '});'."\n".'/* ]]> */'."\n".'</script>'.$ao_noop_close." "."\n";
 				}
 			}
 
 		function enqueue_scripts() {
-			if ( ( ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) && !rs_wpss_is_doing_scan() ) {
+			if ( ( ( !is_admin() && is_user_logged_in() ) || !is_user_logged_in() ) && !rs_wpss_is_admin_sproc() ) {
 				$js_handle = 'wpss-jscripts-ftr'; $js_file = 'jscripts-ftr-min.js'; $js_ver = NULL; /* '1.0', WPSS_VERSION */
-				if ( TRUE == WPSS_COMPAT_MODE || current_user_can( 'moderate_comments' ) ) { $js_file = 'jscripts-ftr2-min.js'; }
+				if ( TRUE === WPSS_COMPAT_MODE || current_user_can( 'moderate_comments' ) ) { $js_file = 'jscripts-ftr2-min.js'; }
 				wp_register_script( $js_handle, WPSS_PLUGIN_JS_URL.'/'.$js_file, array( 'jquery' ), $js_ver, TRUE );
 				wp_enqueue_script( $js_handle );
 				}

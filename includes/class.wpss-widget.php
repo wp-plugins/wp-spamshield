@@ -1,7 +1,7 @@
 <?php
 /***
 * WP-SpamShield Widgets
-* Ver 1.9.3
+* Ver 1.9.4
 ***/
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -144,7 +144,7 @@ class WP_SpamShield_Counter_CG extends WP_Widget {
 .wpssstats { width: auto; }
 .wpssstats a { background: <?php echo $color_pal[0]; ?>; border: <?php echo $style1_bor; ?>px solid <?php echo $style1_borcol; ?>; border-radius:<?php echo $style1_borrad; ?>px; color: <?php echo $color_pal[2]; ?> !important; cursor: pointer; display: block; font-weight: normal; height: 100%; -moz-border-radius:<?php echo $style1_borrad; ?>px; padding: 7px 0 6px; text-align: center; text-decoration: none; -webkit-border-radius:<?php echo $style1_borrad; ?>px; width: 98%; -moz-box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_col; ?>; -webkit-box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_col; ?>; box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_col; ?>; transition: none !important; -moz-transition: none !important; -webkit-transition: none !important; }
 .wpssstats a:hover { background: <?php echo $style1_hovbg; ?>; border: <?php echo $style1_bor; ?>px solid <?php echo $style1_borcol; ?>; text-decoration: none; -moz-box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_hovcol; ?>; -webkit-box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_hovcol; ?>; box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_hovcol; ?>; transition: none !important; -moz-transition: none !important; -webkit-transition: none !important; }
-.wpssstats a:active { background: <?php echo $style1_actbg; ?>; border: <?php echo $style1_bor; ?>px solid <?php echo $style1_borcol; ?>; text-decoration: none; -moz-box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_hovcol; ?>; -webkit-box-shadow:	inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_hovcol; ?>; box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_hovcol; ?>; transition: none !important; -moz-transition: none !important; -webkit-transition: none !important; }
+.wpssstats a:active { background: <?php echo $style1_actbg; ?>; border: <?php echo $style1_bor; ?>px solid <?php echo $style1_borcol; ?>; text-decoration: none; -moz-box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_hovcol; ?>; -webkit-box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_hovcol; ?>; box-shadow: inset 0 0 <?php echo $style1_boxshad_blurrad; ?>px <?php echo $style1_boxshad_sprdrad; ?>px <?php echo $style1_boxshad_hovcol; ?>; transition: none !important; -moz-transition: none !important; -webkit-transition: none !important; }
 .wpssstats .wpsscount { color: <?php echo $color_pal[5]; ?> !important; display: block; font-size: <?php echo $l1_fnt_sz; ?>px; line-height: 140%; letter-spacing: <?php echo $l1_let_spac; ?>px; padding: 0 13px; white-space: nowrap; }
 .wpssstats .wpsscount2 { color: <?php echo $color_pal[5]; ?> !important; display: block; font-size: <?php echo $l2_fnt_sz; ?>px; line-height: 120%; letter-spacing: <?php echo $l2_let_spac; ?>px; padding: 0 13px; white-space: nowrap; }
 .wpssstats .wpsscount3 { font-size: <?php echo $l3_fnt_sz; ?>px; line-height: 120%; letter-spacing: <?php echo $l3_let_spac; ?>px; padding: 0 0px; white-space: nowrap; }
@@ -605,7 +605,7 @@ class WPSS_Old_Counters {
 	/* Old counter functions */
 
 	public static function counter_short( $atts = array() ) {
-		if ( rs_wpss_is_doing_scan() ) { return NULL; }
+		if ( rs_wpss_is_admin_sproc() ) { return NULL; }
 		global $wpss_wid_inst;
 		if ( !isset( $wpss_wid_inst ) ) { $wpss_wid_inst = 0; }
 		++$wpss_wid_inst;
@@ -666,7 +666,7 @@ class WPSS_Old_Counters {
 		}
 
 	public static function counter_sm_short( $atts = array() ) {
-		if ( rs_wpss_is_doing_scan() ) { return NULL; }
+		if ( rs_wpss_is_admin_sproc() ) { return NULL; }
 		global $wpss_wid_inst;
 		if ( !isset( $wpss_wid_inst ) ) { $wpss_wid_inst = 0; }
 		++$wpss_wid_inst;

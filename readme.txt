@@ -188,6 +188,15 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.4 =
+*released 07/1/15*
+
+* Made various performance and speed optimization improvements.
+* Added gzip compression to both external JavaScript files, and far future Expires headers to the `jscripts-ftr-min.js` file (the external footer JavaScript) to further improve speed in loading.
+* Made some improvements to the Autoptimize compatibility fix.
+* Made various code improvements.
+* Updated the spam filters.
+
 = 1.9.3 =
 *released 06/25/15*
 
@@ -625,8 +634,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.3 =
-* Added an option to disable email harvester protection, further improved plugin performance/efficiency/speed, and updated the spam filters. Please see Changelog for details.
+= 1.9.4 =
+* Made various performance and speed optimization improvements, added gzip compression to both external JavaScript files, made various other code improvements, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
