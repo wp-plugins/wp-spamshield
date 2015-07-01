@@ -1,0 +1,15 @@
+# WP-SpamShield - File Backups .htaccess
+# Version 1.9.4
+
+# Block access to backup files.
+# Apache 2.2 and 2.4 compatible
+
+# All Files - Deny
+<Files *>
+	<IfModule !mod_authz_core.c>
+		Deny from all
+	</IfModule>
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+</Files>
