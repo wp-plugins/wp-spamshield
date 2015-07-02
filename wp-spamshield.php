@@ -102,7 +102,7 @@ if ( !defined( 'WPSS_WP_URL' ) ) 				{ define( 'WPSS_WP_URL', 'http://wordpress.
 if ( !defined( 'WPSS_WP_RATING_URL' ) ) 		{ define( 'WPSS_WP_RATING_URL', 'http://bit.ly/wp-spamshield-rate' ); }
 if ( !defined( 'RSMP_SERVER_SOFTWARE' ) ) 		{ define( 'RSMP_SERVER_SOFTWARE', $_SERVER['SERVER_SOFTWARE'] ); }
 if ( !defined( 'RSMP_PHP_UNAME' ) ) 			{ define( 'RSMP_PHP_UNAME', @php_uname() ); }
-if ( !defined( 'RSMP_PHP_VERSION' ) ) 			{ define( 'RSMP_PHP_VERSION', phpversion() ); }
+if ( !defined( 'RSMP_PHP_VERSION' ) ) 			{ define( 'RSMP_PHP_VERSION', PHP_VERSION ); }
 if ( !defined( 'RSMP_PHP_MEM_LIMIT' ) ) {
 	$wpss_php_memory_limit = spamshield_format_bytes( ini_get( 'memory_limit' ) );
 	define( 'RSMP_PHP_MEM_LIMIT', $wpss_php_memory_limit );
