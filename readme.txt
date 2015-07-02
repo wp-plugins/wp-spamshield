@@ -25,7 +25,12 @@ No CAPTCHA's, challenge questions or other inconvenience to site visitors - it w
 Most of the spam hitting your blog originates from bots, but quite a bit comes from humans too. This plugin works like a firewall to ensure that your commenters are in fact, human, and that those humans aren't spamming you.
 
 = Two Layers of Spam Blocking =
-There are two layers of anti-spam protection that work together to *block both automated (spambots) and human spam*: a **JavaScript/Cookies Layer**, and an **Algorithmic Layer**. The first layer uses a dynamic combo of JavaScript and cookies to weed out the humans from spambots, preventing 100% of automated spam from ever getting to your site. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the Algorithmic Layer would still stop almost all of the spam that the JavaScript Layer blocks, and provides close to a fully redundant backstop. This JavaScript Layer utilizes multiple randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer consists of over 100 advanced filters, and eliminates *trackback spam* and *most human spam as well*. And, it does all that without hindering legitimate comments and trackbacks.
+There are two layers of anti-spam protection that work together to *block both automated (spambots) and human spam*:
+
+1. The **JavaScript/Cookies Layer**
+2. The **Algorithmic Layer**
+
+The first layer uses a dynamic combo of *JavaScript and cookies* to weed out the humans from spambots, preventing 100% of automated spam from ever getting to your site. Even if bot authors could engineer a way to break through the JavaScript/Cookies Layer, the *Algorithmic Layer* would still stop almost all of the spam that the JavaScript Layer blocks, and provides close to a fully redundant backstop. This JavaScript Layer utilizes multiple randomly generated keys, and is algorithmically enhanced to ensure that spambots won't beat it. The powerful Algorithmic Layer consists of over 100 advanced filters, and eliminates *trackback spam* and *most human spam as well*. And, it does all that without hindering legitimate comments and trackbacks.
 
 = No More Wasted Time Sifting Through the Spam Queue =
 This type of solution works silently in the background, with no inconveniences. You won't have to waste valuable time sifting through a spam queue any more, because there won't be anything there.
