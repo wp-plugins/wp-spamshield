@@ -199,6 +199,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Made various performance and speed optimization improvements.
 * Added gzip compression to both external JavaScript files, and far future Expires headers to the `jscripts-ftr-min.js` file (the external footer JavaScript) to further improve speed in loading.
 * Made some improvements to the Autoptimize compatibility fix.
+* Added a minor bug fix for Gravity Forms anti-spam.
 * Made various code improvements.
 * Updated the spam filters.
 
