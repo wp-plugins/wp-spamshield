@@ -193,6 +193,13 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.4.1 =
+*released 07/9/15*
+
+* Fixed a bug with some of the anti-spam checks not being properly verified on certain server configurations with dynamic IP addresses.
+* Made various code improvements.
+* Updated the spam filters.
+
 = 1.9.4 =
 *released 07/1/15*
 
@@ -640,8 +647,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.4 =
-* Made various performance and speed optimization improvements, added gzip compression to both external JavaScript files, made various other code improvements, and updated the spam filters. Please see Changelog for details.
+= 1.9.4.1 =
+* Fixed a bug with some of the anti-spam checks on certain server configurations with dynamic IP addresses, made various code improvements, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

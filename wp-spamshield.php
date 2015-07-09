@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.9.4
+Version: 1.9.4.1
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.9.4' );
+define( 'WPSS_VERSION', '1.9.4.1' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.9' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -77,12 +77,12 @@ if ( !defined( 'WPSS_PLUGIN_IMG_PATH' ) ) 		{ define( 'WPSS_PLUGIN_IMG_PATH', WP
 if ( !defined( 'WPSS_PLUGIN_INCL_PATH' ) ) 		{ define( 'WPSS_PLUGIN_INCL_PATH', WPSS_PLUGIN_PATH . '/includes' ); }
 if ( !defined( 'WPSS_PLUGIN_JS_PATH' ) ) 		{ define( 'WPSS_PLUGIN_JS_PATH', WPSS_PLUGIN_PATH . '/js' ); }
 if ( !defined( 'WPSS_PLUGIN_LANG_PATH' ) ) 		{ define( 'WPSS_PLUGIN_LANG_PATH', WPSS_PLUGIN_PATH . '/languages' ); }
-if ( !defined( 'RSMP_SERVER_IP_NODOT' ) ) 		{ $wpss_server_ip_nodot = str_replace( '.', '', rs_wpss_get_server_addr() ); define( 'RSMP_SERVER_IP_NODOT', $wpss_server_ip_nodot ); }
-if ( !defined( 'RSMP_HASH_ALT' ) ) 				{ $wpss_alt_prefix = rs_wpss_md5( RSMP_SERVER_IP_NODOT ); define( 'RSMP_HASH_ALT', $wpss_alt_prefix ); }
-if ( !defined( 'RSMP_HASH' ) )					{ $wpss_hash_prefix = defined( 'COOKIEHASH' ) ? COOKIEHASH : rs_wpss_md5( RSMP_SITE_URL ); define( 'RSMP_HASH', $wpss_hash_prefix ); }
 if ( !defined( 'RSMP_SERVER_ADDR' ) ) 			{ define( 'RSMP_SERVER_ADDR', rs_wpss_get_server_addr() ); }
 if ( !defined( 'RSMP_SERVER_NAME' ) ) 			{ define( 'RSMP_SERVER_NAME', rs_wpss_get_server_name() ); }
 if ( !defined( 'RSMP_SERVER_NAME_REV' ) ) 		{ define( 'RSMP_SERVER_NAME_REV', strrev( RSMP_SERVER_NAME ) ); }
+if ( !defined( 'RSMP_SERVER_NAME_NODOT' ) ) 	{ $wpss_server_name_nodot = str_replace( '.', '', RSMP_SERVER_NAME ); define( 'RSMP_SERVER_NAME_NODOT', $wpss_server_name_nodot ); }
+if ( !defined( 'RSMP_HASH_ALT' ) ) 				{ $wpss_alt_prefix = rs_wpss_md5( RSMP_SERVER_NAME_NODOT ); define( 'RSMP_HASH_ALT', $wpss_alt_prefix ); }
+if ( !defined( 'RSMP_HASH' ) )					{ $wpss_hash_prefix = defined( 'COOKIEHASH' ) ? COOKIEHASH : rs_wpss_md5( RSMP_SITE_URL ); define( 'RSMP_HASH', $wpss_hash_prefix ); }
 if ( !defined( 'WPSS_REF2XJS' ) ) 				{ define( 'WPSS_REF2XJS', 'r3f5x9JS' ); }
 if ( !defined( 'WPSS_JSONST' ) ) 				{ define( 'WPSS_JSONST', 'JS04X7' ); }
 if ( !defined( 'RSMP_DEBUG_SERVER_NAME' ) ) 	{ define( 'RSMP_DEBUG_SERVER_NAME', '.redsandmarketing.com' ); }
@@ -512,6 +512,19 @@ function rs_wpss_get_url() {
 	return $url;
 	}
 
+function rs_wpss_get_http_status( $url = NULL ) {
+	/***
+	* Check HTTP Status - Returns 3-digit response code
+	* Added 1.9.1
+	***/
+	$str_con_def = stream_context_get_options( stream_context_get_default() );
+	if ( empty( $str_con_def ) ) { $str_con_def = array( 'http' => array( 'method' => 'GET' ) ); }
+	@stream_context_set_default( array( 'http' => array( 'method' => 'HEAD' ) ) );
+	$headers = @get_headers( $url );
+	@stream_context_set_default( $str_con_def );
+    return substr( $headers[0], 9, 3 );
+	}
+
 function rs_wpss_get_rewrite_base() {
 	$root_url  = rs_wpss_is_https() ? 'https://' : 'http://';
 	$root_url .= RSMP_SERVER_NAME;
@@ -545,13 +558,13 @@ function rs_wpss_get_ip_addr() {
 	}
 
 function rs_wpss_get_server_name() {
-	$wpss_site_domain 	= $server_name = RSMP_SITE_DOMAIN;
+	$wpss_site_domain 	= $server_name = '';
 	$wpss_env_http_host	= getenv('HTTP_HOST');
 	$wpss_env_srvr_name	= getenv('SERVER_NAME');
-	if 		( !empty( $_SERVER['HTTP_HOST'] ) 	&& strpos( $wpss_site_domain, $_SERVER['HTTP_HOST'] ) 	!== FALSE ) { $server_name = $_SERVER['HTTP_HOST']; }
-	elseif 	( !empty( $wpss_env_http_host ) 	&& strpos( $wpss_site_domain, $wpss_env_http_host ) 	!== FALSE ) { $server_name = $wpss_env_http_host; }
-	elseif 	( !empty( $_SERVER['SERVER_NAME'] ) && strpos( $wpss_site_domain, $_SERVER['SERVER_NAME'] ) !== FALSE ) { $server_name = $_SERVER['SERVER_NAME']; }
-	elseif 	( !empty( $wpss_env_srvr_name ) 	&& strpos( $wpss_site_domain, $wpss_env_srvr_name ) 	!== FALSE ) { $server_name = $wpss_env_srvr_name; }
+	if 		( !empty( $_SERVER['HTTP_HOST'] ) 	) { $server_name = $_SERVER['HTTP_HOST']; }
+	elseif 	( !empty( $wpss_env_http_host ) 	) { $server_name = $wpss_env_http_host; }
+	elseif 	( !empty( $_SERVER['SERVER_NAME'] ) ) { $server_name = $_SERVER['SERVER_NAME']; }
+	elseif 	( !empty( $wpss_env_srvr_name ) 	) { $server_name = $wpss_env_srvr_name; }
 	return rs_wpss_casetrans( 'lower', $server_name );
 	}
 
@@ -877,6 +890,14 @@ function rs_wpss_is_comment_request() {
 	return FALSE;
 	}
 
+function rs_wpss_is_404() {
+	if ( is_404() ) { return TRUE; }
+	$url	= rs_wpss_get_url();
+	$status	= rs_wpss_get_http_status( $url );
+	if ( $status == '404' ) { return TRUE; }
+	return FALSE;
+	}
+
 function rs_wpss_is_ecom_enabled() {
 	/***
 	* Detect popular e-commerce plugins
@@ -1115,7 +1136,7 @@ function rs_wpss_procdat( $method = 'get' ) {
 
 function spamshield_counter( $counter_option = 0 ) {
 	/***
-	* As of 1.8.4, this is calls WPSS_Old_Counters::counter_short()
+	* As of 1.8.4, this calls WPSS_Old_Counters::counter_short()
 	* Display Counter
 	* Implementation: <?php if ( function_exists('spamshield_counter') ) { spamshield_counter(1); } ?>
 	***/
@@ -1126,7 +1147,7 @@ function spamshield_counter( $counter_option = 0 ) {
 
 function spamshield_counter_sm( $counter_sm_option = 1 ) {
 	/***
-	* As of 1.8.4, this is calls WPSS_Old_Counters::counter_sm_short()
+	* As of 1.8.4, this calls WPSS_Old_Counters::counter_sm_short()
 	* Display Small Counter
 	* Implementation: <?php if ( function_exists('spamshield_counter_sm') ) { spamshield_counter_sm(1); } ?>
 	***/
@@ -1251,15 +1272,6 @@ function rs_wpss_modify_advanced( $feature, $old_val = NULL, $new_val = NULL ) {
 	return $success;
 	}
 
-function rs_wpss_get_http_status( $url ) {
-	/***
-	* Check HTTP Status - Returns 3-digit response code
-	* Added 1.9.1
-	***/
-	$headers = @get_headers( $url );
-    return substr( $headers[0], 9, 3 );
-	}
-
 function rs_wpss_jscripts_403_fix() {
 	/***
 	* Check jscripts.php for 403/404/500 errors and fix by switching plugin into Compatibility Mode
@@ -1298,25 +1310,25 @@ function rs_wpss_get_key_values( $ignore_cache = FALSE ) {
 	global $wpss_session_id;
 	if ( empty( $wpss_session_id ) ) { $wpss_session_id = session_id(); }
 	/* Cookie key - dynamic */
-	$wpss_ck_key_phrase		= 'wpss_ckkey_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
-	$wpss_ck_val_phrase		= 'wpss_ckval_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
+	$wpss_ck_key_phrase		= 'wpss_ckkey_'.RSMP_SERVER_NAME_NODOT.'_'.$wpss_session_id;
+	$wpss_ck_val_phrase		= 'wpss_ckval_'.RSMP_SERVER_NAME_NODOT.'_'.$wpss_session_id;
 	$wpss_ck_key 			= rs_wpss_md5( $wpss_ck_key_phrase );
 	$wpss_ck_val 			= rs_wpss_md5( $wpss_ck_val_phrase );
 	/* JavaScript key - dynamic */
-	$wpss_js_key_phrase		= 'wpss_jskey_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
-	$wpss_js_val_phrase		= 'wpss_jsval_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
+	$wpss_js_key_phrase		= 'wpss_jskey_'.RSMP_SERVER_NAME_NODOT.'_'.$wpss_session_id;
+	$wpss_js_val_phrase		= 'wpss_jsval_'.RSMP_SERVER_NAME_NODOT.'_'.$wpss_session_id;
 	$wpss_js_key 			= rs_wpss_md5( $wpss_js_key_phrase );
 	$wpss_js_val 			= rs_wpss_md5( $wpss_js_val_phrase );
 	/* jQuery key - dynamic */
-	$wpss_jq_key_phrase		= 'wpss_jqkey_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
-	$wpss_jq_val_phrase		= 'wpss_jqval_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id;
+	$wpss_jq_key_phrase		= 'wpss_jqkey_'.RSMP_SERVER_NAME_NODOT.'_'.$wpss_session_id;
+	$wpss_jq_val_phrase		= 'wpss_jqval_'.RSMP_SERVER_NAME_NODOT.'_'.$wpss_session_id;
 	$wpss_jq_key 			= rs_wpss_md5( $wpss_jq_key_phrase );
 	$wpss_jq_val 			= rs_wpss_md5( $wpss_jq_val_phrase );
 	/* JavaScript key - static */
 	$cache_check_status		= 'NOT CHECKED';
 	if ( empty( $ignore_cache ) ) {
-		$wpss_js_ke2_phrase	= 'wpss_jske2_'.RSMP_SERVER_IP_NODOT.'_'.WPSS_REF2XJS;
-		$wpss_js_va2_phrase	= 'wpss_jsva2_'.RSMP_SERVER_IP_NODOT.'_'.WPSS_REF2XJS;
+		$wpss_js_ke2_phrase	= 'wpss_jske2_'.RSMP_SERVER_NAME_NODOT.'_'.WPSS_REF2XJS.'_'.WPSS_JSONST.'_'.WPSS_VERSION.'_'.WPSS_WP_VERSION.'_'.WPSS_PHP_VERSION;
+		$wpss_js_va2_phrase	= 'wpss_jsva2_'.RSMP_SERVER_NAME_NODOT.'_'.WPSS_REF2XJS.'_'.WPSS_JSONST.'_'.WPSS_VERSION.'_'.WPSS_WP_VERSION.'_'.WPSS_PHP_VERSION;
 		global $wpss_cache_check; if ( empty( $wpss_cache_check ) ) { $wpss_cache_check = rs_wpss_check_cache_status(); }
 		$cache_check_status	= $wpss_cache_check['cache_check_status'];
 		if ( $cache_check_status === 'ACTIVE' || TRUE === WPSS_COMPAT_MODE ) {
@@ -1332,7 +1344,7 @@ function rs_wpss_get_key_values( $ignore_cache = FALSE ) {
 function rs_wpss_get_log_key() {
 	/***
 	* Get Log Key
-	* Default is dynamically generated keys tied to website IP, session ID, time, random number, admin IP
+	* Default is dynamically generated keys tied to website, session ID, time, random number, admin IP
 	***/
 	global $spamshield_options; if ( empty( $spamshield_options ) ) { $spamshield_options = get_option('spamshield_options'); }
 	if ( !empty( $spamshield_options['log_key'] ) && preg_match( "~^[a-f0-9]{32}$~", $spamshield_options['log_key'] ) ) {
@@ -1350,7 +1362,7 @@ function rs_wpss_get_log_key() {
 			$last_admin_ip	= get_option( 'spamshield_last_admin' );
 			$log_ip			= !empty( $last_admin_ip ) ? $last_admin_ip : RSMP_SERVER_ADDR;
 			}
-		$log_key_phrase		= 'wpss_log_key_'.RSMP_SERVER_IP_NODOT.'_'.$wpss_session_id.'_'.$mtime.'_'.$rando.'_'.$log_ip;
+		$log_key_phrase		= 'wpss_log_key_'.RSMP_SERVER_NAME_NODOT.'_'.$wpss_session_id.'_'.$mtime.'_'.$rando.'_'.$log_ip;
 		$log_key 			= rs_wpss_md5( $log_key_phrase );
 		$spamshield_options['log_key'] = $log_key;
 		update_option( 'spamshield_options', $spamshield_options );
@@ -1365,7 +1377,7 @@ function rs_wpss_append_log_data( $str = NULL, $rsds_only = FALSE ) {
 	* rs_wpss_append_log_data( "\n".'$wpss_example_variable: "'.$wpss_example_variable.'" Line: '.__LINE__.' | '.__FUNCTION__.' | MEM USED: ' . rs_wpss_wp_memory_used() . ' | VER: ' . WPSS_VERSION, TRUE );
 	* rs_wpss_append_log_data( "\n".'[A]$wpss_example_array_var: "'.serialize($wpss_example_array_var).'" Line: '.__LINE__.' | '.__FUNCTION__.' | MEM USED: ' . rs_wpss_wp_memory_used() . ' | VER: ' . WPSS_VERSION, TRUE );
 	***/
-	if ( WP_DEBUG === TRUE && WPSS_DEBUG === TRUE ) {
+	if ( TRUE === WP_DEBUG && TRUE === WPSS_DEBUG ) {
 		if ( !empty( $rsds_only ) && strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 ) { return; }
 		$wpss_log_str = 'WP-SpamShield DEBUG: ['.rs_wpss_get_ip_addr().'] '.str_replace("\n", "", $str);
 		error_log( $wpss_log_str, 0 ); /* Logs to debug.log */
@@ -1572,9 +1584,9 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 		/* LOG DATA */
 		global $wpss_cache_check; if ( empty( $wpss_cache_check ) ) { $wpss_cache_check = rs_wpss_check_cache_status(); }
 		$wpss_log_datum			= date('Y-m-d (D) H:i:s',$get_current_time_display);
-		$wpss_log_URL 			= rs_wpss_get_url();
-		$wpss_IS_AJAX			= rs_wpss_is_ajax_request() ? 'TRUE' : 'FALSE';
-		$wpss_IS_COMMENT		= rs_wpss_is_comment_request() ? 'TRUE' : 'FALSE';
+		$wpss_log_url 			= rs_wpss_get_url();
+		$wpss_is_ajax			= rs_wpss_is_ajax_request() ? 'TRUE' : 'FALSE';
+		$wpss_is_comment		= rs_wpss_is_comment_request() ? 'TRUE' : 'FALSE';
 		$wpss_compat_on			= TRUE === WPSS_COMPAT_MODE ? 'ON' : 'OFF';
 		$wpss_cache_on			= $wpss_cache_check['cache_check_status'] === 'ACTIVE' ? 'ON' : 'OFF';
 		$wpss_log_data			= "*************************************************************************************\n";
@@ -1694,6 +1706,7 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 		if ( $wpss_user_logged_in !== FALSE ) {
 			$wpss_log_data .= "User ID: 		['".$wpss_user_id."']\n";
 			}
+		$wpss_log_data .= "User-Agent: 		['".$wpss_http_user_agent."']\n";
 		$wpss_log_data .= "IP Address: 		['".$ip."'] ['http://ipaddressdata.com/".$ip."']\n";
 		$wpss_log_data .= "Reverse DNS: 		['".$reverse_dns."']\n";
 		$wpss_log_data .= "Reverse DNS IP: 	['".$reverse_dns_ip."']\n";
@@ -1708,11 +1721,14 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 		$wpss_log_data .= "HTTP_ACCEPT_LANGUAGE: 	['".$wpss_http_accept_language."']\n";
 		$wpss_log_data .= "HTTP_ACCEPT: 		['".$wpss_http_accept."']\n";
 		$wpss_log_data .= "HTTP_X_REQUESTED_WITH: 	['".$server_x_req_w."']\n";
-		$wpss_log_data .= "IS_AJAX: 		['".$wpss_IS_AJAX."']\n";
-		$wpss_log_data .= "IS_COMMENT: 		['".$wpss_IS_COMMENT."']\n";
-		//$wpss_log_data .= "404: 			['".$wpss_IS_404."']\n";
-		$wpss_log_data .= "User-Agent: 		['".$wpss_http_user_agent."']\n";
-		$wpss_log_data .= "URL: 			['".$wpss_log_URL."']\n";
+		$wpss_log_data .= "IS_AJAX: 		['".$wpss_is_ajax."']\n";
+		$wpss_log_data .= "IS_COMMENT: 		['".$wpss_is_comment."']\n";
+		//$wpss_log_data .= "404: 			['".$wpss_is_404."']\n";
+		if ( $wpss_log_comment_type === 'misc form' ) {
+			$wpss_http_status			= rs_wpss_get_http_status( $wpss_log_url );
+			$wpss_log_data .= "HTTP STATUS:		['".$wpss_http_status."']\n";
+			}
+		$wpss_log_data .= "URL: 			['".$wpss_log_url."']\n";
 		$wpss_log_data .= "Form Processor Ref: 	['";
 		if ( !empty( $wpss_http_referer ) ) { $wpss_log_data .= $wpss_http_referer; }
 		else { $wpss_log_data .= '[None]'; }
@@ -1731,7 +1747,7 @@ function rs_wpss_log_data( $wpss_log_data_array, $wpss_log_data_errors, $wpss_lo
 		$wpss_log_data .= "\n";
 
 		/* New Data Section - Begin */
-		if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) === 0 ) {
+		if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) === 0 || ( TRUE === WP_DEBUG && TRUE === WPSS_DEBUG ) ) {
 			if ( !empty( $_SESSION ) ) { 	$wpss_log_data_serial_session	= serialize($_SESSION); }	else { $wpss_log_data_serial_session = ''; }
 			if ( !empty( $_COOKIE ) ) { 	$wpss_log_data_serial_cookie 	= serialize($_COOKIE); }	else { $wpss_log_data_serial_cookie = ''; }
 			if ( !empty( $_GET ) ) { 		$wpss_log_data_serial_get 		= serialize($_GET); }		else { $wpss_log_data_serial_get = ''; }
@@ -2049,13 +2065,6 @@ function rs_wpss_contact_form( $content = NULL, $shortcode_check = NULL ) {
 	$spamshield_contact_repl_text = array( '<!--spamshield-contact-->', '<!--spamfree-contact-->' );
 
 	$server_name 					= RSMP_SERVER_NAME;
-	/***
-	* Get rid of 'www' and such
-	* WP Version
-	* if ( substr( $server_name , 0, 4 ) === 'www.' ) { $server_name = substr( $server_name, 4 ); }
-	* Preferred Version
-	* $server_name 					= preg_replace( "~^(ww[w0-9]|m)\.~i", '', $server_name );
-	***/
 	$email_domain					= rs_wpss_get_email_domain( $server_name );
 	$wpss_contact_sender_email		= 'wpspamshield.noreply@'.$email_domain;
 	$wpss_contact_sender_name		= __( 'Contact Form', WPSS_PLUGIN_NAME );
@@ -5058,15 +5067,12 @@ function rs_wpss_misc_form_spam_check() {
 			}
 		}
 
-	/* Now return the error values, or output error message */
+	/* Now output error message */
 	if ( !empty( $wpss_error_code ) ) {
 		$error_msg = '';
 		foreach ( $errors_3p as $c => $m ) {
 			$error_msg .= '<strong>'.$error_txt.':</strong> '.$m.'<br /><br />'."\n";
 			}
-		
-		/* If enabled, run security check to make sure this POST submission wasn't a vulnerability probe or hack attempt */
-		
 		$args = array( 'response' => '403' );
 		wp_die( $error_msg, '', $args );
 		}
@@ -6126,7 +6132,7 @@ if (!class_exists('WP_SpamShield')) {
     class WP_SpamShield {
 
 		function __construct() {
-			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 && RSMP_SERVER_ADDR !== '127.0.0.1' && !WPSS_DEBUG && !WP_DEBUG ) {
+			if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 && RSMP_SERVER_ADDR !== '127.0.0.1' && TRUE !== WPSS_DEBUG && TRUE !== WP_DEBUG ) {
 				error_reporting(0); /* Prevents error display on production sites, but testing on 127.0.0.1 will display errors, or if debug mode turned on */
 				}
 			/* Activation */
