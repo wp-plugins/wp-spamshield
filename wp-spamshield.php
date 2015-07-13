@@ -4,7 +4,7 @@ Plugin Name: WP-SpamShield
 Plugin URI: http://www.redsandmarketing.com/plugins/wp-spamshield/
 Description: An extremely powerful and user-friendly all-in-one anti-spam plugin that <strong>eliminates comment spam, trackback spam, contact form spam, and registration spam</strong>. No CAPTCHA's, challenge questions, or other inconvenience to website visitors. Enjoy running a WordPress site without spam! Includes a spam-blocking contact form feature.
 Author: Scott Allen
-Version: 1.9.4.1
+Version: 1.9.4.2
 Author URI: http://www.redsandmarketing.com/
 Text Domain: wp-spamshield
 License: GPLv2
@@ -41,7 +41,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'ERROR: This plugin requires WordPress and will not function if called directly.' );
 	}
 
-define( 'WPSS_VERSION', '1.9.4.1' );
+define( 'WPSS_VERSION', '1.9.4.2' );
 define( 'WPSS_REQUIRED_WP_VERSION', '3.9' );
 define( 'WPSS_REQUIRED_PHP_VERSION', '5.3' );
 /***
@@ -5580,7 +5580,7 @@ function rs_wpss_wc_before_register( ) {
 	}
 
 function rs_wpss_register_form_append() {
-	if ( rs_wpss_is_admin_sproc() ) { return; }
+	if ( rs_wpss_is_admin_sproc() || ( is_admin() && is_user_logged_in() ) ) { return; }
 	global $spamshield_options; if ( empty( $spamshield_options ) ) { $spamshield_options = get_option('spamshield_options'); }
 	rs_wpss_update_session_data($spamshield_options);
 
@@ -5750,6 +5750,8 @@ function rs_wpss_wc_check_new_user( $errors ) {
 
 function rs_wpss_check_new_user( $errors = NULL, $user_login = NULL, $user_email = NULL ) {
 	/* Error checking for new user registration */
+
+	if ( is_admin() && is_user_logged_in() ) { return $errors; }
 
 	if ( rs_wpss_is_woocom_enabled() ) {
 		/* Check if we're on a WooCommerce Checkout Page */

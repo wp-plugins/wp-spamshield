@@ -193,6 +193,12 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.4.2 =
+*released 07/13/15*
+
+* Added a compatibility fix for AIT Themes.
+* Updated the spam filters.
+
 = 1.9.4.1 =
 *released 07/9/15*
 
@@ -647,8 +653,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.4.1 =
-* Fixed a bug with some of the anti-spam checks on certain server configurations with dynamic IP addresses, made various code improvements, and updated the spam filters. Please see Changelog for details.
+= 1.9.4.2 =
+* Added a compatibility fix for AIT Themes, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
