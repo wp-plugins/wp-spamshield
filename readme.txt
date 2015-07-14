@@ -151,10 +151,10 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 
 **You're done! Sit back and see what it feels like to live without comment spam, trackback spam, and registration spam!**
 
-**NOTE: If you're using a caching plugin, you will need to clear the plugin's cache after you install WP-SpamShield.**
+**NOTE: If you're using a caching plugin, you will need to clear the plugin's cache after you install WP-SpamShield. It's a good practice to clear the cache after updating plugins as well.**
 
 = Displaying Stats on Your Blog =
-Want to show off your spam stats on your blog and tell others about WP-SpamShield? It's easy, just add a widget and drag and drop it where you like, in several color and size options. You have a choice of the regular size counters in 5 colors, the small counter in 5 colors, or the End Blog Spam graphic. ( `</BLOGSPAM>` )
+Want to show off your spam stats on your blog and tell others about WP-SpamShield? It's easy, just add a widget and drag and drop it where you like, in several color and size options. You have a choice of the regular size counters in 5 colors, the small counter in 5 colors, or the *End Blog Spam* graphic. ( `</BLOGSPAM>` )
 
 There is also a customizable widget that has a number of color and style options, including a custom color chooser.
 
