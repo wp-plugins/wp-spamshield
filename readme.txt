@@ -193,6 +193,17 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.5 =
+*released 07/17/15*
+
+* Improved Gravity Forms anti-spam protection and changed how it works to provide immediate feedback when spam is blocked. This makes it more consistent with how WP-SpamShield handles spam-blocking for everything else.
+* Added new anti-spam filters and improved handling for MailChimp forms.
+* Compatibility fix for payment gateways with Easy Digital Downloads plugin when website is not using SSL.
+* Compatibility fix for WooCommerce POS plugin.
+* Compatibility improvement for IIS servers.
+* Made various code improvements.
+* Updated the spam filters.
+
 = 1.9.4.2 =
 *released 07/13/15*
 
@@ -203,7 +214,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 *released 07/9/15*
 
 * Fixed a bug with some of the anti-spam checks not being properly verified on certain server configurations with dynamic IP addresses.
-* Made various code improvements.
+* Made various minor code improvements.
 * Updated the spam filters.
 
 = 1.9.4 =
@@ -653,8 +664,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.4.2 =
-* Added a compatibility fix for AIT Themes, and updated the spam filters. Please see Changelog for details.
+= 1.9.5 =
+* Made changes and improvements to Gravity Forms anti-spam handling, improved MailChimp forms anti-spam, added a compatibility fix for Easy Digital Downloads, made various code improvements, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

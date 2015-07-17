@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.9.4.1
+Version: 1.9.5
 */
 
 // Security Sanitization - BEGIN
@@ -251,5 +251,5 @@ wpssCommentVal();jQuery(document).ready(function($){var h=\"form[method='post']\
 // Uncomment to use:
 $wpss_js_end_time = wpss_js_microtime();
 $wpss_js_total_time = wpss_js_timer( $wpss_js_start_time, $wpss_js_end_time, TRUE, 6 );
-echo "// Generated in: ".$wpss_js_total_time."\n";
+echo "// Generated in: ".$wpss_js_total_time.PHP_EOL;
 ?>
