@@ -105,7 +105,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 * PHP 5.3 or higher (Recommended: PHP 5.4 or higher)
 
 > #### **WordPress Blogging Without Spam**
-> How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by [giving it a good rating!](https://wordpress.org/support/view/plugin-reviews/wp-spamshield?rate=5#postform)
+> How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by [giving it a good rating!](https://wordpress.org/support/view/plugin-reviews/wp-spamshield)
 
 == Installation ==
 
