@@ -245,12 +245,12 @@ class WPSS_Security {
 		$wpss_ip_ban_disable = get_option('spamshield_ip_ban_disable');
 		if ( !empty( $wpss_ip_ban_disable ) ) { self::clear_ip_ban(); return FALSE; }
 		$ip = rs_wpss_get_ip_addr();
-		if ( $ip === RSMP_SERVER_ADDR ) { return FALSE; } /* Skip website IP address */
+		if ( $ip === WPSS_SERVER_ADDR ) { return FALSE; } /* Skip website IP address */
 		if ( strpos( $ip, '.' ) !== FALSE ) {
 			$ip_arr = explode( '.', $ip ); unset( $ip_arr[3] ); $ip_c = implode( '.', $ip_arr ) . '.';
-			if ( strpos( RSMP_SERVER_ADDR, $ip_c ) === 0 ) { return FALSE; } /* Skip anything on same C-Block as website */
+			if ( strpos( WPSS_SERVER_ADDR, $ip_c ) === 0 ) { return FALSE; } /* Skip anything on same C-Block as website */
 			}
-		if ( strpos( RSMP_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 ) { if ( rs_wpss_is_admin_ip( $ip ) ) { return FALSE; } }
+		if ( strpos( RSSB_SERVER_NAME_REV, RSMP_DEBUG_SERVER_NAME_REV ) !== 0 ) { if ( rs_wpss_is_admin_ip( $ip ) ) { return FALSE; } }
 
 		/* TO DO: Add logic for reverse proxies */
 

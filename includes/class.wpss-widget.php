@@ -458,7 +458,7 @@ class WP_SpamShield_Counter_LG extends WP_Widget {
 		$count	= rs_wpss_number_format( rs_wpss_count() );
 		//$count	= rs_wpss_number_format( 1000000 ); /* FOR TESTING & SCREEN SHOTS ONLY */
 		$byline	= WPSS_Promo_Links::promo_text(1);
-		$sip1c 	= substr(RSMP_SERVER_ADDR, 0, 1);
+		$sip1c 	= substr(WPSS_SERVER_ADDR, 0, 1);
 		$ht_x 				= $sip1c > '5' ? 2 + $ht_x_diff : 3 + $ht_x_diff;
 		$hreftitle_txt 		= WPSS_Promo_Links::promo_text($ht_x);
 		$blocked_txt		= rs_wpss_blocked_txt();
@@ -579,7 +579,7 @@ class WP_SpamShield_End_Blog_Spam extends WP_Widget {
 		++$wpss_wid_inst;
 		$style_max = 5; $style_min = 1;
 		if ( empty( $style ) || $style > $style_max || $style < $style_min ) { $style = 1; }
-		$sip1c = substr(RSMP_SERVER_ADDR, 0, 1);
+		$sip1c = substr(WPSS_SERVER_ADDR, 0, 1);
 		$ht_x = $sip1c > '5' ? 2 : 3;
 		$hreftitle_txt = WPSS_Promo_Links::promo_text($ht_x);
 
@@ -632,7 +632,7 @@ class WPSS_Old_Counters {
 		$wpss_shortcode_content .= '</style>'.PHP_EOL;
 		$wpss_shortcode_content .= '<div id="spamshield_counter_wrap_'.$wpss_wid_inst.'" >'.PHP_EOL;
 		$wpss_shortcode_content .= "\t".'<div id="spamshield_counter_'.$wpss_wid_inst.'" >'.PHP_EOL;
-		$sip1c = substr(RSMP_SERVER_ADDR, 0, 1);
+		$sip1c = substr(WPSS_SERVER_ADDR, 0, 1);
 		if ( ( $counter_option >= 1 && $counter_option <= 3 ) || ( $counter_option >= 7 && $counter_option <= 8 ) ) {
 			$spamshield_counter_title_text = $sip1c > '5' ? WPSS_Promo_Links::promo_text(2) : WPSS_Promo_Links::promo_text(3);
 			$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'.PHP_EOL;
@@ -689,7 +689,7 @@ class WPSS_Old_Counters {
 		$wpss_shortcode_content .= '</style>'.PHP_EOL.PHP_EOL;
 		$wpss_shortcode_content .= '<div id="rs_wpss_counter_sm_wrap_'.$wpss_wid_inst.'" >'.PHP_EOL."\t";
 		$wpss_shortcode_content .= '<div id="rs_wpss_counter_sm_'.$wpss_wid_inst.'" >'.PHP_EOL;
-		$sip1c = substr(RSMP_SERVER_ADDR, 0, 1);
+		$sip1c = substr(WPSS_SERVER_ADDR, 0, 1);
 		if ( ( $counter_sm_option >= 1 && $counter_sm_option <= 5 ) ) {
 			if ( $sip1c > '5' ) { $spamshield_counter_title_text = WPSS_Promo_Links::promo_text(9); }
 			else { $spamshield_counter_title_text = WPSS_Promo_Links::promo_text(10); }
