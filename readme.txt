@@ -169,7 +169,7 @@ Go to your **WordPress Admin** -> **Appearance** -> **Widgets**. Choose one of t
 You can also add shortcodes to your pages and posts, and PHP code to your theme. For more info see the plugin documentation section on [Displaying Spam Stats on Your Blog](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_displaying_stats).
 
 = Adding a Contact Form to Your Blog =
-First create a distinct page (not post) where you want to have your contact form. Then, go into the editor and click the tab for the "Text" editor (not "Visual" editor). Then click the button that says **"WPSS Contact Form"**. It's that easy. You can also manually insert the following shortcode if you prefer: `[spamshieldcontact]`
+First create a distinct *page* (not *post*) where you want to have your contact form. Then, go into the editor and click the tab for the "Text" editor (not "Visual" editor). Then click the button that says **"WPSS Contact Form"**. It's that easy. You can also manually insert the following shortcode if you prefer: `[spamshieldcontact]`
 
 The page you place the contact form on should have its own URL, and not be used on the homepage of your site. It also cannot be implemented as part of a widget or theme element, such as a footer, sidebar, etc.
 
