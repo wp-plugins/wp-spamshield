@@ -63,7 +63,7 @@ The concept of using a CAPTCHA as an anti-spam solution in this day and age is f
 
 1. It's an *outdated concept* that has far outlived its usefulness, and was originally developed before user-friendliness was a high priority.
 2. It goes in the *exact opposite direction of user-friendly design principles*. Think about it. Users of your website have to type in numbers and letters obscured by squiggly lines and symbols, only to be told they are wrong several times, even after typing in the correct answer. This is proven to hurt website business and revenue because of the negative feelings it causes. *People simply don't like CAPTCHAS.*
-3. CAPTCHAS can be defeated.
+3. CAPTCHAS can be defeated. The only benefit of a CAPTCHA was that it was considered to be unbeatable by bots. That day is long past.
 4. Why use a CAPTCHA when there are better solutions that don't inconvenience your website users?
 
 = Optimized and Scalable =
@@ -88,7 +88,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 10. Enhanced Comment Blacklist option. Instead of just sending comments to moderation as with WordPress's default Comment Blacklist functionality, with this turned on, anything that matches a string in the blacklist will be **completely blocked**. The Enhanced Comment Blacklist has some improvements over the default WordPress blacklist functionality, and adds a link in the comment & contact form notification emails that will let you blacklist a spammer's IP with one click.
 11. WP-SpamShield Whitelist option. Allows you to specify certain users who you want to let bypass the spam filters.
 12. This plugin is legal to use in Germany and the EU, and does not violate European privacy laws. It does not use any type of cloud-based service, spam data is not transmitted from your server to any other server, and all anti-spam processing happens directly on your website's server.
-13. A truly plug and play replacement and upgrade for WP-SpamFree. (A far more advanced fork of WP-SpamFree with dramatically improved page load speed, security, and spam blocking power, by its original author.) It will import your old data from WP-SpamFree automatically upon installation and activation, and features you were using on your site previously such as contact forms and spam stats will continue to work without any changes to pages, posts, or theme.
+13. A truly plug and play replacement and upgrade for WP-SpamFree. (This plugin is a far more advanced fork of WP-SpamFree with dramatically improved page load speed, security, and spam blocking power, by its original author.) It will import your old data from WP-SpamFree automatically upon installation and activation, and features you were using on your site previously such as contact forms and spam stats will continue to work without any changes to pages, posts, or theme.
 
 = Languages Available =
 
@@ -141,9 +141,9 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 
 = Next Steps After Installation = 
 
-1. Check to make sure the plugin is installed properly. Many support requests for this plugin originate from improper installation and can be easily prevented. To check proper installation status, go to the WP-SpamShield page in your Admin. It's a submenu link under the *Settings*. Go the the 'Installation Status' area near the top and it will tell you if the plugin is installed correctly. If it tells you that the plugin is not installed correctly, please double-check what directory you have installed WP-SpamShield in, delete any WP-SpamShield files you have uploaded to your server, re-read the Installation Instructions, and start the Installation process over. If it is installed correctly, then move on to the next step.
+1. Check to make sure the plugin is installed properly. Many support requests for this plugin originate from improper installation and can be easily prevented. To check proper installation status, go to the WP-SpamShield page in your Admin. It's a sub-menu link under the *Settings*. Go the the 'Installation Status' area near the top and it will tell you if the plugin is installed correctly. If it tells you that the plugin is not installed correctly, please double-check what directory you have installed WP-SpamShield in, delete any WP-SpamShield files you have uploaded to your server, re-read the Installation Instructions, and start the Installation process over. If it is installed correctly, then move on to the next step.
 
-2. Select desired configuration options.
+2. Select the desired plugin configuration options. Take a look at the WP-SpamShield Settings page in your WordPress site, and familiarize yourself with the different settings available. Many times when users have an issue, they simply haven't checked the settings to see if they can enable or disable a certain feature.
 
 3. If you are using front-end anti-spam plugins (CAPTCHA's, challenge questions, etc), be sure they are *disabled* since there's no longer a need for them, and these could likely conflict. (Back-end anti-spam plugins like Akismet are fine, although unnecessary.)
 
