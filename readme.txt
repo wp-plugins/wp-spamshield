@@ -19,7 +19,7 @@ No CAPTCHA's, challenge questions or other inconvenience to site visitors - it w
 **Supports: Contact Form 7, Gravity Forms, Ninja Forms, JetPack Contact Forms & Comments, BuddyPress, bbPress, WooCommerce, s2Member, WP-Members, Mailchimp, and *many* more, including *almost all* WordPress forms, and *almost all* WordPress registration forms.**
 
 = NEED HELP? =
-[Plugin Documentation](http://www.redsandmarketing.com/plugins/wp-spamshield/) | [Troubleshooting Guide](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_troubleshooting) | [FAQs](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs) | [Tech Support](http://www.redsandmarketing.com/plugins/wp-spamshield/support/)
+**[Plugin Documentation](http://www.redsandmarketing.com/plugins/wp-spamshield/)** | **[Troubleshooting Guide](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_troubleshooting)** | **[FAQs](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs)** | **[Tech Support](http://www.redsandmarketing.com/plugins/wp-spamshield/support/)**
 
 = How It Works =
 Most of the spam hitting your blog originates from bots, but quite a bit comes from humans too. This plugin works like a firewall to ensure that your commenters are in fact, human, and that those humans aren't spamming you.
