@@ -1,7 +1,7 @@
 ﻿=== WP-SpamShield Anti-Spam ===
 Contributors: RedSand
 Donate link: http://www.redsandmarketing.com/wp-spamshield-donate/
-Tags: akismet, all-in-one, anti-spam, antispam, antispambot, bbpress, block spam, bot, bots, buddypress, captcha, cf7, comment, comment spam, comments, contact, contact form, contact form 7, contact form plugin, contact form spam, contact forms, e-mail, email, email address, encode, encoder, encoding, filter, form, forms, gravity forms, harvester, javascript, jetpack, login, mail, mailchimp, mailto, multisite, ninja, ninja forms, obfuscate, obfuscation, plugin, protect, protection, register, registration, registration spam, robot, robots, s2member, secure, security, signup, signup spam, spam, spam blocker, spam comments, spam filter, spambot, trackback, trackbacks, user, user registration spam, validation, widget, woocommerce
+Tags: akismet, all-in-one, anti-captcha, anti-spam, antispam, antispambot, bbpress, block spam, bot, bots, buddypress, captcha, cf7, comment, comment spam, comments, contact, contact form, contact form 7, contact form plugin, contact form spam, contact forms, e-mail, email, email address, encode, encoder, encoding, filter, form, formidable, formidable forms, forms, free, gravity forms, harvester, javascript, jetpack, jquery, login, mail, mailchimp, mailto, multisite, ninja, ninja forms, no captcha, nocaptcha, obfuscate, obfuscation, plugin, protect, protection, recaptcha, register, registration, registration spam, robot, robots, s2member, secure, security, signup, signup spam, spam, spam blocker, spam comments, spam filter, spambot, trackback, trackbacks, user, user registration spam, users, validation, widget, woocommerce
 Requires at least: 3.9
 Tested up to: 4.2
 Stable tag: trunk
