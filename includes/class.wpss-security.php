@@ -1,7 +1,7 @@
 <?php
 /***
 * WP-SpamShield Security
-* Ver 1.9.5
+* Ver 1.9.5.1
 ***/
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -33,7 +33,7 @@ class WPSS_Security {
 		$user_agent = rs_wpss_get_user_agent();
 		$req_url	= rs_wpss_casetrans( 'lower', rs_wpss_get_url() );
 		$req_ajax	= rs_wpss_is_ajax_request();
-		$req_404	= rs_wpss_is_404(); // Not all WP sites return proper 404. The fact this security check even got activated means it was a 404.
+		$req_404	= rs_wpss_is_404(); // Not all WP sites return proper 404 status. The fact this security check even got activated means it was a 404.
 		$req_hal	= rs_wpss_get_http_accept( TRUE, TRUE, TRUE );
 		$req_ha		= rs_wpss_get_http_accept( TRUE, TRUE );
 
@@ -289,7 +289,7 @@ class WPSS_Security {
 		$ip_ban_rgx = '^('.str_replace( '.', '\.', implode( '|', $wpss_ip_ban ) ).')$';
 
 		$wpss_hta_data = PHP_EOL.PHP_EOL.'# BEGIN WP-SpamShield'.PHP_EOL.PHP_EOL;
-		$wpss_hta_data .= '<IfModule mod_setenvif>'.PHP_EOL."\t".'SetEnvIf Remote_Addr '.$ip_ban_rgx.' wpss_sec_threat'.PHP_EOL.'</IfModule>';
+		$wpss_hta_data .= '<IfModule mod_setenvif.c>'.PHP_EOL."\t".'SetEnvIf Remote_Addr '.$ip_ban_rgx.' wpss_sec_threat'.PHP_EOL.'</IfModule>';
 		$wpss_hta_data .= PHP_EOL.PHP_EOL.'# END WP-SpamShield'.PHP_EOL.PHP_EOL;
 		$wpss_hta_data_wp = '# BEGIN WordPress';
 

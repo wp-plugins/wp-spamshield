@@ -193,6 +193,15 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.5.1 =
+*released 07/22/15*
+
+* Added improved compatibility for Fast Secure Contact Form plugin.
+* Added workaround for PHP bug in `mb_substr()` function on some servers.
+* Fixed an activation error caused by a function added in PHP 5.3 when plugin was activated on servers running PHP 5.2. (We no longer support PHP 5.2, but this error prevented our informational message from coming up.)
+* Made various code improvements.
+* Updated the spam filters.
+
 = 1.9.5 =
 *released 07/17/15*
 
@@ -664,8 +673,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.5 =
-* Made changes and improvements to Gravity Forms anti-spam handling, improved MailChimp forms anti-spam, added a compatibility fix for Easy Digital Downloads, made various code improvements, and updated the spam filters. Please see Changelog for details.
+= 1.9.5.1 =
+* Added improved compatibility for Fast Secure Contact Form plugin, added workaround for PHP bug in `mb_substr()` function on some servers, fixed an activation error, made various code improvements, and updated the spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
