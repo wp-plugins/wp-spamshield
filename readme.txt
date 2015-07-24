@@ -101,9 +101,9 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 
 = Requirements =
 
-* WordPress 3.9 or higher (Recommended: WordPress 4.0 or higher)
-* PHP 5.3 or higher (Recommended: PHP 5.4 or higher)
-* Your server must be configured to allow use of an `.htaccess` file. (This is enabled by default on the vast majority of servers.)
+* **WordPress 3.9 or higher** (Recommended: WordPress 4.0 or higher)**
+* **PHP 5.3 or higher** (Recommended: PHP 5.4 or higher)**
+* **Your server must be configured to allow the use of an `.htaccess` file.** (This is enabled by default on the vast majority of servers.) 
 
 Please see the plugin documentation's [requirements section](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_requirements) for more information.
 
