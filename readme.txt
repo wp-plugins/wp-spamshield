@@ -14,7 +14,7 @@ An extremely powerful WordPress anti-spam plugin that eliminates comment spam, t
 An extremely powerful and user-friendly WordPress anti-spam plugin that eliminates comment spam, trackback spam, contact form spam & registration spam.
 
 = An All-in-one Spam Solution for WordPress - Without CAPTCHAS =
-No CAPTCHA's, challenge questions or other inconvenience to site visitors - it works silently in the background and simply makes WordPress spam disappear.
+No CAPTCHAs, challenge questions or other inconvenience to site visitors - it works silently in the background and simply makes WordPress spam disappear.
 
 **Supports: Contact Form 7, Gravity Forms, Ninja Forms, JetPack Contact Forms & Comments, BuddyPress, bbPress, WooCommerce, s2Member, WP-Members, Mailchimp, and *many* more, including *almost all* WordPress forms, and *almost all* WordPress registration forms.**
 
@@ -103,6 +103,9 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 
 * WordPress 3.9 or higher (Recommended: WordPress 4.0 or higher)
 * PHP 5.3 or higher (Recommended: PHP 5.4 or higher)
+* Your server must be configured to allow use of an `.htaccess` file. (This is enabled by default on the vast majority of servers.)
+
+Please see the plugin documentation's [requirements section](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_requirements) for more information.
 
 > #### **WordPress Blogging Without Spam**
 > How does it feel to blog without being bombarded by comment spam? If you're happy with the WP-SpamShield WordPress anti-spam plugin, please let others know by [giving it a good rating!](https://wordpress.org/support/view/plugin-reviews/wp-spamshield)
@@ -145,7 +148,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 
 2. Select the desired plugin configuration options. Take a look at the WP-SpamShield Settings page in your WordPress site, and familiarize yourself with the different settings available. Many times when users have an issue, they simply haven't checked the settings to see if they can enable or disable a certain feature.
 
-3. If you are using front-end anti-spam plugins (CAPTCHA's, challenge questions, etc), be sure they are *disabled* since there's no longer a need for them, and these could likely conflict. (Back-end anti-spam plugins like Akismet are fine, although unnecessary.)
+3. If you are using front-end anti-spam plugins (CAPTCHAs, challenge questions, etc), be sure they are *disabled* since there's no longer a need for them, and these could likely conflict. (Back-end anti-spam plugins like Akismet are fine, although unnecessary.)
 
 4. Install a contact form if you like. (See below)
 
@@ -154,7 +157,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 **NOTE: If you're using a caching plugin, you will need to clear the plugin's cache after you install WP-SpamShield. It's a good practice to clear the cache after updating plugins as well.**
 
 = Displaying Stats on Your Blog =
-Want to show off your spam stats on your blog and tell others about WP-SpamShield? It's easy, just add a widget and drag and drop it where you like, in several color and size options. You have a choice of the regular size counters in 5 colors, the small counter in 5 colors, or the *End Blog Spam* graphic. ( `</BLOGSPAM>` )
+Want to show off your spam stats on your blog and tell others about WP-SpamShield? **It's easy, just add a widget and drag and drop it where you like, in several color and size options.** You have a choice of the regular size counters in 5 colors, the small counter in 5 colors, or the *End Blog Spam* graphic. ( `</BLOGSPAM>` )
 
 There is also a customizable widget that has a number of color and style options, including a custom color chooser.
 
