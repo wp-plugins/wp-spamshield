@@ -1,10 +1,10 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.9.5
+Version: 1.9.5.2
 */
 
-// Security Sanitization - BEGIN
+/* Security Sanitization - BEGIN */
 $id='';
 if ( !empty( $_GET ) || strpos( $_SERVER['REQUEST_URI'], '?' ) !== FALSE ) {
 	header('HTTP/1.1 403 Forbidden');
@@ -16,12 +16,18 @@ if ( !empty( $_POST ) || ( $wpss_request_method != 'GET' && $wpss_request_method
 	header('HTTP/1.1 405 Method Not Allowed');
 	die('ERROR: This resource does not accept requests of that type.');
 	}
-// Security Sanitization - END
+/* Security Sanitization - END */
 
-// Uncomment to use:
+/* Uncomment to use */
 $wpss_js_start_time = wpss_js_microtime();
 
-// SESSION CHECK AND FUNCTIONS - BEGIN
+/* SET INITIAL VARS */
+if ( !defined( 'WPSS_EOL' ) ) { $wpss_eol = defined( 'PHP_EOL' ) ? PHP_EOL : wpss_js_eol(); define( 'WPSS_EOL', $wpss_eol ); }
+function rs_wpss_eol() {
+	return wpss_js_casetrans( 'lower', substr( PHP_OS, 0, 3 ) ) === 'win' ? "\r\n" : "\n";
+	}
+
+/* SESSION CHECK AND FUNCTIONS - BEGIN */
 global $wpss_session_id;
 $wpss_session_id = session_id();
 if ( empty( $wpss_session_id ) && !headers_sent() ) { session_start(); $wpss_session_id = session_id(); }
@@ -37,7 +43,7 @@ if ( defined( 'RSMP_SITE_URL' ) && !defined( 'RSMP_HASH' ) ) {
 	$wpss_hash_prefix = wpss_js_md5( RSMP_SITE_URL ); define( 'RSMP_HASH', $wpss_hash_prefix );
 	}
 elseif ( !empty( $_SESSION ) && !empty( $_COOKIE ) && !defined( 'RSMP_HASH' ) ) {
-	//$wpss_cookies = $_COOKIE;
+	/* $wpss_cookies = $_COOKIE; */
 	foreach( $_COOKIE as $ck_name => $ck_val ) {
 		if ( preg_match( "~^comment_author_([a-z0-9]{32})$~i", $ck_name, $matches ) ) { define( 'RSMP_HASH', $matches[1] ); break; }
 		}
@@ -45,11 +51,11 @@ elseif ( !empty( $_SESSION ) && !empty( $_COOKIE ) && !defined( 'RSMP_HASH' ) ) 
 
 $wpss_lang_ck_key = 'UBR_LANG';
 $wpss_lang_ck_val = 'default';
-// SESSION CHECK AND FUNCTIONS - END
+/* SESSION CHECK AND FUNCTIONS - END */
 
 if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
-	// IP, PAGE HITS, PAGES VISITED HISTORY - BEGIN
-	// Initial IP Address when visitor first comes to site
+	/* IP, PAGE HITS, PAGES VISITED HISTORY - BEGIN */
+	/* Initial IP Address when visitor first comes to site */
 	$key_pages_hist 		= 'wpss_jscripts_referers_history_'.RSMP_HASH;
 	$key_hits_per_page		= 'wpss_jscripts_referers_history_count_'.RSMP_HASH;
 	$key_total_page_hits	= 'wpss_page_hits_js_'.RSMP_HASH;
@@ -58,24 +64,24 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	$key_init_ua			= 'wpss_user_agent_init_'.RSMP_HASH;
 	$key_init_mt			= 'wpss_time_init_'.RSMP_HASH;
 	$key_init_dt			= 'wpss_timestamp_init_'.RSMP_HASH;
-	$ck_key_init_dt			= 'NCS_INENTIM'; //Initial Entry Time
+	$ck_key_init_dt			= 'NCS_INENTIM'; /* Initial Entry Time */
 	$current_ip 			= $_SERVER['REMOTE_ADDR'];
 	$current_ua 			= wpss_js_get_user_agent();
-	$current_mt 			= $wpss_js_start_time; // Site entry time - microtime
-	$current_dt 			= time(); // Site entry time - timestamp
+	$current_mt 			= $wpss_js_start_time; /* Site entry time - microtime */
+	$current_dt 			= time(); /* Site entry time - timestamp */
 	if ( empty( $_SESSION[$key_init_ip] ) ) { $_SESSION[$key_init_ip] = $current_ip; }
 	if ( empty( $_SESSION[$key_init_ua] ) ) { $_SESSION[$key_init_ua] = $current_ua; }
 	if ( empty( $_SESSION[$key_init_mt] ) ) { $_SESSION[$key_init_mt] = $current_mt; }
 	if ( empty( $_SESSION[$key_init_dt] ) ) { $_SESSION[$key_init_dt] = $current_dt; }
-	// Set Cookie
+	/* Set Cookie */
 	if ( empty( $_COOKIE[$ck_key_init_dt] ) ) { $wpss_new_visit = TRUE; }
-	// IP History - Lets see if they change IP's
+	/* IP History - Lets see if they change IP's */
 	if ( empty( $_SESSION[$key_ip_hist] ) ) { $_SESSION[$key_ip_hist] = array(); $_SESSION[$key_ip_hist][] = $current_ip; }
 	if ( $current_ip != $_SESSION[$key_init_ip] ) { $_SESSION[$key_ip_hist][] = $current_ip; }
-	//Page hits - this page is more reliable than main if caching is on, so we'll keep a separate count
+	/* Page hits - this page is more reliable than main if caching is on, so we'll keep a separate count */
 	if ( empty( $_SESSION[$key_total_page_hits] ) ) { $_SESSION[$key_total_page_hits] = 0; }
 	++$_SESSION[$key_total_page_hits];
-	// Referrer History - More reliable way to keep a list of pages, than using main
+	/* Referrer History - More reliable way to keep a list of pages, than using main */
 	if ( empty( $_SESSION[$key_pages_hist] ) ) { $_SESSION[$key_pages_hist] = array(); }
 	if ( empty( $_SESSION[$key_hits_per_page] ) ) { $_SESSION[$key_hits_per_page] = array(); }
 	if ( !empty( $_SERVER['HTTP_REFERER'] ) ) {
@@ -87,22 +93,20 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 			$_SESSION[$key_hits_per_page][$current_ref] = 1;
 			}
 		++$_SESSION[$key_hits_per_page][$current_ref];
-		// First Referrer - Where Visitor Entered Site
+		/* First Referrer - Where Visitor Entered Site */
 		if ( empty( $_SESSION[$key_first_ref] ) ) { $_SESSION[$key_first_ref] = $current_ref; }
-		// Last Referrer
-		if ( empty( $_SESSION[$key_last_ref] ) ) {
-			$_SESSION[$key_last_ref] = '';
-			}
+		/* Last Referrer */
+		if ( empty( $_SESSION[$key_last_ref] ) ) { $_SESSION[$key_last_ref] = ''; }
 		$_SESSION[$key_last_ref] = $current_ref;
 		}
-	// IP, PAGE HITS, PAGES VISITED HISTORY - END
+	/* IP, PAGE HITS, PAGES VISITED HISTORY - END */
 
-	// AUTHOR, EMAIL, URL HISTORY - BEGIN
+	/* AUTHOR, EMAIL, URL HISTORY - BEGIN */
 
-	// Keep history of Author, Author Email, and Author URL in case they keep changing
-	// This will expose spammer behavior patterns
+	/* Keep history of Author, Author Email, and Author URL in case they keep changing */
+	/* This will expose spammer behavior patterns */
 
-	// Comment Author
+	/* Comment Author */
 	$key_auth_hist 		= 'wpss_author_history_'.RSMP_HASH;
 	$key_comment_auth 	= 'comment_author_'.RSMP_HASH;
 	if ( empty( $_SESSION[$key_auth_hist] ) ) {
@@ -117,7 +121,7 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 			$_SESSION[$key_comment_auth] = $_COOKIE[$key_comment_auth];
 			}
 		}
-	// Comment Author Email
+	/* Comment Author Email */
 	$key_email_hist 	= 'wpss_author_email_history_'.RSMP_HASH;
 	$key_comment_email	= 'comment_author_email_'.RSMP_HASH;
 	if ( empty( $_SESSION[$key_email_hist] ) ) {
@@ -130,7 +134,7 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	else {
 		if ( !empty( $_COOKIE[$key_comment_email] ) ) { $_SESSION[$key_comment_email] = $_COOKIE[$key_comment_email]; }
 		}
-	// Comment Author URL
+	/* Comment Author URL */
 	$key_auth_url_hist 	= 'wpss_author_url_history_'.RSMP_HASH;
 	$key_comment_url	= 'comment_author_url_'.RSMP_HASH;
 	if ( empty( $_SESSION[$key_auth_url_hist] ) ) {
@@ -143,19 +147,19 @@ if ( defined( 'RSMP_HASH' ) && !empty( $_SESSION )  ) {
 	else { 
 		if ( !empty( $_COOKIE[$key_comment_url] ) ) { $_SESSION[$key_comment_url] = $_COOKIE[$key_comment_url]; }
 		}
-	// AUTHOR, EMAIL, URL HISTORY - END
+	/* AUTHOR, EMAIL, URL HISTORY - END */
 	
-	// SESSION USER BLACKLIST CHECK - BEGIN
+	/* SESSION USER BLACKLIST CHECK - BEGIN */
 	if ( !empty( $_SESSION['wpss_clear_blacklisted_user_'.RSMP_HASH] ) ) { $wpss_cl_sbluck = TRUE; unset( $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] ); }
 	elseif ( !empty( $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] ) && empty( $_COOKIE[$wpss_lang_ck_key] ) ) { $wpss_sbluck = TRUE; }
 	elseif ( !empty( $_COOKIE[$wpss_lang_ck_key] ) && $_COOKIE[$wpss_lang_ck_key] == $wpss_lang_ck_val ) { $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] = TRUE; }
-	// SESSION USER BLACKLIST CHECK - END
+	/* SESSION USER BLACKLIST CHECK - END */
 	}
 
-// STANDARD FUNCTIONS - BEGIN
+/* STANDARD FUNCTIONS - BEGIN */
 function wpss_js_md5( $string ) {
-	// Use this function instead of hash for compatibility
-	// BUT hash is faster than md5, so use it whenever possible
+	/* Use this function instead of hash for compatibility */
+	/* BUT hash is faster than md5, so use it whenever possible */
 	if ( function_exists( 'hash' ) ) { $hash = hash( 'md5', $string ); } else { $hash = md5( $string );	}
 	return $hash;
 	}
@@ -164,7 +168,7 @@ function wpss_js_microtime() {
 	}
 function wpss_js_timer( $start = NULL, $end = NULL, $show_seconds = FALSE, $precision = 8 ) {
 	if ( empty( $start ) || empty( $end ) ) { $start = 0; $end = 0; }
-	// $precision will default to 8 but can be set to anything - 1,2,3,5,etc.
+	/* $precision will default to 8 but can be set to anything - 1,2,3,5,etc. */
 	$total_time = $end - $start;
 	$total_time_for = number_format( $total_time, $precision );
 	if ( !empty( $show_seconds ) ) { $total_time_for .= ' seconds'; }
@@ -176,6 +180,7 @@ function wpss_js_get_user_agent() {
 	}
 function wpss_js_get_server_addr() {
 	if ( !empty( $_SERVER['SERVER_ADDR'] ) ) { $server_addr = $_SERVER['SERVER_ADDR']; } else { $server_addr = getenv('SERVER_ADDR'); }
+	if ( empty( $server_addr ) ) { $server_addr = ''; }
 	return $server_addr;
 	}
 function wpss_js_get_server_name() {
@@ -188,6 +193,9 @@ function wpss_js_get_server_name() {
 	elseif 	( !empty( $wpss_env_srvr_name ) 	) { $server_name = $wpss_env_srvr_name; }
 	return wpss_js_casetrans( 'lower', $server_name );
 	}
+function wpss_js_strlen( $string ) {
+	return function_exists( 'mb_strlen' ) ? mb_strlen( $string, 'UTF-8' ) : strlen( $string );
+	}
 function wpss_js_casetrans( $type, $string ) {
 	switch ( $type ) {
 		case 'upper':
@@ -195,16 +203,20 @@ function wpss_js_casetrans( $type, $string ) {
 		case 'lower':
 			if ( function_exists( 'mb_strtolower' ) ) { return mb_strtolower( $string, 'UTF-8' ); } else { return strtolower( $string ); }
 		case 'ucfirst':
-			if ( function_exists( 'mb_strtoupper' ) && function_exists( 'mb_substr' ) ) { return mb_strtoupper( mb_substr( $string, 0, 1, 'UTF-8' ), 'UTF-8' ) . mb_substr( $string, 1, NULL, 'UTF-8' ); } else { return ucfirst( $string ); }
+			if ( function_exists( 'mb_strtoupper' ) && function_exists( 'mb_substr' ) ) {
+				$strtmp = mb_strtoupper( mb_substr( $string, 0, 1, 'UTF-8' ), 'UTF-8' ) . mb_substr( $string, 1, NULL, 'UTF-8' );
+				if ( wpss_js_strlen( $string ) === wpss_js_strlen( $strtmp ) ) { return $strtmp; } else { return ucfirst( $string ); }
+				}
+			else { return ucfirst( $string ); }
 		case 'ucwords':
 			if ( function_exists( 'mb_convert_case' ) ) { return mb_convert_case( $string, MB_CASE_TITLE, 'UTF-8' ); } else { return ucwords( $string ); }
 		default:
 			return $string;
 		}
 	}
-// STANDARD FUNCTIONS - END
+/* STANDARD FUNCTIONS - END */
 
-// SET COOKIE VALUES - BEGIN
+/* SET COOKIE VALUES - BEGIN */
 /* global $wpss_session_id; */
 if ( empty( $wpss_session_id ) ) { $wpss_session_id = session_id(); }
 $wpss_ck_key_phrase 	= 'wpss_ckkey_'.RSMP_SERVER_NAME_NODOT.'_'.$wpss_session_id;
@@ -215,9 +227,9 @@ $wpss_jq_key_phrase 	= 'wpss_jqkey_'.RSMP_SERVER_NAME_NODOT.'_'.$wpss_session_id
 $wpss_jq_val_phrase 	= 'wpss_jqval_'.RSMP_SERVER_NAME_NODOT.'_'.$wpss_session_id;
 $wpss_jq_key 			= wpss_js_md5( $wpss_jq_key_phrase );
 $wpss_jq_val 			= wpss_js_md5( $wpss_jq_val_phrase );
-// SET COOKIE VALUES - END
+/* SET COOKIE VALUES - END */
 
-// Last thing before headers sent
+/* Last thing before headers sent */
 $_SESSION['wpss_sess_status'] = 'on';
 
 if ( !empty( $current_ref ) && preg_match( "~([&\?])form\=response$~i", $current_ref ) && !empty( $_SESSION[$key_comment_auth] ) ) {
@@ -226,21 +238,21 @@ if ( !empty( $current_ref ) && preg_match( "~([&\?])form\=response$~i", $current
 	if ( !empty( $_SESSION[$key_comment_url] ) ) 	{ setcookie( $key_comment_url, $_SESSION[$key_comment_url], 0, '/' ); }
 	}
 if ( !empty( $wpss_new_visit ) ) {
-	setcookie( $ck_key_init_dt, $current_dt, $current_dt+3600, '/' ); // 1 hour
+	setcookie( $ck_key_init_dt, $current_dt, $current_dt+3600, '/' ); /* 1 hour */
 	}
 if ( !empty( $wpss_cl_sbluck ) ) {
-	setcookie( $wpss_lang_ck_key, $wpss_lang_ck_val, $current_dt-31536000, '/' ); // -1 year (deletes cookie)
+	setcookie( $wpss_lang_ck_key, $wpss_lang_ck_val, $current_dt-31536000, '/' ); /* -1 year (deletes cookie) */
 	unset( $_SESSION['wpss_clear_blacklisted_user_'.RSMP_HASH] );
 	unset( $_SESSION['wpss_blacklisted_user_'.RSMP_HASH] );
 	}
 elseif ( !empty( $wpss_sbluck ) ) {
-	setcookie( $wpss_lang_ck_key, $wpss_lang_ck_val, $current_dt+60*60*24*365*10, '/' ); // 10 years
+	setcookie( $wpss_lang_ck_key, $wpss_lang_ck_val, $current_dt+60*60*24*365*10, '/' ); /* 10 years */
 	}
 
 setcookie( $wpss_ck_key, $wpss_ck_val, 0, '/' );
-header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-header("Pragma: no-cache"); // HTTP 1.0
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+header("Cache-Control: no-cache, must-revalidate"); /* HTTP/1.1 */
+header("Pragma: no-cache"); /* HTTP 1.0 */
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); /* Date in the past */
 header('Content-Type: application/javascript');
 echo "
 function wpssGetCookie(e){var t=document.cookie.indexOf(e+'=');var n=t+e.length+1;if(!t&&e!=document.cookie.substring(0,e.length)){return null}if(t==-1)return null;var r=document.cookie.indexOf(';',n);if(r==-1)r=document.cookie.length;return unescape(document.cookie.substring(n,r))}function wpssSetCookie(e,t,n,r,i,s){var o=new Date;o.setTime(o.getTime());if(n){n=n*1e3*60*60*24}var u=new Date(o.getTime()+n);document.cookie=e+'='+escape(t)+(n?';expires='+u.toGMTString():'')+(r?';path='+r:'')+(i?';domain='+i:'')+(s?';secure':'')}function wpssDeleteCookie(e,t,n){if(wpssGetCookie(e))document.cookie=e+'='+(t?';path='+t:'')+(n?';domain='+n:'')+';expires=Thu, 01-Jan-1970 00:00:01 GMT'}
@@ -248,8 +260,8 @@ function wpssCommentVal(){wpssSetCookie('".$wpss_ck_key."','".$wpss_ck_val."',''
 wpssCommentVal();jQuery(document).ready(function($){var h=\"form[method='post']\";\$(h).submit(function(){\$('<input>').attr('type','hidden').attr('name','".$wpss_jq_key."').attr('value','".$wpss_jq_val."').appendTo(h);return true;})});
 ";
 
-// Uncomment to use:
+/* Uncomment to use */
 $wpss_js_end_time = wpss_js_microtime();
 $wpss_js_total_time = wpss_js_timer( $wpss_js_start_time, $wpss_js_end_time, TRUE, 6 );
-echo "// Generated in: ".$wpss_js_total_time.PHP_EOL;
+echo "// Generated in: ".$wpss_js_total_time.WPSS_EOL;
 ?>

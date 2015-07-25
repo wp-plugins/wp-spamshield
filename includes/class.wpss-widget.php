@@ -1,7 +1,7 @@
 <?php
 /***
 * WP-SpamShield Widgets
-* Ver 1.9.5
+* Ver 1.9.5.2
 ***/
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -615,7 +615,7 @@ class WPSS_Old_Counters {
 		$counter_spam_blocked_msg = __( 'spam blocked by WP-SpamShield', WPSS_PLUGIN_NAME );
 		if ( empty( $counter_option ) || $counter_option > $counter_option_max || $counter_option < $counter_option_min ) {
 			$spamshield_count = rs_wpss_number_format( rs_wpss_count() );
-			$wpss_shortcode_content = '<a href="'.WPSS_HOME_URL.'" style="text-decoration:none;" target="_blank" rel="external" title="'.WPSS_Promo_Links::promo_text(11).'" >'.$spamshield_count.' '.$counter_spam_blocked_msg.'</a>'.PHP_EOL;
+			$wpss_shortcode_content = '<a href="'.WPSS_HOME_URL.'" style="text-decoration:none;" target="_blank" rel="external" title="'.WPSS_Promo_Links::promo_text(11).'" >'.$spamshield_count.' '.$counter_spam_blocked_msg.'</a>'.WPSS_EOL;
 			return $wpss_shortcode_content;
 			}
 		/***
@@ -626,42 +626,42 @@ class WPSS_Old_Counters {
 		$counter_div_height = array('0','66','66','66','106','61','67','66','66','106');
 		$counter_count_padding_top = array('0','11','11','11','75','14','17','11','11','75');
 		$wpss_shortcode_content  = '';
-		$wpss_shortcode_content .= '<style type="text/css">'.PHP_EOL;
-		$wpss_shortcode_content .= '#spamshield_counter_wrap_'.$wpss_wid_inst.' {color:#ffffff;text-decoration:none;width:140px;}'.PHP_EOL;
-		$wpss_shortcode_content .= '#spamshield_counter_'.$wpss_wid_inst.' {background:url('.WPSS_PLUGIN_COUNTER_URL.'/spamshield-counter-bg-'.$counter_option.'.png) no-repeat top left;height:'.$counter_div_height[$counter_option].'px;width:140px;overflow:hidden;border-style:none;color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;padding-top:'.$counter_count_padding_top[$counter_option].'px;}'.PHP_EOL;
-		$wpss_shortcode_content .= '</style>'.PHP_EOL;
-		$wpss_shortcode_content .= '<div id="spamshield_counter_wrap_'.$wpss_wid_inst.'" >'.PHP_EOL;
-		$wpss_shortcode_content .= "\t".'<div id="spamshield_counter_'.$wpss_wid_inst.'" >'.PHP_EOL;
+		$wpss_shortcode_content .= '<style type="text/css">'.WPSS_EOL;
+		$wpss_shortcode_content .= '#spamshield_counter_wrap_'.$wpss_wid_inst.' {color:#ffffff;text-decoration:none;width:140px;}'.WPSS_EOL;
+		$wpss_shortcode_content .= '#spamshield_counter_'.$wpss_wid_inst.' {background:url('.WPSS_PLUGIN_COUNTER_URL.'/spamshield-counter-bg-'.$counter_option.'.png) no-repeat top left;height:'.$counter_div_height[$counter_option].'px;width:140px;overflow:hidden;border-style:none;color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;padding-top:'.$counter_count_padding_top[$counter_option].'px;}'.WPSS_EOL;
+		$wpss_shortcode_content .= '</style>'.WPSS_EOL;
+		$wpss_shortcode_content .= '<div id="spamshield_counter_wrap_'.$wpss_wid_inst.'" >'.WPSS_EOL;
+		$wpss_shortcode_content .= "\t".'<div id="spamshield_counter_'.$wpss_wid_inst.'" >'.WPSS_EOL;
 		$sip1c = substr(WPSS_SERVER_ADDR, 0, 1);
 		if ( ( $counter_option >= 1 && $counter_option <= 3 ) || ( $counter_option >= 7 && $counter_option <= 8 ) ) {
 			$spamshield_counter_title_text = $sip1c > '5' ? WPSS_Promo_Links::promo_text(2) : WPSS_Promo_Links::promo_text(3);
-			$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:20px !important;line-height:80% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:14px !important;line-height:130% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.WPSS_Promo_Links::promo_text(0).'</span><br />'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:9px !important;line-height:90% !important;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.WPSS_Promo_Links::promo_text(1).'</span>'.PHP_EOL;
+			$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:20px !important;line-height:80% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:14px !important;line-height:130% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.WPSS_Promo_Links::promo_text(0).'</span><br />'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:9px !important;line-height:90% !important;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.WPSS_Promo_Links::promo_text(1).'</span>'.WPSS_EOL;
 			$wpss_shortcode_content .= "\t".'</a></strong>';
 			}
 		elseif ( $counter_option == 4 || $counter_option == 9 ) {
 			if ( $sip1c > '5' ) { $spamshield_counter_title_text = WPSS_Promo_Links::promo_text(4); }
 			else { $spamshield_counter_title_text = WPSS_Promo_Links::promo_text(5); }
-			$wpss_shortcode_content .= "\t".'<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'<span style="color:#000000;font-size:9px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.' '.WPSS_Promo_Links::promo_text(0).'</span><br />'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'</a></strong>'.PHP_EOL;
+			$wpss_shortcode_content .= "\t".'<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'<span style="color:#000000;font-size:9px;line-height:100%;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.' '.WPSS_Promo_Links::promo_text(0).'</span><br />'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'</a></strong>'.WPSS_EOL;
 			}
 		elseif ( $counter_option == 5 ) {
-			$wpss_shortcode_content .= "\t".'<strong style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.WPSS_Promo_Links::promo_text(6).'" >'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'<span style="color:#FEB22B;font-size:14px !important;line-height:100% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'</a></strong>'.PHP_EOL;
+			$wpss_shortcode_content .= "\t".'<strong style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#FEB22B;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.WPSS_Promo_Links::promo_text(6).'" >'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'<span style="color:#FEB22B;font-size:14px !important;line-height:100% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'</a></strong>'.WPSS_EOL;
 			}
 		elseif ( $counter_option == 6 ) {
-			if ( $sip1c > '5' ) { $spamshield_counter_title_text = "\t".''.WPSS_Promo_Links::promo_text(7).PHP_EOL; }
-			else { $spamshield_counter_title_text = "\t".''.WPSS_Promo_Links::promo_text(8).PHP_EOL; }
-			$wpss_shortcode_content .= "\t".'<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100% !important;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'<span style="color:#000000;font-size:14px !important;line-height:100% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'</a></strong>'.PHP_EOL;
+			if ( $sip1c > '5' ) { $spamshield_counter_title_text = "\t".''.WPSS_Promo_Links::promo_text(7).WPSS_EOL; }
+			else { $spamshield_counter_title_text = "\t".''.WPSS_Promo_Links::promo_text(8).WPSS_EOL; }
+			$wpss_shortcode_content .= "\t".'<strong style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100% !important;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#000000;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'<span style="color:#000000;font-size:14px !important;line-height:100% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'</a></strong>'.WPSS_EOL;
 			}
-		$wpss_shortcode_content .= "\t".'</div>'.PHP_EOL;
-		$wpss_shortcode_content .= '</div>'.PHP_EOL;
+		$wpss_shortcode_content .= "\t".'</div>'.WPSS_EOL;
+		$wpss_shortcode_content .= '</div>'.WPSS_EOL;
 		return $wpss_shortcode_content;
 		}
 
@@ -682,24 +682,24 @@ class WPSS_Old_Counters {
 		$counter_sm_div_height = array('0','50','50','50','50','50');
 		$counter_sm_count_padding_top = array('0','11','11','11','11','11');
 		$wpss_shortcode_content  = '';
-		$wpss_shortcode_content .= PHP_EOL.PHP_EOL;
-		$wpss_shortcode_content .= '<style type="text/css">'.PHP_EOL;
-		$wpss_shortcode_content .= '#rs_wpss_counter_sm_wrap_'.$wpss_wid_inst.' {color:#ffffff;text-decoration:none;width:120px;}'.PHP_EOL;
-		$wpss_shortcode_content .= '#rs_wpss_counter_sm_'.$wpss_wid_inst.' {background:url('.WPSS_PLUGIN_COUNTER_URL.'/spamshield-counter-sm-bg-'.$counter_sm_option.'.png) no-repeat top left;height:'.$counter_sm_div_height[$counter_sm_option].'px;width:120px;overflow:hidden;border-style:none;color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;padding-top:'.$counter_sm_count_padding_top[$counter_sm_option].'px;}'.PHP_EOL;
-		$wpss_shortcode_content .= '</style>'.PHP_EOL.PHP_EOL;
-		$wpss_shortcode_content .= '<div id="rs_wpss_counter_sm_wrap_'.$wpss_wid_inst.'" >'.PHP_EOL."\t";
-		$wpss_shortcode_content .= '<div id="rs_wpss_counter_sm_'.$wpss_wid_inst.'" >'.PHP_EOL;
+		$wpss_shortcode_content .= WPSS_EOL.WPSS_EOL;
+		$wpss_shortcode_content .= '<style type="text/css">'.WPSS_EOL;
+		$wpss_shortcode_content .= '#rs_wpss_counter_sm_wrap_'.$wpss_wid_inst.' {color:#ffffff;text-decoration:none;width:120px;}'.WPSS_EOL;
+		$wpss_shortcode_content .= '#rs_wpss_counter_sm_'.$wpss_wid_inst.' {background:url('.WPSS_PLUGIN_COUNTER_URL.'/spamshield-counter-sm-bg-'.$counter_sm_option.'.png) no-repeat top left;height:'.$counter_sm_div_height[$counter_sm_option].'px;width:120px;overflow:hidden;border-style:none;color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;padding-top:'.$counter_sm_count_padding_top[$counter_sm_option].'px;}'.WPSS_EOL;
+		$wpss_shortcode_content .= '</style>'.WPSS_EOL.WPSS_EOL;
+		$wpss_shortcode_content .= '<div id="rs_wpss_counter_sm_wrap_'.$wpss_wid_inst.'" >'.WPSS_EOL."\t";
+		$wpss_shortcode_content .= '<div id="rs_wpss_counter_sm_'.$wpss_wid_inst.'" >'.WPSS_EOL;
 		$sip1c = substr(WPSS_SERVER_ADDR, 0, 1);
 		if ( ( $counter_sm_option >= 1 && $counter_sm_option <= 5 ) ) {
 			if ( $sip1c > '5' ) { $spamshield_counter_title_text = WPSS_Promo_Links::promo_text(9); }
 			else { $spamshield_counter_title_text = WPSS_Promo_Links::promo_text(10); }
-			$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:18px !important;line-height:100% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:10px !important;line-height:120% !important;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.WPSS_Promo_Links::promo_text(0).'</span>'.PHP_EOL;
-			$wpss_shortcode_content .= "\t".'</a></strong>'.PHP_EOL;
+			$wpss_shortcode_content .= "\t".'<strong style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;line-height:100%;text-align:center;text-decoration:none;border-style:none;"><a href="'.WPSS_HOME_URL.'" style="color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;" target="_blank" rel="external" title="'.$spamshield_counter_title_text.'" >'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:18px !important;line-height:100% !important;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.$spamshield_count.'</span><br />'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'<span style="color:#ffffff;font-size:10px !important;line-height:120% !important;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;font-weight:bold;text-decoration:none;border-style:none;">'.WPSS_Promo_Links::promo_text(0).'</span>'.WPSS_EOL;
+			$wpss_shortcode_content .= "\t".'</a></strong>'.WPSS_EOL;
 			}
-		$wpss_shortcode_content .= "\t".'</div>'.PHP_EOL;
-		$wpss_shortcode_content .= '</div>'.PHP_EOL;
+		$wpss_shortcode_content .= "\t".'</div>'.WPSS_EOL;
+		$wpss_shortcode_content .= '</div>'.WPSS_EOL;
 		return $wpss_shortcode_content;
 		}
 

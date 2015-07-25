@@ -1,7 +1,7 @@
 <?php
 /***
 * WP-SpamShield Security
-* Ver 1.9.5.1
+* Ver 1.9.5.2
 ***/
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -288,9 +288,9 @@ class WPSS_Security {
 		$banned_ip_count = count( $wpss_ip_ban );
 		$ip_ban_rgx = '^('.str_replace( '.', '\.', implode( '|', $wpss_ip_ban ) ).')$';
 
-		$wpss_hta_data = PHP_EOL.PHP_EOL.'# BEGIN WP-SpamShield'.PHP_EOL.PHP_EOL;
-		$wpss_hta_data .= '<IfModule mod_setenvif.c>'.PHP_EOL."\t".'SetEnvIf Remote_Addr '.$ip_ban_rgx.' wpss_sec_threat'.PHP_EOL.'</IfModule>';
-		$wpss_hta_data .= PHP_EOL.PHP_EOL.'# END WP-SpamShield'.PHP_EOL.PHP_EOL;
+		$wpss_hta_data = WPSS_EOL.WPSS_EOL.'# BEGIN WP-SpamShield'.WPSS_EOL.WPSS_EOL;
+		$wpss_hta_data .= '<IfModule mod_setenvif.c>'.WPSS_EOL."\t".'SetEnvIf Remote_Addr '.$ip_ban_rgx.' wpss_sec_threat'.WPSS_EOL.'</IfModule>';
+		$wpss_hta_data .= WPSS_EOL.WPSS_EOL.'# END WP-SpamShield'.WPSS_EOL.WPSS_EOL;
 		$wpss_hta_data_wp = '# BEGIN WordPress';
 
 		if ( file_exists( $hta_file ) ) {
@@ -308,7 +308,7 @@ class WPSS_Security {
 				}
 			$hta_contents = file_get_contents( $hta_file );
 			if ( strpos( $hta_contents, '# BEGIN WP-SpamShield' ) !== FALSE && strpos( $hta_contents, '# END WP-SpamShield' ) !== FALSE ) {
-				$hta_contents_mod = preg_replace( "~#\ BEGIN\ WP-SpamShield[\w\W]+#\ END\ WP-SpamShield~i", trim( $wpss_hta_data, PHP_EOL ), $hta_contents );
+				$hta_contents_mod = preg_replace( "~#\ BEGIN\ WP-SpamShield[\w\W]+#\ END\ WP-SpamShield~i", trim( $wpss_hta_data, WPSS_EOL ), $hta_contents );
 				if ( $hta_contents_mod !== $hta_contents ) {
 					file_put_contents( $hta_file, $hta_contents_mod, LOCK_EX );
 					}
@@ -318,9 +318,9 @@ class WPSS_Security {
 				file_put_contents( $hta_file, $hta_contents_mod, LOCK_EX );
 				}
 			else {
-				file_put_contents( $hta_file, PHP_EOL.PHP_EOL.$wpss_hta_data.PHP_EOL.PHP_EOL, FILE_APPEND | LOCK_EX );
+				file_put_contents( $hta_file, WPSS_EOL.WPSS_EOL.$wpss_hta_data.WPSS_EOL.WPSS_EOL, FILE_APPEND | LOCK_EX );
 				}
-			rs_wpss_append_log_data( PHP_EOL.'IP address banned and added to .htaccess block list. IP: '.$ip, FALSE );
+			rs_wpss_append_log_data( WPSS_EOL.'IP address banned and added to .htaccess block list. IP: '.$ip, FALSE );
 			}
 		}
 
@@ -345,7 +345,7 @@ class WPSS_Security {
 		$wpss_index_file	= WPSS_PLUGIN_PATH.'/index.php';
 		$bak_dir_hta_file	= WPSS_PLUGIN_PATH.'/lib/sec/.htaccess';
 
-		$wpss_hta_data = '# BEGIN WP-SpamShield'.PHP_EOL.PHP_EOL.'# END WP-SpamShield';
+		$wpss_hta_data = '# BEGIN WP-SpamShield'.WPSS_EOL.WPSS_EOL.'# END WP-SpamShield';
 
 		if ( file_exists( $hta_file ) ) {
 			if ( !file_exists( $hta_wpss_bak_dir ) ) {
@@ -363,7 +363,7 @@ class WPSS_Security {
 				$hta_contents_mod = preg_replace( "~#\ BEGIN\ WP-SpamShield[\w\W]+#\ END\ WP-SpamShield~i", $wpss_hta_data, $hta_contents );
 				if ( $hta_contents_mod !== $hta_contents ) {
 					file_put_contents( $hta_file, $hta_contents_mod, LOCK_EX );
-					rs_wpss_append_log_data( PHP_EOL.'Banned IP addresses removed from .htaccess.', TRUE );
+					rs_wpss_append_log_data( WPSS_EOL.'Banned IP addresses removed from .htaccess.', TRUE );
 					}
 				}
 			}
