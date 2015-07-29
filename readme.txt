@@ -196,10 +196,11 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
-= 1.9.5.3 =
+= 1.9.5.4 =
 *released 07/29/15*
 
 * Fixed a bug in the integration with WooCommerce registration forms.
+* Roll back some changes from 1.9.5.3.
 * Made various code improvements.
 * Updated the anti-spam filters.
 
@@ -693,7 +694,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.5.3 =
+= 1.9.5.4 =
 * Fixed a bug in the integration with WooCommerce registration forms, made various other code improvements, and updated the anti-spam filters. Please see Changelog for details.
 
 == Other Notes ==
