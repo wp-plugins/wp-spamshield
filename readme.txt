@@ -196,12 +196,19 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.5.3 =
+*released 07/29/15*
+
+* Fixed a bug in the integration with WooCommerce registration forms.
+* Made various code improvements.
+* Updated the anti-spam filters.
+
 = 1.9.5.2 =
 *released 07/25/15*
 
 * Compatibility fixes for WordPress 4.2.3.
 * Made some proactive fixes to the Gravity Forms integration to prevent JavaScript conflicts.
-* Made a compatibility improvement for certain BuddyPress themes and 3rd party registration pages.
+* Added improved compatibility for certain BuddyPress themes and 3rd party registration pages.
 * Minor compatibility improvement for IIS servers.
 * Made various code improvements.
 * Updated the anti-spam filters.
@@ -213,7 +220,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added workaround for PHP bug in `mb_substr()` function on some servers.
 * Fixed an activation error caused by a function added in PHP 5.3 when plugin was activated on servers running PHP 5.2. (We no longer support PHP 5.2, but this error prevented our informational message from coming up.)
 * Made various code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.5 =
 *released 07/17/15*
@@ -224,20 +231,20 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Compatibility fix for WooCommerce POS plugin.
 * Compatibility improvement for IIS servers.
 * Made various code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.4.2 =
 *released 07/13/15*
 
 * Added a compatibility fix for AIT Themes.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.4.1 =
 *released 07/9/15*
 
 * Fixed a bug with some of the anti-spam checks not being properly verified on certain server configurations with dynamic IP addresses.
 * Made various minor code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.4 =
 *released 07/1/15*
@@ -247,14 +254,14 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Made some improvements to the Autoptimize compatibility fix.
 * Added a minor bug fix for Gravity Forms anti-spam.
 * Made various code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.3 =
 *released 06/25/15*
 
 * Added an option in the settings to disable email harvester protection if you choose.
 * Made a number of code improvements to further improve overall performance, efficiency, and speed of the plugin.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.2 =
 *released 06/22/15*
@@ -263,7 +270,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added improved compatibility and full anti-spam support for JetPack Contact Forms.
 * Made various logic and code improvements.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.1 =
 *released 06/18/15*
@@ -273,7 +280,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added automatic fixes for certain issues. During the installation status detection process the plugin will attempt to fix some uncommon issues by automatically switching the plugin into Compatibility Mode. (At the top of the Settings page it tells you if the plugin is installed correctly or not.)
 * Made various code improvements.
 * Improved some of the contact form filters for the built-in WP-SpamShield contact form, Contact Form 7, Gravity Forms, and miscellaneous forms.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.0.6 =
 *released 06/15/15*
@@ -282,7 +289,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Pre-emptive security enhancement for the log file (formerly `temp-comments-log.txt`) - added a randomly generated 32 character long key to the filename to make it unique (now `temp-comments-log-{random key}.txt`). The log was already protected by an `.htaccess` file and restricted to the IP address of the admin.
 * Made various code improvements.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.0.5 =
 *released 06/12/15*
@@ -290,7 +297,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added a new feature to thwart email harvesting bots and keep them from scraping your site for email addresses. It automatically obfuscates plain text email addresses and mailto links in your website content by encoding them into HTML entities (hexadecimal and decimal character codes that look like gibberish to harvesters, but render the email addresses perfectly in a browser). It protects email addresses on pages, posts, comments, excerpts, and text widgets. (It's always best not to post email addresses on your site and use a contact form instead, but if you absolutely have to, they should be encoded.)
 * Compatibility fix for new users registering on a WooCommerce checkout page.
 * Made various code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.0.4 =
 *released 06/09/15*
@@ -298,7 +305,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added improved compatibility and full support for WooCommerce to protect its registration form from spam.
 * Made various code improvements.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.0.3 =
 *released 06/08/15*
@@ -306,7 +313,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added compatibility for 2 additional caching plugins: ZenCache and ZenCache Pro. As of this release, the following 14 cache plugins are supported: Cachify, DB Cache Reloaded, DB Cache Reloaded Fix, Gator Cache, Hyper Cache, Hyper Cache Extended, Lite Cache, Quick Cache, W3 Total Cache, WP Fast Cache, WP Fastest Cache, WP Super Cache, ZenCache, and ZenCache Pro.
 * Added options to disable anti-spam protection for Contact Form 7, Gravity Forms, and miscellaneous forms if you wish.
 * Made various code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.0.2 =
 *released 06/04/15*
@@ -314,7 +321,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Fixed a couple bugs.
 * Added the option to set the minimum required comment length, from 1-30 characters. Previously, the minimum comment length was 15 characters.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.9.0.1 =
 *released 06/03/15*
@@ -337,7 +344,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Modified the `.htaccess` file to the `wp-spamshield` directory to improve compatibility with certain branches of Apache, including IdeaWebServer.
 * Improvement to the Autoptimize compatibility fix.
 * Made various code improvements and optimizations.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.9.8 =
 *released 05/30/15*
@@ -349,7 +356,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 * Added HTML 5 front-end validation to certain elements of the contact form and comments form.
 * Made various code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.9.6 =
 *released 05/26/15*
@@ -357,7 +364,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Increased minimum required WordPress version to 3.9. It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.2.2) for security and functionality.
 * Made various code improvements.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.9.5 =
 *released 05/18/15*
@@ -365,24 +372,24 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added Italian Translation (it_IT). Thank you to Bakeneko for doing the Italian translation.
 * Fixed a minor bug in the translation files.
 * Fixed a compatibility issue with the Autoptimize plugin.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.9.4 =
 *released 05/08/15*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.9.3 =
 *released 04/30/15*
 
 * Made various minor code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.9.2 =
 *released 04/23/15*
 
 * Made various minor code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.9.1 =
 *released 04/21/15*
@@ -392,35 +399,35 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Upgraded the `.htaccess` file in the `data` directory (that protects the log file) to be compatible with changes in Apache 2.4.
 * Modified the log file creation process so that WordFence (and any other security plugins that compare plugin files against the WordPress repository) will no longer give the following warning: "Modified plugin file: wp-content/plugins/wp-spamshield/data/temp-comments-log.txt" when **Blocked Comment Logging Mode** is turned on. This file is supposed to change, since it's the log file.
 * Removed inline CSS from the three registration fields that WP-SpamShield adds, in order to make it easier for users to configure the look and feel of the registration page.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.9 =
 *released 04/19/15*
 
 * Made various minor code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.8 =
 *released 04/13/15*
 
 * Fixed a bug in one of the comment spam filters. Previously, if WordPress Discussion settings have "Comment author must fill out name and e-mail" unchecked, and a user submitted a comment where the author name and author URL were both blank, it would incorrectly be blocked. (The comments would go through if there was a URL.) This is fixed in this version.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.7 =
 *released 04/08/15*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.6 =
 *released 04/04/15*
 
 * Fixed a minor bug in the new custom widget.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.5 =
 *released 04/02/15*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.4 =
 *released 03/30/15*
@@ -433,7 +440,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added info to the settings page with info on how much time the plugin has saved you.
 * Made various code improvements.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.3 =
 *released 03/24/15*
@@ -441,7 +448,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added a contact form quicktag so users can just click a button in the editor to add a contact form to pages. No more manually inserting shortcodes.
 * Made various code improvements.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.2 =
 *released 03/16/15*
@@ -449,14 +456,14 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Increased minimum required WordPress version to 3.8 and added a minimum required PHP version of 5.3, as we are no longer supporting PHP 5.2. The PHP team [stopped supporting PHP 5.2 back in 2011](http://php.net/archive/2011.php#id2011-08-23-1), and even PHP 5.3 reached its end of life in August 2014. WordPress has a current minimum requirement of 5.2.4, but PHP 5.4 is recommended - see the [WordPress requirements](https://wordpress.org/about/requirements/). It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.1.1) and a reasonably up-to-date version of PHP for security, functionality, and website performance. (Not only are the newer versions more secure, but they are faster, so its a double win.) We recommend PHP 5.4 or higher. Also, see [PHP Unsupported Branches](http://php.net/eol.php) for more info.
 * Fixed XHTML validation error in the hidden input fields on the forms.
 * Internationalized the formatting of numbers used throughout the plugin so users in different countries will see numbers formatted according to their local customs. This will show in the blocked spam stats on the dashboard, spam counter widgets, and in the blocked comments log.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8.1 =
 *released 03/11/15*
 
 * Updated the French (fr_FR) translation.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.8 =
 *released 03/09/15*
@@ -466,7 +473,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Improved some of the error messages.
 * Fixed a couple bugs introduced in 1.7.9, including a bug in the contact form that incorrectly detected spam servers, and a compatibility issue with the new registration antispam feature and certain multisite configurations. This feature was rolled back while we look into the compatibility issues.
 * Made a few improvements to the blocked comment logging functionality.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.7.9 =
 *released 03/06/15*
@@ -477,7 +484,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Made various code improvements.
 * Added new filters to the spam blocking algorithm.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.7.8 =
 *released 02/27/15*
@@ -486,7 +493,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Made various code improvements.
 * Added new filters to the spam blocking algorithm.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.7.7 =
 *released 02/21/15*
@@ -496,18 +503,18 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added a fix to ensure contact form is implemented properly, and strictly enforce not being used in widgets or sidebars. Please see the [contact form documentation](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_adding_contact_form) for more info and usage instructions.
 * Made various code improvements.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.7.6 =
 *released 02/15/15*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.7.5 =
 *released 02/11/15*
 
 * Removed some deprecated filters from the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.7.4 =
 *released 02/06/15*
@@ -518,7 +525,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Improved some of the error messages to make them more helpful.
 * Made various code improvements.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.7.3 =
 *released 02/03/15*
@@ -527,7 +534,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Updated the French (fr_FR) translation.
 * Made various code improvements.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.7.2 =
 *released 01/30/15*
@@ -535,7 +542,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added compatibility for 2 additional caching plugins: Cachify and Gator Cache. As of this release, the following 12 cache plugins are supported (in order of popularity): WP Super Cache, W3 Total Cache, Quick Cache, Hyper Cache, WP Fastest Cache, DB Cache Reloaded Fix, Cachify, DB Cache Reloaded, Hyper Cache Extended, WP Fast Cache, Lite Cache, and Gator Cache.
 * Updated the Dutch (nl_NL) and  German (de_DE) translations.
 * Made various minor code improvements.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.7.1 =
 *released 01/27/15*
@@ -543,12 +550,12 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Made various code improvements.
 * Updated the translation files.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.7 =
 *released 01/22/15*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.6.9 =
 *released 01/19/15*
@@ -556,23 +563,23 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added option to disable registration antispam protection.
 * Made various code improvements.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.6.8 =
 *released 01/16/15*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.6.7 =
 *released 01/13/15*
 
 * Minor bug fix and improvement to the JetPack compatibility fix.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.6.6 =
 *released 01/09/15*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.6.5 =
 *released 01/04/15*
@@ -583,58 +590,58 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Minor update to the translation files.
 * Added new filters to the spam blocking algorithm.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.6.4 =
 *released 12/30/14*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.6.3 =
 *released 12/21/14*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.6.2 =
 *released 12/18/14*
 
 * Improved some of the filters in the spam blocking algorithm.
 * Increased minimum required WordPress version to 3.6. It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.1) for security and functionality.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.6.1 =
 *released 12/15/14*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.6 =
 *released 12/11/14*
 
 * Added a compatibility fix to prevent certain conflicting plugins from triggering duplicate emails to be sent by the contact form.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.5.9 =
 *released 11/23/14*
 
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.5.8 =
 *released 11/13/14*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.5.7 =
 *released 11/05/14*
 
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.5.6 =
 *released 10/23/14*
 
 * Fixed a bug that caused some legitimate comments to be rejected on comment sub-pages if the site was using the option to break comments into pages but not using permalinks.
 * Minor update to the Dutch Translation (nl_NL).
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.5.5 =
 *released 09/24/14*
@@ -642,7 +649,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Made various minor code improvements.
 * Made some minor tweaks to the translation files and corresponding code.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.5.4 =
 *released 09/15/14*
@@ -651,21 +658,21 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Added "Blacklist the IP Address" link to contact form emails.
 * Added a fix to prevent network activation when used in multisite, and added network admin notice to explain. The plugin can be used in multisite just fine, but will need to be activated individually per site for now. Once we can get time to adapt the plugin to multisite more specifically, we can remove this restriction.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.5.3 =
 *released 09/09/14*
 
 * Added Dutch Translation (nl_NL). Thank you to Martin Teley for doing the Dutch translation.
 * Improved some of the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.5.2 =
 *released 09/05/14*
 
 * Improved some of the filters in the spam blocking algorithm.
 * Increased minimum required WordPress version to 3.5 (which is already almost 2 years old). It's extremely important that users stay up to date with the most recent version of WordPress (currently 4.0) for security and functionality.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = 1.5.1 =
 *released 09/01/14*
@@ -680,14 +687,14 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Improved human spam protection.
 * Removed the M2 feature as it's an old feature that has been deprecated and is no longer needed.
 * Made several improvements to the filters in the spam blocking algorithm.
-* Updated the spam filters.
+* Updated the anti-spam filters.
 
 = Changelog =
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.5.2 =
-* Compatibility fixes for WordPress 4.2.3, compatibility improvements for Gravity Forms, certain BuddyPress themes and 3rd party registration pages, made various other code improvements, and updated the spam filters. Please see Changelog for details.
+= 1.9.5.3 =
+* Fixed a bug in the integration with WooCommerce registration forms, made various other code improvements, and updated the anti-spam filters. Please see Changelog for details.
 
 == Other Notes ==
 
