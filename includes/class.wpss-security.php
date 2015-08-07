@@ -1,7 +1,7 @@
 <?php
 /***
 * WP-SpamShield Security
-* Ver 1.9.5.2
+* Ver 1.9.5.5
 ***/
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -33,7 +33,7 @@ class WPSS_Security {
 		$user_agent = rs_wpss_get_user_agent();
 		$req_url	= rs_wpss_casetrans( 'lower', rs_wpss_get_url() );
 		$req_ajax	= rs_wpss_is_ajax_request();
-		$req_404	= rs_wpss_is_404(); // Not all WP sites return proper 404 status. The fact this security check even got activated means it was a 404.
+		$req_404	= rs_wpss_is_404(); /* Not all WP sites return proper 404 status. The fact this security check even got activated means it was a 404. */
 		$req_hal	= rs_wpss_get_http_accept( TRUE, TRUE, TRUE );
 		$req_ha		= rs_wpss_get_http_accept( TRUE, TRUE );
 
@@ -43,7 +43,19 @@ class WPSS_Security {
 		extract( $wpss_ip_proxy_info );
 		/* IP / PROXY INFO - END */
 		
-		/* Signatures */
+		/* Short Signatures - Regex */
+
+		$rgx_sig_arr = array( '-e*5l?*B-@yZ_-,8_-lSZ98BC[', '+25-Z9dCZ,87C-7CBlSZ=-C[', );
+
+		foreach( $_POST as $k => $v ) {
+			$v = rs_wpss_casetrans( 'lower', $v );
+			foreach( $rgx_sig_arr as $i => $s ) { /* Switch to single preg_match as this expands, replace nested foreach() */
+				$sd = rs_wpss_rbkmd( $s, 'de' );
+				if( FALSE !== strpos( $v, $sd ) ) { return TRUE; }
+				}
+			}
+		
+		/* Full Signatures */
 		
 		$signatures = array(
 			/* SIGNATURES - BEGIN */
@@ -263,6 +275,7 @@ class WPSS_Security {
 		/* Set */
 		if ( !empty( $ip_ban_status ) || $method === 'set' ) {
 			if ( !empty( $ip ) && !in_array( $ip, $wpss_ip_ban, TRUE ) ) { $wpss_ip_ban[] = $ip; }
+			$wpss_ip_ban = rs_wpss_sort_unique( $wpss_ip_ban );
 			update_option( 'spamshield_ip_ban', $wpss_ip_ban );
 			self::ip_ban_htaccess();
 			$ip_ban_status = TRUE;
@@ -285,6 +298,7 @@ class WPSS_Security {
 
 		$wpss_ip_ban = get_option('spamshield_ip_ban');
 		if ( empty( $wpss_ip_ban ) ) { return FALSE; }
+		$wpss_ip_ban = rs_wpss_sort_unique( $wpss_ip_ban );
 		$banned_ip_count = count( $wpss_ip_ban );
 		$ip_ban_rgx = '^('.str_replace( '.', '\.', implode( '|', $wpss_ip_ban ) ).')$';
 

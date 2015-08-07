@@ -80,7 +80,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 2. As of version 1.9.2, WP-SpamShield protects JetPack Comments from spam. (Making it one of the few antispam plugins that works with JetPack Comments.)
 3. A counter on your dashboard to keep track of all the spam it's blocking. The numbers will show how effective this plugin is.
 4. See what's been blocked! "Blocked Comment Logging Mode", a temporary diagnostic mode that logs blocked spam (comments, trackbacks, registrations, and contact form submissions) for 7 days, then turns off automatically. If you want to see what spam has been blocked, or verify that everything is working, turn this on and see what WP-SpamShield is protecting your blog from.
-5. Multiple languages available and more on the way. Currently includes Dutch (nl_NL), French (fr_FR), German (de_DE), Italian (it_IT), and Serbian (sr_RS) translations. Ready for translation into other languages.
+5. Multiple languages available and more on the way. Currently includes Dutch (nl_NL), French (fr_FR), German (de_DE), Indonesian (id_ID), Italian (it_IT), and Serbian (sr_RS) translations. Ready for translation into other languages.
 6. Easy to install - truly plug and play. Just upload and activate. (Installation Status on the plugin admin page to let you know if plugin is installed correctly.)
 7. Compatible with and optimized for *all* major cache plugins, including WP Super Cache and many others. Not all antispam plugins can say that.
 8. Display your blocked spam stats on your blog. Customizable widgets for graphic counters to display spam stats, in multiple colors, sizes and options.
@@ -96,6 +96,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 * Dutch (nl_NL)
 * French (fr_FR)
 * German (de_DE)
+* Indonesian (id_ID)
 * Italian (it_IT)
 * Serbian (sr_RS)
 
@@ -196,6 +197,16 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 
 == Changelog ==
 
+= 1.9.5.5 =
+*released 08/07/15*
+
+* Added Indonesian Translation (id_ID). Thank you to GhozyLab for doing the Indonesian translation.
+* Improvements for WooCommerce login and registration pages.
+* Added a new filter hooks that other developers can use to extend the plugin's capabilities and bridge compatibility between plugins.
+* Browser and proxy cache control improvements for the `jscripts.php` file.
+* Made various code improvements.
+* Updated the anti-spam filters.
+
 = 1.9.5.4 =
 *released 07/29/15*
 
@@ -207,7 +218,6 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 = 1.9.5.2 =
 *released 07/25/15*
 
-* Compatibility fixes for WordPress 4.2.3.
 * Made some proactive fixes to the Gravity Forms integration to prevent JavaScript conflicts.
 * Added improved compatibility for certain BuddyPress themes and 3rd party registration pages.
 * Minor compatibility improvement for IIS servers.
@@ -694,8 +704,8 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
 == Upgrade Notice ==
-= 1.9.5.4 =
-* Fixed a bug in the integration with WooCommerce registration forms, made various other code improvements, and updated the anti-spam filters. Please see Changelog for details.
+= 1.9.5.5 =
+* Added Indonesian Translation (id_ID), improvements for WooCommerce login pages, new filter hooks, cache control improvements, made various other code improvements, and updated the anti-spam filters. Please see Changelog for details.
 
 == Other Notes ==
 

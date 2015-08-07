@@ -1,7 +1,7 @@
 <?php
 /*
 WP-SpamShield Dynamic JS File
-Version: 1.9.5.3
+Version: 1.9.5.5
 */
 
 /* Security Sanitization - BEGIN */
@@ -12,7 +12,7 @@ if(!empty($_GET)||FALSE!==strpos($_SERVER['REQUEST_URI'],'?')){
 	}
 //if(!empty($_SERVER['REQUEST_METHOD'])){$wpss_request_method = $_SERVER['REQUEST_METHOD'];} else {$wpss_request_method = getenv('REQUEST_METHOD');}
 $wpss_request_method = !empty($_SERVER['REQUEST_METHOD'])?$_SERVER['REQUEST_METHOD']:getenv('REQUEST_METHOD');
-if (empty($wpss_request_method)){$wpss_request_method = '';}
+if(empty($wpss_request_method)){$wpss_request_method = '';}
 if(!empty($_POST)||($wpss_request_method!='GET'&&$wpss_request_method!='HEAD')){
 	header('HTTP/1.1 405 Method Not Allowed');
 	die('ERROR: This resource does not accept requests of that type.');
@@ -242,12 +242,13 @@ if(!empty($wpss_cl_sbluck)){
 elseif(!empty($wpss_sbluck)){
 	setcookie($wpss_lang_ck_key,$wpss_lang_ck_val,$current_dt+60*60*24*365*10,'/'); /* 10 years */
 	}
-
-setcookie($wpss_ck_key,$wpss_ck_val,0,'/');
-header("Cache-Control: no-cache, must-revalidate"); /* HTTP/1.1 */
-header("Pragma: no-cache"); /* HTTP 1.0 */
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); /* Date in the past */
-header('Content-Type: application/javascript');
+setcookie($wpss_ck_key,$wpss_ck_val,0,'/'); /* Secondary benefit is cache control - setting cookies turns off Varnish caching for this script */
+/* Control caching */
+if(function_exists('header_remove')){@header_remove('Last-Modified');@header_remove('ETag');}
+header('Cache-Control: private, no-store, no-cache, must-revalidate, max-age=0, proxy-revalidate, s-maxage=0, no-transform'); /* HTTP/1.1 - Tell browsers and proxies not to cache this */
+header('Pragma: no-cache'); /* HTTP 1.0 */
+header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); /* Date in the past */
+header('Content-Type: application/javascript; charset=UTF-8');
 echo "
 function wpssGetCookie(e){var t=document.cookie.indexOf(e+'=');var n=t+e.length+1;if(!t&&e!=document.cookie.substring(0,e.length)){return null}if(t==-1)return null;var r=document.cookie.indexOf(';',n);if(r==-1)r=document.cookie.length;return unescape(document.cookie.substring(n,r))}function wpssSetCookie(e,t,n,r,i,s){var o=new Date;o.setTime(o.getTime());if(n){n=n*1e3*60*60*24}var u=new Date(o.getTime()+n);document.cookie=e+'='+escape(t)+(n?';expires='+u.toGMTString():'')+(r?';path='+r:'')+(i?';domain='+i:'')+(s?';secure':'')}function wpssDeleteCookie(e,t,n){if(wpssGetCookie(e))document.cookie=e+'='+(t?';path='+t:'')+(n?';domain='+n:'')+';expires=Thu, 01-Jan-1970 00:00:01 GMT'}
 function wpssCommentVal(){wpssSetCookie('".$wpss_ck_key."','".$wpss_ck_val."','','/');wpssSetCookie('SJECT15','CKON15','','/');}
