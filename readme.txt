@@ -19,7 +19,7 @@ No CAPTCHAs, challenge questions or other inconvenience to site visitors - it wo
 **Supports: Contact Form 7, Gravity Forms, Ninja Forms, JetPack Contact Forms & Comments, BuddyPress, bbPress, WooCommerce, s2Member, WP-Members, Mailchimp, Fast Secure Contact Form, Formidable Forms, *almost all* WordPress forms, and *almost all* WordPress registration forms.**
 
 = NEED HELP? =
-**[Plugin Documentation](http://www.redsandmarketing.com/plugins/wp-spamshield/)** | **[Troubleshooting Guide](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_troubleshooting)** | **[FAQs](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs)** | **[Tech Support](http://www.redsandmarketing.com/plugins/wp-spamshield/support/)**
+**[Plugin Documentation](http://www.redsandmarketing.com/plugins/wp-spamshield/)** | **[Troubleshooting Guide](http://www.redsandmarketing.com/plugins/wp-spamshield/troubleshooting-guide/)** | **[FAQs](http://www.redsandmarketing.com/plugins/wp-spamshield/faqs/)** | **[Tech Support](http://www.redsandmarketing.com/plugins/wp-spamshield/support/)**
 
 = How It Works =
 Most of the spam hitting your blog originates from bots, but quite a bit comes from humans too. This plugin works like a firewall to ensure that your commenters are in fact, human, and that those humans aren't spamming you.
@@ -41,7 +41,7 @@ WP-SpamShield is different from other anti-spam plugins in that it *BLOCKS* spam
 Not allowing spam into the database improves security by potentially preventing SQL injection and XSS exploit attacks through automated spam comment submissions. The plugin also has several other features that improve security, such as blocking certain potentially dangerous URLs in spam comment submissions, and limiting comment size to 15kb. (15kb of text is roughly the equivalent of 3 typed pages in Microsoft Word, single-spaced, so that's more than enough for even the longest of comments.) See [this blog post](http://www.redsandmarketing.com/blog/wp-spamshield-protected-users-from-wordpress-0-day-xss-exploit/) for more info.
 
 = Helps Improve Overall Website Performance =
-The plugin helps keep your WordPress database slimmer and more efficient (keeping your site running faster in the long term) by not allowing the thousands upon thousands of spam comments into it, which could bloat the database and potentially corrupt it. Keeping your database lean is extremely important, because bloated databases result in much longer query times, slowing down a site dramatically even for simple functions. If website performance is important to you, then you definitely want an antispam plugin like WP-SpamShield instead of a plugin that uses a spam queue. See [this FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_15) for more detailed info.
+The plugin helps keep your WordPress database slimmer and more efficient (keeping your site running faster in the long term) by not allowing the thousands upon thousands of spam comments into it, which could bloat the database and potentially corrupt it. Keeping your database lean is extremely important, because bloated databases result in much longer query times, slowing down a site dramatically even for simple functions. If website performance is important to you, then you definitely want an antispam plugin like WP-SpamShield instead of a plugin that uses a spam queue. See [this FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/faqs/#faqs_15) for more detailed info.
 
 = ZERO False Positives =
 It does all this with ZERO false positives, because of the method used to block spam. This leads to fewer frustrated website visitors, and less work for you. If a comment/contact form/registration gets blocked as spam, the user is given instant feedback and has a chance to correct their comment/contact form/registration and try again. We are committed to keeping the promise of zero false positives.
@@ -53,7 +53,7 @@ The trackback validation contains a filter that compares the client IP address o
 Includes drop-in spam-free contact form, with easy one-click installation. Easy to use - no configuration necessary, but you can configure it if you like. (See [Installation](https://wordpress.org/plugins/wp-spamshield/installation/) for info.) WP-SpamShield also includes automatic anti-spam protection for Contact Form 7, Gravity Forms, Ninja Forms, JetPack Contact Forms, Fast Secure Contact Forms, Formidable Forms, and more. (You don't have to do anything...just add your Contact Form 7, Gravity Forms, Ninja Forms, JetPack Contact Forms, or other forms to your site, and they will automatically be protected.) It will automatically protect *most forms* on your WordPress site from automated spam, even if they are not listed here.
 
 = WordPress Registration Spam Blocking =
-The plugin also includes powerful protection from user registration spam. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up any more. (Note: This protects *almost all* registration forms, including the WordPress default registration form, and registration forms for bbPress, BuddyPress, WooCommerce, s2Member, WP-Members, and many more. See [this FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_13) for more info.
+The plugin also includes powerful protection from user registration spam. Once you install WP-SpamShield, you don't have to worry about bots or spammy users signing up any more. (Note: This protects *almost all* registration forms, including the WordPress default registration form, and registration forms for bbPress, BuddyPress, WooCommerce, s2Member, WP-Members, and many more. See [this FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/faqs/#faqs_13) for more info.
 
 = Stops Email Harvesters =
 The plugin has a feature to thwart email harvesting bots and keep them from scraping your site for email addresses. It automatically obfuscates plain text email addresses and mailto links in your website content by encoding them into HTML entities (hexadecimal and decimal character codes that look like gibberish to harvesters, but render the email addresses perfectly in a browser). It protects email addresses on pages, posts, comments, excerpts, and text widgets.
@@ -84,7 +84,7 @@ If you have any issues with the plugin, we are here to help. Simply submit a sup
 6. Easy to install - truly plug and play. Just upload and activate. (Installation Status on the plugin admin page to let you know if plugin is installed correctly.)
 7. Compatible with and optimized for *all* major cache plugins, including WP Super Cache and many others. Not all antispam plugins can say that.
 8. Display your blocked spam stats on your blog. Customizable widgets for graphic counters to display spam stats, in multiple colors, sizes and options.
-9. Works in WordPress Multisite as well. (See the related [FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs_3) for details.)
+9. Works in WordPress Multisite as well. (See the related [FAQ](http://www.redsandmarketing.com/plugins/wp-spamshield/faqs/#faqs_3) for details.)
 10. Enhanced Comment Blacklist option. Instead of just sending comments to moderation as with WordPress's default Comment Blacklist functionality, with this turned on, anything that matches a string in the blacklist will be **completely blocked**. Block specific human spammers by IP, email address, or a number of other options. The Enhanced Comment Blacklist has some improvements over the default WordPress blacklist functionality, and adds a link in the comment & contact form notification emails that will let you blacklist a spammer's IP with one click.
 11. WP-SpamShield Whitelist option. Allows you to specify certain users who you want to let bypass the anti-spam filters.
 12. This plugin is legal to use in Germany and the EU, and does not violate European privacy laws. It does not use any type of cloud-based service, spam data is not transmitted from your server to any other server, and all antispam processing happens directly on your website's server.
@@ -189,9 +189,9 @@ Please visit the plugin documentation for detailed [configuration information](h
 
 == Frequently Asked Questions ==
 
-Please see the full [FAQs](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs).
+Please see the full [FAQs](http://www.redsandmarketing.com/plugins/wp-spamshield/faqs/).
 
-Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_troubleshooting).
+Also, see the [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp-spamshield/troubleshooting-guide/).
 
 If you have any further questions, please submit them on the main [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/).
 
@@ -406,7 +406,7 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 *released 04/21/15*
 
 * Added an `.htaccess` file to the `wp-spamshield` directory to control browser access to certain files.
-* Added a fix to ensure that certain security plugins could not inadvertently block browser access to the `jscripts.php` file. This fix will prevent most of the occurrences of the issue discussed in [Troubleshooting Guide](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_troubleshooting) step 14.
+* Added a fix to ensure that certain security plugins could not inadvertently block browser access to the `jscripts.php` file. This fix will prevent most of the occurrences of the issue discussed in [Troubleshooting Guide](http://www.redsandmarketing.com/plugins/wp-spamshield/troubleshooting-guide/) step 14.
 * Upgraded the `.htaccess` file in the `data` directory (that protects the log file) to be compatible with changes in Apache 2.4.
 * Modified the log file creation process so that WordFence (and any other security plugins that compare plugin files against the WordPress repository) will no longer give the following warning: "Modified plugin file: wp-content/plugins/wp-spamshield/data/temp-comments-log.txt" when **Blocked Comment Logging Mode** is turned on. This file is supposed to change, since it's the log file.
 * Removed inline CSS from the three registration fields that WP-SpamShield adds, in order to make it easier for users to configure the look and feel of the registration page.
@@ -700,6 +700,321 @@ If you have any further questions, please submit them on the main [WP-SpamShield
 * Made several improvements to the filters in the spam blocking algorithm.
 * Updated the anti-spam filters.
 
+= 1.4.9 =
+*released 08/24/14*
+
+* Modified the blocked spam error message for certain human spam comment submissions.
+* Improved some of the filters in the spam blocking algorithm.
+* Updated the anti-spam filters.
+
+= 1.4.8 =
+*released 08/18/14*
+
+* Improved some of the filters in the spam blocking algorithm.
+* Improved/optimized some code.
+* Updated the anti-spam filters.
+
+= 1.4.7 =
+*released 08/12/14*
+
+* Added additional security checks.
+* Improved some of the user registration and comment spam filters.
+* Fixed a few minor bugs.
+* Updated the anti-spam filters.
+
+= 1.4.6 =
+*released 08/05/14*
+
+* Added a compatibility fix for certain server configurations where some necessary PHP functions are not enabled.
+* Updated the anti-spam filters.
+
+= 1.4.5 =
+*released 08/04/14*
+
+* Made further improvements to speed in processing comments and blocking spam. (Users likely won't see a noticeable difference for a single comment being processed...after all, we're dealing in milliseconds here, but these speed improvements in v1.4.4 and v1.4.5 will improve overall scalability.)
+* Added French Translation (fr_FR). Thank you to Clément for doing the French translation.
+* Updated the Serbian Translation (sr_RS).
+* Fixed a bug in the proxy detection.
+* Improved some of the filters in the antispam algorithm.
+* Updated the anti-spam filters.
+
+= 1.4.4 =
+*released 07/30/14*
+
+* Improved speed in processing comments and blocking spam. Optimized the order of the filters so the fastest ones fire first, leading to even better speed and lower server load, which in turn improves scalability.
+* Added Serbian Translation (sr_RS). Thank you to Borisa Djuraskovic of Web Hosting Hub for doing the Serbian translation.
+* Improved some of the filters in the antispam algorithm.
+* Updated the anti-spam filters.
+
+= 1.4.3 =
+*released 07/25/14*
+
+* Added a fix for emails sent though contact forms from `@yahoo.com` email addresses. Recently I noticed that contact form submissions from yahoo.com email addresses were not getting sent. After tracking this and doing a bit of testing, I was able to narrow it down to this: emails getting sent through the PHP `mail()` function from users `@yahoo.com` were not making it through. This wasn't limited to one plugin or script, it was universal (at least in my tests). So I consulted some experts in this area, and was able to find out what's going on. It's related to [Yahoo's new DMARC policy](https://help.yahoo.com/kb/postmaster/yahoo-dmarc-policy-sln24050.html). This policy effectively restricts all Yahoo users from using most website contact forms. In this version, I modified how the plugin handles the email address of the contact form submitter. The contact form emails will now come from an email address that looks like `wpspamshield [dot] noreply [at] yourdomain [dot] com`, similar to how WordPress sends out emails to admins. This should also avoid any spam problems with properly configured SPF records on your domain. (Properly set up SPF records should allow the IP Address of your website as an valid sender.) The email address of the person submitting the contact form will now only be included in the body of the contact form email (which it always was) instead of being in the "From" field too.
+* Added a fix to the Settings page for when users activate/deactivate Blocked Comment Logging Mode and the "Log All Comments" feature. To use the "Log All Comments" feature requires Blocked Comment Logging Mode to be active or it doesn't do anything. This new fix just syncs up the settings to eliminate confusion, and so users don't have to worry if they checked both boxes or not when they update their settings. If a user checks "Log All Comments" and saves their settings, it will activate Blocked Comment Logging Mode as well. And vice versa...if a user deactivates Blocked Comment Logging Mode, when they save the settings it will clear the check box for "Log All Comments" as well.
+* Improved some of the filters in the antispam algorithm.
+* Updated the anti-spam filters.
+
+= 1.4.2 =
+*released 07/22/14*
+
+* There is a relatively new trend where hackers and link-spammers use search engine bots to do their SQL injections and exploits for them (to avoid leaving a trail back to them). Yes, Googlebot is being used for SQL injection exploits. Hackers use software to post a spam comment to a blog that contains a link to a specially crafted exploit URL. If the spam comment gets accepted, when search engine spiders crawl the page, and go to the specially crafted exploit URL, the SQL injection happens. The SQL injection inserts either a link or bad code to the victim site. Now **ALL** links in comment and contact form submissions will now be checked for these kinds of exploit URLs, so that these attacks will not originate from your site. (This includes the comment author website, the contact form sender's website, and the content of both contact forms and comments will be parsed for links...all included links will be checked.) This will also potentially help avoid having Google penalizing your site for linking to bad neighborhoods. (*Automated* spam attempts of this kind were always blocked, but now that we have more intel, the manual human spam attempts of this type will be blocked 100% as well.)
+* Added new filters to the antispam algorithm.
+* Improved some of the filters in the antispam algorithm.
+* Updated the anti-spam filters.
+
+= 1.3.8 =
+*released 07/18/14*
+
+* Added new filters to the antispam algorithm.
+* Improved some of the filters in the antispam algorithm.
+* Updated the anti-spam filters.
+
+= 1.3.7 =
+*released 07/15/14*
+
+* Fixed a compatibility issue with the JetPack plugin.
+* Minor update to the German Translation (de_DE).
+* Updated the anti-spam filters.
+
+= 1.3.6 =
+*released 07/12/14*
+
+* Added additional security checks.
+* Improved the process of [upgrading from WP-SpamFree to WP-SpamShield](http://www.redsandmarketing.com/plugins/wp-spamshield/faqs/#faqs_10). (WP-SpamFree is the old version of this plugin, which I wrote in 2007, and passed on to other developers in 2010. It is no longer supported, but this plugin will gracefully upgrade from it, and import all your old settings, automatically. All contact forms will continue to work without any modifications.)
+* Fixed a couple minor bugs.
+* Updated the anti-spam filters.
+
+= 1.3.5 =
+*released 07/09/14*
+
+* Fixed a compatibility issue with the JetPack plugin.
+* Updated the anti-spam filters.
+
+= 1.3.4 =
+*released 07/07/14*
+
+* Updated the anti-spam filters.
+
+= 1.3.3 =
+*released 07/03/14*
+
+* Updated the German Translation (de_DE).
+* Updated the anti-spam filters.
+
+= 1.3.2 =
+*released 06/30/14*
+
+* Added German Translation (de_DE). Thank you to Chris Krzikalla for doing the German translation.
+* Updated the anti-spam filters.
+
+= 1.3.1 =
+*released 06/28/14*
+
+* Removed the three initial machine translations based on feedback. If anyone would like to donate their talent and a small amount of time to translating, it would be much appreciated. It's not hard - just [contact me](http://www.redsandmarketing.com/plugins/wp-spamshield/support/) and I'll get you set up. I'm happy to give credit and a website link to anyone who's willing to help out.
+* Updated the anti-spam filters.
+
+= 1.3 =
+*released 06/27/14*
+
+* Prepared the plugin for internationalization and localization, and created .pot file for translation.
+* Created three initial translations with Google Translate and some other resources: French (fr_FR), Spanish (es_ES), and German (de_DE). I realize machine translations may not be the best, but I figured I'd at least get the ball rolling.
+* Removed documentation from settings page, since the same info is provided on the plugin homepage (in greater detail). The "Quick Navigation - Contents" is still there, it just points to the plugin homepage now. All the info is still available, it just makes it a bit more efficient if I only have to update documentation in one place. Side benefit is that it slims down the plugin file size a little bit.
+* Updated the anti-spam filters.
+
+= 1.2.4 =
+*released 06/23/14*
+
+* Fixed a compatibility issue with Internet Explorer 9.
+
+= 1.2.3 =
+*released 06/22/14*
+
+* Fixed a compatibility issue with the CommentLuv plugin. As of this version, the two plugins are 100% compatible with each other.
+* Updated the anti-spam filters.
+
+= 1.2.2 =
+*released 06/20/14*
+
+* Updated the anti-spam filters.
+* Made an improvement to the implementation of the new semantic anti-spam filter.
+
+= 1.2.1 =
+*released 06/18/14*
+
+* Updated the anti-spam filters.
+* Fixed a minor bug in one of the anti-spam filters.
+
+= 1.2 =
+*released 06/18/14*
+
+* Added a powerful new feature to stop user registration spam. No more automated bot signups through the login page on your site..
+* Added a new semantic filter to the algorithmic protection layer, for improved protection against human spam.
+* Overhauled and improved many of the filters in the antispam algorithm.
+
+= 1.1.7.3 =
+*released 06/09/14*
+
+* Improved some of the filters in the antispam algorithm.
+
+= 1.1.7.2 =
+*released 06/06/14*
+
+* Added new filters to the antispam algorithm.
+* Removed some deprecated filters (which have already been replaced with newer more efficient ones) and reduced main plugin file size significantly.
+* Added a feature to clean up the WordPress blacklist. Now if you view the blacklist through the WP-SpamShield Settings page, it will be sorted in order and have duplicate items removed. When you save WP-SpamShield General Options (not Contact Form Options), it will store this cleaned up version in the database so that whenever you view it again, whether there or on the Discussion settings page, you'll see the cleaned up version.
+* Fixed a minor bug.
+
+= 1.1.7.1 =
+*released 06/04/14*
+
+* Added new filters and improved existing filters in the algorithmic spam protection layer.
+* Fixed several minor bugs.
+* Made various code improvements.
+
+= 1.1.7 =
+*released 05/28/14*
+
+* Reorganized and rewrote some of the code to make it more efficient and improve overall performance of the plugin. This is the fastest version of the plugin to date.
+* Added new filters and improved existing filters in the algorithmic antispam protection layer.
+* Made improvements to the blocked comment logging data.
+* Fixed a bug that caused some legitimate comments to be rejected if the page the user commented on contained added arguments (tracking variables, etc.) in the URL query string (ie. "something=value" - for tracking marketing campaigns, etc).
+* Fixed several minor bugs that would show notices in the "debug.log" file if WordPress debugging is turned on.
+
+= 1.1.6.3 =
+*released 05/20/14*
+
+* Fixed a bug (introduced in 1.1.6) that prevented users from commenting if caching is not active. One area of the plugin had not been updated to the new key generation system, causing the error, but this is now fixed. Everything works fine now, and the upgrades introduced in 1.1.6 will provide improved performance.
+
+= 1.1.6.2 =
+*released 05/16/14*
+
+* Changed the implementation of the random key generation and testing, resulting in greater speed and efficiency.
+* Fixed a bug that kept the plugin from updating its version number in the database in certain situations when upgrading to a new version of the plugin.
+
+= 1.1.5 =
+*released 05/16/14*
+
+* Made a number of code improvements to improve overall performance, efficiency, and speed of the plugin.
+* Completely reformatted the blocked comment logging data. Added some relevant technical data that can aid in tech support.
+* Added new filters to the antispam algorithm.
+
+= 1.1.4.4 =
+*released 05/11/14*
+
+* Added new filters to the antispam algorithm.
+* Fixed several minor bugs.
+* Made improvements to the blocked comment logging data. Changed the date displayed from UTC to the local time of the admin, according to WordPress settings.
+* Reformatted the log data to make it easier to read, both for users, and for support requests.
+* Added total script execution time to the log data so you can see exactly how long it took to run the filters and block a particular comment. Also helps with debugging and support.
+* Made improvements to the readability of the contact form emails.
+
+= 1.1.4.3 =
+*released 05/08/14*
+
+* Fixed several minor bugs (mostly PHP Notices, not Warnings or Errors) specific to changes made in PHP 5.4 and 5.5.
+* Added new filters to the antispam algorithm.
+* For the last few weeks I've been making it a high priority to increase the strictness of the code because more recent versions of PHP use stricter code, have introduced new errors (including PHP Notices and Warnings) and have deprecated some older functions and functionality. That's why the new bugs have been popping up. I'm fixing them as quickly as possible. :)
+
+= 1.1.4.2 =
+*released 05/08/14*
+
+* Fixed a couple minor bugs.
+* Replaced all instances of `split()` function, which is deprecated in PHP 5.3. (Meaning it still works, but is being phased out and will be eliminated in a future version.) The plugin was already fully compatible with PHP 5.2 and below, and this update ensures full compatibility with PHP 5.3+.
+* Made some improvements to the validation of user input on the WP-SpamShield options page in the WP admin to keep the database neat and tidy.
+
+= 1.1.4.1 =
+*released 05/07/14*
+
+* Fixed a bug that caused a "Division by zero" error in the admin spam stats (if a new install) on some systems.
+* Improved some of the existing filters in the algorithmic antispam protection layer.
+
+= 1.1.4 =
+*released 05/06/14*
+
+* Fixed a couple of minor bugs.
+* Made various code improvements, including code efficiency and increased code strictness.
+* Added new antispam filters and improved existing filters in the algorithmic antispam protection layer.
+
+= 1.1.3.3 =
+*released 05/02/14*
+
+* Fixed an issue occurring on some WordPress installations hosted on Microsoft IIS servers that have certain PHP functions disabled.
+* Removed WP-SpamShield Options page link from the "Plugins" menu in the WP Admin. Plugin options can still be accessed from the "Settings" menu.
+* Added new filters to the antispam algorithm.
+
+= 1.1.3.2 =
+*released 05/01/14*
+
+* Added new antispam filters and improved existing filters in the algorithmic antispam protection layer.
+* Made a few improvements to the blocked comment logging.
+
+= 1.1.3.1 =
+*released 04/28/14*
+
+* Fixed a bug in one of the antispam filters.
+* Fixed 2 bugs that caused error messages on certain server configurations.
+
+= 1.1.3 =
+*released 04/25/14*
+
+* Added new filters and improved existing filters in the algorithmic antispam protection layer.
+* Improved the efficiency of the code, and reduced main plugin file size significantly.
+* Fixed a couple of bugs.
+
+= 1.1.2.2 =
+*released 04/16/14*
+
+* Fixed a minor bug in the blocked comment logging.
+
+= 1.1.2.1 =
+*released 04/15/14*
+
+* Added new filters to the antispam algorithm.
+* Added additional security checks.
+* Made a few improvements to the blocked comment logging data.
+* Minor bug fix.
+
+= 1.1.1 =
+*released 04/11/14*
+
+* Added better trackback antispam protection. This version adds a filter that compares the client IP address of the incoming trackback against the IP address of the server where the link is supposedly coming from. If they don't match, then it is spam, *without fail*. This will eliminate more than 99.99% of trackback spam. Trackback spammers don't send the spam out from the same server where their clients' websites reside.
+* Added new filters to the antispam algorithm.
+* Made improvements to the overall compatibility with caching plugins.
+* Fixed a bug where the plugin was incorrectly detecting proxies.
+
+= 1.1 =
+*released 04/07/14*
+
+* Replaced all instances of `eregi()` function, which is deprecated in PHP 5.3. (Meaning it still works, but is being phased out and will be eliminated in a future version.) The plugin was already fully compatible with PHP 5.2 and below, and this update ensures compatibility with PHP 5.3+.
+* Added new filters to the antispam algorithm.
+
+= 1.0.1.1 =
+*released 04/03/14*
+
+* Added new filters to the antispam algorithm.
+* Added additional security checks.
+* Code improvements and minor bug fixes.
+
+= 1.0.1 =
+*released 03/26/14*
+
+* Improved compatibility with popular caching plugins. This version adds detection to see if caching is active or not, and if specific cache plugins are active, and makes adjustments accordingly.
+
+= 1.0 =
+*released 03/10/14* - Over 20 improvements from its predecessor WP-SpamFree...including:
+
+* Over 10x faster! Tested and verified with benchmarking software.
+* Reduced the number of database queries.
+* Rewrote much of the code for improved performance.
+* Improved security.
+* Added a number of new antispam protection features.
+* Added additional info to spam logging for improved diagnostics.
+* Added shortcodes for implementing contact form.
+* Added shortcodes for displaying antispam stats.
+* Added display of the average number of spam comments blocked per day to the admin dashboard.
+
+Forked from WP-SpamFree Version 2.1.1.0, 10/10/13
+
 = Changelog =
 For a complete list of changes to the plugin, view the [Version History/Changelog](http://www.redsandmarketing.com/plugins/wp-spamshield/version-history/).
 
@@ -709,11 +1024,11 @@ For a complete list of changes to the plugin, view the [Version History/Changelo
 
 == Other Notes ==
 
-[Troubleshooting Guide](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_troubleshooting) | [FAQs](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs) | [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/)
+[Troubleshooting Guide](http://www.redsandmarketing.com/plugins/wp-spamshield/troubleshooting-guide/) | [FAQs](http://www.redsandmarketing.com/plugins/wp-spamshield/faqs/) | [WP-SpamShield Support Page](http://www.redsandmarketing.com/plugins/wp-spamshield/support/)
 
 = Troubleshooting Guide / Support =
 
-If you're experiencing any issues, please take a few moments to work through the [FAQs](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_faqs) and [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp-spamshield/#wpss_troubleshooting) as these solve 90% of the issues that users bring to us.
+If you're experiencing any issues, please take a few moments to work through the [FAQs](http://www.redsandmarketing.com/plugins/wp-spamshield/faqs/) and [troubleshooting guide](http://www.redsandmarketing.com/plugins/wp-spamshield/troubleshooting-guide/) as these solve 90% of the issues that users bring to us.
 
 = Updates / Documentation =
 For updates and documentation, visit the [WP-SpamShield homepage](http://www.redsandmarketing.com/plugins/wp-spamshield/).
